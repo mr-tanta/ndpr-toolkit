@@ -2,19 +2,12 @@
 
 import { DataSubjectRequest, RequestStatus } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
+import { storage } from './storage';
 
 const REQUEST_STORAGE_KEY = 'ndpr_requests';
 
 const getStoredRequests = (): DataSubjectRequest[] => {
-  if (typeof window === 'undefined') return [];
-  const stored = localStorage.getItem(REQUEST_STORAGE_KEY);
-  if (!stored) return [];
-  try {
-    return JSON.parse(stored) as DataSubjectRequest[];
-  } catch (error) {
-    console.error('Error parsing requests:', error);
-    return [];
-  }
+  return storage.getItem<DataSubjectRequest[]>(REQUEST_STORAGE_KEY, []) || [];
 };
 
 export const requestService = {
@@ -38,23 +31,30 @@ export const requestService = {
       notes: details,
     };
 
-    if (typeof window !== 'undefined') {
-      const requests = getStoredRequests();
-      requests.push(request);
-      localStorage.setItem(REQUEST_STORAGE_KEY, JSON.stringify(requests));
+    const requests = getStoredRequests();
+    requests.push(request);
+    const saved = storage.setItem(REQUEST_STORAGE_KEY, requests);
+    
+    if (!saved) {
+      throw new Error('Failed to save request. Storage may be full or unavailable.');
     }
 
     return request;
   },
 
   updateStatus: (id: string, status: RequestStatus): DataSubjectRequest | null => {
-    if (typeof window === 'undefined') return null;
     const requests = getStoredRequests();
     const idx = requests.findIndex(r => r.id === id);
     if (idx === -1) return null;
+    
     requests[idx].status = status;
     requests[idx].updatedAt = new Date().toISOString();
-    localStorage.setItem(REQUEST_STORAGE_KEY, JSON.stringify(requests));
+    
+    const saved = storage.setItem(REQUEST_STORAGE_KEY, requests);
+    if (!saved) {
+      throw new Error('Failed to update request status.');
+    }
+    
     return requests[idx];
   },
 
@@ -67,9 +67,8 @@ export const requestService = {
     return getStoredRequests();
   },
 
-  clear: (): void => {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem(REQUEST_STORAGE_KEY);
+  clear: (): boolean => {
+    return storage.removeItem(REQUEST_STORAGE_KEY);
   },
 };
 

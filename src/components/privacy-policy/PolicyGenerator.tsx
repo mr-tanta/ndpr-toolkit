@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { PolicySection } from '@/types';
 import { jsPDF } from 'jspdf';
+import { escapeHtml } from '@/lib/sanitize';
 
 // Import step components
 import OrganizationInfoStep from './steps/OrganizationInfoStep';
@@ -16,6 +17,118 @@ import StepIndicator from './shared/StepIndicator';
 
 // Import static data
 import { defaultDataPurposes, defaultSecurityMeasures, dataSubjectCategories, trackingTechnologies, transferSafeguards, defaultCookieTypes, commonTransferCountries } from './data';
+
+// Generate safe HTML from form data without using innerHTML
+function generateSafeHTMLFromFormData(formData: any): string {
+  const sections: string[] = [];
+  
+  // Title
+  sections.push(`<h1>${escapeHtml(formData.organizationName)} Privacy Policy</h1>`);
+  
+  // Introduction
+  sections.push('<h2>Introduction</h2>');
+  sections.push(`<p>This Privacy Policy describes how ${escapeHtml(formData.organizationName)} collects, uses, and discloses your personal information.${formData.includeNDPRCompliance ? ' This policy is compliant with the Nigeria Data Protection Regulation (NDPR) and the Data Protection Act (DPA).' : ''}</p>`);
+  
+  // About Us
+  sections.push('<h2>About Us</h2>');
+  sections.push(`<p>${escapeHtml(formData.organizationName)}${formData.organizationAddress ? ` is located at ${escapeHtml(formData.organizationAddress)}` : ''}.${formData.organizationWebsite ? ` Our website is ${escapeHtml(formData.organizationWebsite)}.` : ''}</p>`);
+  
+  // Information We Collect
+  if (formData.dataCollectionPurposes?.length > 0) {
+    sections.push('<h2>Information We Collect</h2>');
+    sections.push('<p>We collect and process your personal data for the following purposes:</p>');
+    sections.push('<ul>');
+    formData.dataCollectionPurposes.forEach((purpose: string) => {
+      sections.push(`<li>${escapeHtml(purpose)}</li>`);
+    });
+    sections.push('</ul>');
+  }
+  
+  // Data Retention
+  sections.push('<h2>Data Retention</h2>');
+  sections.push(`<p>We will retain your personal data for ${escapeHtml(formData.dataRetentionPeriod || 'a period appropriate to the purpose')}, or for as long as necessary to fulfill the purposes for which it was collected.</p>`);
+  
+  // Third-Party Sharing
+  if (formData.thirdPartySharing && formData.thirdParties?.length > 0) {
+    sections.push('<h2>Third-Party Sharing</h2>');
+    sections.push('<p>We may share your personal information with the following third parties:</p>');
+    sections.push('<ul>');
+    formData.thirdParties.forEach((party: string) => {
+      sections.push(`<li>${escapeHtml(party)}</li>`);
+    });
+    sections.push('</ul>');
+  }
+  
+  // Cookies
+  if (formData.cookiesUsed && formData.cookieTypes?.length > 0) {
+    sections.push('<h2>Cookies and Tracking Technologies</h2>');
+    sections.push('<p>Our website uses cookies and similar tracking technologies. We use the following types of cookies:</p>');
+    sections.push('<ul>');
+    formData.cookieTypes.forEach((type: string) => {
+      sections.push(`<li>${escapeHtml(type)}</li>`);
+    });
+    sections.push('</ul>');
+  }
+  
+  // International Transfers
+  if (formData.internationalTransfers && formData.transferCountries?.length > 0) {
+    sections.push('<h2>International Data Transfers</h2>');
+    sections.push('<p>We may transfer your personal data to the following countries outside Nigeria:</p>');
+    sections.push('<ul>');
+    formData.transferCountries.forEach((country: string) => {
+      sections.push(`<li>${escapeHtml(country)}</li>`);
+    });
+    sections.push('</ul>');
+    sections.push('<p>We ensure appropriate safeguards are in place to protect your data when transferred internationally.</p>');
+  }
+  
+  // Security Measures
+  if (formData.securityMeasures?.length > 0) {
+    sections.push('<h2>Security Measures</h2>');
+    sections.push('<p>We implement the following security measures to protect your personal data:</p>');
+    sections.push('<ul>');
+    formData.securityMeasures.forEach((measure: string) => {
+      sections.push(`<li>${escapeHtml(measure)}</li>`);
+    });
+    sections.push('</ul>');
+  }
+  
+  // Your Rights
+  sections.push('<h2>Your Rights</h2>');
+  sections.push(`<p>${formData.includeNDPRCompliance ? 'Under the NDPR and DPA, you have the following rights:' : 'You have the following rights regarding your personal data:'}</p>`);
+  sections.push('<ul>');
+  sections.push('<li>Right to access your personal data</li>');
+  sections.push('<li>Right to rectify inaccurate personal data</li>');
+  sections.push('<li>Right to erasure ("right to be forgotten")</li>');
+  sections.push('<li>Right to restrict processing</li>');
+  sections.push('<li>Right to object to processing</li>');
+  sections.push('<li>Right to data portability</li>');
+  sections.push('</ul>');
+  sections.push(`<p>To exercise these rights, please contact us at ${escapeHtml(formData.organizationContact)}.</p>`);
+  
+  // Custom Sections
+  if (formData.customSections?.length > 0) {
+    formData.customSections.forEach((section: any) => {
+      sections.push(`<h2>${escapeHtml(section.title)}</h2>`);
+      sections.push(`<p>${escapeHtml(section.content)}</p>`);
+    });
+  }
+  
+  // DPO
+  if (formData.hasDPO && formData.dpoContact) {
+    sections.push('<h2>Data Protection Officer</h2>');
+    sections.push(`<p>You can contact our Data Protection Officer at ${escapeHtml(formData.dpoContact)}.</p>`);
+  }
+  
+  // Contact Us
+  sections.push('<h2>Contact Us</h2>');
+  sections.push(`<p>If you have any questions about this Privacy Policy, please contact us at ${escapeHtml(formData.organizationContact)}.</p>`);
+  
+  // Last Updated
+  sections.push(`<p>Last Updated: ${escapeHtml(formData.policyEffectiveDate || new Date().toISOString().split('T')[0])}</p>`);
+  
+  return sections.join('\n');
+}
 
 interface PolicyGeneratorProps {
   onGenerate: (policy: {
@@ -262,7 +375,8 @@ export default function PolicyGenerator({
       let blob: Blob | null = null;
 
       const policyText = previewRef.current.innerText;
-      const policyHTML = previewRef.current.innerHTML;
+      // Instead of using innerHTML directly, we'll generate safe HTML from the form data
+      const policyHTML = generateSafeHTMLFromFormData(formData);
       const policyTitle = `${formData.organizationName} Privacy Policy`;
       const fileName = `${formData.organizationName.replace(/\s+/g, '-').toLowerCase()}-privacy-policy`;
       

@@ -5,18 +5,18 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
+  "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
   {
     variants: {
       variant: {
-        default: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
-        primary: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-        secondary: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
-        success: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-        danger: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-        warning: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-        info: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-        outline: "border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100",
+        default: "bg-gray-700 text-white dark:bg-gray-500 focus:ring-gray-500",
+        primary: "bg-blue-700 text-white dark:bg-blue-600 focus:ring-blue-500",
+        secondary: "bg-gray-600 text-white dark:bg-gray-400 focus:ring-gray-500",
+        success: "bg-green-700 text-white dark:bg-green-600 focus:ring-green-500",
+        danger: "bg-red-700 text-white dark:bg-red-600 focus:ring-red-500",
+        warning: "bg-amber-700 text-white dark:bg-amber-600 focus:ring-amber-500",
+        info: "bg-blue-700 text-white dark:bg-blue-600 focus:ring-blue-500",
+        outline: "border-2 border-gray-700 dark:border-gray-300 text-gray-900 dark:text-gray-100 focus:ring-gray-500",
       },
     },
     defaultVariants: {
