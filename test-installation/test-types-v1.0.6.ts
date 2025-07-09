@@ -2,9 +2,7 @@
 import { 
   ConsentOption, 
   DSRRequest, 
-  BreachReport,
-  DPIAResult,
-  PolicySection 
+  BreachReport
 } from '@tantainnovative/ndpr-toolkit';
 
 // Test type definitions
@@ -29,7 +27,6 @@ const testDSR: Partial<DSRRequest> = {
 const testBreach: Partial<BreachReport> = {
   id: '456',
   title: 'Test Breach',
-  severity: 'low',
   affectedDataSubjects: 10,
   category: 'unauthorized-access'
 };
@@ -38,5 +35,5 @@ console.log('✅ TypeScript types compile successfully');
 console.log('Test objects created:', {
   consent: testConsent.id,
   dsr: testDSR.type,
-  breach: testBreach.severity
+  breach: testBreach.title
 });

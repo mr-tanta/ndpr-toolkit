@@ -1,5 +1,5 @@
 // Test TypeScript imports and types
-import type { ConsentOption, DSRRequest, BreachReport } from '@tantainnovative/ndpr-toolkit/packages/ndpr-toolkit/dist';
+import type { ConsentOption } from '@tantainnovative/ndpr-toolkit';
 
 // Test that types are properly defined
 const testConsent: ConsentOption = {

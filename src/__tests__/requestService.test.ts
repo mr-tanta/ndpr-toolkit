@@ -26,15 +26,15 @@ describe('requestService', () => {
   });
 
   test('creates and retrieves a request', () => {
-    const req = requestService.createRequest('access', 'John Doe', 'john@example.com', 'details', true);
+    const req = requestService.createRequest('access', 'John Doe', 'john@example.com', 'details');
     const stored = requestService.getRequest(req.id);
     expect(stored).not.toBeNull();
-    expect(stored?.requestType).toBe('access');
+    expect(stored?.type).toBe('access');
     expect(stored?.status).toBe('pending');
   });
 
   test('updates request status', () => {
-    const req = requestService.createRequest('erasure', 'Jane', 'jane@example.com', 'erase', true);
+    const req = requestService.createRequest('erasure', 'Jane', 'jane@example.com', 'erase');
     const updated = requestService.updateStatus(req.id, 'completed');
     expect(updated?.status).toBe('completed');
     const stored = requestService.getRequest(req.id);
@@ -42,14 +42,14 @@ describe('requestService', () => {
   });
 
   test('retrieves all requests', () => {
-    requestService.createRequest('access', 'A', 'a@example.com', 'a', true);
-    requestService.createRequest('erasure', 'B', 'b@example.com', 'b', true);
+    requestService.createRequest('access', 'A', 'a@example.com', 'a');
+    requestService.createRequest('erasure', 'B', 'b@example.com', 'b');
     const all = requestService.getAllRequests();
     expect(all.length).toBe(2);
   });
 
   test('clears storage', () => {
-    requestService.createRequest('access', 'A', 'a@example.com', 'a', true);
+    requestService.createRequest('access', 'A', 'a@example.com', 'a');
     requestService.clear();
     const all = requestService.getAllRequests();
     expect(all.length).toBe(0);
