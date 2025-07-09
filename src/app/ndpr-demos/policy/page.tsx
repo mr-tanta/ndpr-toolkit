@@ -692,14 +692,14 @@ We practice data minimization, which means we only collect and process the perso
               )}
             </CardContent>
           </Card>
-          {policyData && policyData.contactEmail && (
+          {policyData && policyData.contactEmail ? (
             <div className="mt-6 text-sm text-gray-500">
               Questions? Contact{" "}
               <a href={`mailto:${String(policyData.contactEmail)}`}>
                 {String(policyData.contactEmail)}
               </a>
             </div>
-          )}
+          ) : null}
         </TabsContent>
 
         {/* Audit & Export */}
