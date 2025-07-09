@@ -11,6 +11,6 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@tantainnovative/ndpr-toolkit": "^1.0.5"
+    "@tantainnovative/ndpr-toolkit": "^1.0.6"
   }
 }
