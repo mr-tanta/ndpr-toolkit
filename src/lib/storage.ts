@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
 /**
  * Safe localStorage wrapper with error handling
  */
 export class SafeStorage {
   private static isStorageAvailable(): boolean {
-    if (typeof window === 'undefined') return false;
-    
+    if (typeof window === "undefined") return false;
+
     try {
-      const testKey = '__storage_test__';
-      window.localStorage.setItem(testKey, 'test');
+      const testKey = "__storage_test__";
+      window.localStorage.setItem(testKey, "test");
       window.localStorage.removeItem(testKey);
       return true;
     } catch {
@@ -17,16 +17,16 @@ export class SafeStorage {
     }
   }
 
-  static getItem<T = any>(key: string, defaultValue?: T): T | null {
+  static getItem<T = unknown>(key: string, defaultValue?: T): T | null {
     if (!this.isStorageAvailable()) {
-      console.warn('localStorage is not available');
+      console.warn("localStorage is not available");
       return defaultValue ?? null;
     }
 
     try {
       const item = window.localStorage.getItem(key);
       if (item === null) return defaultValue ?? null;
-      
+
       // Try to parse as JSON, otherwise return as string
       try {
         return JSON.parse(item) as T;
@@ -39,29 +39,31 @@ export class SafeStorage {
     }
   }
 
-  static setItem(key: string, value: any): boolean {
+  static setItem(key: string, value: unknown): boolean {
     if (!this.isStorageAvailable()) {
-      console.warn('localStorage is not available');
+      console.warn("localStorage is not available");
       return false;
     }
 
     try {
-      const serialized = typeof value === 'string' ? value : JSON.stringify(value);
+      const serialized =
+        typeof value === "string" ? value : JSON.stringify(value);
       window.localStorage.setItem(key, serialized);
       return true;
     } catch (error) {
       if (error instanceof Error) {
-        if (error.name === 'QuotaExceededError') {
-          console.error('localStorage quota exceeded');
+        if (error.name === "QuotaExceededError") {
+          console.error("localStorage quota exceeded");
           // Try to clear old data
           this.clearOldData();
           // Retry once
           try {
-            const serialized = typeof value === 'string' ? value : JSON.stringify(value);
+            const serialized =
+              typeof value === "string" ? value : JSON.stringify(value);
             window.localStorage.setItem(key, serialized);
             return true;
           } catch {
-            console.error('Failed to save after clearing old data');
+            console.error("Failed to save after clearing old data");
             return false;
           }
         }
@@ -73,7 +75,7 @@ export class SafeStorage {
 
   static removeItem(key: string): boolean {
     if (!this.isStorageAvailable()) {
-      console.warn('localStorage is not available');
+      console.warn("localStorage is not available");
       return false;
     }
 
@@ -88,7 +90,7 @@ export class SafeStorage {
 
   static clear(): boolean {
     if (!this.isStorageAvailable()) {
-      console.warn('localStorage is not available');
+      console.warn("localStorage is not available");
       return false;
     }
 
@@ -96,7 +98,7 @@ export class SafeStorage {
       window.localStorage.clear();
       return true;
     } catch (error) {
-      console.error('Error clearing localStorage', error);
+      console.error("Error clearing localStorage", error);
       return false;
     }
   }
@@ -115,7 +117,7 @@ export class SafeStorage {
         }
       }
     } catch (error) {
-      console.error('Error calculating storage size', error);
+      console.error("Error calculating storage size", error);
     }
     return size;
   }
@@ -127,7 +129,7 @@ export class SafeStorage {
   static clearOldData(daysOld: number = 30): void {
     if (!this.isStorageAvailable()) return;
 
-    const cutoffTime = Date.now() - (daysOld * 24 * 60 * 60 * 1000);
+    const cutoffTime = Date.now() - daysOld * 24 * 60 * 60 * 1000;
     const keysToRemove: string[] = [];
 
     try {
@@ -148,19 +150,19 @@ export class SafeStorage {
       }
 
       // Remove old items
-      keysToRemove.forEach(key => this.removeItem(key));
+      keysToRemove.forEach((key) => this.removeItem(key));
     } catch (error) {
-      console.error('Error clearing old data', error);
+      console.error("Error clearing old data", error);
     }
   }
 
   /**
    * Wrapper for data with timestamp
    */
-  static setItemWithTimestamp(key: string, value: any): boolean {
+  static setItemWithTimestamp(key: string, value: unknown): boolean {
     const wrappedData = {
       data: value,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     return this.setItem(key, wrappedData);
   }
@@ -168,7 +170,10 @@ export class SafeStorage {
   /**
    * Get item with timestamp check
    */
-  static getItemWithTimestamp<T = any>(key: string, maxAge?: number): T | null {
+  static getItemWithTimestamp<T = unknown>(
+    key: string,
+    maxAge?: number,
+  ): T | null {
     const wrapped = this.getItem<{ data: T; timestamp: number }>(key);
     if (!wrapped) return null;
 
@@ -185,14 +190,14 @@ export class SafeStorage {
 }
 
 // Retry decorator for storage operations
-export function withRetry<T extends (...args: any[]) => any>(
+export function withRetry<T extends (...args: unknown[]) => unknown>(
   fn: T,
   maxRetries: number = 3,
-  delay: number = 100
+  delay: number = 100,
 ): T {
   return ((...args: Parameters<T>) => {
     let lastError: Error | null = null;
-    
+
     for (let i = 0; i < maxRetries; i++) {
       try {
         return fn(...args);
@@ -208,7 +213,7 @@ export function withRetry<T extends (...args: any[]) => any>(
         }
       }
     }
-    
+
     throw lastError;
   }) as T;
 }

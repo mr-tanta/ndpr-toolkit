@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
 
-interface LoadingState<T = any> {
+interface LoadingState<T = unknown> {
   loading: boolean;
   error: Error | null;
   data: T | null;
 }
 
-interface UseLoadingStateReturn<T = any> extends LoadingState<T> {
+interface UseLoadingStateReturn<T = unknown> extends LoadingState<T> {
   setLoading: (loading: boolean) => void;
   setError: (error: Error | null) => void;
   setData: (data: T | null) => void;
@@ -16,8 +16,8 @@ interface UseLoadingStateReturn<T = any> extends LoadingState<T> {
   execute: <R = T>(asyncFunction: () => Promise<R>) => Promise<R | null>;
 }
 
-export function useLoadingState<T = any>(
-  initialData: T | null = null
+export function useLoadingState<T = unknown>(
+  initialData: T | null = null,
 ): UseLoadingStateReturn<T> {
   const [state, setState] = useState<LoadingState<T>>({
     loading: false,
@@ -45,19 +45,20 @@ export function useLoadingState<T = any>(
     });
   }, [initialData]);
 
-  const execute = useCallback(async <R = T>(
-    asyncFunction: () => Promise<R>
-  ): Promise<R | null> => {
-    try {
-      setLoading(true);
-      const result = await asyncFunction();
-      setData(result as unknown as T);
-      return result;
-    } catch (error) {
-      setError(error as Error);
-      return null;
-    }
-  }, [setLoading, setData, setError]);
+  const execute = useCallback(
+    async <R = T>(asyncFunction: () => Promise<R>): Promise<R | null> => {
+      try {
+        setLoading(true);
+        const result = await asyncFunction();
+        setData(result as unknown as T);
+        return result;
+      } catch (error) {
+        setError(error as Error);
+        return null;
+      }
+    },
+    [setLoading, setData, setError],
+  );
 
   return {
     ...state,
@@ -70,8 +71,8 @@ export function useLoadingState<T = any>(
 }
 
 // Hook for managing multiple loading states
-export function useMultipleLoadingStates<T extends Record<string, any>>(
-  keys: (keyof T)[]
+export function useMultipleLoadingStates<T extends Record<string, unknown>>(
+  keys: (keyof T)[],
 ): Record<keyof T, UseLoadingStateReturn> {
   const states: Partial<Record<keyof T, UseLoadingStateReturn>> = {};
 
