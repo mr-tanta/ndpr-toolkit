@@ -1,92 +1,97 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import React, { useState } from "react";
+import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/Card';
+} from "@/components/ui/Card";
 import {
   PolicyGenerator,
   PolicyPreview,
   PolicyExporter,
   PolicySection,
-  PolicyVariable
-} from '@tantainnovative/ndpr-toolkit';
-import type { PolicyTemplate } from '@tantainnovative/ndpr-toolkit';
-  
+  PolicyVariable,
+} from "@tantainnovative/ndpr-toolkit";
+import type { PolicyTemplate } from "@tantainnovative/ndpr-toolkit";
+
 export default function PolicyDemoPage() {
-  const [activeTab, setActiveTab] = useState<string>('generator');
+  const [activeTab, setActiveTab] = useState<string>("generator");
   // Initialize with empty objects/arrays to prevent undefined errors
   const [policyData, setPolicyData] = useState<Record<string, unknown>>({});
   const [generatedPolicy, setGeneratedPolicy] = useState<PolicySection[]>([]);
   const [policyVariables, setPolicyVariables] = useState<PolicyVariable[]>([]);
 
   // Helper: process conditional {{#if …}}…{{else}}…{{/if}} blocks
-  const processConditionalBlocks = (content: string, data: Record<string, unknown>): string => {
-    if (!content || typeof content !== 'string') return '';
-    if (!data || typeof data !== 'object') data = {};
-    
+  const processConditionalBlocks = (
+    content: string,
+    data: Record<string, unknown>,
+  ): string => {
+    if (!content || typeof content !== "string") return "";
+    if (!data || typeof data !== "object") data = {};
+
     try {
       // First pass: Process nested if blocks from innermost to outermost
       let processedContent = content;
-      let lastContent = '';
-      
+      let lastContent = "";
+
       // Keep processing until no more changes are made (handles nested conditionals)
       while (processedContent !== lastContent) {
         lastContent = processedContent;
-        const ifRegex = /\{\{#if ([^}]+)\}\}([\s\S]*?)(?:\{\{else\}\}([\s\S]*?))?\{\{\/if\}\}/g;
-        
+        const ifRegex =
+          /\{\{#if ([^}]+)\}\}([\s\S]*?)(?:\{\{else\}\}([\s\S]*?))?\{\{\/if\}\}/g;
+
         processedContent = processedContent.replace(
           ifRegex,
-          (_match, variable, ifContent, elseContent = '') => {
-            if (!variable || typeof variable !== 'string') return elseContent;
-            
+          (_match, variable, ifContent, elseContent = "") => {
+            if (!variable || typeof variable !== "string") return elseContent;
+
             // Handle complex conditions with AND/OR operators
-            if (variable.includes('&&') || variable.includes('||')) {
+            if (variable.includes("&&") || variable.includes("||")) {
               try {
                 // Create a safe evaluation context with data variables
-                const evalContext = {...data};
+                const evalContext = { ...data };
                 // Replace operators with JavaScript operators
                 const jsCondition = variable
-                  .replace(/\s*&&\s*/g, ' && ')
-                  .replace(/\s*\|\|\s*/g, ' || ');
-                
+                  .replace(/\s*&&\s*/g, " && ")
+                  .replace(/\s*\|\|\s*/g, " || ");
+
                 // Safely evaluate the condition
-                const result = Object.keys(evalContext).some(key => 
-                  jsCondition.includes(key) && evalContext[key]
+                const result = Object.keys(evalContext).some(
+                  (key) => jsCondition.includes(key) && evalContext[key],
                 );
-                
+
                 return result ? ifContent : elseContent;
               } catch (error) {
-                console.error('Error evaluating complex condition:', error);
+                console.error("Error evaluating complex condition:", error);
                 return elseContent;
               }
             }
-            
+
             // Handle simple conditions
             let value = data[variable];
-            if (value === 'true') value = true;
-            if (value === 'false') value = false;
+            if (value === "true") value = true;
+            if (value === "false") value = false;
             if (Array.isArray(value) && value.length === 0) value = false;
-            if (value === '' || value === undefined || value === null) value = false;
-            
+            if (value === "" || value === undefined || value === null)
+              value = false;
+
             return value ? ifContent : elseContent;
-          }
+          },
         );
       }
-      
+
       // Second pass: Clean up any empty lines and extra whitespace
       return processedContent
-        .replace(/\n{3,}/g, '\n\n') // Replace multiple newlines with double newlines
-        .replace(/\s+\n/g, '\n')   // Remove trailing whitespace
+        .replace(/\n{3,}/g, "\n\n") // Replace multiple newlines with double newlines
+        .replace(/\s+\n/g, "\n") // Remove trailing whitespace
         .trim();
     } catch (error) {
-      console.error('Error processing conditional blocks:', error);
+      console.error("Error processing conditional blocks:", error);
       return content; // Return original content if tHere&apos;s an error
     }
   };
@@ -94,138 +99,162 @@ export default function PolicyDemoPage() {
   // Build the exportable markdown/HTML content
   const generateFormattedContent = (): string => {
     try {
-      if (!generatedPolicy || !Array.isArray(generatedPolicy) || generatedPolicy.length === 0) {
-        return '# No policy content generated yet\n\nPlease use the generator to create your policy.';
+      if (
+        !generatedPolicy ||
+        !Array.isArray(generatedPolicy) ||
+        generatedPolicy.length === 0
+      ) {
+        return "# No policy content generated yet\n\nPlease use the generator to create your policy.";
       }
-      
+
       // Get current date in a professional format
-      const formattedDate = new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      const formattedDate = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       });
-      
+
       // Create a professional header with proper spacing and formatting
-      const policyTitle = `# ${policyData?.organizationName || 'Your Organization'} Privacy Policy\n\n`;
+      const policyTitle = `# ${policyData?.organizationName || "Your Organization"} Privacy Policy\n\n`;
       const lastUpdated = `*Last Updated: ${formattedDate}*\n\n`;
-      const complianceNotice = `*This privacy policy is designed to comply with the Nigeria Data Protection Regulation (NDPR) and has been prepared by ${policyData?.organizationName || 'Your Organization'}.*\n\n`;
-      
+      const complianceNotice = `*This privacy policy is designed to comply with the Nigeria Data Protection Regulation (NDPR) and has been prepared by ${policyData?.organizationName || "Your Organization"}.*\n\n`;
+
       // Add a professional table of contents
       let tableOfContents = "## Table of Contents\n\n";
-      const includedSections = generatedPolicy.filter(section => section && section.included !== false);
-      
+      const includedSections = generatedPolicy.filter(
+        (section) => section && section.included !== false,
+      );
+
       includedSections.forEach((section, index) => {
         if (section && section.title) {
           tableOfContents += `${index + 1}. [${section.title}](#${section.id})\n`;
         }
       });
       tableOfContents += "\n";
-      
+
       // Process each section with careful error handling and enhanced formatting
       const sectionsContent = includedSections
         .map((section, sectionIndex) => {
           try {
-            if (!section || !section.template || typeof section.template !== 'string') {
-              return '';
+            if (
+              !section ||
+              !section.template ||
+              typeof section.template !== "string"
+            ) {
+              return "";
             }
-            
+
             let processed = section.template;
             const sectionVars = section.variables || [];
-            
+
             // Process all variables for this section
             if (Array.isArray(sectionVars)) {
               sectionVars.forEach((varName) => {
-                if (typeof varName !== 'string') return;
-                
-                let val: unknown = policyData?.[varName] ?? '';
-                
+                if (typeof varName !== "string") return;
+
+                let val: unknown = policyData?.[varName] ?? "";
+
                 // Format array values as professional bullet points
                 if (Array.isArray(val) && val.length > 0) {
-                  val = val.map((item, i) => `${i+1}. ${item}`).join('\n\n');
+                  val = val.map((item, i) => `${i + 1}. ${item}`).join("\n\n");
                 } else if (Array.isArray(val)) {
-                  val = 'Not specified';
+                  val = "Not specified";
                 }
-                
+
                 // Handle special formatting for dates
-                if (varName.toLowerCase().includes('date') && typeof val === 'string') {
+                if (
+                  varName.toLowerCase().includes("date") &&
+                  typeof val === "string"
+                ) {
                   try {
                     const date = new Date(val);
                     if (!isNaN(date.getTime())) {
-                      val = date.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                      val = date.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
                       });
                     }
                   } catch {
                     // Keep original value if date parsing fails
                   }
                 }
-                
+
                 try {
                   // Replace both triple and double braces for HTML/plain text
                   const valStr = String(val);
                   processed = processed
-                    .replace(new RegExp(`\\{\\{\\{${varName}\\}\\}\\}`, 'g'), valStr)
-                    .replace(new RegExp(`\\{\\{${varName}\\}\\}`, 'g'), valStr);
+                    .replace(
+                      new RegExp(`\\{\\{\\{${varName}\\}\\}\\}`, "g"),
+                      valStr,
+                    )
+                    .replace(new RegExp(`\\{\\{${varName}\\}\\}`, "g"), valStr);
                 } catch (regexError) {
-                  console.error('Error replacing variables:', regexError);
+                  console.error("Error replacing variables:", regexError);
                 }
               });
             }
-            
+
             // Process conditional blocks with enhanced error handling
             try {
               processed = processConditionalBlocks(processed, policyData || {});
             } catch (condError) {
-              console.error('Error processing conditional blocks:', condError);
+              console.error("Error processing conditional blocks:", condError);
             }
-            
+
             // Add section number for better organization
-            return `## ${sectionIndex + 1}. ${section.title || 'Untitled Section'} {#${section.id}}\n\n${processed}`;
+            return `## ${sectionIndex + 1}. ${section.title || "Untitled Section"} {#${section.id}}\n\n${processed}`;
           } catch (sectionError) {
-            console.error('Error processing section:', sectionError);
-            return '';
+            console.error("Error processing section:", sectionError);
+            return "";
           }
         })
         .filter(Boolean)
-        .join('\n\n');
-      
+        .join("\n\n");
+
       // Add a professional footer
-      const footer = `\n\n---\n\n*This privacy policy was last updated on ${formattedDate}. If you have any questions about this policy, please contact ${policyData?.dpoName || 'our Data Protection Officer'} at ${policyData?.dpoEmail || policyData?.contactEmail || 'our contact email'}.*\n\n© ${new Date().getFullYear()} ${policyData?.organizationName || 'Your Organization'}. All rights reserved.`;
-      
-      return policyTitle + lastUpdated + complianceNotice + tableOfContents + sectionsContent + footer;
+      const footer = `\n\n---\n\n*This privacy policy was last updated on ${formattedDate}. If you have any questions about this policy, please contact ${policyData?.dpoName || "our Data Protection Officer"} at ${policyData?.dpoEmail || policyData?.contactEmail || "our contact email"}.*\n\n© ${new Date().getFullYear()} ${policyData?.organizationName || "Your Organization"}. All rights reserved.`;
+
+      return (
+        policyTitle +
+        lastUpdated +
+        complianceNotice +
+        tableOfContents +
+        sectionsContent +
+        footer
+      );
     } catch (error) {
-      console.error('Error generating formatted content:', error);
-      return '# Error Generating Policy\n\nThere was an error generating your policy content. Please try again.';
+      console.error("Error generating formatted content:", error);
+      return "# Error Generating Policy\n\nThere was an error generating your policy content. Please try again.";
     }
   };
 
   // Called when PolicyGenerator emits data
   const handleGeneratePolicy = (data: Record<string, unknown>) => {
     try {
-      console.log('Policy generator data received:', data);
-      
+      console.log("Policy generator data received:", data);
+
       // Validate sections
       const sections = Array.isArray(data?.sections) ? data.sections : [];
       // Validate variables
       const variables = Array.isArray(data?.variables) ? data.variables : [];
       // Validate values
-      const values = data?.values && typeof data.values === 'object' ? data.values : {};
-      
+      const values =
+        data?.values && typeof data.values === "object" ? data.values : {};
+
       // Update state with validated data
       setGeneratedPolicy(sections);
       setPolicyVariables(variables);
       setPolicyData(values as Record<string, unknown>);
-      
+
       // Only navigate if we have valid sections
       if (sections.length > 0) {
-        setActiveTab('display');
+        setActiveTab("display");
       } else {
-        console.warn('No policy sections were generated');
+        console.warn("No policy sections were generated");
       }
     } catch (error) {
-      console.error('Error handling policy generation:', error);
+      console.error("Error handling policy generation:", error);
       // Initialize with empty arrays to prevent mapping errors
       setGeneratedPolicy([]);
       setPolicyVariables([]);
@@ -235,81 +264,82 @@ export default function PolicyDemoPage() {
 
   // Handle policy edits - we'll need to implement this differently since PolicyPreview doesn&apos;t support direct section updates
   const handlePolicyEdit = () => {
-    console.log('Policy edit requested');
+    console.log("Policy edit requested");
     // In a real implementation, you might want to switch back to the generator tab or open an edit modal
-    setActiveTab('generator');
+    setActiveTab("generator");
   };
 
   // Your NDPR template definition
   const policyTemplate: PolicyTemplate = {
-    id: 'ndpr-policy',
-    name: 'NDPR Compliant Privacy Policy',
-    description: 'A comprehensive privacy policy template compliant with NDPR',
-    organizationType: 'business',
-    version: '1.0',
+    id: "ndpr-policy",
+    name: "NDPR Compliant Privacy Policy",
+    description: "A comprehensive privacy policy template compliant with NDPR",
+    organizationType: "business",
+    version: "1.0",
     lastUpdated: Date.now(), // Using timestamp as required by the PolicyTemplate type
     variables: {
       organizationName: {
-        name: 'Organization Name',
-        description: 'The name of your organization',
+        name: "Organization Name",
+        description: "The name of your organization",
         required: true,
-        defaultValue: 'Your Company',
+        defaultValue: "Your Company",
       },
       website: {
-        name: 'Website URL',
+        name: "Website URL",
         description: "Your organization&apos;s website",
         required: true,
-        defaultValue: 'https://example.com',
+        defaultValue: "https://example.com",
       },
       contactEmail: {
-        name: 'Contact Email',
-        description: 'Email for privacy inquiries',
+        name: "Contact Email",
+        description: "Email for privacy inquiries",
         required: true,
-        defaultValue: 'privacy@example.com',
+        defaultValue: "privacy@example.com",
       },
       address: {
-        name: 'Business Address',
-        description: 'Physical address of your organization',
+        name: "Business Address",
+        description: "Physical address of your organization",
         required: true,
-        defaultValue: '123 Business Street, Lagos, Nigeria',
+        defaultValue: "123 Business Street, Lagos, Nigeria",
       },
       phone: {
-        name: 'Contact Phone',
-        description: 'Phone number for privacy inquiries',
+        name: "Contact Phone",
+        description: "Phone number for privacy inquiries",
         required: true,
-        defaultValue: '+234 123 456 7890',
+        defaultValue: "+234 123 456 7890",
       },
       dpoName: {
-        name: 'Data Protection Officer Name',
-        description: 'Name of your Data Protection Officer',
+        name: "Data Protection Officer Name",
+        description: "Name of your Data Protection Officer",
         required: true,
-        defaultValue: 'John Doe',
+        defaultValue: "John Doe",
       },
       dpoEmail: {
-        name: 'DPO Email',
-        description: 'Email of your Data Protection Officer',
+        name: "DPO Email",
+        description: "Email of your Data Protection Officer",
         required: true,
-        defaultValue: 'dpo@example.com',
+        defaultValue: "dpo@example.com",
       },
       industry: {
-        name: 'Industry',
+        name: "Industry",
         description: "Your organization&apos;s industry or sector",
         required: true,
-        defaultValue: 'Technology',
+        defaultValue: "Technology",
       },
       effectiveDate: {
-        name: 'Effective Date',
-        description: 'When this privacy policy becomes effective',
+        name: "Effective Date",
+        description: "When this privacy policy becomes effective",
         required: true,
         defaultValue: new Date().toLocaleDateString(),
       },
     },
     sections: [
       {
-        id: 'introduction',
-        title: 'Introduction',
+        id: "introduction",
+        title: "Introduction",
         required: true,
-        description: 'Introduce your organization and the purpose of the policy',
+        description:
+          "Introduce your organization and the purpose of the policy",
         template: `## Introduction
 
 {{organizationName}} ("we", "us", or "our") is committed to protecting your personal data and respecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you interact with our services, website, and applications.
@@ -337,21 +367,21 @@ We have appointed a Data Protection Officer ("DPO") who is responsible for overs
 This Privacy Policy is effective as of {{effectiveDate}} and will remain in effect except with respect to any changes in its provisions in the future, which will be in effect immediately after being posted on this page.`,
         included: true,
         variables: [
-          'organizationName',
-          'organizationType',
-          'address',
-          'contactEmail',
-          'phone',
-          'dpoName',
-          'dpoEmail',
-          'effectiveDate',
+          "organizationName",
+          "organizationType",
+          "address",
+          "contactEmail",
+          "phone",
+          "dpoName",
+          "dpoEmail",
+          "effectiveDate",
         ],
       },
       {
-        id: 'definitions',
-        title: 'Definitions',
+        id: "definitions",
+        title: "Definitions",
         required: true,
-        description: 'Define key terms used throughout the policy',
+        description: "Define key terms used throughout the policy",
         template: `## Key Definitions
 
 To help you understand this Privacy Policy, here are definitions of key terms used throughout:
@@ -376,13 +406,14 @@ To help you understand this Privacy Policy, here are definitions of key terms us
 
 - **Special Categories of Personal Data**: Personal Data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, data concerning health, or data concerning a natural person's sex life or sexual orientation.`,
         included: true,
-        variables: ['organizationName'],
+        variables: ["organizationName"],
       },
       {
-        id: 'dataCollection',
-        title: 'Data Collection',
+        id: "dataCollection",
+        title: "Data Collection",
         required: true,
-        description: 'Explain what personal data you collect and how you collect it',
+        description:
+          "Explain what personal data you collect and how you collect it",
         template: `## Personal Data We Collect
 
 ### Categories of Personal Data We Collect
@@ -426,19 +457,19 @@ Our services are not intended for children under the age of 13, and we do not kn
 {{/if}}`,
         included: true,
         variables: [
-          'collectsPersonalData',
-          'dataTypes',
-          'website',
-          'usesCookies',
-          'cookieTypes',
-          'collectsChildrenData',
+          "collectsPersonalData",
+          "dataTypes",
+          "website",
+          "usesCookies",
+          "cookieTypes",
+          "collectsChildrenData",
         ],
       },
       {
-        id: 'dataUse',
-        title: 'Use of Personal Data',
+        id: "dataUse",
+        title: "Use of Personal Data",
         required: true,
-        description: 'Explain how you use the personal data you collect',
+        description: "Explain how you use the personal data you collect",
         template: `## How We Use Your Personal Data
 
 ### Purposes for Processing Your Personal Data
@@ -471,13 +502,13 @@ We will only use your personal data for the purposes for which we collected it, 
 
 Please note that we may process your personal data without your knowledge or consent, in compliance with the above rules, where this is required or permitted by law.`,
         included: true,
-        variables: ['collectsPersonalData', 'dataPurposes'],
+        variables: ["collectsPersonalData", "dataPurposes"],
       },
       {
-        id: 'legalBasis',
-        title: 'Legal Basis for Processing',
+        id: "legalBasis",
+        title: "Legal Basis for Processing",
         required: true,
-        description: 'Explain the legal basis for processing personal data',
+        description: "Explain the legal basis for processing personal data",
         template: `## Legal Basis for Processing Personal Data
 
 Under the Nigeria Data Protection Regulation (NDPR), we must have a valid legal basis for processing your personal data. We rely on the following legal bases for processing your personal data:
@@ -511,13 +542,13 @@ For special categories of personal data (such as data revealing racial or ethnic
 - For reasons of substantial public interest, on the basis of Nigerian law
 - For preventive or occupational medicine, medical diagnosis, or the provision of health or social care`,
         included: true,
-        variables: ['legalBases'],
+        variables: ["legalBases"],
       },
       {
-        id: 'dataSharing',
-        title: 'Data Sharing',
+        id: "dataSharing",
+        title: "Data Sharing",
         required: true,
-        description: 'Explain how you share personal data with third parties',
+        description: "Explain how you share personal data with third parties",
         template: `## Data Sharing
 
 ### Third-Party Disclosures
@@ -546,13 +577,17 @@ We may transfer your personal data to countries outside Nigeria. When we do, we 
 Please contact us if you want further information on the specific mechanism used by us when transferring your personal data out of Nigeria.
 {{/if}}`,
         included: true,
-        variables: ['collectsPersonalData', 'dataRecipients', 'transfersDataInternationally'],
+        variables: [
+          "collectsPersonalData",
+          "dataRecipients",
+          "transfersDataInternationally",
+        ],
       },
       {
-        id: 'dataRetention',
-        title: 'Data Retention',
+        id: "dataRetention",
+        title: "Data Retention",
         required: true,
-        description: 'Explain how long you retain personal data',
+        description: "Explain how long you retain personal data",
         template: `## Data Retention 
 ### How Long We Keep Your Personal Data
 
@@ -574,7 +609,7 @@ When your personal data is no longer required for the purposes for which it was 
 
 We practice data minimization, which means we only collect and process the personal data that is necessary for the purposes for which it is collected. We regularly review our data collection practices to ensure we are not collecting more data than necessary.`,
         included: true,
-        variables: ['collectsPersonalData', 'dataRetentionPeriod'],
+        variables: ["collectsPersonalData", "dataRetentionPeriod"],
       },
     ],
   };
@@ -594,21 +629,24 @@ We practice data minimization, which means we only collect and process the perso
             <CardHeader>
               <CardTitle>Privacy Policy Generator</CardTitle>
               <CardDescription>
-                Configure your organization and generate an NDPR‐compliant policy.
+                Configure your organization and generate an NDPR‐compliant
+                policy.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <PolicyGenerator 
+              <PolicyGenerator
                 sections={policyTemplate.sections}
-                variables={Object.entries(policyTemplate.variables).map(([key, value]) => ({
-                  id: key,
-                  name: value.name,
-                  description: value.description,
-                  required: value.required,
-                  defaultValue: value.defaultValue,
-                  value: value.defaultValue || '',
-                  inputType: 'text' // Default to text input type
-                }))}
+                variables={Object.entries(policyTemplate.variables).map(
+                  ([key, value]) => ({
+                    id: key,
+                    name: value.name,
+                    description: value.description,
+                    required: value.required,
+                    defaultValue: value.defaultValue,
+                    value: value.defaultValue || "",
+                    inputType: "text", // Default to text input type
+                  }),
+                )}
                 onGenerate={handleGeneratePolicy}
                 title="NDPR Privacy Policy Generator"
                 description="Generate an NDPR-compliant privacy policy for your organization."
@@ -634,7 +672,9 @@ We practice data minimization, which means we only collect and process the perso
                   sections={generatedPolicy}
                   variables={policyVariables || []}
                   onEdit={handlePolicyEdit}
-                  organizationName={String(policyData?.organizationName || 'Your Organization')}
+                  organizationName={String(
+                    policyData?.organizationName || "Your Organization",
+                  )}
                   lastUpdated={new Date()}
                   showTableOfContents={true}
                   showMetadata={true}
@@ -644,19 +684,22 @@ We practice data minimization, which means we only collect and process the perso
                 />
               ) : (
                 <div className="p-8 text-center">
-                  <p className="text-gray-500">No policy has been generated yet. Please use the Generator tab first.</p>
+                  <p className="text-gray-500">
+                    No policy has been generated yet. Please use the Generator
+                    tab first.
+                  </p>
                 </div>
               )}
             </CardContent>
           </Card>
-          {policyData && (policyData as Record<string, any>).contactEmail && (
+          {policyData && policyData.contactEmail ? (
             <div className="mt-6 text-sm text-gray-500">
-              Questions? Contact{' '}
-              <a href={`mailto:${String((policyData as Record<string, any>).contactEmail)}`}>
-                {String((policyData as Record<string, any>).contactEmail)}
+              Questions? Contact{" "}
+              <a href={`mailto:${String(policyData.contactEmail)}`}>
+                {String(policyData.contactEmail)}
               </a>
             </div>
-          )}
+          ) : null}
         </TabsContent>
 
         {/* Audit & Export */}
@@ -672,8 +715,10 @@ We practice data minimization, which means we only collect and process the perso
               {generatedPolicy && generatedPolicy.length > 0 ? (
                 <PolicyExporter
                   content={generateFormattedContent()}
-                  title={`${String(policyData?.organizationName || 'Your Org')} Privacy Policy`}
-                  organizationName={String(policyData?.organizationName || 'Your Org')}
+                  title={`${String(policyData?.organizationName || "Your Org")} Privacy Policy`}
+                  organizationName={String(
+                    policyData?.organizationName || "Your Org",
+                  )}
                   lastUpdated={new Date()}
                   componentTitle="Export Privacy Policy"
                   description="Download in PDF, HTML, or Markdown."
@@ -683,7 +728,10 @@ We practice data minimization, which means we only collect and process the perso
                 />
               ) : (
                 <div className="p-8 text-center">
-                  <p className="text-gray-500">No policy has been generated yet. Please use the Generator tab first.</p>
+                  <p className="text-gray-500">
+                    No policy has been generated yet. Please use the Generator
+                    tab first.
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -696,17 +744,19 @@ We practice data minimization, which means we only collect and process the perso
         <h2 className="text-xl font-semibold mb-2">Implementation Notes</h2>
         <ul className="list-disc pl-5 space-y-1">
           <li>
-            <code>PolicyGenerator</code>: Build your policy based on the template.
+            <code>PolicyGenerator</code>: Build your policy based on the
+            template.
           </li>
           <li>
             <code>PolicyPreview</code>: Live‐edit the generated sections.
           </li>
           <li>
-            <code>PolicyExporter</code>: Audit compliance and export final documents.
+            <code>PolicyExporter</code>: Audit compliance and export final
+            documents.
           </li>
         </ul>
         <p className="mt-4">
-          For full docs, visit{' '}
+          For full docs, visit{" "}
           <Link
             href="/docs/components/privacy-policy-generator"
             className="text-blue-600 hover:underline"

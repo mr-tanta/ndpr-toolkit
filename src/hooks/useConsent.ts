@@ -1,11 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { ConsentType, ConsentRecord } from '@/types';
-import consentService from '@/lib/consentService';
+import { useState, useEffect } from "react";
+import { ConsentRecord } from "@/types";
+import consentService from "@/lib/consentService";
 
 export function useConsent() {
-  const [consentRecord, setConsentRecord] = useState<ConsentRecord | null>(null);
+  const [consentRecord, setConsentRecord] = useState<ConsentRecord | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [showBanner, setShowBanner] = useState(false);
 
@@ -14,14 +16,14 @@ export function useConsent() {
     const storedConsent = consentService.getCurrentConsent();
     setConsentRecord(storedConsent);
     setIsLoading(false);
-    
+
     // If no consent is stored, show the banner
     if (!storedConsent) {
       setShowBanner(true);
     }
   }, []);
 
-  const saveConsent = (consents: Record<ConsentType, boolean>, userId?: string) => {
+  const saveConsent = (consents: Record<string, boolean>, userId?: string) => {
     const newRecord = consentService.saveConsent(consents, userId);
     setConsentRecord(newRecord);
     setShowBanner(false);
@@ -29,16 +31,20 @@ export function useConsent() {
   };
 
   const updateConsent = (
-    consents: Record<ConsentType, boolean>, 
+    consents: Record<string, boolean>,
     changeReason?: string,
-    userId?: string
+    userId?: string,
   ) => {
-    const updatedRecord = consentService.updateConsent(consents, changeReason, userId);
+    const updatedRecord = consentService.updateConsent(
+      consents,
+      changeReason,
+      userId,
+    );
     setConsentRecord(updatedRecord);
     return updatedRecord;
   };
 
-  const hasConsent = (type: ConsentType): boolean => {
+  const hasConsent = (type: string): boolean => {
     if (!consentRecord) return false;
     return consentRecord.consents[type] === true;
   };
@@ -59,6 +65,6 @@ export function useConsent() {
     updateConsent,
     hasConsent,
     openPreferences,
-    closePreferences
+    closePreferences,
   };
 }

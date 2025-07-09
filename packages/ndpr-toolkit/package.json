@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "A comprehensive toolkit for implementing NDPR-compliant features in web applications",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
