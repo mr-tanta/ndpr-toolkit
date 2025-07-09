@@ -1,7 +1,7 @@
 {
-  "name": "@tantainnovative/ndpr-toolkit",
-  "version": "1.0.4",
-  "private": false,
+  "name": "ndpr-toolkit-demo",
+  "version": "1.0.5",
+  "private": true,
   "description": "Nigerian Data Protection Compliance Toolkit for implementing NDPR and DPA compliant features",
   "scripts": {
     "dev": "next dev --turbopack",
