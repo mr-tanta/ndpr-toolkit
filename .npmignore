@@ -1,0 +1,52 @@
+# Source files
+src/app/
+src/pages/
+app/
+pages/
+public/
+
+# Development files
+.next/
+.git/
+.github/
+.vscode/
+.idea/
+*.log
+*.lock
+.DS_Store
+
+# Config files
+.eslintrc*
+.prettierrc*
+.commitlintrc*
+.husky/
+jest.config.*
+next.config.*
+tailwind.config.*
+postcss.config.*
+tsconfig.json
+tsup.config.ts
+
+# Documentation source
+docs/
+examples/
+*.md
+!README.md
+!LICENSE
+
+# Test files
+__tests__/
+*.test.*
+*.spec.*
+coverage/
+
+# Build files
+out/
+.turbo/
+node_modules/
+
+# Other
+.env*
+.gitignore
+.npmrc
+UPGRADE_SUMMARY.md

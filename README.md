@@ -1,6 +1,19 @@
 # Nigerian Data Protection Compliance Toolkit (NDPR-Toolkit)
 
+[![npm version](https://img.shields.io/npm/v/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 An open-source toolkit that helps Nigerian developers implement Nigeria Data Protection Regulation (NDPR) and Data Protection Act (DPA) compliant features in their web applications.
+
+## Installation
+
+```bash
+npm install @tantainnovative/ndpr-toolkit
+# or
+yarn add @tantainnovative/ndpr-toolkit
+# or
+pnpm add @tantainnovative/ndpr-toolkit
+```
 
 ## Project Vision
 
@@ -9,11 +22,43 @@ This toolkit simplifies regulatory compliance for startups and businesses operat
 ## Key Components
 
 ### 1. Consent Management System
-- User-friendly consent banners and modals with customizable styling
-- Granular consent options (necessary, functional, analytics, marketing)
-- Consent storage and retrieval mechanisms
-- Consent change history tracking
-- Time-stamped audit trails
+
+**New in v1.0.7:** Complete flexibility with headless mode, custom UI support, and event-driven architecture.
+
+#### Features:
+- **Flexible Implementation**: Use pre-built UI, headless mode, or hybrid approach
+- **Full Customization**: Override any component or behavior
+- **Event-Driven**: Subscribe to consent changes with event listeners
+- **TypeScript Support**: Fully typed with generic support for custom categories
+- **Granular Consent**: Analytics, marketing, functional, and custom categories
+- **Audit Trail**: Time-stamped consent history tracking
+
+#### Quick Start:
+
+```tsx
+import { ConsentManager } from '@tantainnovative/ndpr-toolkit';
+
+// Basic usage with pre-built UI
+function App() {
+  return (
+    <ConsentManager>
+      {/* Your app content */}
+    </ConsentManager>
+  );
+}
+
+// Headless mode with custom UI
+function HeadlessApp() {
+  return (
+    <ConsentManager headless>
+      <YourCustomBanner />
+      <YourCustomSettings />
+    </ConsentManager>
+  );
+}
+```
+
+[See full consent management documentation](./docs/CONSENT_MANAGEMENT.md)
 
 ### 2. Data Subject Rights Portal
 - Pre-built UI components for handling:
@@ -46,21 +91,50 @@ This toolkit simplifies regulatory compliance for startups and businesses operat
 - Lightweight requestService storing requests in browser localStorage for demos
 - Helper methods to update request status and retrieve history
 
-## Getting Started
+## Quick Start
 
-First, run the development server:
+### Using the Toolkit in Your Project
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```tsx
+import { ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit';
+
+function App() {
+  return (
+    <ConsentManager onConsentChange={(consent) => console.log('Consent updated:', consent)}>
+      <YourApp />
+    </ConsentManager>
+  );
+}
+
+function YourApp() {
+  const { consentState, openSettings } = useConsent();
+  
+  return (
+    <div>
+      {consentState.analytics && <AnalyticsScript />}
+      <button onClick={openSettings}>Manage Cookies</button>
+    </div>
+  );
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development
+
+To contribute or run the demo locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/tantainnovative/ndpr-toolkit.git
+cd ndpr-toolkit
+
+# Install dependencies
+pnpm install
+
+# Run development server
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the demo.
 
 ## Deployment
 
