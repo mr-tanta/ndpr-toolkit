@@ -11,7 +11,6 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --passWithNoTests",
-    "prepare": "husky install",
     "export": "next export",
     "build:static": "next build",
     "deploy": "next build && touch out/.nojekyll && gh-pages -d out",
