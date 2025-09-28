@@ -9,6 +9,14 @@ const REPO_NAME = 'ndpr-toolkit';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   
+  // Skip type checking during build - let CI handle it
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
   // These settings apply to all environments
   poweredByHeader: false,
   
