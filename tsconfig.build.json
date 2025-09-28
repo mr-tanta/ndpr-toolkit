@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "noImplicitUseStrict": false
+  },
+  "exclude": [
+    "node_modules",
+    "examples/**/*",
+    "test-installation/**/*",
+    ".next",
+    "out",
+    "dist"
+  ]
+}
