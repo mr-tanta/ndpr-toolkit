@@ -35,7 +35,8 @@ export function createConsentContext<
       if (categories) {
         categories.forEach((cat) => {
           if (cat.id !== "necessary") {
-            defaultConsent[cat.id] = false;
+            const key = cat.id as keyof T;
+            (defaultConsent as Record<string, boolean>)[key] = false;
           }
         });
       } else {

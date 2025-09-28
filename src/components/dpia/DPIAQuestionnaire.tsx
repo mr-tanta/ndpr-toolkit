@@ -89,79 +89,91 @@ export default function DPIAQuestionnaire({
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="">Select an option</option>
-            {question.options?.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
+            {question.options?.map(
+              (option: { value: string; label: string }) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ),
+            )}
           </select>
         );
 
       case "radio":
-        return question.options?.map((option) => (
-          <div
-            key={option.value}
-            className={`p-3 border rounded-md cursor-pointer transition-colors ${
-              answers[question.id] === parseInt(option.value)
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-400"
-                : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
-            }`}
-            onClick={() => handleAnswerChange(question.id, option.value)}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id={`${question.id}-${option.value}`}
-                  name={question.id}
-                  type="radio"
-                  value={option.value}
-                  checked={answers[question.id] === parseInt(option.value)}
-                  onChange={() => handleAnswerChange(question.id, option.value)}
-                  className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <label
-                  htmlFor={`${question.id}-${option.value}`}
-                  className="ml-3 block text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
-                >
-                  {option.label}
-                </label>
+        return question.options?.map(
+          (option: { value: string; label: string; riskLevel?: unknown }) => (
+            <div
+              key={option.value}
+              className={`p-3 border rounded-md cursor-pointer transition-colors ${
+                answers[question.id] === parseInt(option.value)
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-400"
+                  : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+              }`}
+              onClick={() => handleAnswerChange(question.id, option.value)}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id={`${question.id}-${option.value}`}
+                    name={question.id}
+                    type="radio"
+                    value={option.value}
+                    checked={answers[question.id] === parseInt(option.value)}
+                    onChange={() =>
+                      handleAnswerChange(question.id, option.value)
+                    }
+                    className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor={`${question.id}-${option.value}`}
+                    className="ml-3 block text-sm text-gray-700 dark:text-gray-300 cursor-pointer"
+                  >
+                    {option.label}
+                  </label>
+                </div>
+                {option.riskLevel &&
+                  getRiskLevelIndicator(parseInt(option.value))}
               </div>
-              {option.riskLevel &&
-                getRiskLevelIndicator(parseInt(option.value))}
             </div>
-          </div>
-        ));
+          ),
+        );
 
       case "checkbox":
-        return question.options?.map((option) => (
-          <div key={option.value} className="flex items-center">
-            <input
-              id={`${question.id}-${option.value}`}
-              type="checkbox"
-              value={option.value}
-              checked={answers[question.id]?.toString().includes(option.value)}
-              onChange={(e) => {
-                const currentValues =
-                  answers[question.id]?.toString().split(",").filter(Boolean) ||
-                  [];
-                if (e.target.checked) {
-                  currentValues.push(option.value);
-                } else {
-                  const index = currentValues.indexOf(option.value);
-                  if (index > -1) currentValues.splice(index, 1);
-                }
-                handleAnswerChange(question.id, currentValues.join(","));
-              }}
-              className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500 rounded"
-            />
-            <label
-              htmlFor={`${question.id}-${option.value}`}
-              className="ml-3 block text-sm text-gray-700 dark:text-gray-300"
-            >
-              {option.label}
-            </label>
-          </div>
-        ));
+        return question.options?.map(
+          (option: { value: string; label: string }) => (
+            <div key={option.value} className="flex items-center">
+              <input
+                id={`${question.id}-${option.value}`}
+                type="checkbox"
+                value={option.value}
+                checked={answers[question.id]
+                  ?.toString()
+                  .includes(option.value)}
+                onChange={(e) => {
+                  const currentValues =
+                    answers[question.id]
+                      ?.toString()
+                      .split(",")
+                      .filter(Boolean) || [];
+                  if (e.target.checked) {
+                    currentValues.push(option.value);
+                  } else {
+                    const index = currentValues.indexOf(option.value);
+                    if (index > -1) currentValues.splice(index, 1);
+                  }
+                  handleAnswerChange(question.id, currentValues.join(","));
+                }}
+                className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500 rounded"
+              />
+              <label
+                htmlFor={`${question.id}-${option.value}`}
+                className="ml-3 block text-sm text-gray-700 dark:text-gray-300"
+              >
+                {option.label}
+              </label>
+            </div>
+          ),
+        );
 
       case "scale":
         return (
@@ -178,7 +190,7 @@ export default function DPIAQuestionnaire({
             <div className="flex justify-between text-sm text-gray-600">
               {question.scaleLabels ? (
                 Object.entries(question.scaleLabels).map(([value, label]) => (
-                  <span key={value}>{label}</span>
+                  <span key={value}>{String(label)}</span>
                 ))
               ) : (
                 <>

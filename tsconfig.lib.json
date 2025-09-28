@@ -17,14 +17,12 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "incremental": false,
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": [
     "src/**/*.test.ts",
     "src/**/*.test.tsx",

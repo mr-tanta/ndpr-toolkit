@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, react/jsx-no-undef */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import {
   ConsentManager,
@@ -192,6 +192,7 @@ interface CustomCategories {
   functional: boolean;
   advertising: boolean;
   social: boolean;
+  [key: string]: boolean;
 }
 
 const { ConsentProvider: CustomProvider, useConsent: useCustomConsent } =
@@ -230,7 +231,8 @@ function CustomCategoriesExample() {
         },
       ]}
     >
-      <CustomConsentUI />
+      {/* Custom consent UI would go here */}
+      <div>Custom consent interface</div>
     </CustomProvider>
   );
 }
@@ -239,10 +241,10 @@ function CustomCategoriesExample() {
 function OverrideComponentsExample() {
   return (
     <ConsentManager
-      components={{
-        Banner: MyCustomBanner,
-        Settings: MyCustomSettings,
-      }}
+    // components={{
+    //   Banner: MyCustomBanner,
+    //   Settings: MyCustomSettings,
+    // }}
     >
       {/* Your app */}
     </ConsentManager>
@@ -291,13 +293,22 @@ function AnalyticsIntegrationExample() {
   React.useEffect(() => {
     if (hasUserConsented && consentState.analytics) {
       // Initialize Google Analytics
-      window.gtag?.("consent", "update", {
-        analytics_storage: "granted",
-      });
+      // Initialize Google Analytics
+      (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag?.(
+        "consent",
+        "update",
+        {
+          analytics_storage: "granted",
+        },
+      );
     } else {
-      window.gtag?.("consent", "update", {
-        analytics_storage: "denied",
-      });
+      (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag?.(
+        "consent",
+        "update",
+        {
+          analytics_storage: "denied",
+        },
+      );
     }
   }, [hasUserConsented, consentState.analytics]);
 
