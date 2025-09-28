@@ -1,16 +1,37 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file.
 
-## 1.0.0 (2025-05-02)
+## [1.0.7] - 2025-01-10
 
+### Added
+- **Headless Mode**: Complete separation of state management from UI components
+- **Enhanced useConsent Hook**: Added all requested methods (hasUserConsented, showBanner, showSettings, etc.)
+- **Unstyled Components**: New unstyled component variants for complete design freedom
+- **Render Props Pattern**: Support for maximum flexibility in custom implementations
+- **Component Composition**: Mix and match components as needed
+- **Event System**: Comprehensive event-driven consent management with `useConsentManager`
+- **Position & Animation Controls**: Full control over banner positioning and animations
+- **TypeScript Generics**: Support for custom consent categories with full type safety
+- **Exported Utilities**: All core utilities and contexts are now accessible
+- **Cookie Utils**: Helper functions for cookie management
+- **Consent Storage**: Utilities for persisting consent data
 
-### Features
+### Changed
+- Moved React and React DOM to peerDependencies for better compatibility
+- Improved package structure with proper exports for different module systems
+- Enhanced documentation with comprehensive examples
 
-* initial implementation of NDPR-Toolkit with all key components ([b41aeef](https://github.com/tantainnovative/ndpr-toolkit/commit/b41aeefe3184ce69ed09f3d8c0fdacb860a98427))
+### Fixed
+- Removed circular dependency (package depending on itself)
+- Fixed TypeScript declarations generation
+- Improved build configuration for library mode
 
+## [1.0.6] - Previous Releases
 
-### Bug Fixes
-
-* resolve ESLint errors for successful build ([3f78939](https://github.com/tantainnovative/ndpr-toolkit/commit/3f7893902cc7ec67913a7e19f6a804d01e69896e))
-* resolve type errors for successful build ([b827186](https://github.com/tantainnovative/ndpr-toolkit/commit/b8271865a77b097f0ce839ad13555b4bfe12fe2e))
+- Initial public release with core NDPR compliance features
+- Consent management system
+- Data subject rights portal
+- Privacy policy generator
+- DPIA assessment tool
+- Breach notification module
