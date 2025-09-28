@@ -1,0 +1,29 @@
+{
+  "extends": "./tsconfig.lib.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/components/consent/**/*",
+    "src/components/dsr/**/*",
+    "src/components/dpia/**/*",
+    "src/components/privacy-policy/**/*",
+    "src/components/breach/**/*",
+    "src/components/ui/**/*",
+    "src/hooks/**/*", 
+    "src/lib/**/*",
+    "src/types/**/*",
+    "src/contexts/**/*",
+    "src/index.ts",
+    "src/unstyled.ts"
+  ],
+  "exclude": [
+    "src/app/**/*",
+    "src/components/docs/**/*",
+    "examples/**/*",
+    "test-installation/**/*",
+    "node_modules",
+    "dist"
+  ]
+}

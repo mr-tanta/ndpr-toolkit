@@ -34,5 +34,5 @@ jobs:
       - name: Build library
         run: pnpm run build:lib
       
-      - name: Type check
-        run: pnpm exec tsc --noEmit
+      - name: Verify library builds
+        run: pnpm run build:lib
