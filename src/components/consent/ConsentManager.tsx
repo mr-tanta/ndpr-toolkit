@@ -1,7 +1,13 @@
-import React, { ReactNode } from 'react';
-import { ConsentProvider, ConsentProviderProps, ConsentCategories, ConsentActions, useConsent } from '@/contexts/ConsentContext';
-import { ConsentBanner } from './ConsentBanner';
-import { ConsentSettings } from './ConsentSettings';
+import React, { ReactNode } from "react";
+import {
+  ConsentProvider,
+  ConsentProviderProps,
+  ConsentCategories,
+  ConsentActions,
+  useConsent,
+} from "@/contexts/ConsentContext";
+import { ConsentBanner } from "./ConsentBanner";
+import { ConsentSettings } from "./ConsentSettings";
 
 export interface BannerProps {
   onAcceptAll: () => void;
@@ -27,22 +33,23 @@ export interface RenderProps {
   };
 }
 
-export interface ConsentManagerProps extends Omit<ConsentProviderProps, 'children'> {
+export interface ConsentManagerProps
+  extends Omit<ConsentProviderProps, "children"> {
   children?: ReactNode | ((props: RenderProps) => ReactNode);
   headless?: boolean;
   renderBanner?: (props: BannerProps) => ReactNode;
   renderSettings?: (props: SettingsProps) => ReactNode;
   components?: {
-    Banner?: React.ComponentType<any>;
-    Settings?: React.ComponentType<any>;
+    Banner?: React.ComponentType<unknown>;
+    Settings?: React.ComponentType<unknown>;
   };
   theme?: {
     primaryColor?: string;
     textColor?: string;
     backgroundColor?: string;
   };
-  position?: 'top' | 'bottom' | 'center';
-  animation?: 'slide' | 'fade' | 'none';
+  position?: "top" | "bottom" | "center";
+  animation?: "slide" | "fade" | "none";
   fullWidth?: boolean;
   maxWidth?: string;
 }
@@ -53,22 +60,24 @@ interface ConsentManagerComponent extends React.FC<ConsentManagerProps> {
 }
 
 // Internal component that has access to consent context
-const ConsentManagerInner: React.FC<Omit<ConsentManagerProps, keyof Omit<ConsentProviderProps, 'children'>>> = ({
+const ConsentManagerInner: React.FC<
+  Omit<ConsentManagerProps, keyof Omit<ConsentProviderProps, "children">>
+> = ({
   children,
   headless = false,
   renderBanner,
   renderSettings,
   components,
   theme,
-  position = 'bottom',
-  animation = 'slide',
+  position = "bottom",
+  animation = "slide",
   fullWidth = true,
-  maxWidth = '1200px',
+  maxWidth = "1200px",
 }) => {
   const consent = useConsent();
 
   // If using render props pattern
-  if (typeof children === 'function') {
+  if (typeof children === "function") {
     const renderProps: RenderProps = {
       consents: consent.consentState,
       actions: {
@@ -109,10 +118,7 @@ const ConsentManagerInner: React.FC<Omit<ConsentManagerProps, keyof Omit<Consent
           {components?.Settings ? (
             <components.Settings />
           ) : (
-            <ConsentSettings
-              renderSettings={renderSettings}
-              theme={theme}
-            />
+            <ConsentSettings renderSettings={renderSettings} theme={theme} />
           )}
         </>
       )}
@@ -133,9 +139,7 @@ const ConsentManager: ConsentManagerComponent = ({
       onConsentChange={onConsentChange}
       storageKey={storageKey}
     >
-      <ConsentManagerInner {...innerProps}>
-        {children}
-      </ConsentManagerInner>
+      <ConsentManagerInner {...innerProps}>{children}</ConsentManagerInner>
     </ConsentProvider>
   );
 };

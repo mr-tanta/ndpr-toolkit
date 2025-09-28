@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars, react/jsx-no-undef */
+import React from "react";
 import {
   ConsentManager,
   ConsentProvider,
@@ -8,7 +9,7 @@ import {
   ConsentSettings as UnstyledSettings,
   cookieUtils,
   createConsentContext,
-} from '@tantainnovative/ndpr-toolkit';
+} from "@tantainnovative/ndpr-toolkit";
 
 // Example 1: Headless mode with custom UI
 function HeadlessExample() {
@@ -23,14 +24,17 @@ function HeadlessExample() {
 
 function CustomCookieBanner() {
   const { hasUserConsented, acceptAll, rejectAll, openSettings } = useConsent();
-  
+
   if (hasUserConsented) return null;
-  
+
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg">
       <p>We use cookies to improve your experience.</p>
       <div className="mt-4 space-x-2">
-        <button onClick={acceptAll} className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button
+          onClick={acceptAll}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
           Accept All
         </button>
         <button onClick={rejectAll} className="border px-4 py-2 rounded">
@@ -45,37 +49,46 @@ function CustomCookieBanner() {
 }
 
 function CustomSettingsModal() {
-  const { showSettings, consentState, updateConsent, savePreferences, closeSettings } = useConsent();
-  
+  const {
+    showSettings,
+    consentState,
+    updateConsent,
+    savePreferences,
+    closeSettings,
+  } = useConsent();
+
   if (!showSettings) return null;
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg max-w-md">
         <h2 className="text-xl font-bold mb-4">Cookie Settings</h2>
-        
+
         <div className="space-y-3">
           <label className="flex items-center justify-between">
             <span>Analytics</span>
             <input
               type="checkbox"
               checked={consentState.analytics}
-              onChange={(e) => updateConsent('analytics', e.target.checked)}
+              onChange={(e) => updateConsent("analytics", e.target.checked)}
             />
           </label>
-          
+
           <label className="flex items-center justify-between">
             <span>Marketing</span>
             <input
               type="checkbox"
               checked={consentState.marketing}
-              onChange={(e) => updateConsent('marketing', e.target.checked)}
+              onChange={(e) => updateConsent("marketing", e.target.checked)}
             />
           </label>
         </div>
-        
+
         <div className="mt-6 space-x-2">
-          <button onClick={() => savePreferences(consentState)} className="bg-blue-500 text-white px-4 py-2 rounded">
+          <button
+            onClick={() => savePreferences(consentState)}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
             Save
           </button>
           <button onClick={closeSettings} className="border px-4 py-2 rounded">
@@ -101,11 +114,9 @@ function RenderPropsExample() {
               <button onClick={ui.openSettings}>Settings</button>
             </div>
           )}
-          
+
           {ui.showSettings && (
-            <div className="settings-modal">
-              {/* Custom settings UI */}
-            </div>
+            <div className="settings-modal">{/* Custom settings UI */}</div>
           )}
         </>
       )}
@@ -127,7 +138,7 @@ function UnstyledExample() {
           <button className="settings-btn">Manage</button>
         </UnstyledBanner.Actions>
       </UnstyledBanner>
-      
+
       <UnstyledSettings className="my-custom-settings">
         {/* Custom settings content */}
       </UnstyledSettings>
@@ -142,11 +153,11 @@ function CompositionExample() {
       <ConsentManager.Banner position="top" animation="fade">
         {/* Default banner with custom position */}
       </ConsentManager.Banner>
-      
+
       <ConsentManager.Settings>
         {/* Default settings */}
       </ConsentManager.Settings>
-      
+
       {/* Your app */}
     </ConsentManager>
   );
@@ -155,21 +166,21 @@ function CompositionExample() {
 // Example 5: Event-driven approach
 function EventDrivenExample() {
   const manager = useConsentManager();
-  
+
   React.useEffect(() => {
-    const unsubscribe = manager.on('consent:accepted', (consents) => {
-      console.log('User accepted cookies:', consents);
+    const unsubscribe = manager.on("consent:accepted", (consents) => {
+      console.log("User accepted cookies:", consents);
       // Initialize analytics, marketing tools, etc.
     });
-    
-    manager.on('consent:updated', (consents) => {
-      console.log('Consent updated:', consents);
+
+    manager.on("consent:updated", (consents) => {
+      console.log("Consent updated:", consents);
       // Update services based on new preferences
     });
-    
+
     return unsubscribe;
   }, [manager]);
-  
+
   return <div>Your app content</div>;
 }
 
@@ -183,19 +194,40 @@ interface CustomCategories {
   social: boolean;
 }
 
-const { ConsentProvider: CustomProvider, useConsent: useCustomConsent } = 
+const { ConsentProvider: CustomProvider, useConsent: useCustomConsent } =
   createConsentContext<CustomCategories>();
 
 function CustomCategoriesExample() {
   return (
     <CustomProvider
       categories={[
-        { id: 'necessary', name: 'Essential', description: 'Required for site operation', required: true },
-        { id: 'analytics', name: 'Analytics', description: 'Help us understand usage' },
-        { id: 'marketing', name: 'Marketing', description: 'Personalized ads' },
-        { id: 'functional', name: 'Functional', description: 'Enhanced features' },
-        { id: 'advertising', name: 'Advertising', description: 'Third-party ads' },
-        { id: 'social', name: 'Social Media', description: 'Social media integration' },
+        {
+          id: "necessary",
+          name: "Essential",
+          description: "Required for site operation",
+          required: true,
+        },
+        {
+          id: "analytics",
+          name: "Analytics",
+          description: "Help us understand usage",
+        },
+        { id: "marketing", name: "Marketing", description: "Personalized ads" },
+        {
+          id: "functional",
+          name: "Functional",
+          description: "Enhanced features",
+        },
+        {
+          id: "advertising",
+          name: "Advertising",
+          description: "Third-party ads",
+        },
+        {
+          id: "social",
+          name: "Social Media",
+          description: "Social media integration",
+        },
       ]}
     >
       <CustomConsentUI />
@@ -229,9 +261,7 @@ function CustomRenderExample() {
         </div>
       )}
       renderSettings={({ consentState, onUpdateConsent, onSave }) => (
-        <div className="my-settings">
-          {/* Custom settings UI */}
-        </div>
+        <div className="my-settings">{/* Custom settings UI */}</div>
       )}
     >
       {/* Your app */}
@@ -242,17 +272,13 @@ function CustomRenderExample() {
 // Example 9: Programmatic control
 function ProgrammaticExample() {
   const { openSettings, hasUserConsented, consentState } = useConsent();
-  
+
   return (
     <div>
-      <button onClick={openSettings}>
-        Manage Cookie Preferences
-      </button>
-      
+      <button onClick={openSettings}>Manage Cookie Preferences</button>
+
       {hasUserConsented && (
-        <div>
-          Analytics enabled: {consentState.analytics ? 'Yes' : 'No'}
-        </div>
+        <div>Analytics enabled: {consentState.analytics ? "Yes" : "No"}</div>
       )}
     </div>
   );
@@ -261,19 +287,19 @@ function ProgrammaticExample() {
 // Example 10: Integration with analytics
 function AnalyticsIntegrationExample() {
   const { consentState, hasUserConsented } = useConsent();
-  
+
   React.useEffect(() => {
     if (hasUserConsented && consentState.analytics) {
       // Initialize Google Analytics
-      window.gtag?.('consent', 'update', {
-        'analytics_storage': 'granted'
+      window.gtag?.("consent", "update", {
+        analytics_storage: "granted",
       });
     } else {
-      window.gtag?.('consent', 'update', {
-        'analytics_storage': 'denied'
+      window.gtag?.("consent", "update", {
+        analytics_storage: "denied",
       });
     }
   }, [hasUserConsented, consentState.analytics]);
-  
+
   return <div>Your app with analytics</div>;
 }
