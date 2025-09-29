@@ -28,7 +28,11 @@
     "privacy",
     "gdpr"
   ],
-  "author": "Tanta Innovative",
+  "author": {
+    "name": "Abraham Esandayinze Tanta",
+    "email": "sir.tanta@gmail.com",
+    "url": "https://github.com/mr-tanta"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",

@@ -173,6 +173,24 @@ The GitHub Pages deployment is configured in the following files:
 
 MIT License
 
-## Developed by
+## Author
 
-Tanta Innovative - Positioning as a thought leader in regulatory tech solutions for Nigeria
+**Abraham Esandayinze Tanta**
+
+Senior Software Engineer with over a decade of experience in ethical hacking, software development, Linux and network administration. Based in Lagos, Nigeria.
+
+- GitHub: [@mr-tanta](https://github.com/mr-tanta)
+- Email: sir.tanta@gmail.com
+- LinkedIn: [Abraham Tanta](https://linkedin.com/in/abraham-tanta)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## Support
+
+If you find this toolkit helpful, please consider:
+- ⭐ Starring the repository
+- 🐛 Reporting bugs and issues
+- 💡 Suggesting new features
+- 🤝 Contributing to the codebase
