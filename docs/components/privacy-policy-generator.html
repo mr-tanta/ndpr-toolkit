@@ -1,0 +1,359 @@
+<!DOCTYPE html><!--nNmBSmKnQ2_pvKGOTeSNV--><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/4cf2300e9c8272f7-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/93f479601ee12b01-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/ee04a907a4031e88.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-c6680bdaec64fec3.js"/><script src="/_next/static/chunks/8940b91d-bfe9ffe8ad1e95eb.js" async=""></script><script src="/_next/static/chunks/103-895274712af7d9ec.js" async=""></script><script src="/_next/static/chunks/main-app-4af8b26abd7b8b7b.js" async=""></script><script src="/_next/static/chunks/app/layout-1b08044c046035c9.js" async=""></script><script src="/_next/static/chunks/214-54b0b06c8e7569c2.js" async=""></script><script src="/_next/static/chunks/826-b9a036444e812c5f.js" async=""></script><script src="/_next/static/chunks/app/docs/components/privacy-policy-generator/page-523f5041f10569d9.js" async=""></script><meta name="next-size-adjust" content=""/><title>NDPR Toolkit Documentation | Implementation Guides &amp; API Reference</title><meta name="description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="keywords" content="NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials"/><meta property="og:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta property="og:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta property="og:url" content="https://ndprtoolkit.com.ng/docs"/><meta property="og:site_name" content="NDPR Toolkit"/><meta property="og:locale" content="en_US"/><meta property="og:image" content="http://localhost:3000/og-docs.png"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image:alt" content="NDPR Toolkit Documentation"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta name="twitter:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="twitter:image" content="http://localhost:3000/og-docs.png"/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__variable_188709 __variable_9a8899 antialiased"><div hidden=""><!--$--><!--/$--></div><div class="min-h-screen bg-gray-50 dark:bg-gray-900"><div class="lg:hidden fixed top-4 left-4 z-50"><button type="button" class="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"><span class="sr-only">Open sidebar</span><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div><div class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col"><div class="flex flex-col flex-grow border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto"><div class="flex items-center flex-shrink-0 px-4 py-5"><a class="flex items-center" href="/"><span class="text-xl font-bold text-gray-900 dark:text-white">NDPR Toolkit</span></a></div><div class="flex-grow flex flex-col"><nav class="flex-1 px-2 pb-4 space-y-1"><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/components"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/dpia-questionnaire">DPIA Questionnaire</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/consent-management">Consent Management</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/data-subject-rights">Data Subject Rights</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/breach-notification">Breach Notification</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/components/privacy-policy-generator">Privacy Policy Generator</a></div></div><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:hidden fixed inset-0 z-40 hidden"><div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div><div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 overflow-y-auto"><div class="flex items-center justify-between px-4 py-5"><a class="flex items-center" href="/"><span class="text-xl font-bold text-gray-900 dark:text-white">NDPR Toolkit</span></a><button type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"><span class="sr-only">Close sidebar</span><svg class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="mt-5 px-2 space-y-1"><nav class="space-y-1"><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/components"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/dpia-questionnaire">DPIA Questionnaire</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/consent-management">Consent Management</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/data-subject-rights">Data Subject Rights</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/breach-notification">Breach Notification</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/components/privacy-policy-generator">Privacy Policy Generator</a></div></div><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:pl-64"><main class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="pb-5 border-b border-gray-200 dark:border-gray-700 mb-6"><div class="flex flex-col md:flex-row md:items-center md:justify-between"><div><h1 class="text-3xl font-bold text-gray-900 dark:text-white">Privacy Policy Generator</h1><p class="mt-2 text-lg text-gray-500 dark:text-gray-400">NDPR-compliant privacy policy generator for websites and applications</p></div><div class="mt-4 md:mt-0 flex space-x-3"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/ndpr-demos">View Demos</a><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/">Back to Home</a></div></div></div><div class="prose prose-blue max-w-none dark:prose-invert"><div class="flex mb-6 space-x-2"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/ndpr-demos/policy">View Demo</a><a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/policy" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">View Source</a></div><section id="overview" class="mb-8"><h2 class="text-2xl font-bold mb-4">Overview</h2><p class="mb-4">The Privacy Policy Management components provide a comprehensive solution for creating, previewing, and exporting customized, NDPR-compliant privacy policies for your website or application. The system includes three main components: PolicyGenerator, PolicyPreview, and PolicyExporter, which work together to create professional, enterprise-ready privacy policies with variable support.</p><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md"><h4 class="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Privacy Policy Requirements</h4><p class="text-blue-700 dark:text-blue-300 text-sm mb-0">Under the NDPR, organizations must maintain a clear and accessible privacy policy that informs data subjects about how their personal data is collected, processed, stored, and protected. The policy must be written in clear, plain language and cover specific elements required by the regulation.</p></div></section><section id="installation" class="mb-8"><h2 class="text-2xl font-bold mb-4">Installation</h2><p class="mb-4">Install the NDPR Toolkit package which includes the Privacy Policy Generator components:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4"><pre><code>npm install @tantainnovative/ndpr-toolkit</code></pre><pre><code># Or with legacy peer deps if using React 19 npm install @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre></div><p>Or if you&#x27;re using yarn:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>yarn add @tantainnovative/ndpr-toolkit</code></pre><pre><code># Or with legacy peer deps if using React 19 yarn add @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre></div></section><section id="components" class="mb-8"><h2 class="text-2xl font-bold mb-4">Components</h2><p class="mb-4">The Privacy Policy Management system includes three main components that work together to create, preview, and export NDPR-compliant privacy policies:</p><div class="space-y-6"><div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-xl font-bold mb-2">PolicyGenerator</h3><p class="text-gray-600 dark:text-gray-300 mb-4">The main component that allows users to create a policy by configuring sections and variables with an intuitive interface.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { PolicyGenerator } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+&lt;PolicyGenerator 
+  sections={policySections}
+  variables={policyVariables}
+  onGenerate={(policy) =&gt; {
+    // policy.sections - Updated sections
+    // policy.variables - Updated variables with values
+    // policy.content - Generated policy content in markdown format
+    setPolicyContent(policy.content);
+  }}
+  title=&quot;Privacy Policy Generator&quot;
+  description=&quot;Create your NDPR-compliant privacy policy&quot;
+  showPreview={true}
+  allowEditing={true}
+/&gt;</code></pre></div></div><div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-xl font-bold mb-2">PolicyPreview</h3><p class="text-gray-600 dark:text-gray-300 mb-4">A component for displaying the generated privacy policy with professional formatting and navigation features.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { PolicyPreview } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+&lt;PolicyPreview 
+  content={policyContent} // Markdown content of the policy
+  title=&quot;Privacy Policy&quot;
+  showTableOfContents={true}
+  className=&quot;policy-preview&quot;
+  onContentChange={(updatedContent) =&gt; {
+    setPolicyContent(updatedContent);
+  }}
+/&gt;</code></pre></div></div><div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-xl font-bold mb-2">PolicyExporter</h3><p class="text-gray-600 dark:text-gray-300 mb-4">A utility component for exporting the generated policy in various formats (PDF, HTML, Markdown) with professional formatting.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { PolicyExporter } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+&lt;PolicyExporter 
+  content={policyContent} // Markdown content of the policy
+  title=&quot;Privacy Policy&quot;
+  filename=&quot;privacy-policy&quot;
+  formats={{
+    pdf: true,
+    markdown: true,
+    html: true
+  }}
+  companyInfo={{
+    name: &quot;Your Company Name&quot;,
+    logo: &quot;/path/to/logo.png&quot;, // Optional
+    website: &quot;https://example.com&quot;,
+    email: &quot;privacy@example.com&quot;
+  }}
+/&gt;</code></pre></div></div></div></section><section id="variable-support" class="mb-8"><h2 class="text-2xl font-bold mb-4">Variable Support</h2><p class="mb-4">The Privacy Policy Management system supports variables in templates, allowing for dynamic and enterprise-ready policies. Variables are defined with specific types and can be edited through the PolicyGenerator interface, making it easy to customize the policy for different organizations and use cases.</p><h3 class="text-xl font-bold mt-6 mb-4">Defining Variables</h3><p class="mb-4">Variables are defined as an array of PolicyVariable objects, each with properties like id, name, description, defaultValue, inputType, and required status. These variables can then be referenced in your policy sections using the <code>{{</code> and <code>}}</code> syntax.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-6"><pre><code>// Example of defining policy variables
+const policyVariables = [
+  {
+    id: &#x27;companyName&#x27;,
+    name: &#x27;Company Name&#x27;,
+    description: &#x27;The legal name of your organization&#x27;,
+    defaultValue: &#x27;Your Company&#x27;,
+    value: &#x27;&#x27;,
+    inputType: &#x27;text&#x27;,
+    required: true
+  },
+  {
+    id: &#x27;contactEmail&#x27;,
+    name: &#x27;Contact Email&#x27;,
+    description: &#x27;Email address for privacy inquiries&#x27;,
+    defaultValue: &#x27;privacy@example.com&#x27;,
+    value: &#x27;&#x27;,
+    inputType: &#x27;email&#x27;,
+    required: true
+  },
+  {
+    id: &#x27;effectiveDate&#x27;,
+    name: &#x27;Effective Date&#x27;,
+    description: &#x27;When this privacy policy takes effect&#x27;,
+    defaultValue: new Date().toISOString().split(&#x27;T&#x27;)[0],
+    value: &#x27;&#x27;,
+    inputType: &#x27;date&#x27;,
+    required: true
+  },
+  {
+    id: &#x27;dataRetentionPeriod&#x27;,
+    name: &#x27;Data Retention Period&#x27;,
+    description: &#x27;How long you retain user data&#x27;,
+    defaultValue: &#x27;12 months&#x27;,
+    value: &#x27;&#x27;,
+    inputType: &#x27;text&#x27;,
+    required: true
+  }
+];
+
+// Example of a policy section that uses variables
+const policySections = [
+  {
+    id: &#x27;introduction&#x27;,
+    title: &#x27;Introduction&#x27;,
+    content: &#x27;# Privacy Policy for {{companyName}}
+
+Last Updated: {{effectiveDate}}
+
+## Introduction
+{{companyName}} (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our services.&#x27;,
+    enabled: true,
+    order: 1
+  },
+This page informs you of our policies regarding the collection, use, and disclosure 
+of personal data when you use our Service and the choices you have associated with that data.
+
+## Contact Us
+If you have any questions about this Privacy Policy, please contact us:
+- By email: {{contactEmail}}
+- By visiting this page on our website: {{websiteUrl}}/contact
+`;
+
+// Using the template with the generatePolicyText utility
+import { generatePolicyText } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+const variables = {
+  organizationName: &#x27;Acme Corporation&#x27;,
+  lastUpdated: new Date().toLocaleDateString(),
+  websiteUrl: &#x27;https://acme.com&#x27;,
+  contactEmail: &#x27;privacy@acme.com&#x27;
+};
+
+const generatedPolicy = generatePolicyText(policyTemplate, variables);
+
+// The result will have all variables replaced with their values
+console.log(generatedPolicy);</code></pre></div><h3 class="text-xl font-bold mt-6 mb-4">Variable Validation</h3><p class="mb-4">The <code>generatePolicyText</code> utility also provides validation to help you identify missing variables:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-6"><pre><code>// The function returns an object with additional information
+const result = generatePolicyText(policyTemplate, variables);
+
+// The full generated text
+console.log(result.fullText);
+
+// Any missing variables that weren&#x27;t provided
+console.log(result.missingVariables); // e.g., [&#x27;phoneNumber&#x27;]
+
+// Individual section texts if using PolicySection[] input
+console.log(result.sectionTexts);</code></pre></div><h3 class="text-xl font-bold mt-6 mb-4">Using with PolicySection Array</h3><p class="mb-4">Variables also work with the array-based policy section format:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { generatePolicyText, PolicySection } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+const policySections: PolicySection[] = [
+  {
+    id: &#x27;introduction&#x27;,
+    title: &#x27;Introduction&#x27;,
+    content: &#x27;{{organizationName}} (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) operates the {{websiteUrl}} website.&#x27;
+  },
+  {
+    id: &#x27;data-collection&#x27;,
+    title: &#x27;Data Collection&#x27;,
+    content: &#x27;We collect several different types of information for various purposes to provide and improve our Service to you.&#x27;
+  },
+  {
+    id: &#x27;contact&#x27;,
+    title: &#x27;Contact Us&#x27;,
+    content: &#x27;If you have any questions, please contact us at {{contactEmail}}.&#x27;
+  }
+];
+
+const variables = {
+  organizationName: &#x27;Acme Corporation&#x27;,
+  websiteUrl: &#x27;https://acme.com&#x27;,
+  contactEmail: &#x27;privacy@acme.com&#x27;
+};
+
+const result = generatePolicyText(policySections, variables);
+
+// Access the full text
+console.log(result.fullText);
+
+// Access individual section texts
+console.log(result.sectionTexts.introduction);
+console.log(result.sectionTexts.contact);</code></pre></div></section><section id="usage" class="mb-8"><h2 class="text-2xl font-bold mb-4">Usage</h2><p class="mb-4">Here&#x27;s a complete example of how to implement the Privacy Policy Generator in your application:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { useState } from &#x27;react&#x27;;
+import { 
+  PolicyGenerator, 
+  PolicyPreview, 
+  PolicyExport,
+  generatePolicyText,
+  PolicySection
+} from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+// Define your policy templates
+const policyTemplates = [
+  {
+    id: &#x27;standard&#x27;,
+    name: &#x27;Standard Privacy Policy&#x27;,
+    description: &#x27;A comprehensive privacy policy suitable for most websites and applications.&#x27;,
+    sections: [
+      {
+        id: &#x27;introduction&#x27;,
+        title: &#x27;Introduction&#x27;,
+        content: &#x27;{{organizationName}} (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) operates the {{websiteUrl}} website (&quot;the Service&quot;). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.&#x27;
+      },
+      {
+        id: &#x27;data-collection&#x27;,
+        title: &#x27;Information Collection and Use&#x27;,
+        content: &#x27;We collect several different types of information for various purposes to provide and improve our Service to you.&#x27;
+      },
+      // More sections...
+    ]
+  },
+  {
+    id: &#x27;minimal&#x27;,
+    name: &#x27;Minimal Privacy Policy&#x27;,
+    description: &#x27;A simplified privacy policy for small websites with minimal data collection.&#x27;,
+    sections: [
+      // Sections...
+    ]
+  }
+];
+
+function PrivacyPolicyPage() {
+  const [generatedPolicy, setGeneratedPolicy] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(&#x27;standard&#x27;);
+  const [policyData, setPolicyData] = useState({
+    organizationName: &#x27;&#x27;,
+    organizationWebsite: &#x27;&#x27;,
+    organizationContact: &#x27;&#x27;,
+    // Other fields...
+  });
+  const [variables, setVariables] = useState({
+    organizationName: &#x27;&#x27;,
+    websiteUrl: &#x27;&#x27;,
+    contactEmail: &#x27;&#x27;,
+    lastUpdated: new Date().toLocaleDateString()
+  });
+  
+  const handlePolicyGenerated = (data) =&gt; {
+    setPolicyData(data);
+    
+    // Update variables based on policy data
+    setVariables({
+      ...variables,
+      organizationName: data.organizationName,
+      websiteUrl: data.organizationWebsite,
+      contactEmail: data.organizationContact
+    });
+    
+    // Find the selected template
+    const template = policyTemplates.find(t =&gt; t.id === selectedTemplate);
+    
+    // Generate the policy text with variables
+    const result = generatePolicyText(template.sections, variables);
+    
+    setGeneratedPolicy({
+      title: `Privacy Policy for ${data.organizationName}`,
+      content: result.fullText,
+      sections: template.sections.map(section =&gt; ({
+        ...section,
+        content: result.sectionTexts[section.id] || section.content
+      })),
+      lastUpdated: new Date()
+    });
+  };
+  
+  const handleExportPolicy = (format) =&gt; {
+    // Export logic...
+  };
+  
+  return (
+    &lt;div&gt;
+      {!generatedPolicy ? (
+        &lt;PolicyGenerator 
+          onComplete={handlePolicyGenerated}
+          templates={policyTemplates}
+          initialValues={policyData}
+          onTemplateSelect={(templateId) =&gt; setSelectedTemplate(templateId)}
+          variables={variables}
+        /&gt;
+      ) : (
+        &lt;div&gt;
+          &lt;PolicyPreview 
+            policy={generatedPolicy}
+            onEdit={() =&gt; setGeneratedPolicy(null)}
+            variables={variables}
+            onVariableChange={(newVariables) =&gt; {
+              setVariables(newVariables);
+              
+              // Regenerate policy with new variables
+              const template = policyTemplates.find(t =&gt; t.id === selectedTemplate);
+              const result = generatePolicyText(template.sections, newVariables);
+              
+              setGeneratedPolicy({
+                ...generatedPolicy,
+                content: result.fullText,
+                sections: template.sections.map(section =&gt; ({
+                  ...section,
+                  content: result.sectionTexts[section.id] || section.content
+                }))
+              });
+            }}
+          /&gt;
+          
+          &lt;div className=&quot;mt-6&quot;&gt;
+            &lt;h3 className=&quot;text-lg font-bold mb-2&quot;&gt;Export Options&lt;/h3&gt;
+            &lt;PolicyExport 
+              policy={generatedPolicy}
+              formats={[&#x27;html&#x27;, &#x27;pdf&#x27;, &#x27;markdown&#x27;]}
+              filename={`privacy-policy-${policyData.organizationName.toLowerCase().replace(/\s+/g, &#x27;-&#x27;)}`}
+              onExport={handleExportPolicy}
+            /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre></div></section><section id="api" class="mb-8"><h2 class="text-2xl font-bold mb-4">API Reference</h2><h3 class="text-xl font-bold mt-8 mb-4">PolicyGenerator Props</h3><div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"><thead class="bg-gray-50 dark:bg-gray-800"><tr><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Prop</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Default</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th></tr></thead><tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700"><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onComplete</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">(data: PolicyData) =&gt; void</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Callback when policy generation is complete</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">templates</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">PolicyTemplate[]</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of policy templates</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">initialValues</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Partial&lt;PolicyData&gt;</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"></td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Initial values for the policy form</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onTemplateSelect</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">(templateId: string) =&gt; void</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Callback when a template is selected</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">variables</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Record&lt;string, string&gt;</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"></td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Variables to replace in policy templates</td></tr></tbody></table></div><h3 class="text-xl font-bold mt-8 mb-4">generatePolicyText Function</h3><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>/**
+ * Generates policy text by replacing variables in a template
+ * 
+ * @param sectionsOrTemplate - Either an array of PolicySection objects or a template string
+ * @param organizationInfoOrVariables - Either an OrganizationInfo object or a variables object
+ * @returns Either a string (if no variables used) or an object with fullText, sectionTexts, and missingVariables
+ */
+function generatePolicyText(
+  sectionsOrTemplate: PolicySection[] | string,
+  organizationInfoOrVariables: OrganizationInfo | Record&lt;string, string&gt;
+): string | {
+  fullText: string;
+  sectionTexts: Record&lt;string, string&gt;;
+  missingVariables: string[];
+}</code></pre></div><h3 class="text-xl font-bold mt-8 mb-4">PolicyTemplate Type</h3><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>type PolicyTemplate = {
+  id: string;
+  name: string;
+  description: string;
+  sections: PolicySection[];
+};</code></pre></div><h3 class="text-xl font-bold mt-8 mb-4">PolicySection Type</h3><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>type PolicySection = {
+  id: string;
+  title: string;
+  content: string;
+  required?: boolean;
+};</code></pre></div><h3 class="text-xl font-bold mt-8 mb-4">PolicyData Type</h3><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>type PolicyData = {
+  // Organization Information
+  organizationName: string;
+  organizationWebsite: string;
+  organizationContact: string;
+  dpoName?: string;
+  dpoEmail?: string;
+  
+  // Data Collection
+  dataCollectionMethods: string[];
+  personalDataTypes: string[];
+  sensitiveDataTypes?: string[];
+  legalBasisForProcessing: string[];
+  
+  // Data Usage
+  dataUsagePurposes: string[];
+  automaticDecisionMaking: boolean;
+  
+  // Data Sharing
+  thirdPartySharing: boolean;
+  thirdPartyCategories?: string[];
+  internationalTransfers: boolean;
+  transferSafeguards?: string;
+  
+  // Data Subject Rights
+  dataSubjectRightsProcess: string;
+  
+  // Security and Retention
+  securityMeasures: string[];
+  retentionPeriod: string;
+  
+  // Cookies and Tracking
+  usesCookies: boolean;
+  cookieTypes?: string[];
+  
+  // Additional Information
+  lastUpdated: Date;
+  effectiveDate: Date;
+  additionalInformation?: string;
+};</code></pre></div></section><section id="best-practices" class="mb-8"><h2 class="text-2xl font-bold mb-4">Best Practices</h2><ul class="list-disc pl-6 space-y-2"><li><strong>Clear Language:</strong> Ensure your privacy policy is written in clear, plain language that is easy for data subjects to understand.</li><li><strong>Regular Updates:</strong> Review and update your privacy policy regularly, especially when there are changes to your data processing activities.</li><li><strong>Accessibility:</strong> Make your privacy policy easily accessible on your website or application, typically through a link in the footer.</li><li><strong>Customization:</strong> While the generator provides a solid template, customize the policy to accurately reflect your specific data practices.</li><li><strong>Legal Review:</strong> Have your generated privacy policy reviewed by a legal professional familiar with the NDPR to ensure compliance.</li><li><strong>Use Variables:</strong> Leverage the variable system to create reusable templates that can be easily updated when your organization information changes.</li></ul></section><section id="help-resources" class="mb-8"><h2 class="text-2xl font-bold mb-4">Need Help?</h2><p class="mb-4">If you have questions about implementing the Privacy Policy Generator or need assistance with NDPR compliance, check out these resources:</p><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">GitHub Issues</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Report bugs or request features on our GitHub repository.</p><a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">View Issues</a></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">NDPR Resources</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Learn more about NDPR compliance requirements.</p><a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">NDPR Framework</a></div></div></div></section></div></div></main></div></div><!--$--><!--/$--><script src="/_next/static/chunks/webpack-c6680bdaec64fec3.js" id="_R_" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[49223,[\"177\",\"static/chunks/app/layout-1b08044c046035c9.js\"],\"ErrorBoundary\"]\n3:I[31158,[],\"\"]\n4:I[91260,[],\"\"]\n5:I[67895,[],\"ClientPageRoot\"]\n6:I[54324,[\"214\",\"static/chunks/214-54b0b06c8e7569c2.js\",\"826\",\"static/chunks/826-b9a036444e812c5f.js\",\"347\",\"static/chunks/app/docs/components/privacy-policy-generator/page-523f5041f10569d9.js\"],\"default\"]\n9:I[6815,[],\"OutletBoundary\"]\nb:I[92126,[],\"AsyncMetadataOutlet\"]\nd:I[6815,[],\"ViewportBoundary\"]\nf:I[6815,[],\"MetadataBoundary\"]\n10:\"$Sreact.suspense\"\n12:I[32142,[],\"\"]\n:HL[\"/_next/static/media/4cf2300e9c8272f7-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/93f479601ee12b01-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/css/ee04a907a4031e88.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"nNmBSmKnQ2-pvKGOTeSNV\",\"p\":\"\",\"c\":[\"\",\"docs\",\"components\",\"privacy-policy-generator\"],\"i\":false,\"f\":[[[\"\",{\"children\":[\"docs\",{\"children\":[\"components\",{\"children\":[\"privacy-policy-generator\",{\"children\":[\"__PAGE__\",{}]}]}]}]},\"$undefined\",\"$undefined\",true],[\"\",[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/ee04a907a4031e88.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__variable_188709 __variable_9a8899 antialiased\",\"children\":[\"$\",\"$L2\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":404}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]}]}]]}],{\"children\":[\"docs\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"components\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"privacy-policy-generator\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"__PAGE__\",[\"$\",\"$1\",\"c\",{\"children\":[[\"$\",\"$L5\",null,{\"Component\":\"$6\",\"searchParams\":{},\"params\":{},\"promises\":[\"$@7\",\"$@8\"]}],null,[\"$\",\"$L9\",null,{\"children\":[\"$La\",[\"$\",\"$Lb\",null,{\"promise\":\"$@c\"}]]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],[\"$\",\"$1\",\"h\",{\"children\":[null,[[\"$\",\"$Ld\",null,{\"children\":\"$Le\"}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]],[\"$\",\"$Lf\",null,{\"children\":[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$10\",null,{\"fallback\":null,\"children\":\"$L11\"}]}]}]]}],false]],\"m\":\"$undefined\",\"G\":[\"$12\",[]],\"s\":false,\"S\":true}\n"])</script><script>self.__next_f.push([1,"7:{}\n8:\"$0:f:0:1:2:children:2:children:2:children:2:children:1:props:children:0:props:params\"\n"])</script><script>self.__next_f.push([1,"e:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\na:null\n"])</script><script>self.__next_f.push([1,"13:I[87678,[],\"IconMark\"]\n"])</script><script>self.__next_f.push([1,"c:{\"metadata\":[[\"$\",\"title\",\"0\",{\"children\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:url\",\"content\":\"https://ndprtoolkit.com.ng/docs\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:site_name\",\"content\":\"NDPR Toolkit\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:locale\",\"content\":\"en_US\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:image:width\",\"content\":\"1200\"}],[\"$\",\"meta\",\"10\",{\"property\":\"og:image:height\",\"content\":\"630\"}],[\"$\",\"meta\",\"11\",{\"property\":\"og:image:alt\",\"content\":\"NDPR Toolkit Documentation\"}],[\"$\",\"meta\",\"12\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"13\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"14\",{\"name\":\"twitter:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"15\",{\"name\":\"twitter:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"16\",{\"name\":\"twitter:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"link\",\"17\",{\"rel\":\"icon\",\"href\":\"/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}],[\"$\",\"$L13\",\"18\",{}]],\"error\":null,\"digest\":\"$undefined\"}\n"])</script><script>self.__next_f.push([1,"11:\"$c:metadata\"\n"])</script></body></html>

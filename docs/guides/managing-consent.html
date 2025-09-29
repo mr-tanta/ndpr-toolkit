@@ -1,0 +1,438 @@
+<!DOCTYPE html><!--nNmBSmKnQ2_pvKGOTeSNV--><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/4cf2300e9c8272f7-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/93f479601ee12b01-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/ee04a907a4031e88.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-c6680bdaec64fec3.js"/><script src="/_next/static/chunks/8940b91d-bfe9ffe8ad1e95eb.js" async=""></script><script src="/_next/static/chunks/103-895274712af7d9ec.js" async=""></script><script src="/_next/static/chunks/main-app-4af8b26abd7b8b7b.js" async=""></script><script src="/_next/static/chunks/app/layout-1b08044c046035c9.js" async=""></script><script src="/_next/static/chunks/214-54b0b06c8e7569c2.js" async=""></script><script src="/_next/static/chunks/312-46d1e841fe1a290a.js" async=""></script><script src="/_next/static/chunks/app/docs/guides/managing-consent/page-6d30752cb4fba98d.js" async=""></script><meta name="next-size-adjust" content=""/><title>NDPR Toolkit Documentation | Implementation Guides &amp; API Reference</title><meta name="description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="keywords" content="NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials"/><meta property="og:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta property="og:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta property="og:url" content="https://ndprtoolkit.com.ng/docs"/><meta property="og:site_name" content="NDPR Toolkit"/><meta property="og:locale" content="en_US"/><meta property="og:image" content="http://localhost:3000/og-docs.png"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image:alt" content="NDPR Toolkit Documentation"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta name="twitter:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="twitter:image" content="http://localhost:3000/og-docs.png"/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__variable_188709 __variable_9a8899 antialiased"><div hidden=""><!--$--><!--/$--></div><div class="min-h-screen bg-gray-50 dark:bg-gray-900"><div class="lg:hidden fixed top-4 left-4 z-50"><button type="button" class="p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-800"><span class="sr-only">Open sidebar</span><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div><div class="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0"><div class="flex flex-col flex-grow bg-white dark:bg-gray-800 shadow-lg overflow-y-auto"><div class="flex items-center flex-shrink-0 px-4 py-5 border-b border-gray-200 dark:border-gray-700"><a class="flex items-center" href="/"><span class="text-xl font-semibold text-gray-900 dark:text-white">NDPR Toolkit</span></a></div><div class="mt-5 flex-1 flex flex-col"><nav class="flex-1 px-4 space-y-1"><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/ndpr-compliance-checklist">NDPR Compliance Checklist</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/conducting-dpia">Conducting a DPIA</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides/managing-consent">Managing Consent<span class="ml-auto"><svg class="h-4 w-4 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></span></a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/data-subject-requests">Handling Data Subject Requests</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/breach-notification-process">Breach Notification Process</a></div></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:hidden fixed inset-0 z-40 hidden" aria-hidden="true"><div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div><div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 shadow-lg overflow-y-auto"><div class="flex items-center justify-between px-4 py-5 border-b border-gray-200 dark:border-gray-700"><a class="flex items-center" href="/"><span class="text-xl font-semibold text-gray-900 dark:text-white">NDPR Toolkit</span></a><button type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"><span class="sr-only">Close sidebar</span><svg class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="mt-5 flex-1 flex flex-col"><nav class="flex-1 px-4 space-y-1"><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/ndpr-compliance-checklist">NDPR Compliance Checklist</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/conducting-dpia">Conducting a DPIA</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides/managing-consent">Managing Consent</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/data-subject-requests">Handling Data Subject Requests</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/breach-notification-process">Breach Notification Process</a></div></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:pl-64"><main class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="pb-5 border-b border-gray-200 dark:border-gray-700 mb-6"><div class="flex flex-col md:flex-row md:items-center md:justify-between"><div><h1 class="text-3xl font-bold text-gray-900 dark:text-white">Managing Consent</h1><p class="mt-2 text-lg text-gray-500 dark:text-gray-400">Learn how to implement a complete consent management system with the NDPR Toolkit</p></div><div class="mt-4 md:mt-0 flex space-x-3"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/ndpr-demos">View Demos</a><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/">Back to Home</a></div></div></div><div class="prose prose-blue max-w-none dark:prose-invert"><div class="flex mb-6 space-x-2"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/demo/consent">View Consent Demo</a><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/docs/components/consent-management">Consent Component Docs</a></div><section id="introduction" class="mb-8"><h2 class="text-2xl font-bold mb-4">Introduction</h2><p class="mb-4">Consent is a cornerstone of data protection under the Nigeria Data Protection Regulation (NDPR). Organizations must obtain valid consent before collecting, processing, or sharing personal data. This guide will help you implement a comprehensive consent management system using the NDPR Toolkit.</p><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md"><h4 class="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Consent Requirements</h4><p class="text-blue-700 dark:text-blue-300 text-sm mb-0">Under the NDPR, valid consent must be:</p><ul class="list-disc pl-6 mt-2 text-blue-700 dark:text-blue-300 text-sm"><li><strong>Freely given:</strong> Data subjects must have a genuine choice and control</li><li><strong>Specific:</strong> Consent must be granular for different types of processing</li><li><strong>Informed:</strong> Data subjects must understand what they&#x27;re consenting to</li><li><strong>Unambiguous:</strong> Consent must be given through a clear affirmative action</li><li><strong>Withdrawable:</strong> Data subjects must be able to withdraw consent easily</li></ul></div></section><section id="consent-lifecycle" class="mb-8"><h2 class="text-2xl font-bold mb-4">The Consent Lifecycle</h2><p class="mb-4">A complete consent management system covers the entire lifecycle of consent, from collection to withdrawal. The NDPR Toolkit provides components for each stage of this lifecycle:</p><div class="relative border-l-2 border-blue-500 pl-8 pb-8 space-y-10"><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">1</span></div><h3 class="text-xl font-bold">Consent Collection</h3><p class="text-gray-600 dark:text-gray-300 mt-2">The first step is collecting consent from data subjects. This typically happens when users first visit your website or when they sign up for your service. The NDPR Toolkit&#x27;s ConsentBanner component is designed for this purpose.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { ConsentBanner } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function App() {
+  const consentOptions = [
+    {
+      id: &#x27;necessary&#x27;,
+      label: &#x27;Necessary Cookies&#x27;,
+      description: &#x27;These cookies are essential for the website to function properly.&#x27;,
+      required: true
+    },
+    {
+      id: &#x27;analytics&#x27;,
+      label: &#x27;Analytics Cookies&#x27;,
+      description: &#x27;These cookies help us understand how visitors interact with our website.&#x27;,
+      required: false
+    },
+    {
+      id: &#x27;marketing&#x27;,
+      label: &#x27;Marketing Cookies&#x27;,
+      description: &#x27;These cookies are used to track visitors across websites to display relevant advertisements.&#x27;,
+      required: false
+    }
+  ];
+
+  const handleSaveConsent = (consents) =&gt; {
+    // Save consent preferences to your backend or local storage
+    console.log(&#x27;Consent preferences:&#x27;, consents);
+    
+    // Example: Save to localStorage
+    localStorage.setItem(&#x27;userConsents&#x27;, JSON.stringify(consents));
+    
+    // Example: Send to backend API
+    fetch(&#x27;/api/consents&#x27;, {
+      method: &#x27;POST&#x27;,
+      headers: {
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      },
+      body: JSON.stringify(consents),
+    });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;ConsentBanner
+        options={consentOptions}
+        onSave={handleSaveConsent}
+        privacyPolicyUrl=&quot;/privacy-policy&quot;
+        position=&quot;bottom&quot;
+        showCloseButton={false}
+      /&gt;
+      {/* Rest of your application */}
+    &lt;/div&gt;
+  );
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">2</span></div><h3 class="text-xl font-bold">Consent Storage</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Once collected, consent preferences must be securely stored and easily retrievable. The NDPR Toolkit provides utilities for storing consent in various formats, including local storage, cookies, and server-side databases.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { ConsentStorage } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+// Create a consent storage instance
+const consentStorage = new ConsentStorage({
+  storageType: &#x27;localStorage&#x27;, // or &#x27;cookie&#x27;, &#x27;indexedDB&#x27;, &#x27;api&#x27;
+  apiEndpoint: &#x27;/api/consents&#x27;, // Only required for &#x27;api&#x27; storage type
+  cookieOptions: {             // Only required for &#x27;cookie&#x27; storage type
+    domain: &#x27;example.com&#x27;,
+    secure: true,
+    sameSite: &#x27;strict&#x27;,
+    maxAge: 60 * 60 * 24 * 365 // 1 year in seconds
+  }
+});
+
+// Save consent
+function saveConsent(userId, consents) {
+  return consentStorage.saveConsent(userId, consents);
+}
+
+// Retrieve consent
+async function getConsent(userId) {
+  return await consentStorage.getConsent(userId);
+}
+
+// Example usage
+const userId = &#x27;user123&#x27;;
+const consents = {
+  necessary: true,
+  analytics: true,
+  marketing: false,
+  timestamp: new Date().toISOString(),
+  version: &#x27;1.0&#x27;
+};
+
+saveConsent(userId, consents);
+
+// Later, retrieve the consent
+getConsent(userId).then(savedConsents =&gt; {
+  console.log(&#x27;Retrieved consents:&#x27;, savedConsents);
+});</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">3</span></div><h3 class="text-xl font-bold">Consent Verification</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Before processing personal data, you must verify that the user has given consent for the specific processing activity. The NDPR Toolkit provides utilities for checking consent status.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { useConsent } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function AnalyticsComponent() {
+  const { hasConsent, isLoading } = useConsent(&#x27;analytics&#x27;);
+  
+  useEffect(() =&gt; {
+    if (!isLoading &amp;&amp; hasConsent) {
+      // Initialize analytics only if user has given consent
+      initializeAnalytics();
+    }
+  }, [hasConsent, isLoading]);
+  
+  if (isLoading) {
+    return &lt;div&gt;Loading consent preferences...&lt;/div&gt;;
+  }
+  
+  if (!hasConsent) {
+    return (
+      &lt;div&gt;
+        &lt;p&gt;Analytics are disabled based on your consent preferences.&lt;/p&gt;
+        &lt;button onClick={() =&gt; openConsentManager()}&gt;
+          Update Preferences
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+  
+  return &lt;div&gt;Analytics are enabled and tracking your usage.&lt;/div&gt;;
+}
+
+function MarketingComponent() {
+  const { hasConsent, isLoading } = useConsent(&#x27;marketing&#x27;);
+  
+  // Similar implementation for marketing features
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">4</span></div><h3 class="text-xl font-bold">Consent Management</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Data subjects must be able to view and update their consent preferences at any time. The NDPR Toolkit&#x27;s ConsentManager component provides a user interface for managing consent preferences.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { ConsentManager } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function PrivacySettingsPage() {
+  const consentOptions = [
+    {
+      id: &#x27;necessary&#x27;,
+      label: &#x27;Necessary Cookies&#x27;,
+      description: &#x27;These cookies are essential for the website to function properly.&#x27;,
+      required: true
+    },
+    {
+      id: &#x27;analytics&#x27;,
+      label: &#x27;Analytics Cookies&#x27;,
+      description: &#x27;These cookies help us understand how visitors interact with our website.&#x27;,
+      required: false
+    },
+    {
+      id: &#x27;marketing&#x27;,
+      label: &#x27;Marketing Cookies&#x27;,
+      description: &#x27;These cookies are used to track visitors across websites to display relevant advertisements.&#x27;,
+      required: false
+    }
+  ];
+
+  const handleSaveConsent = (consents) =&gt; {
+    // Save updated consent preferences
+    console.log(&#x27;Updated consent preferences:&#x27;, consents);
+    
+    // Example: Save to localStorage
+    localStorage.setItem(&#x27;userConsents&#x27;, JSON.stringify(consents));
+    
+    // Example: Send to backend API
+    fetch(&#x27;/api/consents&#x27;, {
+      method: &#x27;POST&#x27;,
+      headers: {
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      },
+      body: JSON.stringify(consents),
+    });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Privacy Settings&lt;/h1&gt;
+      &lt;p&gt;
+        Manage your consent preferences for how we use your data.
+        You can change these settings at any time.
+      &lt;/p&gt;
+      
+      &lt;ConsentManager
+        options={consentOptions}
+        onSave={handleSaveConsent}
+        initialValues={JSON.parse(localStorage.getItem(&#x27;userConsents&#x27;) || &#x27;{}&#x27;)}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">5</span></div><h3 class="text-xl font-bold">Consent Records</h3><p class="text-gray-600 dark:text-gray-300 mt-2">For compliance purposes, you must maintain records of consent, including when and how consent was given or withdrawn. The NDPR Toolkit provides utilities for maintaining detailed consent records.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { ConsentRecorder } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+// Create a consent recorder instance
+const consentRecorder = new ConsentRecorder({
+  storageType: &#x27;api&#x27;,
+  apiEndpoint: &#x27;/api/consent-records&#x27;
+});
+
+// Record a consent event
+function recordConsentEvent(userId, event) {
+  const consentEvent = {
+    userId,
+    eventType: event.type, // &#x27;given&#x27;, &#x27;updated&#x27;, &#x27;withdrawn&#x27;
+    consents: event.consents,
+    timestamp: new Date().toISOString(),
+    source: event.source, // &#x27;banner&#x27;, &#x27;settings&#x27;, &#x27;account-deletion&#x27;, etc.
+    ipAddress: event.ipAddress,
+    userAgent: event.userAgent,
+    version: event.version
+  };
+  
+  return consentRecorder.recordEvent(consentEvent);
+}
+
+// Example usage
+const userId = &#x27;user123&#x27;;
+const consentEvent = {
+  type: &#x27;given&#x27;,
+  consents: {
+    necessary: true,
+    analytics: true,
+    marketing: false
+  },
+  source: &#x27;banner&#x27;,
+  ipAddress: &#x27;192.168.1.1&#x27;,
+  userAgent: &#x27;Mozilla/5.0...&#x27;,
+  version: &#x27;1.0&#x27;
+};
+
+recordConsentEvent(userId, consentEvent);
+
+// Retrieve consent history for a user
+consentRecorder.getEventHistory(userId).then(history =&gt; {
+  console.log(&#x27;Consent history:&#x27;, history);
+});</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">6</span></div><h3 class="text-xl font-bold">Consent Withdrawal</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Data subjects must be able to withdraw their consent as easily as they gave it. The NDPR Toolkit provides components and utilities for handling consent withdrawal.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Implementation Tip</h4><p class="text-sm">When a user withdraws consent, you must stop processing their data for the purposes they&#x27;ve withdrawn consent for. This may include deleting data or disabling certain features. Make sure your application architecture supports this granular control.</p></div></div></div></section><section id="complete-implementation" class="mb-8"><h2 class="text-2xl font-bold mb-4">Complete Implementation Example</h2><p class="mb-4">Here&#x27;s a complete example of how to implement a consent management system using the NDPR Toolkit:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { useState, useEffect } from &#x27;react&#x27;;
+import { 
+  ConsentBanner, 
+  ConsentManager,
+  ConsentStorage,
+  ConsentRecorder,
+  ConsentContext,
+  useConsent
+} from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+// Define consent options
+const consentOptions = [
+  {
+    id: &#x27;necessary&#x27;,
+    label: &#x27;Necessary Cookies&#x27;,
+    description: &#x27;These cookies are essential for the website to function properly.&#x27;,
+    required: true
+  },
+  {
+    id: &#x27;analytics&#x27;,
+    label: &#x27;Analytics Cookies&#x27;,
+    description: &#x27;These cookies help us understand how visitors interact with our website.&#x27;,
+    required: false
+  },
+  {
+    id: &#x27;marketing&#x27;,
+    label: &#x27;Marketing Cookies&#x27;,
+    description: &#x27;These cookies are used to track visitors across websites to display relevant advertisements.&#x27;,
+    required: false
+  },
+  {
+    id: &#x27;personalization&#x27;,
+    label: &#x27;Personalization&#x27;,
+    description: &#x27;These cookies allow us to provide personalized content and recommendations.&#x27;,
+    required: false
+  }
+];
+
+// Create storage and recorder instances
+const consentStorage = new ConsentStorage({ storageType: &#x27;localStorage&#x27; });
+const consentRecorder = new ConsentRecorder({ storageType: &#x27;api&#x27;, apiEndpoint: &#x27;/api/consent-records&#x27; });
+
+// Main application with consent management
+function App() {
+  const [userId, setUserId] = useState(null);
+  const [showBanner, setShowBanner] = useState(false);
+  const [consents, setConsents] = useState(null);
+  
+  useEffect(() =&gt; {
+    // Generate or retrieve user ID
+    const storedUserId = localStorage.getItem(&#x27;userId&#x27;);
+    if (storedUserId) {
+      setUserId(storedUserId);
+    } else {
+      const newUserId = `user_${Date.now()}`;
+      localStorage.setItem(&#x27;userId&#x27;, newUserId);
+      setUserId(newUserId);
+    }
+  }, []);
+  
+  useEffect(() =&gt; {
+    if (userId) {
+      // Check if user has already given consent
+      consentStorage.getConsent(userId).then(storedConsents =&gt; {
+        if (storedConsents) {
+          setConsents(storedConsents);
+        } else {
+          // No stored consents, show the banner
+          setShowBanner(true);
+        }
+      });
+    }
+  }, [userId]);
+  
+  const handleSaveConsent = (newConsents) =&gt; {
+    // Save the consent preferences
+    setConsents(newConsents);
+    consentStorage.saveConsent(userId, newConsents);
+    
+    // Record the consent event
+    const eventType = consents ? &#x27;updated&#x27; : &#x27;given&#x27;;
+    consentRecorder.recordEvent({
+      userId,
+      eventType,
+      consents: newConsents,
+      timestamp: new Date().toISOString(),
+      source: eventType === &#x27;given&#x27; ? &#x27;banner&#x27; : &#x27;settings&#x27;,
+      userAgent: navigator.userAgent,
+      version: &#x27;1.0&#x27;
+    });
+    
+    // Hide the banner ifit&amp;apos;s showing
+    setShowBanner(false);
+  };
+  
+  const openConsentManager = () =&gt; {
+    // Open a modal with the consent manager
+    setShowConsentManager(true);
+  };
+  
+  const [showConsentManager, setShowConsentManager] = useState(false);
+  
+  return (
+    &lt;ConsentContext.Provider value={{ consents, openConsentManager }}&gt;
+      &lt;div className=&quot;app&quot;&gt;
+        &lt;header&gt;
+          &lt;h1&gt;My NDPR-Compliant Website&lt;/h1&gt;
+          &lt;nav&gt;
+            &lt;ul&gt;
+              &lt;li&gt;&lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
+              &lt;li&gt;&lt;a href=&quot;/about&quot;&gt;About&lt;/a&gt;&lt;/li&gt;
+              &lt;li&gt;&lt;a href=&quot;/contact&quot;&gt;Contact&lt;/a&gt;&lt;/li&gt;
+              &lt;li&gt;
+                &lt;button onClick={openConsentManager}&gt;
+                  Privacy Settings
+                &lt;/button&gt;
+              &lt;/li&gt;
+            &lt;/ul&gt;
+          &lt;/nav&gt;
+        &lt;/header&gt;
+        
+        &lt;main&gt;
+          {/* Main content of your application */}
+          &lt;HomePage /&gt;
+        &lt;/main&gt;
+        
+        &lt;footer&gt;
+          &lt;p&gt;© 2023 My Company&lt;/p&gt;
+          &lt;button onClick={openConsentManager}&gt;
+            Manage Cookie Preferences
+          &lt;/button&gt;
+        &lt;/footer&gt;
+        
+        {/* Consent banner */}
+        {showBanner &amp;&amp; (
+          &lt;ConsentBanner
+            options={consentOptions}
+            onSave={handleSaveConsent}
+            privacyPolicyUrl=&quot;/privacy-policy&quot;
+            position=&quot;bottom&quot;
+            showCloseButton={false}
+          /&gt;
+        )}
+        
+        {/* Consent manager modal */}
+        {showConsentManager &amp;&amp; (
+          &lt;div className=&quot;modal&quot;&gt;
+            &lt;div className=&quot;modal-content&quot;&gt;
+              &lt;h2&gt;Privacy Settings&lt;/h2&gt;
+              &lt;ConsentManager
+                options={consentOptions}
+                onSave={(newConsents) =&gt; {
+                  handleSaveConsent(newConsents);
+                  setShowConsentManager(false);
+                }}
+                initialValues={consents || {}}
+                onCancel={() =&gt; setShowConsentManager(false)}
+              /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/ConsentContext.Provider&gt;
+  );
+}
+
+// Example component that uses consent
+function HomePage() {
+  const { hasConsent: hasAnalyticsConsent } = useConsent(&#x27;analytics&#x27;);
+  const { hasConsent: hasMarketingConsent } = useConsent(&#x27;marketing&#x27;);
+  const { hasConsent: hasPersonalizationConsent } = useConsent(&#x27;personalization&#x27;);
+  const { openConsentManager } = useConsent();
+  
+  useEffect(() =&gt; {
+    if (hasAnalyticsConsent) {
+      // Initialize analytics
+      console.log(&#x27;Initializing analytics...&#x27;);
+    }
+  }, [hasAnalyticsConsent]);
+  
+  useEffect(() =&gt; {
+    if (hasMarketingConsent) {
+      // Initialize marketing tools
+      console.log(&#x27;Initializing marketing tools...&#x27;);
+    }
+  }, [hasMarketingConsent]);
+  
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Welcome to our website&lt;/h2&gt;
+      
+      {hasPersonalizationConsent ? (
+        &lt;div&gt;
+          &lt;h3&gt;Personalized Content&lt;/h3&gt;
+          &lt;p&gt;Here&amp;apos;s some content tailored just for you!&lt;/p&gt;
+        &lt;/div&gt;
+      ) : (
+        &lt;div&gt;
+          &lt;h3&gt;Standard Content&lt;/h3&gt;
+          &lt;p&gt;
+            Enable personalization to see content tailored to your interests.
+            &lt;button onClick={openConsentManager}&gt;
+              Update Privacy Settings
+            &lt;/button&gt;
+          &lt;/p&gt;
+        &lt;/div&gt;
+      )}
+      
+      {/* More content... */}
+    &lt;/div&gt;
+  );
+}</code></pre></div></section><section id="best-practices" class="mb-8"><h2 class="text-2xl font-bold mb-4">Best Practices</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">No Pre-checked Boxes</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Never use pre-checked boxes for optional consent options. The NDPR requires that consent be given through a clear affirmative action, and pre-checked boxes do not meet this requirement.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Clear Language</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Use clear, plain language to explain what data you&#x27;re collecting, why you&#x27;re collecting it, and how it will be used. Avoid legal jargon that may confuse users.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Granular Consent</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Provide granular consent options for different types of processing. don&#x27;t bundle multiple purposes into a single consent option. This allows users to consent to some types of processing but not others.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Easy Withdrawal</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Make it as easy to withdraw consent as it is to give it. Provide a clear, accessible way for users to update their consent preferences at any time.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Record Keeping</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Maintain detailed records of consent, including when and how consent was given or withdrawn. This is essential for demonstrating compliance with the NDPR.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Regular Review</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Regularly review and update your consent mechanisms to ensure they remain compliant with the NDPR and effective for your users. Consider conducting user testing to ensure your consent mechanisms are clear and usable.</p></div></div></div></section><section id="common-pitfalls" class="mb-8"><h2 class="text-2xl font-bold mb-4">Common Pitfalls to Avoid</h2><ul class="list-disc pl-6 space-y-2"><li><strong>Cookie Walls:</strong> Blocking access to your website unless users accept all cookies is generally not considered valid consent under the NDPR, as it doesn&#x27;t give users a genuine choice.</li><li><strong>Bundling Consent:</strong> Requiring users to consent to multiple unrelated purposes as a package deal is not compliant with the NDPR&#x27;s requirement for specific consent.</li><li><strong>Ignoring Consent:</strong> Loading tracking scripts or cookies before obtaining consent is a common mistake that violates the NDPR&#x27;s requirement for valid consent.</li><li><strong>Unclear Language:</strong> Using vague or technical language that users may not understand undermines the &#x27;informed&#x27; aspect of valid consent.</li><li><strong>Difficult Withdrawal:</strong> Making it difficult for users to withdraw consent, such as by hiding the option in a complex settings menu, is not compliant with the NDPR&#x27;s requirement for withdrawable consent.</li><li><strong>Inadequate Records:</strong> Failing to maintain adequate records of consent can make it difficult to demonstrate compliance with the NDPR&#x27;s requirement for record-keeping.</li></ul></section><section id="resources" class="mb-8"><h2 class="text-2xl font-bold mb-4">Additional Resources</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">NDPR Implementation Framework</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Official guidance on implementing the NDPR, including consent requirements.</p><a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">View Framework</a></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">Consent Component Documentation</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Technical documentation for the Consent Management components.</p><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/docs/components/consent-management">View Documentation</a></div></div></div></section></div></div></main></div></div><!--$--><!--/$--><script src="/_next/static/chunks/webpack-c6680bdaec64fec3.js" id="_R_" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[49223,[\"177\",\"static/chunks/app/layout-1b08044c046035c9.js\"],\"ErrorBoundary\"]\n3:I[31158,[],\"\"]\n4:I[91260,[],\"\"]\n5:I[67895,[],\"ClientPageRoot\"]\n6:I[75981,[\"214\",\"static/chunks/214-54b0b06c8e7569c2.js\",\"312\",\"static/chunks/312-46d1e841fe1a290a.js\",\"82\",\"static/chunks/app/docs/guides/managing-consent/page-6d30752cb4fba98d.js\"],\"default\"]\n9:I[6815,[],\"OutletBoundary\"]\nb:I[92126,[],\"AsyncMetadataOutlet\"]\nd:I[6815,[],\"ViewportBoundary\"]\nf:I[6815,[],\"MetadataBoundary\"]\n10:\"$Sreact.suspense\"\n12:I[32142,[],\"\"]\n:HL[\"/_next/static/media/4cf2300e9c8272f7-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/93f479601ee12b01-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/css/ee04a907a4031e88.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"nNmBSmKnQ2-pvKGOTeSNV\",\"p\":\"\",\"c\":[\"\",\"docs\",\"guides\",\"managing-consent\"],\"i\":false,\"f\":[[[\"\",{\"children\":[\"docs\",{\"children\":[\"guides\",{\"children\":[\"managing-consent\",{\"children\":[\"__PAGE__\",{}]}]}]}]},\"$undefined\",\"$undefined\",true],[\"\",[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/ee04a907a4031e88.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__variable_188709 __variable_9a8899 antialiased\",\"children\":[\"$\",\"$L2\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":404}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]}]}]]}],{\"children\":[\"docs\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"guides\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"managing-consent\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"__PAGE__\",[\"$\",\"$1\",\"c\",{\"children\":[[\"$\",\"$L5\",null,{\"Component\":\"$6\",\"searchParams\":{},\"params\":{},\"promises\":[\"$@7\",\"$@8\"]}],null,[\"$\",\"$L9\",null,{\"children\":[\"$La\",[\"$\",\"$Lb\",null,{\"promise\":\"$@c\"}]]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],[\"$\",\"$1\",\"h\",{\"children\":[null,[[\"$\",\"$Ld\",null,{\"children\":\"$Le\"}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]],[\"$\",\"$Lf\",null,{\"children\":[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$10\",null,{\"fallback\":null,\"children\":\"$L11\"}]}]}]]}],false]],\"m\":\"$undefined\",\"G\":[\"$12\",[]],\"s\":false,\"S\":true}\n"])</script><script>self.__next_f.push([1,"7:{}\n8:\"$0:f:0:1:2:children:2:children:2:children:2:children:1:props:children:0:props:params\"\n"])</script><script>self.__next_f.push([1,"e:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\na:null\n"])</script><script>self.__next_f.push([1,"13:I[87678,[],\"IconMark\"]\n"])</script><script>self.__next_f.push([1,"c:{\"metadata\":[[\"$\",\"title\",\"0\",{\"children\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:url\",\"content\":\"https://ndprtoolkit.com.ng/docs\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:site_name\",\"content\":\"NDPR Toolkit\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:locale\",\"content\":\"en_US\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:image:width\",\"content\":\"1200\"}],[\"$\",\"meta\",\"10\",{\"property\":\"og:image:height\",\"content\":\"630\"}],[\"$\",\"meta\",\"11\",{\"property\":\"og:image:alt\",\"content\":\"NDPR Toolkit Documentation\"}],[\"$\",\"meta\",\"12\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"13\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"14\",{\"name\":\"twitter:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"15\",{\"name\":\"twitter:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"16\",{\"name\":\"twitter:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"link\",\"17\",{\"rel\":\"icon\",\"href\":\"/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}],[\"$\",\"$L13\",\"18\",{}]],\"error\":null,\"digest\":\"$undefined\"}\n"])</script><script>self.__next_f.push([1,"11:\"$c:metadata\"\n"])</script></body></html>

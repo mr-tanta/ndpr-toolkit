@@ -1,0 +1,253 @@
+<!DOCTYPE html><!--nNmBSmKnQ2_pvKGOTeSNV--><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/4cf2300e9c8272f7-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/93f479601ee12b01-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/ee04a907a4031e88.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-c6680bdaec64fec3.js"/><script src="/_next/static/chunks/8940b91d-bfe9ffe8ad1e95eb.js" async=""></script><script src="/_next/static/chunks/103-895274712af7d9ec.js" async=""></script><script src="/_next/static/chunks/main-app-4af8b26abd7b8b7b.js" async=""></script><script src="/_next/static/chunks/app/layout-1b08044c046035c9.js" async=""></script><script src="/_next/static/chunks/214-54b0b06c8e7569c2.js" async=""></script><script src="/_next/static/chunks/826-b9a036444e812c5f.js" async=""></script><script src="/_next/static/chunks/app/docs/components/consent-management/page-50774b50db08d8ab.js" async=""></script><meta name="next-size-adjust" content=""/><title>NDPR Toolkit Documentation | Implementation Guides &amp; API Reference</title><meta name="description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="keywords" content="NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials"/><meta property="og:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta property="og:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta property="og:url" content="https://ndprtoolkit.com.ng/docs"/><meta property="og:site_name" content="NDPR Toolkit"/><meta property="og:locale" content="en_US"/><meta property="og:image" content="http://localhost:3000/og-docs.png"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image:alt" content="NDPR Toolkit Documentation"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta name="twitter:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="twitter:image" content="http://localhost:3000/og-docs.png"/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__variable_188709 __variable_9a8899 antialiased"><div hidden=""><!--$--><!--/$--></div><div class="min-h-screen bg-gray-50 dark:bg-gray-900"><div class="lg:hidden fixed top-4 left-4 z-50"><button type="button" class="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"><span class="sr-only">Open sidebar</span><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div><div class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col"><div class="flex flex-col flex-grow border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto"><div class="flex items-center flex-shrink-0 px-4 py-5"><a class="flex items-center" href="/"><span class="text-xl font-bold text-gray-900 dark:text-white">NDPR Toolkit</span></a></div><div class="flex-grow flex flex-col"><nav class="flex-1 px-2 pb-4 space-y-1"><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/components"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/dpia-questionnaire">DPIA Questionnaire</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/components/consent-management">Consent Management</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/data-subject-rights">Data Subject Rights</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/breach-notification">Breach Notification</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/privacy-policy-generator">Privacy Policy Generator</a></div></div><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:hidden fixed inset-0 z-40 hidden"><div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div><div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 overflow-y-auto"><div class="flex items-center justify-between px-4 py-5"><a class="flex items-center" href="/"><span class="text-xl font-bold text-gray-900 dark:text-white">NDPR Toolkit</span></a><button type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"><span class="sr-only">Close sidebar</span><svg class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="mt-5 px-2 space-y-1"><nav class="space-y-1"><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/components"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/dpia-questionnaire">DPIA Questionnaire</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/components/consent-management">Consent Management</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/data-subject-rights">Data Subject Rights</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/breach-notification">Breach Notification</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components/privacy-policy-generator">Privacy Policy Generator</a></div></div><div class="space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:pl-64"><main class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="pb-5 border-b border-gray-200 dark:border-gray-700 mb-6"><div class="flex flex-col md:flex-row md:items-center md:justify-between"><div><h1 class="text-3xl font-bold text-gray-900 dark:text-white">Consent Management</h1><p class="mt-2 text-lg text-gray-500 dark:text-gray-400">NDPR-compliant consent management system for handling user consent preferences</p></div><div class="mt-4 md:mt-0 flex space-x-3"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/ndpr-demos">View Demos</a><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/">Back to Home</a></div></div></div><div class="prose prose-blue max-w-none dark:prose-invert"><div class="flex mb-6 space-x-2"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/gdrp-demos/consent">View Demo</a><a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/src/components/consent" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">View Source</a></div><section id="overview" class="mb-8"><h2 class="text-2xl font-bold mb-4">Overview</h2><p class="mb-4">The Consent Management component provides a complete solution for collecting, storing, and managing user consent in compliance with the Nigeria Data Protection Regulation (NDPR). It includes a customizable consent banner, preference management interface, and consent storage system.</p><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md"><h4 class="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Consent Requirements</h4><p class="text-blue-700 dark:text-blue-300 text-sm mb-0">Under the NDPR, consent must be freely given, specific, informed, and unambiguous. The data subject must clearly indicate acceptance through a statement or clear affirmative action. Pre-ticked boxes or silence do not constitute valid consent.</p></div></section><section id="installation" class="mb-8"><h2 class="text-2xl font-bold mb-4">Installation</h2><p class="mb-4">Install the NDPR Toolkit package which includes the Consent Management components:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4"><pre><code>npm install @tantainnovative/ndpr-toolkit</code></pre></div><p>Or if you&#x27;re using yarn:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>yarn add @tantainnovative/ndpr-toolkit</code></pre></div></section><section id="components" class="mb-8"><h2 class="text-2xl font-bold mb-4">Components</h2><p class="mb-4">The Consent Management system includes several components that work together:</p><div class="space-y-6"><div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-xl font-bold mb-2">ConsentBanner</h3><p class="text-gray-600 dark:text-gray-300 mb-4">A cookie consent banner that appears at the bottom of the page when a user first visits your site. Fully customizable with support for multiple consent options.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { ConsentBanner } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+&lt;ConsentBanner 
+  options={[
+    {
+      id: &#x27;necessary&#x27;,
+      label: &#x27;Necessary Cookies&#x27;,
+      description: &#x27;Essential cookies for the website to function.&#x27;,
+      required: true
+    },
+    {
+      id: &#x27;analytics&#x27;,
+      label: &#x27;Analytics Cookies&#x27;,
+      description: &#x27;Cookies that help us understand how you use our website.&#x27;,
+      required: false
+    },
+    {
+      id: &#x27;marketing&#x27;,
+      label: &#x27;Marketing Cookies&#x27;,
+      description: &#x27;Cookies used for marketing purposes.&#x27;,
+      required: false
+    }
+  ]}
+  onSave={(consents) =&gt; console.log(consents)}
+  position=&quot;bottom&quot;
+  showPreferences={true}
+  privacyPolicyUrl=&quot;/privacy-policy&quot;
+/&gt;</code></pre></div></div><div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-xl font-bold mb-2">ConsentPreferences</h3><p class="text-gray-600 dark:text-gray-300 mb-4">A detailed interface for users to manage their consent preferences after the initial consent has been given.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { ConsentPreferences } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+&lt;ConsentPreferences 
+  options={consentOptions}
+  currentConsent={currentConsent}
+  onSave={handleSaveConsent}
+  onReset={handleResetConsent}
+/&gt;</code></pre></div></div><div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-xl font-bold mb-2">ConsentManager</h3><p class="text-gray-600 dark:text-gray-300 mb-4">A higher-order component that manages the consent state and provides methods for checking and updating consent. Works with the useConsent hook to provide a complete consent management solution.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { ConsentManager, useConsent } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function App() {
+  return (
+    &lt;ConsentManager
+      options={[
+        {
+          id: &#x27;necessary&#x27;,
+          label: &#x27;Necessary Cookies&#x27;,
+          description: &#x27;Essential cookies for the website to function.&#x27;,
+          required: true
+        },
+        {
+          id: &#x27;analytics&#x27;,
+          label: &#x27;Analytics Cookies&#x27;,
+          description: &#x27;Cookies that help us understand how you use our website.&#x27;,
+          required: false
+        }
+      ]}
+      storageKey=&quot;my-app-consent&quot;
+      autoLoad={true}
+      autoSave={true}
+    &gt;
+      &lt;MyApp /&gt;
+    &lt;/ConsentManager&gt;
+  );
+}
+
+function MyApp() {
+  const { 
+    consents, 
+    hasConsented, 
+    updateConsent,
+    saveConsents,
+    resetConsents 
+  } = useConsent();
+  
+  // Check if user has given consent for analytics
+  if (hasConsented(&#x27;analytics&#x27;)) {
+    // Initialize analytics
+  }
+  
+  return (
+    &lt;div&gt;
+      {/* Your app content */}
+      &lt;button onClick={() =&gt; updateConsent(&#x27;analytics&#x27;, true)}&gt;Enable Analytics&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></div><div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"><h3 class="text-xl font-bold mb-2">ConsentStorage</h3><p class="text-gray-600 dark:text-gray-300 mb-4">A component for handling the storage and retrieval of consent settings. Supports both local storage and custom storage mechanisms.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { ConsentStorage, ConsentSettings } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+import { useState } from &#x27;react&#x27;;
+
+function ConsentStorageExample() {
+  const [settings, setSettings] = useState&lt;ConsentSettings&gt;({
+    necessary: true,
+    analytics: false,
+    marketing: false,
+    lastUpdated: Date.now()
+  });
+
+  const handleLoad = (loadedSettings: ConsentSettings | null) =&gt; {
+    if (loadedSettings) {
+      setSettings(loadedSettings);
+    }
+  };
+
+  return (
+    &lt;ConsentStorage
+      settings={settings}
+      storageOptions={{
+        key: &#x27;my-app-consent&#x27;,
+        storage: &#x27;localStorage&#x27; // or &#x27;sessionStorage&#x27; or &#x27;cookie&#x27;
+      }}
+      onLoad={handleLoad}
+      onSave={(savedSettings) =&gt; console.log(&#x27;Saved:&#x27;, savedSettings)}
+      autoLoad={true}
+      autoSave={true}
+    &gt;
+      {/* Render prop pattern */}
+      {({ loadSettings, saveSettings, clearSettings, loaded }) =&gt; (
+        &lt;div&gt;
+          &lt;p&gt;Consent settings loaded: {loaded ? &#x27;Yes&#x27; : &#x27;No&#x27;}&lt;/p&gt;
+          &lt;button onClick={() =&gt; saveSettings(settings)}&gt;Save Settings&lt;/button&gt;
+          &lt;button onClick={() =&gt; clearSettings()}&gt;Clear Settings&lt;/button&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/ConsentStorage&gt;
+  );
+}</code></pre></div></div></div></section><section id="usage" class="mb-8"><h2 class="text-2xl font-bold mb-4">Usage</h2><p class="mb-4">Here&#x27;s a complete example of how to implement the consent management system in your application:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { useState, useEffect } from &#x27;react&#x27;;
+import { 
+  ConsentBanner, 
+  ConsentPreferences, 
+  ConsentManager, 
+  ConsentStorage,
+  useConsent 
+} from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+// Define your consent options
+const consentOptions = [
+  {
+    id: &#x27;necessary&#x27;,
+    label: &#x27;Necessary Cookies&#x27;,
+    description: &#x27;Essential cookies for the website to function.&#x27;,
+    required: true
+  },
+  {
+    id: &#x27;analytics&#x27;,
+    label: &#x27;Analytics Cookies&#x27;,
+    description: &#x27;Cookies that help us understand how you use our website.&#x27;,
+    required: false
+  },
+  {
+    id: &#x27;marketing&#x27;,
+    label: &#x27;Marketing Cookies&#x27;,
+    description: &#x27;Cookies used for marketing purposes.&#x27;,
+    required: false
+  }
+];
+
+function App() {
+  const [showPreferences, setShowPreferences] = useState(false);
+  
+  return (
+    &lt;ConsentManager
+      options={consentOptions}
+      storageKey=&quot;my-app-consent&quot;
+    &gt;
+      &lt;div&gt;
+        {/* Your app content */}
+        &lt;header&gt;
+          &lt;nav&gt;
+            {/* ... */}
+            &lt;button onClick={() =&gt; setShowPreferences(true)}&gt;
+              Cookie Preferences
+            &lt;/button&gt;
+          &lt;/nav&gt;
+        &lt;/header&gt;
+        
+        &lt;main&gt;
+          {/* Your main content */}
+        &lt;/main&gt;
+        
+        {/* Cookie preferences modal */}
+        {showPreferences &amp;&amp; (
+          &lt;PreferencesModal 
+            onClose={() =&gt; setShowPreferences(false)} 
+          /&gt;
+        )}
+        
+        {/* Consent banner */}
+        &lt;ConsentBanner 
+          options={consentOptions}
+          position=&quot;bottom&quot;
+          privacyPolicyUrl=&quot;/privacy-policy&quot;
+        /&gt;
+      &lt;/div&gt;
+    &lt;/ConsentManager&gt;
+  );
+}
+
+function PreferencesModal({ onClose }) {
+  const { 
+    consents, 
+    updateConsent, 
+    saveConsents, 
+    resetConsents 
+  } = useConsent();
+  
+  const handleSave = () =&gt; {
+    saveConsents();
+    onClose();
+  };
+  
+  return (
+    &lt;div className=&quot;modal&quot;&gt;
+      &lt;div className=&quot;modal-content&quot;&gt;
+        &lt;h2&gt;Cookie Preferences&lt;/h2&gt;
+        &lt;ConsentPreferences 
+          options={consentOptions}
+          currentConsent={consents}
+          onSave={handleSave}
+          onReset={resetConsents}
+        /&gt;
+        &lt;button onClick={onClose}&gt;Cancel&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Example of using the useConsent hook to check consent
+function AnalyticsComponent() {
+  const { hasConsented } = useConsent();
+  
+  useEffect(() =&gt; {
+    if (hasConsented(&#x27;analytics&#x27;)) {
+      // Initialize analytics
+      console.log(&#x27;Analytics initialized&#x27;);
+    }
+  }, [hasConsented]);
+  
+  return null;
+}</code></pre></div></section><section id="api" class="mb-8"><h2 class="text-2xl font-bold mb-4">API Reference</h2><h3 class="text-xl font-bold mt-8 mb-4">ConsentBanner Props</h3><div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"><thead class="bg-gray-50 dark:bg-gray-800"><tr><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Prop</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Default</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th></tr></thead><tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700"><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">options</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">ConsentOption[]</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of consent options to display</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onSave</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">({ consents: Record&lt;string, boolean&gt; }) =&gt; void</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Callback function called when consent is saved</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">position</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">&#x27;top&#x27; | &#x27;bottom&#x27;</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">&#x27;bottom&#x27;</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Position of the banner on the page</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">title</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">string</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">&#x27;Cookie Consent&#x27;</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Title displayed on the banner</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">description</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">string</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">&#x27;We use cookies...&#x27;</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Description text explaining the purpose of cookies</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">showPreferences</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">boolean</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">true</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether to show the &quot;Preferences&quot; button</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">privacyPolicyUrl</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">string</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">URL to the privacy policy page</td></tr></tbody></table></div><h3 class="text-xl font-bold mt-8 mb-4">ConsentStorage Props</h3><div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"><thead class="bg-gray-50 dark:bg-gray-800"><tr><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Prop</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Default</th><th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th></tr></thead><tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700"><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">settings</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">ConsentSettings</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Current consent settings to store</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">storageOptions</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">ConsentStorageOptions</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{ storageKey: &#x27;ndpr_consent&#x27;, storageType: &#x27;localStorage&#x27; }</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Options for storage mechanism</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onLoad</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">(settings: ConsentSettings | null) =&gt; void</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Callback when settings are loaded</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onSave</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">(settings: ConsentSettings) =&gt; void</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Callback when settings are saved</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">autoLoad</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">boolean</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">true</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether to load settings on mount</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">autoSave</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">boolean</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">true</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether to save settings automatically</td></tr><tr><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">children</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">ReactNode | Function</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td><td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">React nodes or render prop function</td></tr></tbody></table></div><h3 class="text-xl font-bold mt-8 mb-4">ConsentOption Type</h3><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>type ConsentOption = {
+  id: string;
+  label: string;
+  description: string;
+  required?: boolean;
+};</code></pre></div><h3 class="text-xl font-bold mt-8 mb-4">ConsentSettings Type</h3><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>type ConsentSettings = {
+  [key: string]: boolean;
+  lastUpdated: number;
+};</code></pre></div><h3 class="text-xl font-bold mt-8 mb-4">ConsentStorageOptions Type</h3><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>type ConsentStorageOptions = {
+  key: string;
+  storage: &#x27;localStorage&#x27; | &#x27;sessionStorage&#x27; | &#x27;cookie&#x27;;
+  cookieOptions?: {
+    path?: string;
+    domain?: string;
+    secure?: boolean;
+    sameSite?: &#x27;strict&#x27; | &#x27;lax&#x27; | &#x27;none&#x27;;
+    maxAge?: number;
+  };
+};</code></pre></div></section><section id="best-practices" class="mb-8"><h2 class="text-2xl font-bold mb-4">Best Practices</h2><ul class="list-disc pl-6 space-y-2"><li><strong>Clear Language:</strong> Use clear, plain language to explain what each type of cookie does and why you&#x27;re collecting the data.</li><li><strong>No Pre-selected Options:</strong> Don&#x27;t pre-select non-essential cookies. The NDPR requires that consent is freely given and pre-selected checkboxes don&#x27;t constitute valid consent.</li><li><strong>Easy Access to Preferences:</strong> Make it easy for users to access and update their consent preferences at any time.</li><li><strong>Consent Records:</strong> Keep records of when and how consent was obtained. The ConsentManager component automatically tracks consent history.</li><li><strong>Respect User Choices:</strong> Only activate cookies and tracking technologies when the user has given explicit consent for them.</li></ul></section><section id="accessibility" class="mb-8"><h2 class="text-2xl font-bold mb-4">Accessibility</h2><p class="mb-4">The Consent Management components are built with accessibility in mind:</p><ul class="list-disc pl-6 space-y-2"><li>All form elements have proper labels and ARIA attributes</li><li>Focus states are clearly visible</li><li>Color contrast meets WCAG 2.1 AA standards</li><li>Keyboard navigation is fully supported</li><li>The banner is announced to screen readers when it appears</li></ul></section><section id="help-resources" class="mb-8"><h2 class="text-2xl font-bold mb-4">Need Help?</h2><p class="mb-4">If you have questions about implementing the Consent Management system or need assistance with NDPR compliance, check out these resources:</p><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">GitHub Issues</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Report bugs or request features on our GitHub repository.</p><a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">View Issues</a></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">NDPR Resources</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Learn more about NDPR compliance requirements.</p><a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">NDPR Framework</a></div></div></div></section></div></div></main></div></div><!--$--><!--/$--><script src="/_next/static/chunks/webpack-c6680bdaec64fec3.js" id="_R_" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[49223,[\"177\",\"static/chunks/app/layout-1b08044c046035c9.js\"],\"ErrorBoundary\"]\n3:I[31158,[],\"\"]\n4:I[91260,[],\"\"]\n5:I[67895,[],\"ClientPageRoot\"]\n6:I[76351,[\"214\",\"static/chunks/214-54b0b06c8e7569c2.js\",\"826\",\"static/chunks/826-b9a036444e812c5f.js\",\"592\",\"static/chunks/app/docs/components/consent-management/page-50774b50db08d8ab.js\"],\"default\"]\n9:I[6815,[],\"OutletBoundary\"]\nb:I[92126,[],\"AsyncMetadataOutlet\"]\nd:I[6815,[],\"ViewportBoundary\"]\nf:I[6815,[],\"MetadataBoundary\"]\n10:\"$Sreact.suspense\"\n12:I[32142,[],\"\"]\n:HL[\"/_next/static/media/4cf2300e9c8272f7-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/93f479601ee12b01-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/css/ee04a907a4031e88.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"nNmBSmKnQ2-pvKGOTeSNV\",\"p\":\"\",\"c\":[\"\",\"docs\",\"components\",\"consent-management\"],\"i\":false,\"f\":[[[\"\",{\"children\":[\"docs\",{\"children\":[\"components\",{\"children\":[\"consent-management\",{\"children\":[\"__PAGE__\",{}]}]}]}]},\"$undefined\",\"$undefined\",true],[\"\",[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/ee04a907a4031e88.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__variable_188709 __variable_9a8899 antialiased\",\"children\":[\"$\",\"$L2\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":404}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]}]}]]}],{\"children\":[\"docs\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"components\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"consent-management\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"__PAGE__\",[\"$\",\"$1\",\"c\",{\"children\":[[\"$\",\"$L5\",null,{\"Component\":\"$6\",\"searchParams\":{},\"params\":{},\"promises\":[\"$@7\",\"$@8\"]}],null,[\"$\",\"$L9\",null,{\"children\":[\"$La\",[\"$\",\"$Lb\",null,{\"promise\":\"$@c\"}]]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],[\"$\",\"$1\",\"h\",{\"children\":[null,[[\"$\",\"$Ld\",null,{\"children\":\"$Le\"}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]],[\"$\",\"$Lf\",null,{\"children\":[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$10\",null,{\"fallback\":null,\"children\":\"$L11\"}]}]}]]}],false]],\"m\":\"$undefined\",\"G\":[\"$12\",[]],\"s\":false,\"S\":true}\n"])</script><script>self.__next_f.push([1,"7:{}\n8:\"$0:f:0:1:2:children:2:children:2:children:2:children:1:props:children:0:props:params\"\n"])</script><script>self.__next_f.push([1,"e:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\na:null\n"])</script><script>self.__next_f.push([1,"13:I[87678,[],\"IconMark\"]\n"])</script><script>self.__next_f.push([1,"c:{\"metadata\":[[\"$\",\"title\",\"0\",{\"children\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:url\",\"content\":\"https://ndprtoolkit.com.ng/docs\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:site_name\",\"content\":\"NDPR Toolkit\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:locale\",\"content\":\"en_US\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:image:width\",\"content\":\"1200\"}],[\"$\",\"meta\",\"10\",{\"property\":\"og:image:height\",\"content\":\"630\"}],[\"$\",\"meta\",\"11\",{\"property\":\"og:image:alt\",\"content\":\"NDPR Toolkit Documentation\"}],[\"$\",\"meta\",\"12\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"13\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"14\",{\"name\":\"twitter:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"15\",{\"name\":\"twitter:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"16\",{\"name\":\"twitter:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"link\",\"17\",{\"rel\":\"icon\",\"href\":\"/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}],[\"$\",\"$L13\",\"18\",{}]],\"error\":null,\"digest\":\"$undefined\"}\n"])</script><script>self.__next_f.push([1,"11:\"$c:metadata\"\n"])</script></body></html>

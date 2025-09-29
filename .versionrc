@@ -1,0 +1,17 @@
+{
+  "types": [
+    {"type": "feat", "section": "Features"},
+    {"type": "fix", "section": "Bug Fixes"},
+    {"type": "chore", "hidden": true},
+    {"type": "docs", "section": "Documentation"},
+    {"type": "style", "hidden": true},
+    {"type": "refactor", "section": "Code Refactoring"},
+    {"type": "perf", "section": "Performance Improvements"},
+    {"type": "test", "hidden": true},
+    {"type": "build", "hidden": true},
+    {"type": "ci", "hidden": true}
+  ],
+  "commitUrlFormat": "https://github.com/tantainnovative/ndpr-toolkit/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/tantainnovative/ndpr-toolkit/compare/{{previousTag}}...{{currentTag}}",
+  "releaseCommitMessageFormat": "chore(release): {{currentTag}}"
+}

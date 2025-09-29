@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+# commitlint disabled - install commitlint to enable
+# npx --no -- commitlint --edit ${1}

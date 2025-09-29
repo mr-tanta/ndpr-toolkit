@@ -1,0 +1,276 @@
+<!DOCTYPE html><!--nNmBSmKnQ2_pvKGOTeSNV--><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/4cf2300e9c8272f7-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/93f479601ee12b01-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/ee04a907a4031e88.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-c6680bdaec64fec3.js"/><script src="/_next/static/chunks/8940b91d-bfe9ffe8ad1e95eb.js" async=""></script><script src="/_next/static/chunks/103-895274712af7d9ec.js" async=""></script><script src="/_next/static/chunks/main-app-4af8b26abd7b8b7b.js" async=""></script><script src="/_next/static/chunks/app/layout-1b08044c046035c9.js" async=""></script><script src="/_next/static/chunks/214-54b0b06c8e7569c2.js" async=""></script><script src="/_next/static/chunks/312-46d1e841fe1a290a.js" async=""></script><script src="/_next/static/chunks/app/docs/guides/conducting-dpia/page-1fb629083d2d2f3e.js" async=""></script><meta name="next-size-adjust" content=""/><title>NDPR Toolkit Documentation | Implementation Guides &amp; API Reference</title><meta name="description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="keywords" content="NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials"/><meta property="og:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta property="og:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta property="og:url" content="https://ndprtoolkit.com.ng/docs"/><meta property="og:site_name" content="NDPR Toolkit"/><meta property="og:locale" content="en_US"/><meta property="og:image" content="http://localhost:3000/og-docs.png"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image:alt" content="NDPR Toolkit Documentation"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta name="twitter:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="twitter:image" content="http://localhost:3000/og-docs.png"/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__variable_188709 __variable_9a8899 antialiased"><div hidden=""><!--$--><!--/$--></div><div class="min-h-screen bg-gray-50 dark:bg-gray-900"><div class="lg:hidden fixed top-4 left-4 z-50"><button type="button" class="p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-800"><span class="sr-only">Open sidebar</span><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div><div class="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0"><div class="flex flex-col flex-grow bg-white dark:bg-gray-800 shadow-lg overflow-y-auto"><div class="flex items-center flex-shrink-0 px-4 py-5 border-b border-gray-200 dark:border-gray-700"><a class="flex items-center" href="/"><span class="text-xl font-semibold text-gray-900 dark:text-white">NDPR Toolkit</span></a></div><div class="mt-5 flex-1 flex flex-col"><nav class="flex-1 px-4 space-y-1"><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/ndpr-compliance-checklist">NDPR Compliance Checklist</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides/conducting-dpia">Conducting a DPIA<span class="ml-auto"><svg class="h-4 w-4 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></span></a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/managing-consent">Managing Consent</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/data-subject-requests">Handling Data Subject Requests</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/breach-notification-process">Breach Notification Process</a></div></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:hidden fixed inset-0 z-40 hidden" aria-hidden="true"><div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div><div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 shadow-lg overflow-y-auto"><div class="flex items-center justify-between px-4 py-5 border-b border-gray-200 dark:border-gray-700"><a class="flex items-center" href="/"><span class="text-xl font-semibold text-gray-900 dark:text-white">NDPR Toolkit</span></a><button type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"><span class="sr-only">Close sidebar</span><svg class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="mt-5 flex-1 flex flex-col"><nav class="flex-1 px-4 space-y-1"><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/ndpr-compliance-checklist">NDPR Compliance Checklist</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides/conducting-dpia">Conducting a DPIA</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/managing-consent">Managing Consent</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/data-subject-requests">Handling Data Subject Requests</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/breach-notification-process">Breach Notification Process</a></div></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:pl-64"><main class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="pb-5 border-b border-gray-200 dark:border-gray-700 mb-6"><div class="flex flex-col md:flex-row md:items-center md:justify-between"><div><h1 class="text-3xl font-bold text-gray-900 dark:text-white">Conducting a Data Protection Impact Assessment</h1><p class="mt-2 text-lg text-gray-500 dark:text-gray-400">Step-by-step guide to conducting a DPIA using the NDPR Toolkit</p></div><div class="mt-4 md:mt-0 flex space-x-3"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/ndpr-demos">View Demos</a><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/">Back to Home</a></div></div></div><div class="prose prose-blue max-w-none dark:prose-invert"><div class="flex mb-6 space-x-2"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/demo/dpia">View DPIA Demo</a><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/docs/components/dpia-questionnaire">DPIA Component Docs</a></div><section id="introduction" class="mb-8"><h2 class="text-2xl font-bold mb-4">Introduction</h2><p class="mb-4">A Data Protection Impact Assessment (DPIA) is a process designed to help organizations identify and minimize the data protection risks of a project. Under the Nigeria Data Protection Regulation (NDPR), organizations are required to conduct DPIAs for processing activities that are likely to result in a high risk to the rights and freedoms of individuals.</p><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md"><h4 class="text-blue-800 dark:text-blue-200 font-medium mb-2">When is a DPIA Required?</h4><p class="text-blue-700 dark:text-blue-300 text-sm mb-0">Under the NDPR, a DPIA is mandatory when processing is likely to result in a high risk to individuals, particularly when using new technologies. This includes:</p><ul class="list-disc pl-6 mt-2 text-blue-700 dark:text-blue-300 text-sm"><li>Systematic and extensive profiling with significant effects</li><li>Processing of special categories of data on a large scale</li><li>Systematic monitoring of publicly accessible areas</li><li>Processing involving sensitive personal data</li><li>Processing data relating to vulnerable subjects (e.g., children)</li></ul></div></section><section id="dpia-process" class="mb-8"><h2 class="text-2xl font-bold mb-4">The DPIA Process</h2><p class="mb-4">The NDPR Toolkit provides a structured approach to conducting DPIAs through the DPIAQuestionnaire component. Here&#x27;s how to implement a complete DPIA process in your organization:</p><div class="relative border-l-2 border-blue-500 pl-8 pb-8 space-y-10"><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">1</span></div><h3 class="text-xl font-bold">Identify the Need for a DPIA</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Before starting a DPIA, determine whether your processing activity requires one. Consider the nature, scope, context, and purposes of the processing, as well as the potential risks to individuals.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Implementation Tip</h4><p class="text-sm">Create a simple screening questionnaire to help project managers determine if a DPIA is needed. This can be implemented using the NDPR Toolkit&#x27;s form components.</p></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">2</span></div><h3 class="text-xl font-bold">Describe the Processing</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Document the nature, scope, context, and purposes of the processing. Include:</p><ul class="list-disc pl-6 mt-2 text-gray-600 dark:text-gray-300"><li>How data is collected, used, stored, and deleted</li><li>Who has access to the data</li><li>Who the data is shared with</li><li>The types of personal data processed</li><li>The retention periods for the data</li></ul><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { DPIAQuestionnaire } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+// Define the processing description questions
+const processingQuestions = [
+  {
+    id: &#x27;dataTypes&#x27;,
+    question: &#x27;What types of personal data will be processed?&#x27;,
+    type: &#x27;checkbox&#x27;,
+    options: [
+      { value: &#x27;basic&#x27;, label: &#x27;Basic contact information&#x27; },
+      { value: &#x27;financial&#x27;, label: &#x27;Financial information&#x27; },
+      { value: &#x27;health&#x27;, label: &#x27;Health information&#x27; },
+      { value: &#x27;biometric&#x27;, label: &#x27;Biometric data&#x27; },
+      { value: &#x27;location&#x27;, label: &#x27;Location data&#x27; },
+      { value: &#x27;other&#x27;, label: &#x27;Other&#x27; }
+    ]
+  },
+  {
+    id: &#x27;processingPurpose&#x27;,
+    question: &#x27;What is the purpose of the processing?&#x27;,
+    type: &#x27;textarea&#x27;
+  },
+  {
+    id: &#x27;dataSubjects&#x27;,
+    question: &#x27;Who are the data subjects?&#x27;,
+    type: &#x27;checkbox&#x27;,
+    options: [
+      { value: &#x27;customers&#x27;, label: &#x27;Customers&#x27; },
+      { value: &#x27;employees&#x27;, label: &#x27;Employees&#x27; },
+      { value: &#x27;children&#x27;, label: &#x27;Children&#x27; },
+      { value: &#x27;patients&#x27;, label: &#x27;Patients&#x27; },
+      { value: &#x27;other&#x27;, label: &#x27;Other&#x27; }
+    ]
+  }
+];
+
+function ProcessingDescriptionStep() {
+  const handleSubmit = (answers) =&gt; {
+    // Save answers and proceed to next step
+    console.log(answers);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Step 2: Describe the Processing&lt;/h2&gt;
+      &lt;DPIAQuestionnaire
+        questions={processingQuestions}
+        onSubmit={handleSubmit}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">3</span></div><h3 class="text-xl font-bold">Identify and Assess Risks</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Identify potential risks to individuals&#x27; rights and freedoms. For each risk, assess:</p><ul class="list-disc pl-6 mt-2 text-gray-600 dark:text-gray-300"><li>The likelihood of the risk occurring (low, medium, high)</li><li>The severity of the impact if it does occur (low, medium, high)</li><li>The overall risk level (combination of likelihood and severity)</li></ul><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { DPIAQuestionnaire } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+// Define risk assessment questions
+const riskQuestions = [
+  {
+    id: &#x27;unauthorizedAccess&#x27;,
+    question: &#x27;Risk: Unauthorized access to personal data&#x27;,
+    type: &#x27;riskAssessment&#x27;,
+    subQuestions: [
+      {
+        id: &#x27;likelihood&#x27;,
+        question: &#x27;Likelihood of occurrence&#x27;,
+        type: &#x27;select&#x27;,
+        options: [
+          { value: &#x27;low&#x27;, label: &#x27;Low&#x27; },
+          { value: &#x27;medium&#x27;, label: &#x27;Medium&#x27; },
+          { value: &#x27;high&#x27;, label: &#x27;High&#x27; }
+        ]
+      },
+      {
+        id: &#x27;impact&#x27;,
+        question: &#x27;Potential impact&#x27;,
+        type: &#x27;select&#x27;,
+        options: [
+          { value: &#x27;low&#x27;, label: &#x27;Low&#x27; },
+          { value: &#x27;medium&#x27;, label: &#x27;Medium&#x27; },
+          { value: &#x27;high&#x27;, label: &#x27;High&#x27; }
+        ]
+      },
+      {
+        id: &#x27;mitigation&#x27;,
+        question: &#x27;Possible mitigation measures&#x27;,
+        type: &#x27;textarea&#x27;
+      }
+    ]
+  },
+  // Add more risks as needed
+];
+
+function RiskAssessmentStep() {
+  const handleSubmit = (answers) =&gt; {
+    // Calculate overall risk levels and proceed to next step
+    console.log(answers);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Step 3: Identify and Assess Risks&lt;/h2&gt;
+      &lt;DPIAQuestionnaire
+        questions={riskQuestions}
+        onSubmit={handleSubmit}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">4</span></div><h3 class="text-xl font-bold">Identify Measures to Mitigate Risks</h3><p class="text-gray-600 dark:text-gray-300 mt-2">For each identified risk, determine measures to reduce or eliminate the risk. Consider:</p><ul class="list-disc pl-6 mt-2 text-gray-600 dark:text-gray-300"><li>Technical measures (e.g., encryption, access controls)</li><li>Organizational measures (e.g., policies, training)</li><li>Legal measures (e.g., contracts with processors)</li></ul><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Implementation Tip</h4><p class="text-sm">Create a library of common mitigation measures that can be reused across DPIAs. This helps ensure consistency and saves time when conducting multiple assessments.</p></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">5</span></div><h3 class="text-xl font-bold">Document the DPIA</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Compile all the information gathered in the previous steps into a comprehensive DPIA report. The report should include:</p><ul class="list-disc pl-6 mt-2 text-gray-600 dark:text-gray-300"><li>A description of the processing operations</li><li>The purpose of the processing</li><li>An assessment of the necessity and proportionality of the processing</li><li>The risks to individuals</li><li>The measures implemented to address those risks</li><li>The outcome of the assessment (whether to proceed with the processing)</li></ul><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { DPIAReport } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function GenerateDPIAReport({ dpiaData }) {
+  const handleExport = (format) =&gt; {
+    // Export the DPIA report in the specified format
+    console.log(`Exporting DPIA report in ${format} format`);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;DPIA Report&lt;/h2&gt;
+      &lt;DPIAReport
+        data={dpiaData}
+        onExport={handleExport}
+        exportFormats={[&#x27;pdf&#x27;, &#x27;docx&#x27;, &#x27;html&#x27;]}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">6</span></div><h3 class="text-xl font-bold">Implement and Review</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Implement the identified mitigation measures and regularly review the DPIA, especially when there are changes to the processing activity.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Implementation Tip</h4><p class="text-sm">Set up a review schedule for each DPIA, with automatic reminders for stakeholders. The NDPR Toolkit can be integrated with your calendar system to facilitate this.</p></div></div></div></section><section id="complete-implementation" class="mb-8"><h2 class="text-2xl font-bold mb-4">Complete Implementation Example</h2><p class="mb-4">Here&#x27;s a complete example of how to implement a multi-step DPIA process using the NDPR Toolkit:</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { useState } from &#x27;react&#x27;;
+import { 
+  DPIAQuestionnaire, 
+  DPIAReport,
+  StepIndicator
+} from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+// Import question sets for each step
+import { 
+  screeningQuestions,
+  processingQuestions,
+  riskQuestions,
+  mitigationQuestions
+} from &#x27;./dpia-questions&#x27;;
+
+function DPIAProcess() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [dpiaData, setDpiaData] = useState({
+    screening: null,
+    processing: null,
+    risks: null,
+    mitigation: null
+  });
+  
+  const steps = [
+    { id: &#x27;screening&#x27;, label: &#x27;Screening&#x27; },
+    { id: &#x27;processing&#x27;, label: &#x27;Processing Description&#x27; },
+    { id: &#x27;risks&#x27;, label: &#x27;Risk Assessment&#x27; },
+    { id: &#x27;mitigation&#x27;, label: &#x27;Mitigation Measures&#x27; },
+    { id: &#x27;report&#x27;, label: &#x27;DPIA Report&#x27; }
+  ];
+  
+  const handleScreeningSubmit = (answers) =&gt; {
+    setDpiaData({ ...dpiaData, screening: answers });
+    
+    // Check if a DPIA is required based on screening answers
+    const dpiaRequired = answers.some(answer =&gt; 
+      answer.id === &#x27;highRiskProcessing&#x27; &amp;&amp; answer.value === true
+    );
+    
+    if (dpiaRequired) {
+      setCurrentStep(1); // Proceed to processing description
+    } else {
+      // Skip to final step with a simplified report
+      setCurrentStep(4);
+    }
+  };
+  
+  const handleProcessingSubmit = (answers) =&gt; {
+    setDpiaData({ ...dpiaData, processing: answers });
+    setCurrentStep(2); // Proceed to risk assessment
+  };
+  
+  const handleRiskSubmit = (answers) =&gt; {
+    setDpiaData({ ...dpiaData, risks: answers });
+    setCurrentStep(3); // Proceed to mitigation measures
+  };
+  
+  const handleMitigationSubmit = (answers) =&gt; {
+    setDpiaData({ ...dpiaData, mitigation: answers });
+    setCurrentStep(4); // Proceed to DPIA report
+  };
+  
+  const handleExport = (format) =&gt; {
+    // Export the DPIA report
+    console.log(`Exporting DPIA report in ${format} format`);
+  };
+  
+  return (
+    &lt;div className=&quot;max-w-4xl mx-auto&quot;&gt;
+      &lt;h1 className=&quot;text-2xl font-bold mb-6&quot;&gt;Data Protection Impact Assessment&lt;/h1&gt;
+      
+      &lt;StepIndicator 
+        steps={steps} 
+        currentStep={currentStep} 
+        onStepClick={(step) =&gt; {
+          // Only allow navigation to completed steps
+          if (step &lt; currentStep) {
+            setCurrentStep(step);
+          }
+        }}
+      /&gt;
+      
+      &lt;div className=&quot;mt-8&quot;&gt;
+        {currentStep === 0 &amp;&amp; (
+          &lt;div&gt;
+            &lt;h2 className=&quot;text-xl font-bold mb-4&quot;&gt;Step 1: DPIA Screening&lt;/h2&gt;
+            &lt;p className=&quot;mb-4&quot;&gt;
+              Answer the following questions to determine if a DPIA is required for your processing activity.
+            &lt;/p&gt;
+            &lt;DPIAQuestionnaire
+              questions={screeningQuestions}
+              onSubmit={handleScreeningSubmit}
+            /&gt;
+          &lt;/div&gt;
+        )}
+        
+        {currentStep === 1 &amp;&amp; (
+          &lt;div&gt;
+            &lt;h2 className=&quot;text-xl font-bold mb-4&quot;&gt;Step 2: Processing Description&lt;/h2&gt;
+            &lt;p className=&quot;mb-4&quot;&gt;
+              Provide details about the processing activity.
+            &lt;/p&gt;
+            &lt;DPIAQuestionnaire
+              questions={processingQuestions}
+              onSubmit={handleProcessingSubmit}
+            /&gt;
+          &lt;/div&gt;
+        )}
+        
+        {currentStep === 2 &amp;&amp; (
+          &lt;div&gt;
+            &lt;h2 className=&quot;text-xl font-bold mb-4&quot;&gt;Step 3: Risk Assessment&lt;/h2&gt;
+            &lt;p className=&quot;mb-4&quot;&gt;
+              Identify and assess the risks associated with the processing activity.
+            &lt;/p&gt;
+            &lt;DPIAQuestionnaire
+              questions={riskQuestions}
+              onSubmit={handleRiskSubmit}
+            /&gt;
+          &lt;/div&gt;
+        )}
+        
+        {currentStep === 3 &amp;&amp; (
+          &lt;div&gt;
+            &lt;h2 className=&quot;text-xl font-bold mb-4&quot;&gt;Step 4: Mitigation Measures&lt;/h2&gt;
+            &lt;p className=&quot;mb-4&quot;&gt;
+              Identify measures to mitigate the identified risks.
+            &lt;/p&gt;
+            &lt;DPIAQuestionnaire
+              questions={mitigationQuestions}
+              onSubmit={handleMitigationSubmit}
+            /&gt;
+          &lt;/div&gt;
+        )}
+        
+        {currentStep === 4 &amp;&amp; (
+          &lt;div&gt;
+            &lt;h2 className=&quot;text-xl font-bold mb-4&quot;&gt;DPIA Report&lt;/h2&gt;
+            &lt;p className=&quot;mb-4&quot;&gt;
+              Review and export the DPIA report.
+            &lt;/p&gt;
+            &lt;DPIAReport
+              data={dpiaData}
+              onExport={handleExport}
+              exportFormats={[&#x27;pdf&#x27;, &#x27;docx&#x27;, &#x27;html&#x27;]}
+            /&gt;
+          &lt;/div&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></section><section id="best-practices" class="mb-8"><h2 class="text-2xl font-bold mb-4">Best Practices</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Start Early</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Begin the DPIA process as early as possible in the project lifecycle, ideally during the planning phase. This allows you to identify and address risks before significant resources are committed.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Involve Stakeholders</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Include relevant stakeholders in the DPIA process, such as IT, legal, business units, and the Data Protection Officer. Different perspectives help identify risks that might otherwise be overlooked.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Be Thorough</h3><p class="text-gray-600 dark:text-gray-300 text-sm">don&#x27;t rush the DPIA process. Take the time to thoroughly identify and assess all potential risks. A comprehensive DPIA is more effective at protecting both individuals and your organization.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Document Everything</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Maintain detailed documentation of the DPIA process, including all decisions made and the rationale behind them. This is essential for demonstrating compliance with the NDPR.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Regular Reviews</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Review and update DPIAs regularly, especially when there are changes to the processing activity or the associated risks. Data protection is an ongoing process, not a one-time exercise.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Integrate with Existing Processes</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Integrate the DPIA process with existing project management and risk assessment processes in your organization. This helps ensure that DPIAs become a standard part of your operations.</p></div></div></div></section><section id="ndpr-compliance" class="mb-8"><h2 class="text-2xl font-bold mb-4">NDPR Compliance Considerations</h2><p class="mb-4">When conducting a DPIA to comply with the NDPR, keep the following considerations in mind:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Documentation:</strong> The NDPR requires organizations to document their DPIAs as part of their accountability obligations.</li><li><strong>DPO Involvement:</strong> If your organization has a Data Protection Officer (DPO), they should be involved in the DPIA process.</li><li><strong>Consultation:</strong> In some cases, you may need to consult with NITDA before proceeding with high-risk processing.</li><li><strong>Transparency:</strong> Consider publishing a summary of your DPIA to demonstrate transparency to data subjects.</li><li><strong>Ongoing Compliance:</strong> Use the DPIA as a tool for ongoing compliance, not just a one-time assessment.</li></ul></section><section id="resources" class="mb-8"><h2 class="text-2xl font-bold mb-4">Additional Resources</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">NDPR Implementation Framework</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Official guidance on implementing the NDPR, including DPIA requirements.</p><a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">View Framework</a></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">DPIA Component Documentation</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Technical documentation for the DPIA Questionnaire component.</p><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/docs/components/dpia-questionnaire">View Documentation</a></div></div></div></section></div></div></main></div></div><!--$--><!--/$--><script src="/_next/static/chunks/webpack-c6680bdaec64fec3.js" id="_R_" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[49223,[\"177\",\"static/chunks/app/layout-1b08044c046035c9.js\"],\"ErrorBoundary\"]\n3:I[31158,[],\"\"]\n4:I[91260,[],\"\"]\n5:I[67895,[],\"ClientPageRoot\"]\n6:I[84723,[\"214\",\"static/chunks/214-54b0b06c8e7569c2.js\",\"312\",\"static/chunks/312-46d1e841fe1a290a.js\",\"466\",\"static/chunks/app/docs/guides/conducting-dpia/page-1fb629083d2d2f3e.js\"],\"default\"]\n9:I[6815,[],\"OutletBoundary\"]\nb:I[92126,[],\"AsyncMetadataOutlet\"]\nd:I[6815,[],\"ViewportBoundary\"]\nf:I[6815,[],\"MetadataBoundary\"]\n10:\"$Sreact.suspense\"\n12:I[32142,[],\"\"]\n:HL[\"/_next/static/media/4cf2300e9c8272f7-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/93f479601ee12b01-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/css/ee04a907a4031e88.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"nNmBSmKnQ2-pvKGOTeSNV\",\"p\":\"\",\"c\":[\"\",\"docs\",\"guides\",\"conducting-dpia\"],\"i\":false,\"f\":[[[\"\",{\"children\":[\"docs\",{\"children\":[\"guides\",{\"children\":[\"conducting-dpia\",{\"children\":[\"__PAGE__\",{}]}]}]}]},\"$undefined\",\"$undefined\",true],[\"\",[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/ee04a907a4031e88.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__variable_188709 __variable_9a8899 antialiased\",\"children\":[\"$\",\"$L2\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":404}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]}]}]]}],{\"children\":[\"docs\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"guides\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"conducting-dpia\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"__PAGE__\",[\"$\",\"$1\",\"c\",{\"children\":[[\"$\",\"$L5\",null,{\"Component\":\"$6\",\"searchParams\":{},\"params\":{},\"promises\":[\"$@7\",\"$@8\"]}],null,[\"$\",\"$L9\",null,{\"children\":[\"$La\",[\"$\",\"$Lb\",null,{\"promise\":\"$@c\"}]]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],[\"$\",\"$1\",\"h\",{\"children\":[null,[[\"$\",\"$Ld\",null,{\"children\":\"$Le\"}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]],[\"$\",\"$Lf\",null,{\"children\":[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$10\",null,{\"fallback\":null,\"children\":\"$L11\"}]}]}]]}],false]],\"m\":\"$undefined\",\"G\":[\"$12\",[]],\"s\":false,\"S\":true}\n"])</script><script>self.__next_f.push([1,"7:{}\n8:\"$0:f:0:1:2:children:2:children:2:children:2:children:1:props:children:0:props:params\"\n"])</script><script>self.__next_f.push([1,"e:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\na:null\n"])</script><script>self.__next_f.push([1,"13:I[87678,[],\"IconMark\"]\n"])</script><script>self.__next_f.push([1,"c:{\"metadata\":[[\"$\",\"title\",\"0\",{\"children\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:url\",\"content\":\"https://ndprtoolkit.com.ng/docs\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:site_name\",\"content\":\"NDPR Toolkit\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:locale\",\"content\":\"en_US\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:image:width\",\"content\":\"1200\"}],[\"$\",\"meta\",\"10\",{\"property\":\"og:image:height\",\"content\":\"630\"}],[\"$\",\"meta\",\"11\",{\"property\":\"og:image:alt\",\"content\":\"NDPR Toolkit Documentation\"}],[\"$\",\"meta\",\"12\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"13\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"14\",{\"name\":\"twitter:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"15\",{\"name\":\"twitter:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"16\",{\"name\":\"twitter:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"link\",\"17\",{\"rel\":\"icon\",\"href\":\"/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}],[\"$\",\"$L13\",\"18\",{}]],\"error\":null,\"digest\":\"$undefined\"}\n"])</script><script>self.__next_f.push([1,"11:\"$c:metadata\"\n"])</script></body></html>

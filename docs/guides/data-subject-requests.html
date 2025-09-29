@@ -1,0 +1,307 @@
+<!DOCTYPE html><!--nNmBSmKnQ2_pvKGOTeSNV--><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/4cf2300e9c8272f7-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/93f479601ee12b01-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/ee04a907a4031e88.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-c6680bdaec64fec3.js"/><script src="/_next/static/chunks/8940b91d-bfe9ffe8ad1e95eb.js" async=""></script><script src="/_next/static/chunks/103-895274712af7d9ec.js" async=""></script><script src="/_next/static/chunks/main-app-4af8b26abd7b8b7b.js" async=""></script><script src="/_next/static/chunks/app/layout-1b08044c046035c9.js" async=""></script><script src="/_next/static/chunks/214-54b0b06c8e7569c2.js" async=""></script><script src="/_next/static/chunks/312-46d1e841fe1a290a.js" async=""></script><script src="/_next/static/chunks/app/docs/guides/data-subject-requests/page-b72ad9ef6397e580.js" async=""></script><meta name="next-size-adjust" content=""/><title>NDPR Toolkit Documentation | Implementation Guides &amp; API Reference</title><meta name="description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="keywords" content="NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials"/><meta property="og:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta property="og:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta property="og:url" content="https://ndprtoolkit.com.ng/docs"/><meta property="og:site_name" content="NDPR Toolkit"/><meta property="og:locale" content="en_US"/><meta property="og:image" content="http://localhost:3000/og-docs.png"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image:alt" content="NDPR Toolkit Documentation"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="NDPR Toolkit Documentation | Implementation Guides &amp; API Reference"/><meta name="twitter:description" content="Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information."/><meta name="twitter:image" content="http://localhost:3000/og-docs.png"/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16"/><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__variable_188709 __variable_9a8899 antialiased"><div hidden=""><!--$--><!--/$--></div><div class="min-h-screen bg-gray-50 dark:bg-gray-900"><div class="lg:hidden fixed top-4 left-4 z-50"><button type="button" class="p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-800"><span class="sr-only">Open sidebar</span><svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button></div><div class="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0"><div class="flex flex-col flex-grow bg-white dark:bg-gray-800 shadow-lg overflow-y-auto"><div class="flex items-center flex-shrink-0 px-4 py-5 border-b border-gray-200 dark:border-gray-700"><a class="flex items-center" href="/"><span class="text-xl font-semibold text-gray-900 dark:text-white">NDPR Toolkit</span></a></div><div class="mt-5 flex-1 flex flex-col"><nav class="flex-1 px-4 space-y-1"><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/ndpr-compliance-checklist">NDPR Compliance Checklist</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/conducting-dpia">Conducting a DPIA</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/managing-consent">Managing Consent</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides/data-subject-requests">Handling Data Subject Requests<span class="ml-auto"><svg class="h-4 w-4 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></span></a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/breach-notification-process">Breach Notification Process</a></div></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:hidden fixed inset-0 z-40 hidden" aria-hidden="true"><div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div><div class="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 shadow-lg overflow-y-auto"><div class="flex items-center justify-between px-4 py-5 border-b border-gray-200 dark:border-gray-700"><a class="flex items-center" href="/"><span class="text-xl font-semibold text-gray-900 dark:text-white">NDPR Toolkit</span></a><button type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"><span class="sr-only">Close sidebar</span><svg class="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="mt-5 flex-1 flex flex-col"><nav class="flex-1 px-4 space-y-1"><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></span>Getting Started</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/components"><span class="mr-3 text-gray-500 dark:text-gray-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg></span>Components</a></div><div class="py-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides"><span class="mr-3 text-blue-500 dark:text-blue-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></span>Implementation Guides</a><div class="mt-1 ml-8 space-y-1"><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/ndpr-compliance-checklist">NDPR Compliance Checklist</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/conducting-dpia">Conducting a DPIA</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/managing-consent">Managing Consent</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200" href="/docs/guides/data-subject-requests">Handling Data Subject Requests</a><a class="group flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700" href="/docs/guides/breach-notification-process">Breach Notification Process</a></div></div></nav></div><div class="p-4 border-t border-gray-200 dark:border-gray-700"><a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5 w-full flex items-center" data-slot="button"><svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>GitHub</a></div></div></div><div class="lg:pl-64"><main class="py-10"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="pb-5 border-b border-gray-200 dark:border-gray-700 mb-6"><div class="flex flex-col md:flex-row md:items-center md:justify-between"><div><h1 class="text-3xl font-bold text-gray-900 dark:text-white">Handling Data Subject Requests</h1><p class="mt-2 text-lg text-gray-500 dark:text-gray-400">Best practices for handling data subject rights requests with the NDPR Toolkit</p></div><div class="mt-4 md:mt-0 flex space-x-3"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/ndpr-demos">View Demos</a><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/">Back to Home</a></div></div></div><div class="prose prose-blue max-w-none dark:prose-invert"><div class="flex mb-6 space-x-2"><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/demo/data-subject-rights">View DSR Demo</a><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/docs/components/data-subject-rights">DSR Component Docs</a></div><section id="introduction" class="mb-8"><h2 class="text-2xl font-bold mb-4">Introduction</h2><p class="mb-4">The Nigeria Data Protection Regulation (NDPR) grants individuals (data subjects) specific rights regarding their personal data. Organizations must have processes in place to receive, verify, and respond to these requests within the timeframes specified by the regulation. This guide will help you implement a comprehensive system for handling data subject requests using the NDPR Toolkit.</p><div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md"><h4 class="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Data Subject Rights</h4><p class="text-blue-700 dark:text-blue-300 text-sm mb-0">Under the NDPR, data subjects have the following rights:</p><ul class="list-disc pl-6 mt-2 text-blue-700 dark:text-blue-300 text-sm"><li><strong>Right of Access:</strong> To obtain confirmation of whether their data is being processed and access to that data</li><li><strong>Right to Rectification:</strong> To have inaccurate personal data corrected</li><li><strong>Right to Erasure:</strong> To have their personal data deleted in certain circumstances</li><li><strong>Right to Restrict Processing:</strong> To limit how their data is used</li><li><strong>Right to Data Portability:</strong> To receive their data in a structured, commonly used format</li><li><strong>Right to Object:</strong> To object to certain types of processing, such as direct marketing</li></ul></div></section><section id="dsr-process" class="mb-8"><h2 class="text-2xl font-bold mb-4">The Data Subject Request Process</h2><p class="mb-4">A complete data subject request (DSR) system covers the entire lifecycle of a request, from submission to resolution. The NDPR Toolkit provides components for each stage of this process:</p><div class="relative border-l-2 border-blue-500 pl-8 pb-8 space-y-10"><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">1</span></div><h3 class="text-xl font-bold">Request Submission</h3><p class="text-gray-600 dark:text-gray-300 mt-2">The first step is providing a way for data subjects to submit their requests. The NDPR Toolkit&#x27;s DSRRequestForm component is designed for this purpose.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { DSRRequestForm } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function DSRSubmissionPage() {
+  const requestTypes = [
+    { id: &#x27;access&#x27;, label: &#x27;Access my data&#x27; },
+    { id: &#x27;rectification&#x27;, label: &#x27;Correct my data&#x27; },
+    { id: &#x27;erasure&#x27;, label: &#x27;Delete my data&#x27; },
+    { id: &#x27;restriction&#x27;, label: &#x27;Restrict processing of my data&#x27; },
+    { id: &#x27;portability&#x27;, label: &#x27;Data portability&#x27; },
+    { id: &#x27;objection&#x27;, label: &#x27;Object to processing&#x27; }
+  ];
+
+  const handleSubmitRequest = (requestData) =&gt; {
+    // Save request to your backend
+    console.log(&#x27;Request submitted:&#x27;, requestData);
+    
+    // Example: Send to backend API
+    fetch(&#x27;/api/dsr-requests&#x27;, {
+      method: &#x27;POST&#x27;,
+      headers: {
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      },
+      body: JSON.stringify(requestData),
+    })
+    .then(response =&gt; response.json())
+    .then(data =&gt; {
+      // Show confirmation to user with reference number
+      setRequestId(data.id);
+      setSubmitted(true);
+    });
+  };
+
+  const [submitted, setSubmitted] = useState(false);
+  const [requestId, setRequestId] = useState(null);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Submit a Data Subject Request&lt;/h1&gt;
+      
+      {!submitted ? (
+        &lt;&gt;
+          &lt;p&gt;
+            Use this form to exercise your rights under the Nigeria Data Protection Regulation (NDPR).
+            We will respond to your request within 30 days.
+          &lt;/p&gt;
+          
+          &lt;DSRRequestForm 
+            onSubmit={handleSubmitRequest}
+            requestTypes={requestTypes}
+          /&gt;
+        &lt;/&gt;
+      ) : (
+        &lt;div&gt;
+          &lt;h2&gt;Request Submitted&lt;/h2&gt;
+          &lt;p&gt;
+            Your request has been submitted successfully. Your reference number is: &lt;strong&gt;{requestId}&lt;/strong&gt;
+          &lt;/p&gt;
+          &lt;p&gt;
+            We will process your request and respond within 30 days. You can check the status of your request
+            using your reference number.
+          &lt;/p&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">2</span></div><h3 class="text-xl font-bold">Identity Verification</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Before processing a request, you must verify the identity of the data subject to ensure they are who they claim to be. The NDPR Toolkit provides utilities for identity verification.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Implementation Tip</h4><p class="text-sm">The level of identity verification should be proportionate to the sensitivity of the data and the potential harm that could result from unauthorized access. For example, requests for access to highly sensitive data may require more stringent verification than requests to update contact information.</p></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">3</span></div><h3 class="text-xl font-bold">Request Assessment</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Once the identity of the data subject has been verified, you need to assess the request to determine what action is required. This includes identifying what data is involved, what systemsit&#x27;s stored in, and what actions need to be taken.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { DSRAssessment } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function AssessRequest({ request }) {
+  const handleAssessment = (assessment) =&gt; {
+    // Save assessment to your backend
+    console.log(&#x27;Assessment completed:&#x27;, assessment);
+    
+    // Example: Update request with assessment
+    fetch(`/api/dsr-requests/${request.id}/assessment`, {
+      method: &#x27;POST&#x27;,
+      headers: {
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      },
+      body: JSON.stringify(assessment),
+    });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Assess Request&lt;/h2&gt;
+      &lt;p&gt;Request ID: {request.id}&lt;/p&gt;
+      &lt;p&gt;Request Type: {request.type}&lt;/p&gt;
+      
+      &lt;DSRAssessment
+        request={request}
+        onComplete={handleAssessment}
+        dataSystems={[
+          { id: &#x27;crm&#x27;, name: &#x27;CRM System&#x27; },
+          { id: &#x27;marketing&#x27;, name: &#x27;Marketing Platform&#x27; },
+          { id: &#x27;analytics&#x27;, name: &#x27;Analytics Tools&#x27; },
+          { id: &#x27;email&#x27;, name: &#x27;Email System&#x27; },
+          { id: &#x27;billing&#x27;, name: &#x27;Billing System&#x27; }
+        ]}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">4</span></div><h3 class="text-xl font-bold">Request Fulfillment</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Based on the assessment, you need to fulfill the request by taking the appropriate action, such as providing a copy of the data, correcting inaccurate data, or deleting data. The NDPR Toolkit provides utilities for common fulfillment actions.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Implementation Tip</h4><p class="text-sm">For complex requests that involve multiple systems or departments, consider using a workflow management system to track the progress of the request and ensure all necessary actions are taken.</p></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">5</span></div><h3 class="text-xl font-bold">Response to Data Subject</h3><p class="text-gray-600 dark:text-gray-300 mt-2">Once the request has been fulfilled, you need to respond to the data subject with the outcome of their request. The NDPR Toolkit provides templates for common response types.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Code Example</h4><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { DSRResponse } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function GenerateResponse({ request, assessment, fulfillment }) {
+  const handleGenerateResponse = (response) =&gt; {
+    // Save response to your backend
+    console.log(&#x27;Response generated:&#x27;, response);
+    
+    // Example: Send response to data subject
+    fetch(`/api/dsr-requests/${request.id}/response`, {
+      method: &#x27;POST&#x27;,
+      headers: {
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      },
+      body: JSON.stringify(response),
+    });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Generate Response&lt;/h2&gt;
+      &lt;p&gt;Request ID: {request.id}&lt;/p&gt;
+      &lt;p&gt;Request Type: {request.type}&lt;/p&gt;
+      
+      &lt;DSRResponse
+        request={request}
+        assessment={assessment}
+        fulfillment={fulfillment}
+        onGenerate={handleGenerateResponse}
+        responseTypes={[
+          &#x27;email&#x27;,
+          &#x27;letter&#x27;,
+          &#x27;portal&#x27;
+        ]}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></div></div><div class="relative"><div class="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center"><span class="text-white font-bold text-sm">6</span></div><h3 class="text-xl font-bold">Record Keeping</h3><p class="text-gray-600 dark:text-gray-300 mt-2">For compliance purposes, you must maintain records of all data subject requests and your responses to them. The NDPR Toolkit provides utilities for maintaining detailed request records.</p><div class="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md"><h4 class="font-medium mb-2">Implementation Tip</h4><p class="text-sm">Your record-keeping system should include the date of the request, the type of request, the actions taken, the date of the response, and any supporting documentation. This information may be needed to demonstrate compliance with the NDPR.</p></div></div></div></section><section id="admin-dashboard" class="mb-8"><h2 class="text-2xl font-bold mb-4">Administrative Dashboard</h2><p class="mb-4">To efficiently manage data subject requests, you need an administrative dashboard that provides an overview of all requests and their status. The NDPR Toolkit&#x27;s DSRDashboard component is designed for this purpose.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { DSRDashboard } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function AdminDashboard() {
+  const [requests, setRequests] = useState([]);
+  
+  useEffect(() =&gt; {
+    // Fetch requests from your backend
+    fetch(&#x27;/api/dsr-requests&#x27;)
+      .then(response =&gt; response.json())
+      .then(data =&gt; setRequests(data));
+  }, []);
+  
+  const handleUpdateStatus = (requestId, status) =&gt; {
+    // Update request status in your backend
+    fetch(`/api/dsr-requests/${requestId}/status`, {
+      method: &#x27;PUT&#x27;,
+      headers: {
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      },
+      body: JSON.stringify({ status }),
+    })
+    .then(response =&gt; response.json())
+    .then(data =&gt; {
+      // Update local state
+      setRequests(requests.map(request =&gt; 
+        request.id === requestId ? { ...request, status } : request
+      ));
+    });
+  };
+  
+  const handleAssignRequest = (requestId, assignee) =&gt; {
+    // Assign request to staff member in your backend
+    fetch(`/api/dsr-requests/${requestId}/assign`, {
+      method: &#x27;PUT&#x27;,
+      headers: {
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      },
+      body: JSON.stringify({ assignee }),
+    })
+    .then(response =&gt; response.json())
+    .then(data =&gt; {
+      // Update local state
+      setRequests(requests.map(request =&gt; 
+        request.id === requestId ? { ...request, assignedTo: assignee } : request
+      ));
+    });
+  };
+  
+  const handleAddNote = (requestId, note) =&gt; {
+    // Add note to request in your backend
+    fetch(`/api/dsr-requests/${requestId}/notes`, {
+      method: &#x27;POST&#x27;,
+      headers: {
+        &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      },
+      body: JSON.stringify({ note }),
+    })
+    .then(response =&gt; response.json())
+    .then(data =&gt; {
+      // Update local state
+      setRequests(requests.map(request =&gt; 
+        request.id === requestId ? { 
+          ...request, 
+          notes: [...request.notes, data] 
+        } : request
+      ));
+    });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;DSR Admin Dashboard&lt;/h1&gt;
+      
+      &lt;DSRDashboard 
+        requests={requests}
+        onUpdateStatus={handleUpdateStatus}
+        onAssignRequest={handleAssignRequest}
+        onAddNote={handleAddNote}
+        staff={[
+          { id: &#x27;john&#x27;, name: &#x27;John Doe&#x27; },
+          { id: &#x27;jane&#x27;, name: &#x27;Jane Smith&#x27; },
+          { id: &#x27;bob&#x27;, name: &#x27;Bob Johnson&#x27; }
+        ]}
+        statuses={[
+          { id: &#x27;pending&#x27;, label: &#x27;Pending&#x27;, color: &#x27;yellow&#x27; },
+          { id: &#x27;verifying&#x27;, label: &#x27;Verifying Identity&#x27;, color: &#x27;blue&#x27; },
+          { id: &#x27;processing&#x27;, label: &#x27;Processing&#x27;, color: &#x27;purple&#x27; },
+          { id: &#x27;completed&#x27;, label: &#x27;Completed&#x27;, color: &#x27;green&#x27; },
+          { id: &#x27;rejected&#x27;, label: &#x27;Rejected&#x27;, color: &#x27;red&#x27; }
+        ]}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></section><section id="request-tracking" class="mb-8"><h2 class="text-2xl font-bold mb-4">Request Tracking for Data Subjects</h2><p class="mb-4">Data subjects should be able to track the status of their requests. The NDPR Toolkit&#x27;s DSRTracker component provides a user interface for this purpose.</p><div class="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto"><pre><code>import { DSRTracker } from &#x27;@tantainnovative/ndpr-toolkit&#x27;;
+
+function RequestTrackingPage() {
+  const [requestId, setRequestId] = useState(&#x27;&#x27;);
+  const [email, setEmail] = useState(&#x27;&#x27;);
+  const [request, setRequest] = useState(null);
+  const [error, setError] = useState(null);
+  
+  const handleTrackRequest = () =&gt; {
+    // Fetch request status from your backend
+    fetch(`/api/dsr-requests/track?id=${requestId}&amp;email=${email}`)
+      .then(response =&gt; {
+        if (!response.ok) {
+          throw new Error(&#x27;Request not found or email does not match&#x27;);
+        }
+        return response.json();
+      })
+      .then(data =&gt; {
+        setRequest(data);
+        setError(null);
+      })
+      .catch(err =&gt; {
+        setRequest(null);
+        setError(err.message);
+      });
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Track Your Request&lt;/h1&gt;
+      &lt;p&gt;
+        Enter your request reference number and the email address you used to submit the request.
+      &lt;/p&gt;
+      
+      &lt;div className=&quot;form-group&quot;&gt;
+        &lt;label htmlFor=&quot;requestId&quot;&gt;Request Reference Number&lt;/label&gt;
+        &lt;input
+          type=&quot;text&quot;
+          id=&quot;requestId&quot;
+          value={requestId}
+          onChange={(e) =&gt; setRequestId(e.target.value)}
+        /&gt;
+      &lt;/div&gt;
+      
+      &lt;div className=&quot;form-group&quot;&gt;
+        &lt;label htmlFor=&quot;email&quot;&gt;Email Address&lt;/label&gt;
+        &lt;input
+          type=&quot;email&quot;
+          id=&quot;email&quot;
+          value={email}
+          onChange={(e) =&gt; setEmail(e.target.value)}
+        /&gt;
+      &lt;/div&gt;
+      
+      &lt;button onClick={handleTrackRequest}&gt;Track Request&lt;/button&gt;
+      
+      {error &amp;&amp; (
+        &lt;div className=&quot;error&quot;&gt;
+          {error}
+        &lt;/div&gt;
+      )}
+      
+      {request &amp;&amp; (
+        &lt;DSRTracker 
+          request={request}
+          statusDescriptions={{
+            &#x27;pending&#x27;: &#x27;Your request has been received and is awaiting review.&#x27;,
+            &#x27;verifying&#x27;: &#x27;We are verifying your identity to process your request.&#x27;,
+            &#x27;processing&#x27;: &#x27;Your request is being processed.&#x27;,
+            &#x27;completed&#x27;: &#x27;Your request has been completed.&#x27;,
+            &#x27;rejected&#x27;: &#x27;Your request has been rejected. Please see the notes for more information.&#x27;
+          }}
+        /&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre></div></section><section id="best-practices" class="mb-8"><h2 class="text-2xl font-bold mb-4">Best Practices</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Clear Request Process</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Make it easy for data subjects to submit requests by providing a clear, accessible process. Include information about what to expect and how long the process will take.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Robust Identity Verification</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Implement appropriate identity verification measures to ensure you&#x27;re providing data to the right person. This is crucial for preventing unauthorized access to personal data.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Timely Responses</h3><p class="text-gray-600 dark:text-gray-300 text-sm">The NDPR requires organizations to respond to data subject requests within 30 days. Implement processes and systems that enable you to meet this deadline.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Comprehensive Data Mapping</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Maintain a comprehensive map of where personal data is stored in your organization. This will help you quickly locate and retrieve data when responding to access requests.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Staff Training</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Ensure that staff who handle data subject requests are trained on the NDPR requirements and your organization&#x27;s processes. This includes understanding the different types of requests and how to respond to them.</p></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-6"><h3 class="font-bold text-lg mb-2">Detailed Record Keeping</h3><p class="text-gray-600 dark:text-gray-300 text-sm">Maintain detailed records of all data subject requests and your responses to them. This is essential for demonstrating compliance with the NDPR.</p></div></div></div></section><section id="handling-specific-requests" class="mb-8"><h2 class="text-2xl font-bold mb-4">Handling Specific Types of Requests</h2><h3 class="text-xl font-bold mb-4">Access Requests</h3><p class="mb-4">When handling access requests, you should:</p><ul class="list-disc pl-6 mb-6"><li>Verify the identity of the data subject</li><li>Locate all personal data you hold about the data subject</li><li>Provide a copy of the data in a commonly used electronic format</li><li>Include information about the purposes of processing, categories of data, recipients, retention periods, and data subject rights</li></ul><h3 class="text-xl font-bold mb-4">Rectification Requests</h3><p class="mb-4">When handling rectification requests, you should:</p><ul class="list-disc pl-6 mb-6"><li>Verify the identity of the data subject</li><li>Verify the accuracy of the new data provided</li><li>Update the data in all systems whereit&#x27;s stored</li><li>Inform any third parties with whom you&#x27;ve shared the data about the correction</li></ul><h3 class="text-xl font-bold mb-4">Erasure Requests</h3><p class="mb-4">When handling erasure requests, you should:</p><ul class="list-disc pl-6 mb-6"><li>Verify the identity of the data subject</li><li>Determine if one of the grounds for erasure applies</li><li>Delete the data from all systems whereit&#x27;s stored</li><li>Inform any third parties with whom you&#x27;ve shared the data about the erasure</li><li>Implement technical measures to ensure the data is permanently deleted</li></ul><h3 class="text-xl font-bold mb-4">Restriction Requests</h3><p class="mb-4">When handling restriction requests, you should:</p><ul class="list-disc pl-6 mb-6"><li>Verify the identity of the data subject</li><li>Determine if one of the grounds for restriction applies</li><li>Implement technical measures to restrict processing of the data</li><li>Inform any third parties with whom you&#x27;ve shared the data about the restriction</li><li>Inform the data subject before lifting the restriction</li></ul><h3 class="text-xl font-bold mb-4">Portability Requests</h3><p class="mb-4">When handling portability requests, you should:</p><ul class="list-disc pl-6 mb-6"><li>Verify the identity of the data subject</li><li>Extract the data in a structured, commonly used, machine-readable format</li><li>Provide the data directly to the data subject or to another controller if requested and technically feasible</li><li>Ensure the data includes only personal data provided by the data subject</li></ul><h3 class="text-xl font-bold mb-4">Objection Requests</h3><p class="mb-4">When handling objection requests, you should:</p><ul class="list-disc pl-6 mb-6"><li>Verify the identity of the data subject</li><li>Stop processing the data unless you can demonstrate compelling legitimate grounds that override the interests of the data subject</li><li>Inform the data subject of your decision and their right to complain to the supervisory authority</li></ul></section><section id="resources" class="mb-8"><h2 class="text-2xl font-bold mb-4">Additional Resources</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">NDPR Implementation Framework</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Official guidance on implementing the NDPR, including data subject rights requirements.</p><a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer" data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">View Framework</a></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-content" class="p-4"><h3 class="font-medium text-gray-900 dark:text-white mb-2">DSR Component Documentation</h3><p class="text-gray-600 dark:text-gray-300 text-sm mb-3">Technical documentation for the Data Subject Rights components.</p><a data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5" href="/docs/components/data-subject-rights">View Documentation</a></div></div></div></section></div></div></main></div></div><!--$--><!--/$--><script src="/_next/static/chunks/webpack-c6680bdaec64fec3.js" id="_R_" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[49223,[\"177\",\"static/chunks/app/layout-1b08044c046035c9.js\"],\"ErrorBoundary\"]\n3:I[31158,[],\"\"]\n4:I[91260,[],\"\"]\n5:I[67895,[],\"ClientPageRoot\"]\n6:I[28420,[\"214\",\"static/chunks/214-54b0b06c8e7569c2.js\",\"312\",\"static/chunks/312-46d1e841fe1a290a.js\",\"297\",\"static/chunks/app/docs/guides/data-subject-requests/page-b72ad9ef6397e580.js\"],\"default\"]\n9:I[6815,[],\"OutletBoundary\"]\nb:I[92126,[],\"AsyncMetadataOutlet\"]\nd:I[6815,[],\"ViewportBoundary\"]\nf:I[6815,[],\"MetadataBoundary\"]\n10:\"$Sreact.suspense\"\n12:I[32142,[],\"\"]\n:HL[\"/_next/static/media/4cf2300e9c8272f7-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/93f479601ee12b01-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/css/ee04a907a4031e88.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"nNmBSmKnQ2-pvKGOTeSNV\",\"p\":\"\",\"c\":[\"\",\"docs\",\"guides\",\"data-subject-requests\"],\"i\":false,\"f\":[[[\"\",{\"children\":[\"docs\",{\"children\":[\"guides\",{\"children\":[\"data-subject-requests\",{\"children\":[\"__PAGE__\",{}]}]}]}]},\"$undefined\",\"$undefined\",true],[\"\",[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/ee04a907a4031e88.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__variable_188709 __variable_9a8899 antialiased\",\"children\":[\"$\",\"$L2\",null,{\"children\":[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":404}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]}]}]]}],{\"children\":[\"docs\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"guides\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"data-subject-requests\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L3\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L4\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"__PAGE__\",[\"$\",\"$1\",\"c\",{\"children\":[[\"$\",\"$L5\",null,{\"Component\":\"$6\",\"searchParams\":{},\"params\":{},\"promises\":[\"$@7\",\"$@8\"]}],null,[\"$\",\"$L9\",null,{\"children\":[\"$La\",[\"$\",\"$Lb\",null,{\"promise\":\"$@c\"}]]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],[\"$\",\"$1\",\"h\",{\"children\":[null,[[\"$\",\"$Ld\",null,{\"children\":\"$Le\"}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]],[\"$\",\"$Lf\",null,{\"children\":[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$10\",null,{\"fallback\":null,\"children\":\"$L11\"}]}]}]]}],false]],\"m\":\"$undefined\",\"G\":[\"$12\",[]],\"s\":false,\"S\":true}\n"])</script><script>self.__next_f.push([1,"7:{}\n8:\"$0:f:0:1:2:children:2:children:2:children:2:children:1:props:children:0:props:params\"\n"])</script><script>self.__next_f.push([1,"e:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\na:null\n"])</script><script>self.__next_f.push([1,"13:I[87678,[],\"IconMark\"]\n"])</script><script>self.__next_f.push([1,"c:{\"metadata\":[[\"$\",\"title\",\"0\",{\"children\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"2\",{\"name\":\"keywords\",\"content\":\"NDPR Documentation, Nigerian Data Protection, Compliance Guides, API Reference, Implementation Tutorials\"}],[\"$\",\"meta\",\"3\",{\"property\":\"og:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"4\",{\"property\":\"og:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:url\",\"content\":\"https://ndprtoolkit.com.ng/docs\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:site_name\",\"content\":\"NDPR Toolkit\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:locale\",\"content\":\"en_US\"}],[\"$\",\"meta\",\"8\",{\"property\":\"og:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"meta\",\"9\",{\"property\":\"og:image:width\",\"content\":\"1200\"}],[\"$\",\"meta\",\"10\",{\"property\":\"og:image:height\",\"content\":\"630\"}],[\"$\",\"meta\",\"11\",{\"property\":\"og:image:alt\",\"content\":\"NDPR Toolkit Documentation\"}],[\"$\",\"meta\",\"12\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"13\",{\"name\":\"twitter:card\",\"content\":\"summary_large_image\"}],[\"$\",\"meta\",\"14\",{\"name\":\"twitter:title\",\"content\":\"NDPR Toolkit Documentation | Implementation Guides \u0026 API Reference\"}],[\"$\",\"meta\",\"15\",{\"name\":\"twitter:description\",\"content\":\"Comprehensive documentation for implementing NDPR-compliant features in your applications, including guides, API references, and compliance information.\"}],[\"$\",\"meta\",\"16\",{\"name\":\"twitter:image\",\"content\":\"http://localhost:3000/og-docs.png\"}],[\"$\",\"link\",\"17\",{\"rel\":\"icon\",\"href\":\"/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}],[\"$\",\"$L13\",\"18\",{}]],\"error\":null,\"digest\":\"$undefined\"}\n"])</script><script>self.__next_f.push([1,"11:\"$c:metadata\"\n"])</script></body></html>
