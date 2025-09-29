@@ -296,22 +296,28 @@ export default function ConsentDemoPage() {
               </div>
               
               <ConsentManager
-                options={consentOptions}
-                settings={consentSettings || {
-                  consents: consentOptions.reduce((acc, option) => {
-                    acc[option.id] = option.required || false;
-                    return acc;
-                  }, {} as Record<string, boolean>),
-                  timestamp: Date.now(),
-                  version: '1.0',
-                  method: 'default',
-                  hasInteracted: false
+                initialConsent={consentSettings?.consents || consentOptions.reduce((acc, option) => {
+                  acc[option.id] = option.required || false;
+                  return acc;
+                }, {} as Record<string, boolean>)}
+                onConsentChange={(consents) => {
+                  const newSettings: ConsentSettings = {
+                    consents,
+                    timestamp: Date.now(),
+                    version: '1.0',
+                    method: 'custom',
+                    hasInteracted: true
+                  };
+                  handleSaveConsent(newSettings);
                 }}
-                onSave={handleSaveConsent}
-                title="Manage Consent Preferences"
-                description="Customize your consent preferences below. Required cookies are necessary for the website to function and cannot be disabled."
-                saveButtonText="Save Preferences"
               />
+              
+              <div className="mt-4">
+                <p className="text-sm text-gray-600">
+                  <strong>Manage Consent Preferences:</strong> Customize your consent preferences above. 
+                  Required cookies are necessary for the website to function and cannot be disabled.
+                </p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
