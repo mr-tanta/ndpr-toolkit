@@ -6,6 +6,9 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 // Repository name for GitHub Pages
 const REPO_NAME = 'ndpr-toolkit';
 
+// Check if using custom domain (no basePath needed)
+const USE_CUSTOM_DOMAIN = process.env.USE_CUSTOM_DOMAIN === 'true';
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   
@@ -51,8 +54,11 @@ const nextConfig: NextConfig = {
         images: {
           unoptimized: true,  // Required for static export
         },
-        basePath: `/${REPO_NAME}`,
-        assetPrefix: `/${REPO_NAME}`,
+        // Only use basePath if not using custom domain
+        ...(USE_CUSTOM_DOMAIN ? {} : {
+          basePath: `/${REPO_NAME}`,
+          assetPrefix: `/${REPO_NAME}`,
+        }),
       }
   ),
 };

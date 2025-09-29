@@ -68,6 +68,7 @@ jobs:
         env:
           SKIP_TYPE_CHECK: true
           NEXT_SKIP_TYPE_CHECK: true
+          USE_CUSTOM_DOMAIN: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

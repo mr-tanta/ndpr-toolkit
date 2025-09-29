@@ -180,8 +180,7 @@ MIT License
 Senior Software Engineer with over a decade of experience in ethical hacking, software development, Linux and network administration. Based in Lagos, Nigeria.
 
 - GitHub: [@mr-tanta](https://github.com/mr-tanta)
-- Email: sir.tanta@gmail.com
-- LinkedIn: [Abraham Tanta](https://linkedin.com/in/abraham-tanta)
+- LinkedIn: [linkedin.com/in/mr-tanta](https://linkedin.com/in/mr-tanta)
 
 ## Contributing
 
