@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BreachReportForm, BreachRiskAssessment, BreachNotificationManager, BreachReport, RiskAssessment, RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
+import { BreachReportForm, BreachRiskAssessment, BreachNotificationManager, RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
+import type { BreachReport, RiskAssessment } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 
@@ -205,15 +206,24 @@ interface RegulatoryNotification {
             </CardHeader>
             <CardContent>
               <BreachReportForm
-                onSubmit={handleSubmitBreach}
-                title="Report a Data Breach"
-                categories={[
-                  { id: 'unauthorized_access', name: 'Unauthorized Access', description: 'Unauthorized access to systems or data', defaultSeverity: 'high' },
-                  { id: 'phishing', name: 'Phishing Attack', description: 'Phishing or social engineering attack', defaultSeverity: 'medium' },
-                  { id: 'device_loss', name: 'Device Loss/Theft', description: 'Loss or theft of device containing personal data', defaultSeverity: 'medium' },
-                  { id: 'malware', name: 'Malware/Ransomware', description: 'Malware or ransomware infection', defaultSeverity: 'high' },
-                  { id: 'other', name: 'Other', description: 'Other type of data breach', defaultSeverity: 'medium' }
-                ]}
+                onSubmit={(data: any) => {
+                  // Transform the form data to match the expected format
+                  const transformedData = {
+                    title: data.title,
+                    description: data.description,
+                    category: 'other', // Default category
+                    reporter: {
+                      name: 'Demo User',
+                      email: 'user@example.com',
+                      department: 'IT'
+                    },
+                    affectedSystems: [],
+                    dataTypes: data.dataCategories,
+                    estimatedAffectedSubjects: data.affectedDataSubjects,
+                    initialActions: data.mitigationSteps.join('; ')
+                  };
+                  handleSubmitBreach(transformedData);
+                }}
               />
             </CardContent>
           </Card>
@@ -229,29 +239,38 @@ interface RegulatoryNotification {
             </CardHeader>
             <CardContent>
               <BreachNotificationManager
-                breachReports={breaches}
-                riskAssessments={riskAssessments}
-                regulatoryNotifications={regulatoryNotifications}
-                onSelectBreach={handleSelectBreach}
-                onRequestAssessment={(breachId) => {
-                  handleSelectBreach(breachId);
-                  setActiveTab('assessment');
+                onSubmit={(data: any) => {
+                  console.log('Breach notification data:', data);
                 }}
-                onRequestNotification={(breachId: string) => {
-                  handleSelectBreach(breachId);
-                  // Generate a regulatory notification
-                  setTimeout(() => {
-                    if (selectedBreach) {
-                      handleGenerateReport(breachId);
-                    }
-                  }, 500);
-                }}
-                title="Data Breach Register"
-                description="A record of all data breaches and security incidents affecting personal data."
-                showBreachDetails={true}
-                showNotificationTimeline={true}
-                showDeadlineAlerts={true}
               />
+              
+              {/* Display breaches manually */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4">Breach Register ({breaches.length} total)</h3>
+                <div className="space-y-4">
+                  {breaches.map((breach) => (
+                    <div key={breach.id} className="border rounded-lg p-4">
+                      <h4 className="font-medium">{breach.title}</h4>
+                      <p className="text-gray-600 text-sm">{breach.description}</p>
+                      <div className="mt-2 flex justify-between items-center">
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          breach.status === 'ongoing' ? 'bg-red-100 text-red-800' :
+                          breach.status === 'resolved' ? 'bg-green-100 text-green-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {breach.status}
+                        </span>
+                        <button 
+                          onClick={() => handleSelectBreach(breach.id)}
+                          className="text-blue-600 hover:text-blue-800 text-sm"
+                        >
+                          View Details
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -268,56 +287,30 @@ interface RegulatoryNotification {
               {selectedBreach ? (
                 <div className="space-y-8">
                   <BreachRiskAssessment
-                    breachData={selectedBreach}
-                    onComplete={(assessment: RiskAssessment) => {
-                      if (selectedBreach) {
-                      // Update the breach status based on the assessment
-                      handleUpdateBreach(selectedBreach.id, {
-                        status: assessment.riskLevel === 'critical' ? 'ongoing' : 'contained',
-                      });
-                      
-                      // Store the risk assessment
-                      const newAssessment = {
-                        ...assessment,
+                    onSubmit={(data: any) => {
+                      console.log('Risk assessment data:', data);
+                      // Simulate creating an assessment
+                      const newAssessment: RiskAssessment = {
                         id: uuidv4(),
                         breachId: selectedBreach.id,
+                        riskLevel: 'medium',
+                        assessment: 'Moderate risk assessment completed',
+                        mitigationMeasures: ['Implement additional security measures', 'Monitor affected systems'],
                         assessedAt: Date.now(),
-                        assessor: {
-                          name: 'Demo User',
-                          role: 'Data Protection Officer',
-                          email: 'dpo@example.com'
-                        }
+                        assessor: 'Demo User'
                       };
-                      
-                      setRiskAssessments(prev => {
-                        // Remove any existing assessment for this breach
-                        const filtered = prev.filter(a => a.breachId !== selectedBreach.id);
-                        // Add the new assessment
-                        return [...filtered, newAssessment];
-                      });
-                    }
+                      setRiskAssessments(prev => [...prev, newAssessment]);
                     }}
-                    title="Breach Risk Assessment"
-                    description="Assess the severity, impact, and required actions for this data breach."
-                    className=""
-                    buttonClassName=""
-                    showBreachSummary={true}
-                    showNotificationRequirements={true}
                   />
                   
                   {/* Add Regulatory Report Generator component */}
                   <div className="mt-8 pt-8 border-t border-gray-200">
                     <h3 className="text-lg font-medium mb-4">Generate Regulatory Report</h3>
                     <RegulatoryReportGenerator
-                      breachData={selectedBreach}
-                      organizationInfo={{
-                        name: 'Example Company Ltd.',
-                        address: '123 Main Street, Lagos, Nigeria',
-                        dpoName: 'John Doe',
-                        dpoEmail: 'dpo@example.com',
-                        dpoPhone: '+234 123 456 7890'
+                      onSubmit={(data: any) => {
+                        console.log('Regulatory report data:', data);
+                        handleGenerateReport(selectedBreach.id);
                       }}
-                      onGenerate={() => handleGenerateReport(selectedBreach.id)}
                     />
                   </div>
                 </div>

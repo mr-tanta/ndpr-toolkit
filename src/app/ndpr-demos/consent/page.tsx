@@ -6,8 +6,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { ConsentBanner, ConsentManager, ConsentStorage } from '@tantainnovative/ndpr-toolkit';
-import { ConsentOption, ConsentSettings } from '@tantainnovative/ndpr-toolkit';
+import { ConsentBanner, ConsentManager, consentStorage } from '@tantainnovative/ndpr-toolkit';
+import type { ConsentOption } from '@/types';
+
+// Define ConsentSettings type locally since it's used in the demo
+interface ConsentSettings {
+  consents: Record<string, boolean>;
+  timestamp: number;
+  version: string;
+  method: string;
+  hasInteracted: boolean;
+}
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 
@@ -103,21 +112,67 @@ export default function ConsentDemoPage() {
       </div>
       
       {showBanner && (
-        <div className="fixed bottom-0 left-0 right-0 z-50">
-          <ConsentBanner
-            options={consentOptions}
-            onSave={(settings) => {
-              handleSaveConsent(settings);
-            }}
-            show={showBanner}
-            title="We Value Your Privacy"
-            description="We use cookies and similar technologies to improve your experience on our website. By clicking 'Accept All', you consent to the use of all cookies. You can customize your preferences by clicking 'Customize'."
-            position="bottom"
-            acceptAllButtonText="Accept All"
-            rejectAllButtonText="Reject All"
-            customizeButtonText="Customize"
-          />
-        </div>
+        <ConsentBanner
+          position="bottom"
+          theme={{}}
+          className=""
+          children={null}
+          renderBanner={(props: any) => (
+            <div className="bg-white rounded-lg shadow-lg p-6 mx-4 mb-4">
+              <h3 className="text-lg font-semibold mb-2">We Value Your Privacy</h3>
+              <p className="text-gray-600 mb-4">
+                We use cookies and similar technologies to improve your experience on our website. 
+                By clicking 'Accept All', you consent to the use of all cookies. 
+                You can customize your preferences by clicking 'Customize'.
+              </p>
+              <div className="flex gap-3 flex-wrap">
+                <Button 
+                  onClick={() => {
+                    props.onAcceptAll();
+                    const allConsents = {} as Record<string, boolean>;
+                    consentOptions.forEach(option => {
+                      allConsents[option.id] = true;
+                    });
+                    handleSaveConsent({
+                      consents: allConsents,
+                      timestamp: Date.now(),
+                      version: '1.0',
+                      method: 'banner',
+                      hasInteracted: true
+                    });
+                  }}
+                >
+                  Accept All
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    props.onRejectAll();
+                    const rejectConsents = {} as Record<string, boolean>;
+                    consentOptions.forEach(option => {
+                      rejectConsents[option.id] = option.required || false;
+                    });
+                    handleSaveConsent({
+                      consents: rejectConsents,
+                      timestamp: Date.now(),
+                      version: '1.0',
+                      method: 'banner',
+                      hasInteracted: true
+                    });
+                  }}
+                >
+                  Reject All
+                </Button>
+                <Button 
+                  variant="ghost"
+                  onClick={props.onOpenSettings}
+                >
+                  Customize
+                </Button>
+              </div>
+            </div>
+          )}
+        />
       )}
       
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -139,15 +194,25 @@ export default function ConsentDemoPage() {
               <div className="p-4 border rounded-md">
                 <h3 className="text-lg font-semibold mb-4">Banner Preview</h3>
                 <ConsentBanner
-                  options={consentOptions}
-                  onSave={() => {}}
-                  title="We Value Your Privacy"
-                  description="We use cookies and similar technologies to improve your experience on our website. By clicking 'Accept All', you consent to the use of all cookies. You can customize your preferences by clicking 'Customize'."
                   position="bottom"
-                  acceptAllButtonText="Accept All"
-                  rejectAllButtonText="Reject All"
-                  customizeButtonText="Customize"
-                  show={true}
+                  theme={{}}
+                  className=""
+                  children={null}
+                  renderBanner={(props: any) => (
+                    <div className="bg-white border rounded-lg shadow-sm p-6">
+                      <h3 className="text-lg font-semibold mb-2">We Value Your Privacy</h3>
+                      <p className="text-gray-600 mb-4">
+                        We use cookies and similar technologies to improve your experience on our website. 
+                        By clicking 'Accept All', you consent to the use of all cookies. 
+                        You can customize your preferences by clicking 'Customize'.
+                      </p>
+                      <div className="flex gap-3 flex-wrap">
+                        <Button onClick={props.onAcceptAll}>Accept All</Button>
+                        <Button variant="outline" onClick={props.onRejectAll}>Reject All</Button>
+                        <Button variant="ghost" onClick={props.onOpenSettings}>Customize</Button>
+                      </div>
+                    </div>
+                  )}
                 />
               </div>
               
@@ -262,73 +327,50 @@ export default function ConsentDemoPage() {
             <CardContent>
               <div className="p-4 border rounded-md">
                 <h3 className="text-lg font-semibold mb-4">Storage Demo</h3>
-                <ConsentStorage
-                  settings={consentSettings || {
-                    consents: {},
-                    timestamp: Date.now(),
-                    version: '1.0',
-                    method: 'default',
-                    hasInteracted: false
-                  }}
-                  storageOptions={{
-                    storageKey: "ndpr_demo_consent",
-                    storageType: "localStorage"
-                  }}
-                  onLoad={handleLoadConsent}
-                  onSave={(settings) => {
-                    console.log('Consent settings saved to storage:', settings);
-                    handleSaveConsent(settings);
-                  }}
-                  autoSave={false}
-                  autoLoad={true}
-                >
-                  {(storage) => (
-                    <div className="space-y-4">
-                      <div className="p-4 bg-gray-100 rounded-md">
-                        <h4 className="font-medium mb-2">Current Consent Settings</h4>
-                        <pre className="text-xs bg-gray-200 p-2 rounded overflow-auto max-h-40">
-                          {JSON.stringify(consentSettings, null, 2) || 'No settings saved'}
-                        </pre>
-                      </div>
-                      
-                      <div className="flex space-x-4">
-                        <Button 
-                          variant="outline" 
-                          onClick={() => {
-                            if (consentSettings) {
-                              storage.saveSettings(consentSettings);
-                            }
-                          }}
-                          disabled={!consentSettings}
-                        >
-                          Save to Storage
-                        </Button>
-                        
-                        <Button 
-                          variant="outline" 
-                          onClick={() => {
-                            const loadedSettings = storage.loadSettings();
-                            if (loadedSettings) {
-                              setConsentSettings(loadedSettings);
-                            }
-                          }}
-                        >
-                          Load from Storage
-                        </Button>
-                        
-                        <Button 
-                          variant="outline" 
-                          onClick={() => {
-                            storage.clearSettings();
-                            setConsentSettings(null);
-                          }}
-                        >
-                          Clear Storage
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </ConsentStorage>
+                <div className="space-y-4">
+                  <div className="p-4 bg-gray-100 rounded-md">
+                    <h4 className="font-medium mb-2">Current Consent Settings</h4>
+                    <pre className="text-xs bg-gray-200 p-2 rounded overflow-auto max-h-40">
+                      {JSON.stringify(consentSettings, null, 2) || 'No settings saved'}
+                    </pre>
+                  </div>
+                  
+                  <div className="flex space-x-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        if (consentSettings) {
+                          consentStorage.save('ndpr_demo_consent', consentSettings);
+                        }
+                      }}
+                      disabled={!consentSettings}
+                    >
+                      Save to Storage
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        const loadedSettings = consentStorage.load('ndpr_demo_consent') as ConsentSettings | null;
+                        if (loadedSettings) {
+                          setConsentSettings(loadedSettings);
+                        }
+                      }}
+                    >
+                      Load from Storage
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        consentStorage.remove('ndpr_demo_consent');
+                        setConsentSettings(null);
+                      }}
+                    >
+                      Clear Storage
+                    </Button>
+                  </div>
+                </div>
               </div>
               
               <div className="mt-6">

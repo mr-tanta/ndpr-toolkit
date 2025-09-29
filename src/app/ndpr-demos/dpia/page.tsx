@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
-import type { DPIAQuestion, DPIAResult } from '@tantainnovative/ndpr-toolkit';
+import type { DPIAQuestion, DPIAResult } from '@/types';
 
 export default function DPIADemoPage() {
   const [activeTab, setActiveTab] = useState('form');
@@ -223,23 +223,11 @@ export default function DPIADemoPage() {
             </CardHeader>
             <CardContent>
               <DPIAQuestionnaire
-                sections={[{
-                  id: 'main',
-                  title: 'Data Protection Impact Assessment',
-                  description: 'Complete this form to assess the impact of your data processing activities on data subjects\'s privacy.',
-                  questions: dpiaQuestions,
-                  order: 1
-                }]}
-                answers={assessmentData || {}}
-                onAnswerChange={(questionId, value) => {
-                  setAssessmentData((prev: Record<string, unknown>) => ({
-                    ...prev,
-                    [questionId]: value
-                  }));
+                questions={dpiaQuestions}
+                onSubmit={(answers: any, projectName: any) => {
+                  console.log('DPIA Assessment completed:', { answers, projectName });
+                  handleAssessmentComplete(answers);
                 }}
-                currentSectionIndex={0}
-                onNextSection={() => handleAssessmentComplete(assessmentData)}
-                submitButtonText="Submit Assessment"
               />
             </CardContent>
           </Card>

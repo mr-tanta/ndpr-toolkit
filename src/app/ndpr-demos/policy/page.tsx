@@ -14,10 +14,8 @@ import {
   PolicyGenerator,
   PolicyPreview,
   PolicyExporter,
-  PolicySection,
-  PolicyVariable,
 } from "@tantainnovative/ndpr-toolkit";
-import type { PolicyTemplate } from "@tantainnovative/ndpr-toolkit";
+import type { PolicySection, PolicyVariable, PolicyTemplate } from "@/types";
 
 export default function PolicyDemoPage() {
   const [activeTab, setActiveTab] = useState<string>("generator");
@@ -277,70 +275,79 @@ export default function PolicyDemoPage() {
     organizationType: "business",
     version: "1.0",
     lastUpdated: Date.now(), // Using timestamp as required by the PolicyTemplate type
-    variables: {
-      organizationName: {
-        name: "Organization Name",
-        description: "The name of your organization",
+    variables: [
+      {
+        name: "organizationName",
+        label: "Organization Name",
+        type: "text",
         required: true,
-        defaultValue: "Your Company",
+        defaultValue: "Your Company"
       },
-      website: {
-        name: "Website URL",
-        description: "Your organization&apos;s website",
+      {
+        name: "website",
+        label: "Website URL",
+        type: "text",
         required: true,
-        defaultValue: "https://example.com",
+        defaultValue: "https://example.com"
       },
-      contactEmail: {
-        name: "Contact Email",
-        description: "Email for privacy inquiries",
+      {
+        name: "contactEmail",
+        label: "Contact Email",
+        type: "text",
         required: true,
-        defaultValue: "privacy@example.com",
+        defaultValue: "privacy@example.com"
       },
-      address: {
-        name: "Business Address",
-        description: "Physical address of your organization",
+      {
+        name: "address",
+        label: "Business Address",
+        type: "textarea",
         required: true,
-        defaultValue: "123 Business Street, Lagos, Nigeria",
+        defaultValue: "123 Business Street, Lagos, Nigeria"
       },
-      phone: {
-        name: "Contact Phone",
-        description: "Phone number for privacy inquiries",
+      {
+        name: "phone",
+        label: "Contact Phone",
+        type: "text",
         required: true,
-        defaultValue: "+234 123 456 7890",
+        defaultValue: "+234 123 456 7890"
       },
-      dpoName: {
-        name: "Data Protection Officer Name",
-        description: "Name of your Data Protection Officer",
+      {
+        name: "dpoName",
+        label: "Data Protection Officer Name",
+        type: "text",
         required: true,
-        defaultValue: "John Doe",
+        defaultValue: "John Doe"
       },
-      dpoEmail: {
-        name: "DPO Email",
-        description: "Email of your Data Protection Officer",
+      {
+        name: "dpoEmail",
+        label: "DPO Email",
+        type: "text",
         required: true,
-        defaultValue: "dpo@example.com",
+        defaultValue: "dpo@example.com"
       },
-      industry: {
-        name: "Industry",
-        description: "Your organization&apos;s industry or sector",
+      {
+        name: "industry",
+        label: "Industry",
+        type: "text",
         required: true,
-        defaultValue: "Technology",
+        defaultValue: "Technology"
       },
-      effectiveDate: {
-        name: "Effective Date",
-        description: "When this privacy policy becomes effective",
+      {
+        name: "effectiveDate",
+        label: "Effective Date",
+        type: "date",
         required: true,
-        defaultValue: new Date().toLocaleDateString(),
-      },
-    },
+        defaultValue: new Date().toLocaleDateString()
+      }
+    ],
     sections: [
       {
         id: "introduction",
         title: "Introduction",
         required: true,
-        description:
-          "Introduce your organization and the purpose of the policy",
-        template: `## Introduction
+        order: 1,
+        included: true,
+        content: `## Introduction
 
 {{organizationName}} ("we", "us", or "our") is committed to protecting your personal data and respecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you interact with our services, website, and applications.
 

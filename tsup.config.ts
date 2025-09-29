@@ -6,7 +6,7 @@ export default defineConfig({
     unstyled: "src/unstyled.ts",
   },
   format: ["cjs", "esm"],
-  // dts: true, // Temporarily disabled due to TS errors
+  dts: true, // Generate TypeScript declarations
   splitting: false,
   sourcemap: true,
   clean: true,

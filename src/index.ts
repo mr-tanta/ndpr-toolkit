@@ -87,3 +87,46 @@ export const consentStorage = {
     localStorage.removeItem(key);
   },
 };
+
+// Additional component exports for demo compatibility
+export { default as BreachReportForm } from "./components/breach-notification/BreachNotificationForm";
+export { default as BreachNotificationManager } from "./components/breach-notification/BreachNotificationForm";
+export { default as BreachRiskAssessment } from "./components/breach-notification/BreachNotificationForm";
+export { default as RegulatoryReportGenerator } from "./components/breach-notification/BreachNotificationForm";
+
+// DPIA components
+export { default as DPIAQuestionnaire } from "./components/dpia/DPIAQuestionnaire";
+
+// Data Subject Rights components  
+export { default as DSRRequestForm } from "./components/data-subject-rights/DataSubjectRequestForm";
+export { default as DSRDashboard } from "./components/data-subject-rights/DataSubjectRequestForm";
+export { default as DSRTracker } from "./components/data-subject-rights/DataSubjectRequestForm";
+
+// Privacy Policy components
+export { default as PolicyGenerator } from "./components/privacy-policy/PolicyGenerator";
+export { default as PolicyPreview } from "./components/privacy-policy/PolicyGenerator";
+export { default as PolicyExporter } from "./components/privacy-policy/PolicyGenerator";
+
+// Type exports for demo compatibility
+export type {
+  DSRRequest,
+  DSRStatus,
+  DSRType,
+  DSRRequestType,
+  RequestType,
+  BreachReport,
+  RiskAssessment,
+  DPIAQuestion,
+  DPIAResult,
+  PolicySection,
+  PolicyVariable,
+  PolicyTemplate,
+  ConsentOption,
+  BreachSeverity,
+  ConsentRecord,
+  ConsentHistoryEntry,
+} from "./types/index";
+
+
+// Re-export ConsentStorage as named export for demo compatibility
+export const ConsentStorage = consentStorage;

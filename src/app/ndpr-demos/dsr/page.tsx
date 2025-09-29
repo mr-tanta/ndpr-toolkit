@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
-import { DSRRequestForm, DSRDashboard, DSRTracker, DSRRequest, DSRStatus, DSRType, RequestType } from '@tantainnovative/ndpr-toolkit';
+import { DSRRequestForm, DSRDashboard, DSRTracker } from '@tantainnovative/ndpr-toolkit';
+import type { DSRRequest, DSRStatus, DSRType, DSRRequestType } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function DSRDemoPage() {
@@ -13,7 +14,7 @@ export default function DSRDemoPage() {
   const [isClient, setIsClient] = useState(false);
   
   // Define request types
-  const requestTypes: RequestType[] = [
+  const requestTypes: DSRRequestType[] = [
     {
       id: 'access',
       name: 'Access Request',
@@ -67,7 +68,7 @@ export default function DSRDemoPage() {
       {
         id: uuidv4(),
         type: 'erasure' as DSRType,
-        status: 'inProgress' as DSRStatus,
+        status: 'in-progress' as DSRStatus,
         createdAt: Date.now() - 5 * 24 * 60 * 60 * 1000, // 5 days ago
         updatedAt: Date.now() - 2 * 24 * 60 * 60 * 1000, // 2 days ago
         dueDate: Date.now() + 5 * 24 * 60 * 60 * 1000, // Due in 5 days
@@ -204,11 +205,21 @@ export default function DSRDemoPage() {
             </CardHeader>
             <CardContent>
               <DSRRequestForm
-                requestTypes={requestTypes}
-                onSubmit={handleSubmitRequest}
-                title="Submit a Data Subject Request"
-                description="Use this form to submit a request regarding your personal data."
-                submitButtonText="Submit Request"
+                onSubmit={(data: any) => {
+                  // Transform the form data to match what the demo expects
+                  const transformedData = {
+                    requestType: data.requestType,
+                    dataSubject: {
+                      fullName: data.name,
+                      email: data.email,
+                      phone: undefined
+                    },
+                    additionalInfo: {
+                      description: data.details
+                    }
+                  };
+                  handleSubmitRequest(transformedData);
+                }}
               />
             </CardContent>
           </Card>
@@ -224,15 +235,60 @@ export default function DSRDemoPage() {
             </CardHeader>
             <CardContent>
               <DSRDashboard
-                requests={requests}
-                onUpdateStatus={handleUpdateStatus}
-                onSelectRequest={handleSelectRequest}
-                title="DSR Management Dashboard"
-                description="Track and manage data subject requests in compliance with NDPR requirements."
-                showRequestDetails={true}
-                showRequestTimeline={true}
-                showDeadlineAlerts={true}
+                onSubmit={(data: any) => {
+                  console.log('DSR Dashboard data:', data);
+                }}
               />
+              
+              {/* Manual dashboard display */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4">DSR Management Dashboard ({requests.length} requests)</h3>
+                <div className="space-y-4">
+                  {requests.map((request) => (
+                    <div key={request.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-medium">{request.type.charAt(0).toUpperCase() + request.type.slice(1)} Request</h4>
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                          request.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
+                          request.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">From: {request.subject.name} ({request.subject.email})</p>
+                      <p className="text-sm text-gray-600 mb-3">{request.description}</p>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-500">
+                          Created: {new Date(request.createdAt).toLocaleDateString()}
+                          {request.status !== 'completed' && (
+                            <>, Due: {new Date(request.dueDate).toLocaleDateString()}</>
+                          )}
+                        </span>
+                        <div className="flex gap-2">
+                          {request.status !== 'completed' && (
+                            <>
+                              <button 
+                                onClick={() => handleUpdateStatus(request.id, 'in-progress')}
+                                className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                              >
+                                Start Processing
+                              </button>
+                              <button 
+                                onClick={() => handleUpdateStatus(request.id, 'completed')}
+                                className="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                              >
+                                Complete
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -247,11 +303,57 @@ export default function DSRDemoPage() {
             </CardHeader>
             <CardContent>
               <DSRTracker
-                requests={requests}
-                onSelectRequest={handleSelectRequest}
-                title="DSR Request Tracker"
-                description="Track the status of data subject requests"
+                onSubmit={(data: any) => {
+                  console.log('DSR Tracker data:', data);
+                }}
               />
+              
+              {/* Manual tracker display */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4">Request Tracker</h3>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border border-gray-300">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Request Type</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Requester</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Status</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Created</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Due Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {requests.map((request) => (
+                        <tr key={request.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 text-sm font-medium text-gray-900">
+                            {request.type.charAt(0).toUpperCase() + request.type.slice(1)}
+                          </td>
+                          <td className="px-4 py-2 text-sm text-gray-600">
+                            {request.subject.name}<br/>
+                            <span className="text-xs text-gray-500">{request.subject.email}</span>
+                          </td>
+                          <td className="px-4 py-2">
+                            <span className={`px-2 py-1 rounded text-xs font-medium ${
+                              request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                              request.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
+                              request.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2 text-sm text-gray-600">
+                            {new Date(request.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-4 py-2 text-sm text-gray-600">
+                            {new Date(request.dueDate).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

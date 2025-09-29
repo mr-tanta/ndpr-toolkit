@@ -25,6 +25,15 @@ export type DSRType =
 export type RequestStatus = DSRStatus;
 export type RequestType = DSRType;
 
+// DSRRequestType interface for DSR form
+export interface DSRRequestType {
+  id: string;
+  name: string;
+  description: string;
+  estimatedCompletionTime: number;
+  requiresAdditionalInfo: boolean;
+}
+
 // Demo-specific types
 export interface ConsentOption {
   id: string;
@@ -38,11 +47,19 @@ export interface BreachReport {
   id: string;
   title: string;
   description: string;
-  severity: "low" | "medium" | "high" | "critical";
-  dateDiscovered: Date;
-  dateReported?: Date;
-  affectedRecords: number;
-  status: "draft" | "reported" | "investigating" | "resolved";
+  category: string;
+  discoveredAt: number;
+  reportedAt: number;
+  reporter: {
+    name: string;
+    email: string;
+    department: string;
+  };
+  affectedSystems: string[];
+  dataTypes: string[];
+  estimatedAffectedSubjects: number;
+  status: "ongoing" | "resolved" | "contained";
+  initialActions: string;
 }
 
 export interface DPIAQuestion {
@@ -59,13 +76,13 @@ export interface DPIAQuestion {
     | "checkbox"
     | "scale";
   options?: Array<{
-    id: string;
+    id?: string;
     label: string;
     value: string;
     riskLevel?: unknown;
   }>;
   required?: boolean;
-  category: string;
+  category?: string;
   guidance?: string;
   minValue?: number;
   maxValue?: number;
@@ -86,13 +103,6 @@ export interface DataSubjectRequest {
   completedAt?: Date;
 }
 
-export interface PolicySection {
-  id: string;
-  title: string;
-  content: string;
-  required: boolean;
-  order: number;
-}
 
 // Define ConsentType locally since it's not exported from the package
 export type ConsentType =
@@ -127,4 +137,93 @@ export interface ConsentHistoryEntry {
 
 export interface ConsentPreferences {
   [key: string]: boolean;
+}
+
+// Additional missing types for demo compatibility
+export interface DSRRequest {
+  id: string;
+  type: DSRType;
+  status: DSRStatus;
+  createdAt: number;
+  updatedAt: number;
+  dueDate: number;
+  completedAt?: number;
+  subject: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
+  description: string;
+}
+
+export interface RiskAssessment {
+  id: string;
+  breachId: string;
+  riskLevel: "low" | "medium" | "high" | "critical";
+  assessment: string;
+  mitigationMeasures: string[];
+  assessedAt: number;
+  assessor: string;
+}
+
+export interface DPIAResult {
+  id: string;
+  title: string;
+  processingDescription: string;
+  startedAt: number;
+  completedAt?: number;
+  assessor: {
+    name: string;
+    role: string;
+    email: string;
+  };
+  answers: Record<string, unknown>;
+  risks: Array<{
+    id: string;
+    description: string;
+    likelihood: number;
+    impact: number;
+    score: number;
+    level: string;
+    mitigationMeasures: string[];
+    mitigated?: boolean;
+    residualScore?: number;
+    relatedQuestionIds?: string[];
+  }>;
+  overallRiskLevel: "low" | "medium" | "high" | "critical";
+  canProceed: boolean;
+  conclusion: string;
+  recommendations: string[];
+  reviewDate: number;
+  version: string;
+}
+
+export interface PolicyVariable {
+  name: string;
+  label: string;
+  type: "text" | "textarea" | "select" | "checkbox" | "date";
+  required?: boolean;
+  options?: string[];
+  defaultValue?: unknown;
+}
+
+export interface PolicyTemplate {
+  id: string;
+  name: string;
+  description: string;
+  sections: PolicySection[];
+  variables: PolicyVariable[];
+  version: string;
+}
+
+// Update PolicySection to include template field
+export interface PolicySection {
+  id: string;
+  title: string;
+  content: string;
+  template?: string;
+  required: boolean;
+  order: number;
+  included?: boolean;
+  variables?: string[];
 }
