@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.10](https://github.com/tantainnovative/ndpr-toolkit/compare/v1.0.9...v1.0.10) (2025-09-29)
+
+
+### Documentation
+
+* update author information ([8f866ef](https://github.com/tantainnovative/ndpr-toolkit/commit/8f866ef59246676a0936c43777cc9ec951d19810))
+
 ### [1.0.9](https://github.com/tantainnovative/ndpr-toolkit/compare/v1.0.8...v1.0.9) (2025-09-29)
 
 
