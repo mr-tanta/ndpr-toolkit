@@ -96,8 +96,15 @@ export interface DataSubjectRequest {
   id: string;
   type: DSRType;
   status: DSRStatus;
-  requestedAt: Date;
-  email: string;
+  requestedAt?: Date;
+  createdAt?: number;
+  updatedAt?: number;
+  email?: string;
+  subject?: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
   description?: string;
   response?: string;
   completedAt?: Date;

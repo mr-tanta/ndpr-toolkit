@@ -35,8 +35,8 @@ export function createConsentContext<
       if (categories) {
         categories.forEach((cat) => {
           if (cat.id !== "necessary") {
-            const key = cat.id;
-            defaultConsent[key] = false;
+            const key = cat.id as string;
+            (defaultConsent as any)[key] = false;
           }
         });
       } else {

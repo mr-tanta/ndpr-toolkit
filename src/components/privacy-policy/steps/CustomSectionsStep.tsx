@@ -16,11 +16,11 @@ import { Select } from "@/components/ui/Select";
 
 interface CustomSectionsStepProps {
   formData: {
-    customSections: { title: string; template: string }[];
+    customSections: { title: string; content: string }[];
     industryCategory: string;
     includeNDPRCompliance: boolean;
   };
-  onAddCustomSection: (title: string, template: string) => void;
+  onAddCustomSection: (title: string, content: string) => void;
   onRemoveCustomSection: (index: number) => void;
 }
 
@@ -335,15 +335,15 @@ For more information about our NDPR and DPA compliance program, please contact o
                       </Button>
                     </div>
                     <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line max-h-32 overflow-y-auto">
-                      {section.template.length > 200
-                        ? `${section.template.substring(0, 200)}...`
-                        : section.template}
+                      {section.content.length > 200
+                        ? `${section.content.substring(0, 200)}...`
+                        : section.content}
                     </div>
-                    {section.template.length > 200 && (
+                    {section.content.length > 200 && (
                       <Button
                         variant="link"
                         size="sm"
-                        onClick={() => alert(section.template)}
+                        onClick={() => alert(section.content)}
                         className="mt-2 p-0"
                       >
                         View Full Content

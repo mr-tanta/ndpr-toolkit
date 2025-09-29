@@ -18,7 +18,7 @@ interface PolicyPreviewStepProps {
     cookieTypes: string[];
     internationalTransfers: boolean;
     transferCountries: string[];
-    customSections: { title: string; template: string }[];
+    customSections: { title: string; content: string }[];
     hasDPO: boolean;
     dpoContact: string;
     includeNDPRCompliance: boolean;
@@ -193,7 +193,7 @@ export default function PolicyPreviewStep({
               (formData.customSections || []).map((section, index) => (
                 <div key={`section-${index}`}>
                   <h2>{section.title}</h2>
-                  <p>{section.template}</p>
+                  <p>{section.content}</p>
                 </div>
               ))}
 
