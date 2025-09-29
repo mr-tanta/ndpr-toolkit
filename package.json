@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": false,
   "description": "Nigerian Data Protection Compliance Toolkit for implementing NDPR and DPA compliant features",
   "scripts": {
@@ -103,6 +103,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-test-renderer": "^18.2.0",
+    "standard-version": "^9.5.0",
     "tailwindcss": "^4.1.13",
     "ts-jest": "^29.0.0",
     "tsup": "^8.5.0",

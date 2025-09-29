@@ -1,6 +1,15 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.0.9](https://github.com/tantainnovative/ndpr-toolkit/compare/v1.0.8...v1.0.9) (2025-09-29)
+
+
+### Bug Fixes
+
+* correct ConsentManager usage in demo page and add gh-pages ([c742a9d](https://github.com/tantainnovative/ndpr-toolkit/commit/c742a9dca89ef3de6b82ea74ea6c1f694a50c503))
+* migrate ESLint to v9 flat config and configure lint-staged ([dd6d5ad](https://github.com/tantainnovative/ndpr-toolkit/commit/dd6d5ad91245ce97bf610a3168bc7ddaf32963c7))
+* resolve GitHub Actions failures - remove husky prepare script and fix pnpm lockfile compatibility ([c787ba8](https://github.com/tantainnovative/ndpr-toolkit/commit/c787ba81260a20fed999b2dc795fd21cc91f514e))
 
 ## [1.0.7] - 2025-01-10
 
