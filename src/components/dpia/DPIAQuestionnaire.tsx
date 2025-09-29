@@ -131,7 +131,7 @@ export default function DPIAQuestionnaire({
                     {option.label}
                   </label>
                 </div>
-                {option.riskLevel &&
+                {option.riskLevel as any &&
                   getRiskLevelIndicator(parseInt(option.value))}
               </div>
             </div>

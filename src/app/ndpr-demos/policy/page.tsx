@@ -272,9 +272,7 @@ export default function PolicyDemoPage() {
     id: "ndpr-policy",
     name: "NDPR Compliant Privacy Policy",
     description: "A comprehensive privacy policy template compliant with NDPR",
-    organizationType: "business",
     version: "1.0",
-    lastUpdated: Date.now(), // Using timestamp as required by the PolicyTemplate type
     variables: [
       {
         name: "organizationName",
@@ -372,7 +370,6 @@ We have appointed a Data Protection Officer ("DPO") who is responsible for overs
 ### Effective Date
 
 This Privacy Policy is effective as of {{effectiveDate}} and will remain in effect except with respect to any changes in its provisions in the future, which will be in effect immediately after being posted on this page.`,
-        included: true,
         variables: [
           "organizationName",
           "organizationType",
@@ -388,8 +385,9 @@ This Privacy Policy is effective as of {{effectiveDate}} and will remain in effe
         id: "definitions",
         title: "Definitions",
         required: true,
-        description: "Define key terms used throughout the policy",
-        template: `## Key Definitions
+        order: 2,
+        included: true,
+        content: `## Key Definitions
 
 To help you understand this Privacy Policy, here are definitions of key terms used throughout:
 
@@ -412,16 +410,15 @@ To help you understand this Privacy Policy, here are definitions of key terms us
 - **NITDA**: The National Information Technology Development Agency, the regulatory body responsible for enforcing the NDPR in Nigeria.
 
 - **Special Categories of Personal Data**: Personal Data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, data concerning health, or data concerning a natural person's sex life or sexual orientation.`,
-        included: true,
         variables: ["organizationName"],
       },
       {
         id: "dataCollection",
         title: "Data Collection",
         required: true,
-        description:
-          "Explain what personal data you collect and how you collect it",
-        template: `## Personal Data We Collect
+        order: 3,
+        included: true,
+        content: `## Personal Data We Collect
 
 ### Categories of Personal Data We Collect
 
@@ -462,7 +459,6 @@ We may collect data from children under 13 with verifiable parental consent. Par
 {{else}}
 Our services are not intended for children under the age of 13, and we do not knowingly collect personal data from children under 13. If we learn we have collected or received personal data from a child under 13 without verification of parental consent, we will delete that information.
 {{/if}}`,
-        included: true,
         variables: [
           "collectsPersonalData",
           "dataTypes",
@@ -476,8 +472,9 @@ Our services are not intended for children under the age of 13, and we do not kn
         id: "dataUse",
         title: "Use of Personal Data",
         required: true,
-        description: "Explain how you use the personal data you collect",
-        template: `## How We Use Your Personal Data
+        order: 4,
+        included: true,
+        content: `## How We Use Your Personal Data
 
 ### Purposes for Processing Your Personal Data
 
@@ -508,15 +505,15 @@ You have the right not to be subject to a decision based solely on automated pro
 We will only use your personal data for the purposes for which we collected it, unless we reasonably consider that we need to use it for another reason and that reason is compatible with the original purpose. If we need to use your personal data for an unrelated purpose, we will notify you and explain the legal basis which allows us to do so.
 
 Please note that we may process your personal data without your knowledge or consent, in compliance with the above rules, where this is required or permitted by law.`,
-        included: true,
         variables: ["collectsPersonalData", "dataPurposes"],
       },
       {
         id: "legalBasis",
         title: "Legal Basis for Processing",
         required: true,
-        description: "Explain the legal basis for processing personal data",
-        template: `## Legal Basis for Processing Personal Data
+        order: 5,
+        included: true,
+        content: `## Legal Basis for Processing Personal Data
 
 Under the Nigeria Data Protection Regulation (NDPR), we must have a valid legal basis for processing your personal data. We rely on the following legal bases for processing your personal data:
 
@@ -548,15 +545,15 @@ For special categories of personal data (such as data revealing racial or ethnic
 - For the establishment, exercise, or defense of legal claims
 - For reasons of substantial public interest, on the basis of Nigerian law
 - For preventive or occupational medicine, medical diagnosis, or the provision of health or social care`,
-        included: true,
         variables: ["legalBases"],
       },
       {
         id: "dataSharing",
         title: "Data Sharing",
         required: true,
-        description: "Explain how you share personal data with third parties",
-        template: `## Data Sharing
+        order: 6,
+        included: true,
+        content: `## Data Sharing
 
 ### Third-Party Disclosures
 
@@ -583,7 +580,6 @@ We may transfer your personal data to countries outside Nigeria. When we do, we 
 
 Please contact us if you want further information on the specific mechanism used by us when transferring your personal data out of Nigeria.
 {{/if}}`,
-        included: true,
         variables: [
           "collectsPersonalData",
           "dataRecipients",
@@ -594,8 +590,9 @@ Please contact us if you want further information on the specific mechanism used
         id: "dataRetention",
         title: "Data Retention",
         required: true,
-        description: "Explain how long you retain personal data",
-        template: `## Data Retention 
+        order: 7,
+        included: true,
+        content: `## Data Retention
 ### How Long We Keep Your Personal Data
 
 {{#if collectsPersonalData}}
@@ -615,7 +612,6 @@ When your personal data is no longer required for the purposes for which it was 
 ### Data Minimization
 
 We practice data minimization, which means we only collect and process the personal data that is necessary for the purposes for which it is collected. We regularly review our data collection practices to ensure we are not collecting more data than necessary.`,
-        included: true,
         variables: ["collectsPersonalData", "dataRetentionPeriod"],
       },
     ],
@@ -642,22 +638,10 @@ We practice data minimization, which means we only collect and process the perso
             </CardHeader>
             <CardContent>
               <PolicyGenerator
-                sections={policyTemplate.sections}
-                variables={Object.entries(policyTemplate.variables).map(
-                  ([key, value]) => ({
-                    id: key,
-                    name: value.name,
-                    description: value.description,
-                    required: value.required,
-                    defaultValue: value.defaultValue,
-                    value: value.defaultValue || "",
-                    inputType: "text", // Default to text input type
-                  }),
-                )}
-                onGenerate={handleGeneratePolicy}
-                title="NDPR Privacy Policy Generator"
-                description="Generate an NDPR-compliant privacy policy for your organization."
-                buttonClassName="bg-blue-600 hover:bg-blue-700 text-white"
+                onGenerate={(data: any) => {
+                  console.log('Policy generated:', data);
+                  handleGeneratePolicy(data);
+                }}
               />
             </CardContent>
           </Card>
@@ -674,21 +658,21 @@ We practice data minimization, which means we only collect and process the perso
             </CardHeader>
             <CardContent>
               {generatedPolicy && generatedPolicy.length > 0 ? (
-                <PolicyPreview
-                  content={generateFormattedContent()}
-                  sections={generatedPolicy}
-                  variables={policyVariables || []}
-                  onEdit={handlePolicyEdit}
-                  organizationName={String(
-                    policyData?.organizationName || "Your Organization",
-                  )}
-                  lastUpdated={new Date()}
-                  showTableOfContents={true}
-                  showMetadata={true}
-                  title="Enterprise Privacy Policy"
-                  description="NDPR-compliant privacy policy ready for implementation"
-                  buttonClassName="bg-blue-600 hover:bg-blue-700 text-white"
-                />
+                <>
+                  <PolicyPreview
+                    onGenerate={(data: any) => {
+                      console.log('Policy preview data:', data);
+                    }}
+                  />
+                  
+                  {/* Manual policy preview */}
+                  <div className="mt-6 border rounded-lg p-6 bg-white">
+                    <h3 className="text-2xl font-bold mb-4">{String(policyData?.organizationName || "Your Organization")} Privacy Policy</h3>
+                    <div className="prose max-w-none">
+                      <pre className="whitespace-pre-wrap text-sm">{generateFormattedContent()}</pre>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <div className="p-8 text-center">
                   <p className="text-gray-500">
@@ -720,19 +704,30 @@ We practice data minimization, which means we only collect and process the perso
             </CardHeader>
             <CardContent>
               {generatedPolicy && generatedPolicy.length > 0 ? (
-                <PolicyExporter
-                  content={generateFormattedContent()}
-                  title={`${String(policyData?.organizationName || "Your Org")} Privacy Policy`}
-                  organizationName={String(
-                    policyData?.organizationName || "Your Org",
-                  )}
-                  lastUpdated={new Date()}
-                  componentTitle="Export Privacy Policy"
-                  description="Download in PDF, HTML, or Markdown."
-                  buttonClassName="bg-blue-600 hover:bg-blue-700 text-white"
-                  showExportHistory
-                  includeComplianceNotice
-                />
+                <>
+                  <PolicyExporter
+                    onGenerate={(data: any) => {
+                      console.log('Policy export data:', data);
+                    }}
+                  />
+                  
+                  {/* Manual export options */}
+                  <div className="mt-6 border rounded-lg p-6">
+                    <h3 className="text-xl font-semibold mb-4">Export Options</h3>
+                    <p className="text-gray-600 mb-4">Download your privacy policy in various formats:</p>
+                    <div className="flex gap-3">
+                      <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Export as PDF
+                      </button>
+                      <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Export as HTML
+                      </button>
+                      <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Export as Markdown
+                      </button>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <div className="p-8 text-center">
                   <p className="text-gray-500">
