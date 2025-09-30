@@ -169,6 +169,27 @@ The GitHub Pages deployment is configured in the following files:
 - Tailwind CSS
 - React
 
+## Privacy & Analytics
+
+This documentation site uses [PostHog](https://posthog.com), an open-source, privacy-friendly analytics platform, to understand which features are most helpful to users. We collect only aggregated, anonymous data such as:
+
+- Page views and popular demo pages
+- Feature usage patterns
+- Geographic data (country level only)
+
+**What we DON'T collect:**
+- Personal identifiable information (PII)
+- Individual user tracking
+- Form inputs or sensitive data
+- Email addresses or contact information
+
+PostHog is configured with `person_profiles: 'identified_only'`, meaning we only create user profiles if you explicitly identify yourself. By default, all analytics are anonymous and aggregated.
+
+You can opt-out of analytics by:
+1. Using browser extensions that block analytics
+2. Enabling "Do Not Track" in your browser
+3. Disabling JavaScript for this site
+
 ## License
 
 MIT License
