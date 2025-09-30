@@ -69,6 +69,8 @@ jobs:
           SKIP_TYPE_CHECK: true
           NEXT_SKIP_TYPE_CHECK: true
           USE_CUSTOM_DOMAIN: true
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
