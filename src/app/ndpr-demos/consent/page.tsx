@@ -19,6 +19,7 @@ interface ConsentSettings {
 }
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { ConsentProvider } from '@/contexts/ConsentContext';
 
 export default function ConsentDemoPage() {
   const [activeTab, setActiveTab] = useState('banner');
@@ -85,7 +86,8 @@ export default function ConsentDemoPage() {
   }
 
   return (
-    <div className="container mx-auto py-10">
+    <ConsentProvider>
+      <div className="container mx-auto py-10">
       <div className="mb-6">
         <Link href="/ndpr-demos" className="text-blue-600 hover:underline">
           ← Back to NDPR Demos
@@ -409,6 +411,7 @@ export default function ConsentDemoPage() {
           .
         </p>
       </div>
-    </div>
+      </div>
+    </ConsentProvider>
   );
 }
