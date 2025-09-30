@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { ConsentBanner, ConsentManager, consentStorage } from '@tantainnovative/ndpr-toolkit';
+import { ConsentBanner, ConsentManager, consentStorage } from '@/index';
 import type { ConsentOption } from '@/types';
 
 // Define ConsentSettings type locally since it's used in the demo

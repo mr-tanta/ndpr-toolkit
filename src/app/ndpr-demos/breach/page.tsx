@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BreachReportForm, BreachRiskAssessment, BreachNotificationManager, RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
+import { BreachReportForm, BreachRiskAssessment, BreachNotificationManager, RegulatoryReportGenerator } from '@/index';
 import type { BreachReport, RiskAssessment } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+import { DPIAQuestionnaire } from '@/index';
 import type { DPIAQuestion, DPIAResult } from '@/types';
 
 export default function DPIADemoPage() {
