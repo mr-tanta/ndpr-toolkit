@@ -50,7 +50,6 @@ const nextConfig: NextConfig = {
     : {
         // Production config for GitHub Pages
         output: 'export',  // Enable static HTML export
-        trailingSlash: true,  // Important for GitHub Pages to work correctly with routing
         images: {
           unoptimized: true,  // Required for static export
         },
