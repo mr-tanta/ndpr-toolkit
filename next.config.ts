@@ -12,6 +12,12 @@ const USE_CUSTOM_DOMAIN = process.env.USE_CUSTOM_DOMAIN === 'true';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   
+  // Environment variables
+  env: {
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+  },
+  
   // Skip type checking during build - let CI handle it
   typescript: {
     ignoreBuildErrors: true,
