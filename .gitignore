@@ -69,3 +69,19 @@ claude.md
 .tmp
 *.swp
 *.swo
+*.bak
+*.log
+
+# Test installation directory
+test-installation/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# npm/pnpm cache
+.npm
+.pnpm-store
+
+# Editor backup files
+*~
