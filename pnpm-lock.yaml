@@ -35,6 +35,9 @@ importers:
       posthog-js:
         specifier: ^1.268.8
         version: 1.268.8
+      posthog-node:
+        specifier: ^5.9.2
+        version: 5.9.2
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.0
@@ -3464,6 +3467,10 @@ packages:
         optional: true
       rrweb-snapshot:
         optional: true
+
+  posthog-node@5.9.2:
+    resolution: {integrity: sha512-oU7FbFcH5cn40nhP04cBeT67zE76EiGWjKKzDvm6IOm5P83sqM0Ij0wMJQSHp+QI6ZN7MLzb+4xfMPUEZ4q6CA==}
+    engines: {node: '>=20'}
 
   preact@10.27.2:
     resolution: {integrity: sha512-5SYSgFKSyhCbk6SrXyMpqjb5+MQBgfvEKE/OC+PujcY34sOpqtr+0AZQtPYx5IA6VxynQ7rUPCtKzyovpj9Bpg==}
@@ -8005,6 +8012,10 @@ snapshots:
       fflate: 0.4.8
       preact: 10.27.2
       web-vitals: 4.2.4
+
+  posthog-node@5.9.2:
+    dependencies:
+      '@posthog/core': 1.2.2
 
   preact@10.27.2: {}
 

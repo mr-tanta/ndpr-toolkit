@@ -75,6 +75,7 @@
     "jspdf": "^3.0.3",
     "lucide-react": "^0.507.0",
     "posthog-js": "^1.268.8",
+    "posthog-node": "^5.9.2",
     "tailwind-merge": "^2.6.0",
     "tslib": "^2.4.0",
     "uuid": "^13.0.0"

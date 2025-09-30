@@ -85,3 +85,5 @@ Thumbs.db
 
 # Editor backup files
 *~
+
+.env.local
