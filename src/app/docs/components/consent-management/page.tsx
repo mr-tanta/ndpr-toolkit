@@ -13,7 +13,7 @@ export default function ConsentManagementDocs() {
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
-          <Link href="/gdrp-demos/consent">
+          <Link href="/ndpr-demos/consent">
             View Demo
           </Link>
         </Button>

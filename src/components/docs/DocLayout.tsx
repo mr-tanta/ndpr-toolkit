@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 
 type NavItem = {
   title: string;
   href: string;
   icon?: React.ReactNode;
   children?: NavItem[];
+  isNew?: boolean;
 };
 
 type DocLayoutProps = {
@@ -17,6 +19,8 @@ type DocLayoutProps = {
   title: string;
   description?: string;
 };
+
+const NEW_MODULES = ['Lawful Basis Tracker', 'Cross-Border Transfers', 'ROPA'];
 
 const navigation: NavItem[] = [
   {
@@ -42,9 +46,9 @@ const navigation: NavItem[] = [
       { title: 'Data Subject Rights', href: '/docs/components/data-subject-rights' },
       { title: 'Breach Notification', href: '/docs/components/breach-notification' },
       { title: 'Privacy Policy Generator', href: '/docs/components/privacy-policy-generator' },
-      { title: 'Lawful Basis Tracker', href: '/docs/components/lawful-basis-tracker' },
-      { title: 'Cross-Border Transfers', href: '/docs/components/cross-border-transfers' },
-      { title: 'ROPA', href: '/docs/components/ropa' },
+      { title: 'Lawful Basis Tracker', href: '/docs/components/lawful-basis-tracker', isNew: true },
+      { title: 'Cross-Border Transfers', href: '/docs/components/cross-border-transfers', isNew: true },
+      { title: 'ROPA', href: '/docs/components/ropa', isNew: true },
     ],
   },
   {
@@ -63,22 +67,146 @@ const navigation: NavItem[] = [
       { title: 'Breach Notification Process', href: '/docs/guides/breach-notification-process' },
     ],
   },
-  // {
-  //   title: 'API Reference',
-  //   href: '#',
-  //   icon: (
-  //     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  //       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-  //     </svg>
-  //   ),
-  // },
 ];
+
+function Breadcrumbs({ pathname }: { pathname: string }) {
+  const crumbs = useMemo(() => {
+    const parts: { label: string; href: string }[] = [
+      { label: 'Home', href: '/' },
+      { label: 'Docs', href: '/docs' },
+    ];
+
+    if (pathname === '/docs') {
+      return parts;
+    }
+
+    // Find matching nav item for richer labels
+    for (const item of navigation) {
+      if (item.children) {
+        // Check if current page is a child
+        const matchedChild = item.children.find(
+          (child) => child.href === pathname
+        );
+        if (matchedChild) {
+          parts.push({ label: item.title, href: item.href });
+          parts.push({ label: matchedChild.title, href: matchedChild.href });
+          return parts;
+        }
+      }
+      if (item.href === pathname && item.href !== '/docs') {
+        parts.push({ label: item.title, href: item.href });
+        return parts;
+      }
+    }
+
+    // Fallback: build from path segments
+    const segments = pathname.replace('/docs/', '').split('/');
+    let accumulated = '/docs';
+    for (const seg of segments) {
+      accumulated += `/${seg}`;
+      const label = seg
+        .split('-')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+      parts.push({ label, href: accumulated });
+    }
+
+    return parts;
+  }, [pathname]);
+
+  return (
+    <nav aria-label="Breadcrumb" className="mb-4">
+      <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+        {crumbs.map((crumb, index) => (
+          <li key={crumb.href} className="flex items-center">
+            {index > 0 && (
+              <svg
+                className="w-4 h-4 mx-1 text-gray-400 dark:text-gray-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            )}
+            {index === crumbs.length - 1 ? (
+              <span className="font-medium text-gray-900 dark:text-white">
+                {crumb.label}
+              </span>
+            ) : (
+              <Link
+                href={crumb.href}
+                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                {crumb.label}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+function NavItemLink({
+  item,
+  isActive,
+  isChildActive,
+  onClick,
+}: {
+  item: NavItem;
+  isActive: boolean;
+  isChildActive?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <Link
+      href={item.href}
+      className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+        isActive
+          ? 'border-l-3 border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-900/30 dark:text-blue-200'
+          : isChildActive
+            ? 'text-blue-700 dark:text-blue-200'
+            : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+      }`}
+      onClick={onClick}
+    >
+      {item.icon && (
+        <span
+          className={`mr-3 ${
+            isActive || isChildActive
+              ? 'text-blue-500 dark:text-blue-400'
+              : 'text-gray-500 dark:text-gray-400'
+          }`}
+        >
+          {item.icon}
+        </span>
+      )}
+      <span className="flex-1">{item.title}</span>
+      {item.isNew && (
+        <Badge variant="success" className="ml-2 text-[10px] px-1.5 py-0">
+          New
+        </Badge>
+      )}
+    </Link>
+  );
+}
 
 export function DocLayout({ children, title, description }: DocLayoutProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Function to check if a nav item is active
+  // Function to check if a nav item is the exact active page
+  const isExactActive = (href: string) => {
+    return pathname === href;
+  };
+
+  // Function to check if a nav item or any of its children is active
   const isActive = (href: string) => {
     if (href === '/docs' && pathname === '/docs') {
       return true;
@@ -86,10 +214,62 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
     return pathname !== '/docs' && pathname.startsWith(href);
   };
 
-  // Function to check if a nav item should be expanded
-  const shouldExpand = (item: NavItem) => {
-    if (!item.children) return false;
-    return item.children.some(child => pathname === child.href || pathname.startsWith(child.href));
+  const renderNavSection = (item: NavItem, onLinkClick?: () => void) => {
+    const sectionActive = isActive(item.href);
+    const exactActive = isExactActive(item.href);
+
+    return (
+      <div key={item.title} className="py-1">
+        <NavItemLink
+          item={item}
+          isActive={exactActive}
+          isChildActive={sectionActive && !exactActive}
+          onClick={onLinkClick}
+        />
+        {/* Always show children -- all nav sections expanded by default */}
+        {item.children && (
+          <div className="mt-1 ml-8 space-y-1">
+            {item.children.map((child) => {
+              const childActive = pathname === child.href;
+              return (
+                <Link
+                  key={child.title}
+                  href={child.href}
+                  className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    childActive
+                      ? 'border-l-3 border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-900/30 dark:text-blue-200'
+                      : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
+                  }`}
+                  onClick={onLinkClick}
+                >
+                  <span className="flex-1">{child.title}</span>
+                  {child.isNew && (
+                    <Badge variant="success" className="ml-2 text-[10px] px-1.5 py-0">
+                      New
+                    </Badge>
+                  )}
+                  {childActive && (
+                    <svg
+                      className="h-4 w-4 text-blue-500 dark:text-blue-400 ml-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -100,14 +280,16 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
           type="button"
           className="p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-800"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-expanded={mobileMenuOpen}
+          aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
         >
-          <span className="sr-only">Open sidebar</span>
+          <span className="sr-only">{mobileMenuOpen ? 'Close sidebar' : 'Open sidebar'}</span>
           {mobileMenuOpen ? (
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           ) : (
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           )}
@@ -115,7 +297,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
       </div>
 
       {/* Sidebar for desktop */}
-      <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
+      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0" aria-label="Documentation navigation">
         <div className="flex flex-col flex-grow bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
           <div className="flex items-center flex-shrink-0 px-4 py-5 border-b border-gray-200 dark:border-gray-700">
             <Link href="/" className="flex items-center">
@@ -123,56 +305,14 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
             </Link>
           </div>
           <div className="mt-5 flex-1 flex flex-col">
-            <nav className="flex-1 px-4 space-y-1">
-              {navigation.map((item) => (
-                <div key={item.title} className="py-1">
-                  <Link
-                    href={item.href}
-                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                      isActive(item.href)
-                        ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200'
-                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-                    }`}
-                  >
-                    {item.icon && (
-                      <span className={`mr-3 ${isActive(item.href) ? 'text-blue-500 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}>
-                        {item.icon}
-                      </span>
-                    )}
-                    {item.title}
-                  </Link>
-                  {item.children && shouldExpand(item) && (
-                    <div className="mt-1 ml-8 space-y-1">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.title}
-                          href={child.href}
-                          className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                            pathname === child.href
-                              ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200'
-                              : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-                          }`}
-                        >
-                          {child.title}
-                          {pathname === child.href && (
-                            <span className="ml-auto">
-                              <svg className="h-4 w-4 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                              </svg>
-                            </span>
-                          )}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+            <nav className="flex-1 px-4 space-y-1" aria-label="Sidebar">
+              {navigation.map((item) => renderNavSection(item))}
             </nav>
           </div>
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <Button asChild variant="outline" size="sm" className="w-full">
               <a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" className="flex items-center">
-                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
                 </svg>
                 GitHub
@@ -180,15 +320,15 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
             </Button>
           </div>
         </div>
-      </div>
+      </aside>
 
       {/* Mobile menu, show/hide based on menu state */}
       <div
         className={`lg:hidden fixed inset-0 z-40 ${mobileMenuOpen ? 'block' : 'hidden'}`}
-        aria-hidden="true"
+        aria-hidden={!mobileMenuOpen}
       >
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setMobileMenuOpen(false)}></div>
-        <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
+        <aside className="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 shadow-lg overflow-y-auto" aria-label="Mobile navigation">
           <div className="flex items-center justify-between px-4 py-5 border-b border-gray-200 dark:border-gray-700">
             <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
               <span className="text-xl font-semibold text-gray-900 dark:text-white">NDPA Toolkit</span>
@@ -197,72 +337,41 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
               type="button"
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close navigation menu"
             >
               <span className="sr-only">Close sidebar</span>
-              <svg className="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
           <div className="mt-5 flex-1 flex flex-col">
-            <nav className="flex-1 px-4 space-y-1">
-              {navigation.map((item) => (
-                <div key={item.title} className="py-1">
-                  <Link
-                    href={item.href}
-                    className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                      isActive(item.href)
-                        ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200'
-                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-                    }`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.icon && (
-                      <span className={`mr-3 ${isActive(item.href) ? 'text-blue-500 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}>
-                        {item.icon}
-                      </span>
-                    )}
-                    {item.title}
-                  </Link>
-                  {item.children && shouldExpand(item) && (
-                    <div className="mt-1 ml-8 space-y-1">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.title}
-                          href={child.href}
-                          className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                            pathname === child.href
-                              ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200'
-                              : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          {child.title}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+            <nav className="flex-1 px-4 space-y-1" aria-label="Mobile sidebar">
+              {navigation.map((item) =>
+                renderNavSection(item, () => setMobileMenuOpen(false))
+              )}
             </nav>
           </div>
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
             <Button asChild variant="outline" size="sm" className="w-full">
               <a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" className="flex items-center">
-                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
                 </svg>
                 GitHub
               </a>
             </Button>
           </div>
-        </div>
+        </aside>
       </div>
 
       {/* Main content */}
       <div className="lg:pl-64">
         <main className="py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Breadcrumbs */}
+            <Breadcrumbs pathname={pathname} />
+
             <div className="pb-5 border-b border-gray-200 dark:border-gray-700 mb-6">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
@@ -279,7 +388,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
                 </div>
               </div>
             </div>
-            
+
             {/* Page content */}
             <div className="prose prose-blue max-w-none dark:prose-invert">
               {children}

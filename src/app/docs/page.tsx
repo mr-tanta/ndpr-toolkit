@@ -8,10 +8,91 @@ import { Badge } from '@/components/ui/Badge';
 
 export default function DocsPage() {
   return (
-    <DocLayout 
-      title="NDPR Toolkit Documentation" 
+    <DocLayout
+      title="NDPR Toolkit Documentation"
       description="Comprehensive guides and API reference for implementing NDPA 2023-compliant features"
     >
+      {/* Search Hero */}
+      <section className="mb-12">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-8 text-white">
+          <h2 className="text-2xl font-bold mb-2 text-white">Find what you need</h2>
+          <p className="text-blue-100 mb-4">Browse components, guides, and API references for the NDPR Toolkit.</p>
+          <div className="relative max-w-xl">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search documentation..."
+              className="w-full pl-12 pr-4 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/15 transition-colors"
+              readOnly
+              aria-label="Search documentation"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* What's New in v2.1 */}
+      <section className="mb-12">
+        <div className="flex items-center gap-3 mb-6">
+          <h2 className="text-2xl font-bold">What&apos;s New in v2.1</h2>
+          <Badge variant="success">Latest</Badge>
+        </div>
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Lawful Basis Tracker</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Track and document lawful basis for each processing activity under NDPA 2023 Section 25.</p>
+              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
+                <Link href="/docs/components/lawful-basis-tracker">View Docs</Link>
+              </Button>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Cross-Border Transfers</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Manage and validate cross-border data transfers in compliance with NDPA 2023 Section 41.</p>
+              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
+                <Link href="/docs/components/cross-border-transfers">View Docs</Link>
+              </Button>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">ROPA (Records of Processing)</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Maintain Records of Processing Activities as required by the NDPA 2023.</p>
+              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
+                <Link href="/docs/components/ropa">View Docs</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="mt-6 pt-4 border-t border-green-200 dark:border-green-800">
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              <strong>Also in v2.1:</strong> Modular imports for tree-shaking, per-module entry points, and improved TypeScript definitions across all components.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Getting Started</h2>
         <div className="prose prose-blue dark:prose-invert max-w-none">
@@ -19,16 +100,11 @@ export default function DocsPage() {
             The NDPR Toolkit is a comprehensive set of components and utilities designed to help Nigerian businesses
             implement NDPA 2023-compliant features in their web applications with minimal development effort.
           </p>
-          
+
           <p>
-            The toolkit includes components for consent management, data subject rights handling, privacy policy generation, 
-            breach reporting, and data protection impact assessments. All components are built with TypeScript for type safety 
+            The toolkit includes components for consent management, data subject rights handling, privacy policy generation,
+            breach reporting, and data protection impact assessments. All components are built with TypeScript for type safety
             and designed to be easily integrated into React and Next.js applications.
-          </p>
-          
-          <p>
-            <strong>Version 2.0</strong> includes significant enhancements to all components, improved type definitions, 
-            and comprehensive documentation to ensure developers can quickly implement NDPA 2023-compliant features.
           </p>
 
           <h3>Installation</h3>
@@ -42,6 +118,43 @@ npm install @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
           <p>
             The toolkit supports multiple import styles so you can pick exactly what you need and keep your bundles lean:
           </p>
+        </div>
+
+        {/* Prominent import path cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <h4 className="font-semibold text-gray-900 dark:text-white text-sm uppercase tracking-wide">Core</h4>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Types + utilities, zero UI dependencies</p>
+            <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono overflow-x-auto">
+              <code>@tantainnovative/ndpr-toolkit/core</code>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+              <h4 className="font-semibold text-gray-900 dark:text-white text-sm uppercase tracking-wide">Hooks</h4>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">React hooks with no component overhead</p>
+            <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono overflow-x-auto">
+              <code>@tantainnovative/ndpr-toolkit/hooks</code>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <h4 className="font-semibold text-gray-900 dark:text-white text-sm uppercase tracking-wide">Per-Module</h4>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Import only the module you need</p>
+            <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono overflow-x-auto">
+              <code>@tantainnovative/ndpr-toolkit/consent</code>
+            </div>
+          </div>
+        </div>
+
+        <div className="prose prose-blue dark:prose-invert max-w-none">
           <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
             <pre><code>{`// Core — types + utilities, zero UI dependencies
 import { validateConsent, ConsentOption } from '@tantainnovative/ndpr-toolkit/core';
@@ -90,7 +203,7 @@ function MyApp() {
       autoSave={true}
     >
       <AppContent />
-      <ConsentBanner 
+      <ConsentBanner
         position="bottom"
         privacyPolicyUrl="/privacy-policy"
         showPreferences={true}
@@ -103,12 +216,12 @@ function MyApp() {
 function AppContent() {
   // Use the useConsent hook to manage consent state
   const { consents, hasConsented, updateConsent } = useConsent();
-  
+
   // Check if user has given consent for analytics
   if (hasConsented('analytics')) {
     // Initialize analytics
   }
-  
+
   return (
     <div>
       {/* Your app content */}
@@ -313,7 +426,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -332,7 +445,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -378,7 +491,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Data Subject Rights</CardTitle>
@@ -400,7 +513,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>DPIA Questionnaire</CardTitle>
@@ -422,7 +535,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Breach Notification</CardTitle>
@@ -444,7 +557,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Privacy Policy Generator</CardTitle>
@@ -466,7 +579,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>React Hooks</CardTitle>
@@ -491,16 +604,16 @@ function AppContent() {
           </Card>
         </div>
       </section>
-      
+
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Implementation Guides</h2>
         <div className="prose prose-blue max-w-none dark:prose-invert mb-6">
           <p>
-            Our implementation guides provide step-by-step instructions for integrating NDPR Toolkit components 
+            Our implementation guides provide step-by-step instructions for integrating NDPR Toolkit components
             into your applications and addressing specific compliance scenarios.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
@@ -517,7 +630,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Consent Implementation</CardTitle>
@@ -533,7 +646,7 @@ function AppContent() {
               </Button>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>DSR Portal Setup</CardTitle>
@@ -551,7 +664,7 @@ function AppContent() {
           </Card>
         </div>
       </section>
-      
+
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">NDPA 2023 Compliance</h2>
         <div className="prose prose-blue max-w-none dark:prose-invert">
@@ -585,7 +698,7 @@ function AppContent() {
 
           <h3>How the NDPR Toolkit Helps</h3>
           <p>
-            Our toolkit provides ready-to-use components that address each of these key requirements:
+            The toolkit provides ready-to-use components that address each of these key requirements:
           </p>
           <ul>
             <li><strong>Consent Management:</strong> Implement proper consent collection and management</li>
@@ -593,6 +706,9 @@ function AppContent() {
             <li><strong>DPIA Questionnaire:</strong> Conduct and document Data Protection Impact Assessments</li>
             <li><strong>Breach Notification System:</strong> Report and manage breaches within the required timeframes</li>
             <li><strong>Privacy Policy Generator:</strong> Create and maintain NDPA 2023-compliant privacy policies</li>
+            <li><strong>Lawful Basis Tracker:</strong> Document and track the lawful basis for each processing activity</li>
+            <li><strong>Cross-Border Transfers:</strong> Manage data transfers across national boundaries with proper safeguards</li>
+            <li><strong>ROPA:</strong> Maintain Records of Processing Activities as required by the NDPA</li>
           </ul>
 
           <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md mt-6">

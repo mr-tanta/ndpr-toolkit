@@ -18,6 +18,28 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Nigeria Data Protection Toolkit — NDPA 2023",
   description: "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features in Nigerian applications",
+  other: {
+    "theme-color": "#1d4ed8",
+  },
+  openGraph: {
+    title: "Nigeria Data Protection Toolkit — NDPA 2023",
+    description: "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features in Nigerian applications",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "NDPR Toolkit — NDPA 2023 Compliance Components",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nigeria Data Protection Toolkit — NDPA 2023",
+    description: "Open-source toolkit for implementing NDPA 2023 compliant features in Nigerian applications",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
