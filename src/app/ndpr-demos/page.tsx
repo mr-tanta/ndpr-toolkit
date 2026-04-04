@@ -12,14 +12,6 @@ const demos = [
     description: 'Consent banners, preference management, and audit-ready storage aligned with NDPA provisions.',
     href: '/ndpr-demos/consent',
     icon: '\u2714',
-    color: {
-      border: 'border-l-blue-500',
-      bg: 'bg-blue-50 dark:bg-blue-950/30',
-      icon: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300',
-      badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300',
-      hover: 'hover:shadow-blue-100 dark:hover:shadow-blue-900/20',
-      link: 'text-blue-600 dark:text-blue-400',
-    },
   },
   {
     title: 'Data Subject Rights',
@@ -27,14 +19,6 @@ const demos = [
     description: 'DSR request forms, dashboards, and real-time tracking for access, rectification, and erasure requests.',
     href: '/ndpr-demos/dsr',
     icon: '\uD83D\uDC64',
-    color: {
-      border: 'border-l-purple-500',
-      bg: 'bg-purple-50 dark:bg-purple-950/30',
-      icon: 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300',
-      badge: 'bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300',
-      hover: 'hover:shadow-purple-100 dark:hover:shadow-purple-900/20',
-      link: 'text-purple-600 dark:text-purple-400',
-    },
   },
   {
     title: 'DPIA Tools',
@@ -42,14 +26,6 @@ const demos = [
     description: 'Data Protection Impact Assessments with risk scoring, templates, and regulatory guidance.',
     href: '/ndpr-demos/dpia',
     icon: '\uD83D\uDCCB',
-    color: {
-      border: 'border-l-amber-500',
-      bg: 'bg-amber-50 dark:bg-amber-950/30',
-      icon: 'bg-amber-100 text-amber-600 dark:bg-amber-900 dark:text-amber-300',
-      badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300',
-      hover: 'hover:shadow-amber-100 dark:hover:shadow-amber-900/20',
-      link: 'text-amber-600 dark:text-amber-400',
-    },
   },
   {
     title: 'Breach Management',
@@ -57,14 +33,6 @@ const demos = [
     description: 'Breach notification workflows, severity assessment, and NDPC reporting timelines.',
     href: '/ndpr-demos/breach',
     icon: '\uD83D\uDEA8',
-    color: {
-      border: 'border-l-red-500',
-      bg: 'bg-red-50 dark:bg-red-950/30',
-      icon: 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300',
-      badge: 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300',
-      hover: 'hover:shadow-red-100 dark:hover:shadow-red-900/20',
-      link: 'text-red-600 dark:text-red-400',
-    },
   },
   {
     title: 'Privacy Policy',
@@ -72,14 +40,6 @@ const demos = [
     description: 'Generate, preview, and manage privacy policies with full NDPA-compliant clause coverage.',
     href: '/ndpr-demos/policy',
     icon: '\uD83D\uDCC4',
-    color: {
-      border: 'border-l-green-500',
-      bg: 'bg-green-50 dark:bg-green-950/30',
-      icon: 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300',
-      badge: 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300',
-      hover: 'hover:shadow-green-100 dark:hover:shadow-green-900/20',
-      link: 'text-green-600 dark:text-green-400',
-    },
   },
   {
     title: 'Lawful Basis Tracker',
@@ -87,14 +47,6 @@ const demos = [
     description: 'Document and track the lawful basis for every processing activity with full audit trails.',
     href: '/ndpr-demos/lawful-basis',
     icon: '\u2696\uFE0F',
-    color: {
-      border: 'border-l-indigo-500',
-      bg: 'bg-indigo-50 dark:bg-indigo-950/30',
-      icon: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900 dark:text-indigo-300',
-      badge: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300',
-      hover: 'hover:shadow-indigo-100 dark:hover:shadow-indigo-900/20',
-      link: 'text-indigo-600 dark:text-indigo-400',
-    },
   },
   {
     title: 'Cross-Border Transfers',
@@ -102,14 +54,6 @@ const demos = [
     description: 'Assess international data transfers with adequacy checks and safeguard recommendations.',
     href: '/ndpr-demos/cross-border',
     icon: '\uD83C\uDF10',
-    color: {
-      border: 'border-l-teal-500',
-      bg: 'bg-teal-50 dark:bg-teal-950/30',
-      icon: 'bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300',
-      badge: 'bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300',
-      hover: 'hover:shadow-teal-100 dark:hover:shadow-teal-900/20',
-      link: 'text-teal-600 dark:text-teal-400',
-    },
   },
   {
     title: 'ROPA',
@@ -117,14 +61,6 @@ const demos = [
     description: 'Maintain a Record of Processing Activities with categorization, filtering, and export.',
     href: '/ndpr-demos/ropa',
     icon: '\uD83D\uDCD2',
-    color: {
-      border: 'border-l-orange-500',
-      bg: 'bg-orange-50 dark:bg-orange-950/30',
-      icon: 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300',
-      badge: 'bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-300',
-      hover: 'hover:shadow-orange-100 dark:hover:shadow-orange-900/20',
-      link: 'text-orange-600 dark:text-orange-400',
-    },
   },
 ];
 
@@ -199,23 +135,23 @@ export default function NDPRDemosPage() {
               className="group no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl"
             >
               <Card
-                className={`
-                  h-full border-l-4 ${demo.color.border}
+                className="
+                  h-full border-l-4 border-blue-600 dark:border-blue-500
                   bg-white dark:bg-slate-800/50
                   transition-all duration-200
-                  group-hover:scale-[1.02] group-hover:shadow-lg ${demo.color.hover}
+                  group-hover:scale-[1.02] group-hover:shadow-lg
                   cursor-pointer
-                `}
+                "
               >
                 <CardHeader className="pb-0">
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg ${demo.color.icon}`}
+                      className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
                     >
                       {demo.icon}
                     </div>
                     <span
-                      className={`text-[11px] font-medium rounded-full px-2 py-0.5 ${demo.color.badge}`}
+                      className="text-[11px] font-medium rounded-full px-2 py-0.5 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
                     >
                       {demo.section}
                     </span>
@@ -229,11 +165,11 @@ export default function NDPRDemosPage() {
                     {demo.description}
                   </p>
                   <span
-                    className={`
+                    className="
                       inline-flex items-center gap-1 text-sm font-medium
-                      ${demo.color.link}
+                      text-blue-600 dark:text-blue-400
                       group-hover:gap-2 transition-all duration-200
-                    `}
+                    "
                   >
                     Explore
                     <span className="transition-transform duration-200 group-hover:translate-x-0.5">
@@ -270,7 +206,7 @@ export default function NDPRDemosPage() {
             <div className="font-mono text-sm">
               <div className="flex items-center gap-2">
                 <span className="text-green-400 select-none">$</span>
-                <code className="text-slate-100">npm install ndpr-toolkit</code>
+                <code className="text-slate-100">npm install @tantainnovative/ndpr-toolkit</code>
               </div>
             </div>
           </div>
@@ -297,7 +233,7 @@ export default function NDPRDemosPage() {
               Documentation
             </Link>
             <a
-              href="https://www.npmjs.com/package/ndpr-toolkit"
+              href="https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300 text-sm font-medium rounded-lg transition-colors duration-200 no-underline"

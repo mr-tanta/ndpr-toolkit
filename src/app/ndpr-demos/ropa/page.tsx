@@ -47,12 +47,12 @@ const LAWFUL_BASIS_LABELS: Record<LawfulBasis, string> = {
 };
 
 const LAWFUL_BASIS_COLORS: Record<LawfulBasis, { bg: string; text: string; dot: string }> = {
-  consent: { bg: 'bg-blue-50 dark:bg-blue-950/30', text: 'text-blue-700 dark:text-blue-300', dot: 'bg-blue-500' },
-  contract: { bg: 'bg-green-50 dark:bg-green-950/30', text: 'text-green-700 dark:text-green-300', dot: 'bg-green-500' },
-  legal_obligation: { bg: 'bg-purple-50 dark:bg-purple-950/30', text: 'text-purple-700 dark:text-purple-300', dot: 'bg-purple-500' },
-  vital_interests: { bg: 'bg-red-50 dark:bg-red-950/30', text: 'text-red-700 dark:text-red-300', dot: 'bg-red-500' },
-  public_interest: { bg: 'bg-amber-50 dark:bg-amber-950/30', text: 'text-amber-700 dark:text-amber-300', dot: 'bg-amber-500' },
-  legitimate_interests: { bg: 'bg-indigo-50 dark:bg-indigo-950/30', text: 'text-indigo-700 dark:text-indigo-300', dot: 'bg-indigo-500' },
+  consent: { bg: 'bg-gray-50 dark:bg-gray-900/50', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-blue-500' },
+  contract: { bg: 'bg-gray-50 dark:bg-gray-900/50', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-blue-500' },
+  legal_obligation: { bg: 'bg-gray-50 dark:bg-gray-900/50', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-blue-500' },
+  vital_interests: { bg: 'bg-gray-50 dark:bg-gray-900/50', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-blue-500' },
+  public_interest: { bg: 'bg-gray-50 dark:bg-gray-900/50', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-blue-500' },
+  legitimate_interests: { bg: 'bg-gray-50 dark:bg-gray-900/50', text: 'text-gray-700 dark:text-gray-300', dot: 'bg-blue-500' },
 };
 
 const DATA_CATEGORY_OPTIONS = [
@@ -444,7 +444,7 @@ export default function ROPADemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-violet-950/20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950/20">
       <div className="container mx-auto py-10 px-4 max-w-7xl">
         {/* Navigation */}
         <div className="mb-8">
@@ -460,7 +460,7 @@ export default function ROPADemoPage() {
         </div>
 
         {/* Hero Section */}
-        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-purple-700 to-indigo-800 p-5 sm:p-8 md:p-12 text-white shadow-xl">
+        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 p-5 sm:p-8 md:p-12 text-white shadow-xl">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full text-sm font-medium mb-4">
@@ -470,26 +470,26 @@ export default function ROPADemoPage() {
               NDPA Accountability Principle
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Record of Processing Activities</h1>
-            <p className="text-violet-100 text-lg max-w-2xl">
+            <p className="text-blue-100 text-lg max-w-2xl">
               Maintain a comprehensive ROPA to demonstrate compliance with the Nigeria Data Protection Act.
               The central register for all personal data processing activities.
             </p>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
                 <span className="text-2xl font-bold">{stats.total}</span>
-                <span className="text-violet-200">Records</span>
+                <span className="text-blue-200">Records</span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
                 <span className="text-2xl font-bold text-green-300">{stats.active}</span>
-                <span className="text-violet-200">Active</span>
+                <span className="text-blue-200">Active</span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
                 <span className="text-2xl font-bold text-red-300">{stats.highRisk}</span>
-                <span className="text-violet-200">High Risk</span>
+                <span className="text-blue-200">High Risk</span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
                 <span className="text-2xl font-bold text-amber-300">{stats.needsReview}</span>
-                <span className="text-violet-200">Needs Review</span>
+                <span className="text-blue-200">Needs Review</span>
               </div>
             </div>
           </div>
@@ -510,10 +510,10 @@ export default function ROPADemoPage() {
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
               {[
                 { label: 'Total Records', value: stats.total, icon: '\u2630', color: 'text-gray-900 dark:text-gray-100', bg: '' },
-                { label: 'Active', value: stats.active, icon: '\u2713', color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800' },
-                { label: 'High Risk', value: stats.highRisk, icon: '\u26A0', color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800' },
-                { label: 'Cross-Border', value: stats.crossBorder, icon: '\uD83C\uDF10', color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800' },
-                { label: 'Needs Review', value: stats.needsReview, icon: '\u23F0', color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800' },
+                { label: 'Active', value: stats.active, icon: '\u2713', color: 'text-green-600', bg: '' },
+                { label: 'High Risk', value: stats.highRisk, icon: '\u26A0', color: 'text-red-600', bg: '' },
+                { label: 'Cross-Border', value: stats.crossBorder, icon: '\uD83C\uDF10', color: 'text-blue-600', bg: '' },
+                { label: 'Needs Review', value: stats.needsReview, icon: '\u23F0', color: 'text-amber-600', bg: '' },
               ].map((stat) => (
                 <Card key={stat.label} className={stat.bg}>
                   <CardContent className="pt-5 pb-4 text-center">
@@ -579,7 +579,7 @@ export default function ROPADemoPage() {
                                 <span className="text-sm font-semibold tabular-nums">{count}</span>
                               </div>
                               <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                                <div className="h-full rounded-full transition-all duration-700 bg-violet-500" style={{ width: `${percentage}%` }} />
+                                <div className="h-full rounded-full transition-all duration-700 bg-blue-500" style={{ width: `${percentage}%` }} />
                               </div>
                             </div>
                           );
@@ -676,7 +676,7 @@ export default function ROPADemoPage() {
                       className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-xs font-bold text-violet-600">1</span>
+                        <span className="w-6 h-6 rounded bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-xs font-bold text-blue-600">1</span>
                         <span className="font-medium text-sm">Basic Information</span>
                       </div>
                       <svg className={`w-4 h-4 transition-transform ${expandedSections.basic ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -688,11 +688,11 @@ export default function ROPADemoPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium mb-1.5">Activity Name *</label>
-                            <input type="text" value={formActivity} onChange={(e) => setFormActivity(e.target.value)} placeholder="e.g., Customer Data Processing" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
+                            <input type="text" value={formActivity} onChange={(e) => setFormActivity(e.target.value)} placeholder="e.g., Customer Data Processing" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                           <div>
                             <label className="block text-sm font-medium mb-1.5">Department</label>
-                            <select value={formDepartment} onChange={(e) => setFormDepartment(e.target.value)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow">
+                            <select value={formDepartment} onChange={(e) => setFormDepartment(e.target.value)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
                               <option value="">Select department</option>
                               {DEPARTMENTS.map((d) => (<option key={d} value={d}>{d}</option>))}
                             </select>
@@ -700,18 +700,18 @@ export default function ROPADemoPage() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium mb-1.5">Purpose of Processing *</label>
-                          <textarea value={formPurpose} onChange={(e) => setFormPurpose(e.target.value)} placeholder="Describe the purpose of this data processing activity" rows={2} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
+                          <textarea value={formPurpose} onChange={(e) => setFormPurpose(e.target.value)} placeholder="Describe the purpose of this data processing activity" rows={2} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
                             <label className="block text-sm font-medium mb-1.5">Lawful Basis</label>
-                            <select value={formBasis} onChange={(e) => setFormBasis(e.target.value as LawfulBasis)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow">
+                            <select value={formBasis} onChange={(e) => setFormBasis(e.target.value as LawfulBasis)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
                               {(Object.entries(LAWFUL_BASIS_LABELS) as [LawfulBasis, string][]).map(([key, label]) => (<option key={key} value={key}>{label}</option>))}
                             </select>
                           </div>
                           <div>
                             <label className="block text-sm font-medium mb-1.5">Risk Level</label>
-                            <select value={formRisk} onChange={(e) => setFormRisk(e.target.value as RiskLevel)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow">
+                            <select value={formRisk} onChange={(e) => setFormRisk(e.target.value as RiskLevel)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
                               <option value="low">Low</option>
                               <option value="medium">Medium</option>
                               <option value="high">High</option>
@@ -719,7 +719,7 @@ export default function ROPADemoPage() {
                           </div>
                           <div>
                             <label className="block text-sm font-medium mb-1.5">DPO Contact</label>
-                            <input type="email" value={formDpo} onChange={(e) => setFormDpo(e.target.value)} placeholder="dpo@company.com" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
+                            <input type="email" value={formDpo} onChange={(e) => setFormDpo(e.target.value)} placeholder="dpo@company.com" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                         </div>
                       </div>
@@ -733,7 +733,7 @@ export default function ROPADemoPage() {
                       className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-xs font-bold text-violet-600">2</span>
+                        <span className="w-6 h-6 rounded bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-xs font-bold text-blue-600">2</span>
                         <span className="font-medium text-sm">Data Categories, Subjects &amp; Recipients</span>
                       </div>
                       <svg className={`w-4 h-4 transition-transform ${expandedSections.data ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -746,8 +746,8 @@ export default function ROPADemoPage() {
                           <label className="block text-sm font-medium mb-2">Categories of Personal Data</label>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                             {DATA_CATEGORY_OPTIONS.map((category) => (
-                              <label key={category} className={`flex items-center gap-2 text-sm cursor-pointer p-2 rounded-lg border transition-colors ${formCategories.includes(category) ? 'bg-violet-50 border-violet-200 dark:bg-violet-900/20 dark:border-violet-800' : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
-                                <input type="checkbox" checked={formCategories.includes(category)} onChange={() => handleToggleCategory(category)} className="rounded text-violet-600" />
+                              <label key={category} className={`flex items-center gap-2 text-sm cursor-pointer p-2 rounded-lg border transition-colors ${formCategories.includes(category) ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800' : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
+                                <input type="checkbox" checked={formCategories.includes(category)} onChange={() => handleToggleCategory(category)} className="rounded text-blue-600" />
                                 {category}
                               </label>
                             ))}
@@ -757,8 +757,8 @@ export default function ROPADemoPage() {
                           <label className="block text-sm font-medium mb-2">Categories of Data Subjects</label>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                             {DATA_SUBJECT_OPTIONS.map((subject) => (
-                              <label key={subject} className={`flex items-center gap-2 text-sm cursor-pointer p-2 rounded-lg border transition-colors ${formSubjects.includes(subject) ? 'bg-violet-50 border-violet-200 dark:bg-violet-900/20 dark:border-violet-800' : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
-                                <input type="checkbox" checked={formSubjects.includes(subject)} onChange={() => handleToggleSubject(subject)} className="rounded text-violet-600" />
+                              <label key={subject} className={`flex items-center gap-2 text-sm cursor-pointer p-2 rounded-lg border transition-colors ${formSubjects.includes(subject) ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800' : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50'}`}>
+                                <input type="checkbox" checked={formSubjects.includes(subject)} onChange={() => handleToggleSubject(subject)} className="rounded text-blue-600" />
                                 {subject}
                               </label>
                             ))}
@@ -767,11 +767,11 @@ export default function ROPADemoPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium mb-1.5">Recipients</label>
-                            <input type="text" value={formRecipients} onChange={(e) => setFormRecipients(e.target.value)} placeholder="Comma-separated (e.g., HR Dept, Cloud Provider)" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
+                            <input type="text" value={formRecipients} onChange={(e) => setFormRecipients(e.target.value)} placeholder="Comma-separated (e.g., HR Dept, Cloud Provider)" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                           <div>
                             <label className="block text-sm font-medium mb-1.5">Retention Period</label>
-                            <input type="text" value={formRetention} onChange={(e) => setFormRetention(e.target.value)} placeholder="e.g., 3 years after last interaction" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
+                            <input type="text" value={formRetention} onChange={(e) => setFormRetention(e.target.value)} placeholder="e.g., 3 years after last interaction" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                         </div>
                       </div>
@@ -785,7 +785,7 @@ export default function ROPADemoPage() {
                       className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-xs font-bold text-violet-600">3</span>
+                        <span className="w-6 h-6 rounded bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-xs font-bold text-blue-600">3</span>
                         <span className="font-medium text-sm">Security Measures</span>
                         {formSecurity.length > 0 && <span className="text-xs text-gray-400">({formSecurity.length} selected)</span>}
                       </div>
@@ -814,7 +814,7 @@ export default function ROPADemoPage() {
                       className="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-left"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-xs font-bold text-violet-600">4</span>
+                        <span className="w-6 h-6 rounded bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-xs font-bold text-blue-600">4</span>
                         <span className="font-medium text-sm">Cross-Border Transfers</span>
                         {formCrossBorder && <Badge variant="info">Yes</Badge>}
                       </div>
@@ -825,13 +825,13 @@ export default function ROPADemoPage() {
                     {expandedSections.crossBorder && (
                       <div className="p-4 space-y-4">
                         <label className="flex items-center gap-2 text-sm font-medium cursor-pointer">
-                          <input type="checkbox" checked={formCrossBorder} onChange={(e) => setFormCrossBorder(e.target.checked)} className="rounded text-violet-600" />
+                          <input type="checkbox" checked={formCrossBorder} onChange={(e) => setFormCrossBorder(e.target.checked)} className="rounded text-blue-600" />
                           This activity involves cross-border data transfers
                         </label>
                         {formCrossBorder && (
                           <div>
                             <label className="block text-sm font-medium mb-1.5">Destination Countries</label>
-                            <input type="text" value={formCountries} onChange={(e) => setFormCountries(e.target.value)} placeholder="Comma-separated (e.g., United States, United Kingdom)" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
+                            <input type="text" value={formCountries} onChange={(e) => setFormCountries(e.target.value)} placeholder="Comma-separated (e.g., United States, United Kingdom)" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                         )}
                       </div>
@@ -1065,8 +1065,8 @@ export default function ROPADemoPage() {
                   </Button>
                 </div>
 
-                <div className="mt-6 p-4 rounded-lg bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800">
-                  <p className="text-sm text-violet-800 dark:text-violet-300">
+                <div className="mt-6 p-4 rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
+                  <p className="text-sm text-blue-800 dark:text-blue-300">
                     <strong>NDPC Audit Tip:</strong> Export your ROPA regularly and keep copies readily available.
                     The Nigeria Data Protection Commission may request access to your record of processing activities
                     during compliance audits or investigations.
@@ -1078,16 +1078,16 @@ export default function ROPADemoPage() {
         </Tabs>
 
         {/* NDPA Reference Footer */}
-        <div className="mt-10 rounded-xl border border-violet-200 dark:border-violet-800 bg-violet-50/50 dark:bg-violet-950/20 p-6">
+        <div className="mt-10 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-6">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg className="w-4 h-4 text-violet-600 dark:text-violet-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-violet-900 dark:text-violet-200 mb-1">NDPA Compliance Reference</h3>
-              <p className="text-sm text-violet-800/80 dark:text-violet-300/80">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-1">NDPA Compliance Reference</h3>
+              <p className="text-sm text-blue-800/80 dark:text-blue-300/80">
                 The ROPA supports compliance with the <strong>NDPA&apos;s accountability principle</strong> (Section 24)
                 and record-keeping obligations. Data controllers must maintain comprehensive records of processing
                 activities and make them available to the <strong>Nigeria Data Protection Commission (NDPC)</strong> upon
@@ -1095,7 +1095,7 @@ export default function ROPADemoPage() {
               </p>
               <Link
                 href="/docs/components/ropa"
-                className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-violet-600 dark:text-violet-400 hover:underline"
+                className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
               >
                 View full documentation
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">

@@ -49,10 +49,10 @@ const LAWFUL_BASES: Record<
       'The data subject has given clear consent for processing their personal data for a specific purpose.',
     section: 'Section 25(1)(a)',
     whenToUse: 'Marketing emails, cookies, newsletter subscriptions, optional profiling',
-    color: 'text-blue-700 dark:text-blue-300',
-    bgColor: 'bg-blue-50 dark:bg-blue-950/40',
-    borderColor: 'border-blue-200 dark:border-blue-800',
-    iconBg: 'bg-blue-100 dark:bg-blue-900',
+    color: 'text-gray-900 dark:text-gray-100',
+    bgColor: 'bg-white dark:bg-gray-900',
+    borderColor: 'border-gray-200 dark:border-gray-700',
+    iconBg: 'bg-blue-50 dark:bg-blue-900/30',
     icon: '\u2713',
   },
   contract: {
@@ -61,10 +61,10 @@ const LAWFUL_BASES: Record<
       'Processing is necessary for the performance of a contract with the data subject.',
     section: 'Section 25(1)(b)',
     whenToUse: 'Account creation, order fulfilment, service delivery, payment processing',
-    color: 'text-green-700 dark:text-green-300',
-    bgColor: 'bg-green-50 dark:bg-green-950/40',
-    borderColor: 'border-green-200 dark:border-green-800',
-    iconBg: 'bg-green-100 dark:bg-green-900',
+    color: 'text-gray-900 dark:text-gray-100',
+    bgColor: 'bg-white dark:bg-gray-900',
+    borderColor: 'border-gray-200 dark:border-gray-700',
+    iconBg: 'bg-blue-50 dark:bg-blue-900/30',
     icon: '\u2696',
   },
   legal_obligation: {
@@ -73,10 +73,10 @@ const LAWFUL_BASES: Record<
       'Processing is necessary for compliance with a legal obligation to which the controller is subject.',
     section: 'Section 25(1)(c)',
     whenToUse: 'Tax reporting, regulatory filings, employment law compliance, anti-money laundering',
-    color: 'text-purple-700 dark:text-purple-300',
-    bgColor: 'bg-purple-50 dark:bg-purple-950/40',
-    borderColor: 'border-purple-200 dark:border-purple-800',
-    iconBg: 'bg-purple-100 dark:bg-purple-900',
+    color: 'text-gray-900 dark:text-gray-100',
+    bgColor: 'bg-white dark:bg-gray-900',
+    borderColor: 'border-gray-200 dark:border-gray-700',
+    iconBg: 'bg-blue-50 dark:bg-blue-900/30',
     icon: '\u00a7',
   },
   vital_interests: {
@@ -85,10 +85,10 @@ const LAWFUL_BASES: Record<
       'Processing is necessary to protect the vital interests of the data subject or another person.',
     section: 'Section 25(1)(d)',
     whenToUse: 'Medical emergencies, disaster response, life-threatening situations',
-    color: 'text-red-700 dark:text-red-300',
-    bgColor: 'bg-red-50 dark:bg-red-950/40',
-    borderColor: 'border-red-200 dark:border-red-800',
-    iconBg: 'bg-red-100 dark:bg-red-900',
+    color: 'text-gray-900 dark:text-gray-100',
+    bgColor: 'bg-white dark:bg-gray-900',
+    borderColor: 'border-gray-200 dark:border-gray-700',
+    iconBg: 'bg-blue-50 dark:bg-blue-900/30',
     icon: '\u2665',
   },
   public_interest: {
@@ -97,10 +97,10 @@ const LAWFUL_BASES: Record<
       'Processing is necessary for a task carried out in the public interest or in the exercise of official authority.',
     section: 'Section 25(1)(e)',
     whenToUse: 'Government functions, public health monitoring, academic research, archiving',
-    color: 'text-amber-700 dark:text-amber-300',
-    bgColor: 'bg-amber-50 dark:bg-amber-950/40',
-    borderColor: 'border-amber-200 dark:border-amber-800',
-    iconBg: 'bg-amber-100 dark:bg-amber-900',
+    color: 'text-gray-900 dark:text-gray-100',
+    bgColor: 'bg-white dark:bg-gray-900',
+    borderColor: 'border-gray-200 dark:border-gray-700',
+    iconBg: 'bg-blue-50 dark:bg-blue-900/30',
     icon: '\u2605',
   },
   legitimate_interests: {
@@ -109,10 +109,10 @@ const LAWFUL_BASES: Record<
       'Processing is necessary for the legitimate interests of the controller, except where overridden by the data subject\u2019s rights.',
     section: 'Section 25(1)(f)',
     whenToUse: 'Fraud prevention, network security, direct marketing to existing clients, internal analytics',
-    color: 'text-indigo-700 dark:text-indigo-300',
-    bgColor: 'bg-indigo-50 dark:bg-indigo-950/40',
-    borderColor: 'border-indigo-200 dark:border-indigo-800',
-    iconBg: 'bg-indigo-100 dark:bg-indigo-900',
+    color: 'text-gray-900 dark:text-gray-100',
+    bgColor: 'bg-white dark:bg-gray-900',
+    borderColor: 'border-gray-200 dark:border-gray-700',
+    iconBg: 'bg-blue-50 dark:bg-blue-900/30',
     icon: '\u2261',
   },
 };
@@ -332,7 +332,7 @@ export default function LawfulBasisDemoPage() {
         </div>
 
         {/* Hero Section */}
-        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 p-5 sm:p-8 md:p-12 text-white shadow-xl">
+        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 p-5 sm:p-8 md:p-12 text-white shadow-xl">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full text-sm font-medium mb-4">
@@ -376,8 +376,8 @@ export default function LawfulBasisDemoPage() {
                 return (
                   <div
                     key={key}
-                    className={`relative rounded-xl border-2 p-5 transition-all duration-300 cursor-pointer ${basis.bgColor} ${basis.borderColor} ${
-                      isHovered ? 'shadow-lg scale-[1.02]' : 'shadow-sm'
+                    className={`relative rounded-xl border-2 p-5 transition-all duration-300 cursor-pointer bg-white dark:bg-gray-900 ${
+                      isHovered ? 'shadow-lg scale-[1.02] border-blue-600 dark:border-blue-500' : 'shadow-sm border-gray-200 dark:border-gray-700'
                     }`}
                     onMouseEnter={() => setHoveredBasis(key)}
                     onMouseLeave={() => setHoveredBasis(null)}
@@ -387,14 +387,14 @@ export default function LawfulBasisDemoPage() {
                     }}
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <div className={`w-10 h-10 rounded-lg ${basis.iconBg} flex items-center justify-center text-lg font-bold ${basis.color}`}>
+                      <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-lg font-bold text-blue-600 dark:text-blue-400">
                         {basis.icon}
                       </div>
-                      <span className={`text-xs font-mono px-2 py-0.5 rounded-full ${basis.iconBg} ${basis.color}`}>
+                      <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
                         {basis.section}
                       </span>
                     </div>
-                    <h3 className={`text-base font-semibold mb-1 ${basis.color}`}>{basis.label}</h3>
+                    <h3 className="text-base font-semibold mb-1 text-gray-900 dark:text-gray-100">{basis.label}</h3>
                     <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed mb-3">
                       {basis.description}
                     </p>
@@ -405,8 +405,8 @@ export default function LawfulBasisDemoPage() {
                         isHovered ? 'max-h-24 opacity-100 mt-2' : 'max-h-0 opacity-0'
                       }`}
                     >
-                      <div className={`text-xs p-2.5 rounded-lg border ${basis.borderColor} ${basis.iconBg}`}>
-                        <span className={`font-semibold ${basis.color}`}>When to use:</span>{' '}
+                      <div className="text-xs p-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                        <span className="font-semibold text-gray-900 dark:text-gray-100">When to use:</span>{' '}
                         <span className="text-gray-600 dark:text-gray-400">{basis.whenToUse}</span>
                       </div>
                     </div>
@@ -415,7 +415,7 @@ export default function LawfulBasisDemoPage() {
                       <span className="text-xs text-gray-500 dark:text-gray-400">
                         {count} {count === 1 ? 'activity' : 'activities'}
                       </span>
-                      <span className={`text-xs font-medium ${basis.color}`}>
+                      <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
                         Select &rarr;
                       </span>
                     </div>
@@ -515,7 +515,7 @@ export default function LawfulBasisDemoPage() {
                           <div key={key} className="group">
                             <div className="flex items-center justify-between mb-1.5">
                               <div className="flex items-center gap-2">
-                                <span className={`w-3 h-3 rounded-full ${basis.iconBg} border ${basis.borderColor}`}></span>
+                                <span className="w-3 h-3 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800"></span>
                                 <span className="text-sm font-medium">{basis.label}</span>
                                 <span className="text-xs text-gray-400">{basis.section}</span>
                               </div>
@@ -525,14 +525,7 @@ export default function LawfulBasisDemoPage() {
                             </div>
                             <div className="h-2.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                               <div
-                                className={`h-full rounded-full transition-all duration-700 ease-out ${
-                                  key === 'consent' ? 'bg-blue-500' :
-                                  key === 'contract' ? 'bg-green-500' :
-                                  key === 'legal_obligation' ? 'bg-purple-500' :
-                                  key === 'vital_interests' ? 'bg-red-500' :
-                                  key === 'public_interest' ? 'bg-amber-500' :
-                                  'bg-indigo-500'
-                                }`}
+                                className="h-full rounded-full transition-all duration-700 ease-out bg-blue-500"
                                 style={{ width: `${percentage}%` }}
                               />
                             </div>
@@ -547,11 +540,11 @@ export default function LawfulBasisDemoPage() {
                       <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{activities.length}</div>
                       <div className="text-xs text-gray-500">Total Activities</div>
                     </div>
-                    <div className="text-center p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
+                    <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
                       <div className="text-2xl font-bold text-green-600">{activities.filter((a) => a.status === 'active').length}</div>
                       <div className="text-xs text-gray-500">Active</div>
                     </div>
-                    <div className="text-center p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20">
+                    <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
                       <div className="text-2xl font-bold text-amber-600">{activities.filter((a) => a.status === 'under_review').length}</div>
                       <div className="text-xs text-gray-500">Under Review</div>
                     </div>
@@ -566,20 +559,20 @@ export default function LawfulBasisDemoPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Selected Basis Card */}
               <div className="lg:col-span-1 order-2 lg:order-1">
-                <div className={`sticky top-6 rounded-xl border-2 p-6 transition-all ${LAWFUL_BASES[formBasis].bgColor} ${LAWFUL_BASES[formBasis].borderColor}`}>
-                  <div className={`w-12 h-12 rounded-xl ${LAWFUL_BASES[formBasis].iconBg} flex items-center justify-center text-2xl font-bold ${LAWFUL_BASES[formBasis].color} mb-4`}>
+                <div className="sticky top-6 rounded-xl border-2 p-6 transition-all bg-white dark:bg-gray-900 border-blue-600 dark:border-blue-500">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">
                     {LAWFUL_BASES[formBasis].icon}
                   </div>
-                  <h3 className={`text-lg font-bold mb-1 ${LAWFUL_BASES[formBasis].color}`}>
+                  <h3 className="text-lg font-bold mb-1 text-gray-900 dark:text-gray-100">
                     {LAWFUL_BASES[formBasis].label}
                   </h3>
-                  <p className={`text-xs font-mono mb-3 ${LAWFUL_BASES[formBasis].color} opacity-80`}>
+                  <p className="text-xs font-mono mb-3 text-blue-600 dark:text-blue-400">
                     {LAWFUL_BASES[formBasis].section}
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                     {LAWFUL_BASES[formBasis].description}
                   </p>
-                  <div className={`p-3 rounded-lg border ${LAWFUL_BASES[formBasis].borderColor} ${LAWFUL_BASES[formBasis].iconBg}`}>
+                  <div className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                     <p className="text-xs font-semibold mb-1">Typical use cases:</p>
                     <p className="text-xs text-gray-600 dark:text-gray-400">
                       {LAWFUL_BASES[formBasis].whenToUse}
@@ -643,11 +636,11 @@ export default function LawfulBasisDemoPage() {
                               onClick={() => setFormBasis(key)}
                               className={`p-3 rounded-lg border-2 text-left transition-all ${
                                 formBasis === key
-                                  ? `${basis.bgColor} ${basis.borderColor} shadow-md`
+                                  ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-600 dark:border-blue-500 shadow-md'
                                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                               }`}
                             >
-                              <div className={`text-sm font-medium ${formBasis === key ? basis.color : ''}`}>
+                              <div className={`text-sm font-medium ${formBasis === key ? 'text-blue-600 dark:text-blue-400' : ''}`}>
                                 {basis.label}
                               </div>
                               <div className="text-xs text-gray-400 mt-0.5">{basis.section}</div>
@@ -757,7 +750,7 @@ export default function LawfulBasisDemoPage() {
                           onClick={() => setFilterBasis(key)}
                           className={`px-3 py-1 text-xs rounded-full border transition-colors ${
                             filterBasis === key
-                              ? `${basis.bgColor} ${basis.borderColor} ${basis.color} font-medium`
+                              ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400 font-medium'
                               : 'border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800'
                           }`}
                         >

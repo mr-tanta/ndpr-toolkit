@@ -410,19 +410,19 @@ export default function DSRDemoPage() {
       {/* ================================================================ */}
       {/* HERO                                                             */}
       {/* ================================================================ */}
-      <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 dark:from-emerald-800 dark:via-emerald-900 dark:to-teal-950 text-white">
+      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 dark:from-blue-800 dark:via-blue-900 dark:to-blue-950 text-white">
         <div className="container mx-auto px-4 py-12 md:py-16">
           <Link
             href="/ndpr-demos"
-            className="inline-flex items-center gap-1.5 text-emerald-100 hover:text-white text-sm mb-6 transition-colors"
+            className="inline-flex items-center gap-1.5 text-blue-100 hover:text-white text-sm mb-6 transition-colors"
           >
             <span aria-hidden="true">&larr;</span> Back to NDPA Demos
           </Link>
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">Data Subject Rights</h1>
-          <p className="mt-3 text-emerald-100 text-lg md:text-xl max-w-2xl">
+          <p className="mt-3 text-blue-100 text-lg md:text-xl max-w-2xl">
             NDPA Part IV &mdash; Sections 29&ndash;36
           </p>
-          <p className="mt-4 text-emerald-200 max-w-3xl text-sm md:text-base leading-relaxed">
+          <p className="mt-4 text-blue-200 max-w-3xl text-sm md:text-base leading-relaxed">
             Exercise and manage the eight fundamental rights granted to data subjects under the Nigeria Data Protection Act.
             Submit requests, track their progress, and ensure compliance within the statutory 30-day window.
           </p>
@@ -465,12 +465,12 @@ export default function DSRDemoPage() {
                 <CardContent className="pt-6">
                   <div className="text-3xl mb-3">{right.icon}</div>
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100 leading-snug">{right.name}</h3>
-                  <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium mt-1">{right.section}</p>
+                  <p className="text-xs text-blue-700 dark:text-blue-400 font-medium mt-1">{right.section}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">{right.description}</p>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="mt-4 w-full group-hover:bg-emerald-50 group-hover:border-emerald-300 group-hover:text-emerald-700 dark:group-hover:bg-emerald-950 dark:group-hover:border-emerald-700 dark:group-hover:text-emerald-300 transition-colors"
+                    className="mt-4 w-full group-hover:bg-blue-50 group-hover:border-blue-300 group-hover:text-blue-700 dark:group-hover:bg-blue-950 dark:group-hover:border-blue-700 dark:group-hover:text-blue-300 transition-colors"
                     onClick={() => scrollToForm(right.id)}
                   >
                     Try it
@@ -546,7 +546,7 @@ export default function DSRDemoPage() {
                             flex items-center gap-2 px-3 py-2.5 rounded-lg border text-left text-sm transition-all duration-150
                             ${
                               formType === right.id
-                                ? 'border-emerald-500 bg-emerald-50 text-emerald-800 ring-2 ring-emerald-500/20 dark:bg-emerald-950 dark:text-emerald-200 dark:border-emerald-600 dark:ring-emerald-500/30'
+                                ? 'border-blue-500 bg-blue-50 text-blue-800 ring-2 ring-blue-500/20 dark:bg-blue-950 dark:text-blue-200 dark:border-blue-600 dark:ring-blue-500/30'
                                 : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-750'
                             }
                           `}
@@ -607,14 +607,14 @@ export default function DSRDemoPage() {
                         relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-8 transition-colors
                         ${
                           formDragActive
-                            ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30'
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
                             : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
                         }
                       `}
                     >
                       <div className="text-3xl text-gray-400 mb-2">{'\u{1F4CE}'}</div>
                       <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-                        <span className="font-medium text-emerald-600 dark:text-emerald-400 cursor-pointer">Click to upload</span> or drag and
+                        <span className="font-medium text-blue-600 dark:text-blue-400 cursor-pointer">Click to upload</span> or drag and
                         drop
                       </p>
                       <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">PDF, DOC, PNG, JPG up to 10MB</p>
@@ -646,7 +646,7 @@ export default function DSRDemoPage() {
                     )}
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white">
+                  <Button type="submit" size="lg" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
                     Submit Request
                   </Button>
                 </form>
@@ -711,7 +711,7 @@ export default function DSRDemoPage() {
                   key={req.id}
                   className={`transition-all duration-200 ${
                     isOverdue ? 'border-red-300 dark:border-red-800' : 'border-gray-200 dark:border-gray-700'
-                  } ${isExpanded ? 'ring-2 ring-emerald-500/20' : ''}`}
+                  } ${isExpanded ? 'ring-2 ring-blue-500/20' : ''}`}
                 >
                   {/* Main row */}
                   <button
@@ -774,7 +774,7 @@ export default function DSRDemoPage() {
                                       ? 'bg-red-500'
                                       : progress > 70
                                         ? 'bg-amber-500'
-                                        : 'bg-emerald-500'
+                                        : 'bg-blue-500'
                               }`}
                               style={{ width: `${req.status === 'completed' || req.status === 'rejected' ? 100 : progress}%` }}
                             />
@@ -896,7 +896,7 @@ export default function DSRDemoPage() {
                           <div
                             className={`absolute -left-5 top-1 w-4 h-4 rounded-full border-2 border-white dark:border-gray-900 ${
                               step.completed
-                                ? 'bg-emerald-500'
+                                ? 'bg-blue-500'
                                 : step.active
                                   ? 'bg-blue-500 ring-4 ring-blue-100 dark:ring-blue-900'
                                   : 'bg-gray-300 dark:bg-gray-600'
@@ -908,7 +908,7 @@ export default function DSRDemoPage() {
                               <h4
                                 className={`font-semibold text-sm ${
                                   step.completed
-                                    ? 'text-emerald-700 dark:text-emerald-400'
+                                    ? 'text-blue-700 dark:text-blue-400'
                                     : step.active
                                       ? 'text-blue-700 dark:text-blue-400'
                                       : 'text-gray-400 dark:text-gray-500'
@@ -917,7 +917,7 @@ export default function DSRDemoPage() {
                                 {step.label}
                               </h4>
                               {step.completed && (
-                                <span className="text-xs text-emerald-600 dark:text-emerald-500 font-medium">{'\u2713'}</span>
+                                <span className="text-xs text-blue-600 dark:text-blue-500 font-medium">{'\u2713'}</span>
                               )}
                               {step.active && (
                                 <span className="inline-flex h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
@@ -981,7 +981,7 @@ export default function DSRDemoPage() {
                                         ? 'text-red-500'
                                         : pct > 70
                                           ? 'text-amber-500'
-                                          : 'text-emerald-500'
+                                          : 'text-blue-500'
                                   }`}
                                   stroke="currentColor"
                                 />
@@ -1096,7 +1096,7 @@ export default function DSRDemoPage() {
             </div>
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
               For detailed documentation, see the{' '}
-              <Link href="/docs/components/data-subject-rights" className="text-emerald-600 hover:underline dark:text-emerald-400">
+              <Link href="/docs/components/data-subject-rights" className="text-blue-600 hover:underline dark:text-blue-400">
                 DSR documentation
               </Link>
               .

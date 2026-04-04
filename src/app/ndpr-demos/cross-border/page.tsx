@@ -371,7 +371,7 @@ export default function CrossBorderDemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-emerald-950/20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950/20">
       <div className="container mx-auto py-10 px-4 max-w-7xl">
         {/* Navigation */}
         <div className="mb-8">
@@ -387,7 +387,7 @@ export default function CrossBorderDemoPage() {
         </div>
 
         {/* Hero Section */}
-        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-700 to-cyan-800 p-5 sm:p-8 md:p-12 text-white shadow-xl">
+        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 p-5 sm:p-8 md:p-12 text-white shadow-xl">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full text-sm font-medium mb-4">
@@ -397,25 +397,25 @@ export default function CrossBorderDemoPage() {
               NDPA Part VI (Sections 41-45)
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Cross-Border Transfer Assessment</h1>
-            <p className="text-emerald-100 text-lg max-w-2xl">
+            <p className="text-blue-100 text-lg max-w-2xl">
               Assess, document, and manage international transfers of personal data outside Nigeria. Ensure compliance with NDPA cross-border transfer requirements.
             </p>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
                 <span className="text-2xl font-bold">{transfers.length}</span>
-                <span className="text-emerald-200">Transfers</span>
+                <span className="text-blue-200">Transfers</span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
                 <span className="text-2xl font-bold">{new Set(transfers.map((t) => t.destinationCountry)).size}</span>
-                <span className="text-emerald-200">Countries</span>
+                <span className="text-blue-200">Countries</span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
                 <span className="text-2xl font-bold text-green-300">{transfers.filter((t) => t.status === 'approved').length}</span>
-                <span className="text-emerald-200">Approved</span>
+                <span className="text-blue-200">Approved</span>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
                 <span className="text-2xl font-bold text-amber-300">{transfers.filter((t) => t.status === 'pending' || t.status === 'under_review').length}</span>
-                <span className="text-emerald-200">Pending</span>
+                <span className="text-blue-200">Pending</span>
               </div>
             </div>
           </div>
@@ -587,7 +587,7 @@ export default function CrossBorderDemoPage() {
                     <Card key={key} className="hover:shadow-md transition-shadow">
                       <CardContent className="pt-6">
                         <div className="flex items-start justify-between mb-3">
-                          <div className="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-lg">
+                          <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-lg">
                             {mechanism.icon}
                           </div>
                           <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
@@ -607,7 +607,7 @@ export default function CrossBorderDemoPage() {
                               setFormMechanism(key);
                               setActiveTab('add');
                             }}
-                            className="text-xs font-medium text-teal-600 dark:text-teal-400 hover:underline"
+                            className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
                           >
                             Use this &rarr;
                           </button>
@@ -711,7 +711,7 @@ export default function CrossBorderDemoPage() {
                           value={formName}
                           onChange={(e) => setFormName(e.target.value)}
                           placeholder="e.g., Cloud Data Hosting"
-                          className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow"
+                          className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
                         />
                       </div>
                       <div>
@@ -719,7 +719,7 @@ export default function CrossBorderDemoPage() {
                         <select
                           value={formCountry}
                           onChange={(e) => setFormCountry(e.target.value)}
-                          className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow"
+                          className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
                         >
                           <option value="">Select a country</option>
                           {Object.keys(COUNTRY_DATABASE).map((country) => (
@@ -738,7 +738,7 @@ export default function CrossBorderDemoPage() {
                         onChange={(e) => setFormDescription(e.target.value)}
                         placeholder="Describe the nature and context of the transfer"
                         rows={2}
-                        className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow"
+                        className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
                       />
                     </div>
 
@@ -750,7 +750,7 @@ export default function CrossBorderDemoPage() {
                           value={formRecipient}
                           onChange={(e) => setFormRecipient(e.target.value)}
                           placeholder="e.g., Partner Corp. Ltd."
-                          className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow"
+                          className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
                         />
                       </div>
                       <div>
@@ -760,7 +760,7 @@ export default function CrossBorderDemoPage() {
                           value={formSubjects}
                           onChange={(e) => setFormSubjects(e.target.value)}
                           placeholder="e.g., Customers, Employees"
-                          className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow"
+                          className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
                         />
                       </div>
                     </div>
@@ -772,7 +772,7 @@ export default function CrossBorderDemoPage() {
                         onChange={(e) => setFormPurpose(e.target.value)}
                         placeholder="Describe the purpose of this cross-border data transfer"
                         rows={2}
-                        className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow"
+                        className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
                       />
                     </div>
 
@@ -787,12 +787,12 @@ export default function CrossBorderDemoPage() {
                               onClick={() => setFormMechanism(key)}
                               className={`p-3 rounded-lg border-2 text-left transition-all ${
                                 formMechanism === key
-                                  ? 'bg-teal-50 dark:bg-teal-950/30 border-teal-300 dark:border-teal-700 shadow-md'
+                                  ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-300 dark:border-blue-700 shadow-md'
                                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                               }`}
                             >
                               <span className="text-base block mb-1">{mechanism.icon}</span>
-                              <div className={`text-xs font-medium ${formMechanism === key ? 'text-teal-700 dark:text-teal-300' : ''}`}>
+                              <div className={`text-xs font-medium ${formMechanism === key ? 'text-blue-700 dark:text-blue-300' : ''}`}>
                                 {mechanism.label}
                               </div>
                               <div className="text-[10px] text-gray-400 mt-0.5">{mechanism.ndpaRef}</div>
@@ -810,11 +810,11 @@ export default function CrossBorderDemoPage() {
                             key={category}
                             className={`flex items-center gap-2 text-sm cursor-pointer p-2 rounded-lg border transition-colors ${
                               formCategories.includes(category)
-                                ? 'bg-teal-50 border-teal-200 dark:bg-teal-900/20 dark:border-teal-800'
+                                ? 'bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800'
                                 : 'border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50'
                             }`}
                           >
-                            <input type="checkbox" checked={formCategories.includes(category)} onChange={() => handleToggleCategory(category)} className="rounded text-teal-600" />
+                            <input type="checkbox" checked={formCategories.includes(category)} onChange={() => handleToggleCategory(category)} className="rounded text-blue-600" />
                             {category}
                           </label>
                         ))}
@@ -847,7 +847,7 @@ export default function CrossBorderDemoPage() {
                         onChange={(e) => setFormNotes(e.target.value)}
                         placeholder="Any additional notes or context for this transfer"
                         rows={2}
-                        className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow"
+                        className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
                       />
                     </div>
 
@@ -967,16 +967,16 @@ export default function CrossBorderDemoPage() {
         </Tabs>
 
         {/* NDPA Reference Footer */}
-        <div className="mt-10 rounded-xl border border-teal-200 dark:border-teal-800 bg-teal-50/50 dark:bg-teal-950/20 p-6">
+        <div className="mt-10 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-6">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg className="w-4 h-4 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-teal-900 dark:text-teal-200 mb-1">NDPA Compliance Reference</h3>
-              <p className="text-sm text-teal-800/80 dark:text-teal-300/80">
+              <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-1">NDPA Compliance Reference</h3>
+              <p className="text-sm text-blue-800/80 dark:text-blue-300/80">
                 Cross-border data transfer management is governed by <strong>NDPA Part VI (Sections 41-45)</strong>.
                 Data controllers must ensure that personal data transferred outside Nigeria receives an adequate level
                 of protection. The <strong>Nigeria Data Protection Commission (NDPC)</strong> has authority to issue
@@ -984,7 +984,7 @@ export default function CrossBorderDemoPage() {
               </p>
               <Link
                 href="/docs/components/cross-border-transfers"
-                className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-teal-600 dark:text-teal-400 hover:underline"
+                className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
               >
                 View full documentation
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
