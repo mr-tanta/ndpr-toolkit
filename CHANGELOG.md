@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.1] — 2026-04-04
+
+### Fixed
+- `useDPIA` hook: `isComplete()` no longer mutates state during render (caused infinite re-renders)
+- 15 incorrect NDPA section references in PolicyGenerator and ComplianceChecklist
+- NDPC naming consistency ("Nigerian" → "Nigeria" Data Protection Commission)
+- Breach demo reference number flickering
+- DSR demo rejected request timeline, sample due date, and scroll behavior
+- DPIA demo step indicator now clickable, critical risk level reachable
+- CSV export double-quote escaping per RFC 4180
+- 32 form label associations for accessibility
+- ARIA attributes on risk sliders and file inputs
+- 22 GitHub links corrected to mr-tanta/ndpr-toolkit
+- 11 incorrect API examples in READMEs
+- 12 fabricated component names removed from docs
+- Added MIT LICENSE file
+- Removed dead tslib dependency
+- Added sideEffects field for tree-shaking
+- Added metadataBase for social sharing
+
 ## [2.1.0] — 2026-04-04
 
 ### Added
