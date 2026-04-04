@@ -657,7 +657,7 @@ export default function ConsentDemoPage() {
               </CardHeader>
               <CardContent>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-auto">
-                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentBanner } from 'ndpr-toolkit';
+                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 
 <ConsentBanner
   position="${bannerPosition}"
@@ -696,7 +696,7 @@ export default function ConsentDemoPage() {
               </CardHeader>
               <CardContent>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-auto">
-                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentManager } from 'ndpr-toolkit';
+                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
 
 <ConsentManager
   initialConsent={{
@@ -741,28 +741,35 @@ export default function ConsentDemoPage() {
               </CardHeader>
               <CardContent>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-auto">
-                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { consentStorage } from 'ndpr-toolkit';
+                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentStorage, validateConsent } from '@tantainnovative/ndpr-toolkit/consent';
+import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit/core';
 
-// Save consent settings
-consentStorage.save('user_consent', {
-  consents: { necessary: true, analytics: true },
-  timestamp: Date.now(),
-  version: '1.0',
-  method: 'accept-all',
-  hasInteracted: true,
-});
+function App() {
+  const [consent, setConsent] = useState<ConsentSettings>(initialConsent);
 
-// Load saved settings
-const settings = consentStorage.load('user_consent');
+  return (
+    <ConsentStorage
+      settings={consent}
+      storageOptions={{
+        storageKey: 'user_consent',
+        storageType: 'localStorage', // or 'sessionStorage' | 'cookie'
+      }}
+      onLoad={(loaded) => {
+        if (loaded) setConsent(loaded);
+      }}
+      onSave={(saved) => {
+        console.log('Consent persisted:', saved);
+      }}
+    >
+      {({ clearSettings }) => (
+        <button onClick={clearSettings}>Reset Consent</button>
+      )}
+    </ConsentStorage>
+  );
+}
 
-// Remove stored consent
-consentStorage.remove('user_consent');
-
-// Check if consent needs refresh (13-month limit)
-const needsRefresh = consentStorage.needsRefresh(
-  'user_consent',
-  13 * 30 * 24 * 60 * 60 * 1000
-);`}</code></pre>
+// Validate consent meets NDPA requirements
+const { valid, errors } = validateConsent(consent);`}</code></pre>
                 </div>
               </CardContent>
             </Card>
