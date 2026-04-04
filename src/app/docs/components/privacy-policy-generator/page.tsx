@@ -75,7 +75,7 @@ yarn add @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
               The main component that allows users to create a policy by configuring sections and variables with an intuitive interface.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { PolicyGenerator } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { PolicyGenerator } from '@tantainnovative/ndpr-toolkit/policy';
 
 <PolicyGenerator 
   sections={policySections}
@@ -100,7 +100,7 @@ yarn add @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
               A component for displaying the generated privacy policy with professional formatting and navigation features.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { PolicyPreview } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { PolicyPreview } from '@tantainnovative/ndpr-toolkit/policy';
 
 <PolicyPreview 
   content={policyContent} // Markdown content of the policy
@@ -120,7 +120,7 @@ yarn add @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
               A utility component for exporting the generated policy in various formats (PDF, HTML, Markdown) with professional formatting.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { PolicyExporter } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { PolicyExporter } from '@tantainnovative/ndpr-toolkit/policy';
 
 <PolicyExporter 
   content={policyContent} // Markdown content of the policy
@@ -217,7 +217,7 @@ If you have any questions about this Privacy Policy, please contact us:
 \`;
 
 // Using the template with the generatePolicyText utility
-import { generatePolicyText } from '@tantainnovative/ndpr-toolkit';
+import { generatePolicyText } from '@tantainnovative/ndpr-toolkit/policy';
 
 const variables = {
   organizationName: 'Acme Corporation',
@@ -257,7 +257,7 @@ console.log(result.sectionTexts);`}</code></pre>
         </p>
         
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { generatePolicyText, PolicySection } from '@tantainnovative/ndpr-toolkit';
+          <pre><code>{`import { generatePolicyText, PolicySection } from '@tantainnovative/ndpr-toolkit/policy';
 
 const policySections: PolicySection[] = [
   {
@@ -307,7 +307,7 @@ import {
   PolicyExport,
   generatePolicyText,
   PolicySection
-} from '@tantainnovative/ndpr-toolkit';
+} from '@tantainnovative/ndpr-toolkit/policy';
 
 // Define your policy templates
 const policyTemplates = [

@@ -69,9 +69,9 @@ export default function ConsentManagementDocs() {
               A cookie consent banner that appears at the bottom of the page when a user first visits your site. Fully customizable with support for multiple consent options.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 
-<ConsentBanner 
+<ConsentBanner
   options={[
     {
       id: 'necessary',
@@ -106,7 +106,7 @@ export default function ConsentManagementDocs() {
               A detailed interface for users to manage their consent preferences after the initial consent has been given.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentPreferences } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { ConsentPreferences } from '@tantainnovative/ndpr-toolkit/consent';
 
 <ConsentPreferences 
   options={consentOptions}
@@ -123,7 +123,7 @@ export default function ConsentManagementDocs() {
               A higher-order component that manages the consent state and provides methods for checking and updating consent. Works with the useConsent hook to provide a complete consent management solution.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit/consent';
 
 function App() {
   return (
@@ -181,7 +181,7 @@ function MyApp() {
               A component for handling the storage and retrieval of consent settings. Supports both local storage and custom storage mechanisms.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentStorage, ConsentSettings } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { ConsentStorage, ConsentSettings } from '@tantainnovative/ndpr-toolkit/consent';
 import { useState } from 'react';
 
 function ConsentStorageExample() {
@@ -233,13 +233,13 @@ function ConsentStorageExample() {
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`import { useState, useEffect } from 'react';
-import { 
-  ConsentBanner, 
-  ConsentPreferences, 
-  ConsentManager, 
+import {
+  ConsentBanner,
+  ConsentPreferences,
+  ConsentManager,
   ConsentStorage,
-  useConsent 
-} from '@tantainnovative/ndpr-toolkit';
+  useConsent
+} from '@tantainnovative/ndpr-toolkit/consent';
 
 // Define your consent options
 const consentOptions = [

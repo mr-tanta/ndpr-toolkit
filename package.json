@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": false,
   "description": "Nigeria Data Protection Toolkit — enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "scripts": {
@@ -50,18 +50,83 @@
   "homepage": "https://github.com/tantainnovative/ndpr-toolkit#readme",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.mjs",
+      "require": "./dist/hooks.js"
+    },
+    "./consent": {
+      "types": "./dist/consent.d.ts",
+      "import": "./dist/consent.mjs",
+      "require": "./dist/consent.js"
+    },
+    "./dsr": {
+      "types": "./dist/dsr.d.ts",
+      "import": "./dist/dsr.mjs",
+      "require": "./dist/dsr.js"
+    },
+    "./dpia": {
+      "types": "./dist/dpia.d.ts",
+      "import": "./dist/dpia.mjs",
+      "require": "./dist/dpia.js"
+    },
+    "./breach": {
+      "types": "./dist/breach.d.ts",
+      "import": "./dist/breach.mjs",
+      "require": "./dist/breach.js"
+    },
+    "./policy": {
+      "types": "./dist/policy.d.ts",
+      "import": "./dist/policy.mjs",
+      "require": "./dist/policy.js"
+    },
+    "./lawful-basis": {
+      "types": "./dist/lawful-basis.d.ts",
+      "import": "./dist/lawful-basis.mjs",
+      "require": "./dist/lawful-basis.js"
+    },
+    "./cross-border": {
+      "types": "./dist/cross-border.d.ts",
+      "import": "./dist/cross-border.mjs",
+      "require": "./dist/cross-border.js"
+    },
+    "./ropa": {
+      "types": "./dist/ropa.d.ts",
+      "import": "./dist/ropa.mjs",
+      "require": "./dist/ropa.js"
+    },
     "./unstyled": {
+      "types": "./dist/unstyled.d.ts",
       "import": "./dist/unstyled.mjs",
       "require": "./dist/unstyled.js"
     },
-    "./styles": {
-      "import": "./dist/styles.css",
-      "require": "./dist/styles.css"
+    "./styles": "./dist/styles.css"
+  },
+  "typesVersions": {
+    "*": {
+      "core": ["./dist/core.d.ts"],
+      "hooks": ["./dist/hooks.d.ts"],
+      "consent": ["./dist/consent.d.ts"],
+      "dsr": ["./dist/dsr.d.ts"],
+      "dpia": ["./dist/dpia.d.ts"],
+      "breach": ["./dist/breach.d.ts"],
+      "policy": ["./dist/policy.d.ts"],
+      "lawful-basis": ["./dist/lawful-basis.d.ts"],
+      "cross-border": ["./dist/cross-border.d.ts"],
+      "ropa": ["./dist/ropa.d.ts"],
+      "unstyled": ["./dist/unstyled.d.ts"]
     }
   },
   "files": [
@@ -73,6 +138,12 @@
     "access": "public"
   },
   "dependencies": {
+    "tslib": "^2.4.0",
+    "uuid": "^13.0.0"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "@radix-ui/react-label": "^2.1.4",
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/react-switch": "^1.2.2",
@@ -81,13 +152,18 @@
     "clsx": "^2.1.1",
     "jspdf": "^3.0.3",
     "lucide-react": "^0.507.0",
-    "tailwind-merge": "^2.6.0",
-    "tslib": "^2.4.0",
-    "uuid": "^13.0.0"
+    "tailwind-merge": "^2.6.0"
   },
-  "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+  "peerDependenciesMeta": {
+    "@radix-ui/react-label": { "optional": true },
+    "@radix-ui/react-slot": { "optional": true },
+    "@radix-ui/react-switch": { "optional": true },
+    "@radix-ui/react-tabs": { "optional": true },
+    "class-variance-authority": { "optional": true },
+    "clsx": { "optional": true },
+    "jspdf": { "optional": true },
+    "lucide-react": { "optional": true },
+    "tailwind-merge": { "optional": true }
   },
   "devDependencies": {
     "@next/font": "^14.2.15",

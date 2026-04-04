@@ -15,7 +15,7 @@ A comprehensive enterprise solution for implementing NDPA-compliant features in 
 
 ## Overview
 
-The NDPR Toolkit is an enterprise-grade solution that provides a comprehensive set of React components, hooks, and utilities to help organizations implement NDPA-compliant features in their web applications with minimal development effort. Designed by compliance experts and developers, this toolkit offers a complete solution for privacy policy management, consent handling, data subject rights, breach notification, and data protection impact assessments.
+The NDPR Toolkit is an enterprise-grade solution that provides a comprehensive set of React components, hooks, and utilities to help organizations implement NDPA-compliant features in their web applications with minimal development effort. Designed by compliance experts and developers, this toolkit offers a complete solution for privacy policy management, consent handling, data subject rights, breach notification, data protection impact assessments, lawful basis tracking, cross-border data transfers, and records of processing activities.
 
 > **NDPR Toolkit is actively maintained and regularly updated to ensure compliance with the latest Nigerian data protection regulations.**
 
@@ -52,30 +52,48 @@ The NDPR Toolkit is an enterprise-grade solution that provides a comprehensive s
 - **RegulatoryReportGenerator**: Create NDPA-compliant breach notification reports for NDPC submission
 - **BreachNotificationManager**: Manage the entire breach notification workflow
 
+### Lawful Basis Tracking
+
+- **LawfulBasisTracker**: Document and manage lawful basis for each processing activity under NDPA Section 25
+- **useLawfulBasis**: Hook for managing lawful basis state across your application
+- Utility functions for validation, compliance gap assessment, and summary generation
+
+### Cross-Border Data Transfers
+
+- **CrossBorderTransferManager**: Assess and document international data transfers under NDPA Part VI (Sections 41-45)
+- **useCrossBorderTransfer**: Hook for managing transfer assessments and compliance state
+- Utility functions for transfer validation, risk assessment, and NDPC approval checks
+
+### Record of Processing Activities (ROPA)
+
+- **ROPAManager**: Maintain comprehensive processing records as required by NDPA's accountability principle
+- **useROPA**: Hook for managing processing records and generating summaries
+- Utility functions for record validation, CSV export, and compliance gap identification
+
 ### Enterprise Features
 
 - **Advanced Conditional Logic**: Support for complex conditional blocks in policy templates
 - **Professional Formatting**: Enterprise-ready formatting for all exported documents
 - **Comprehensive Type System**: Full TypeScript support with detailed interfaces and type definitions
-- **Modular Architecture**: Use only the components you need with tree-shakable imports
+- **Modular Architecture**: Use only what you need — from lightweight core utilities to full UI components
 - **Accessibility**: WCAG 2.1 AA compliant components for inclusive user experiences
 
 ## Installation
 
 ```bash
+# Using pnpm (recommended)
+pnpm add @tantainnovative/ndpr-toolkit
+
+# Using bun
+bun add @tantainnovative/ndpr-toolkit
+
 # Using npm
 npm install @tantainnovative/ndpr-toolkit
-
-# Using yarn
-yarn add @tantainnovative/ndpr-toolkit
-
-# Using pnpm
-pnpm add @tantainnovative/ndpr-toolkit
 ```
 
 ### React 19 Compatibility
 
-If you&apos;re using React 19 and encounter peer dependency warnings with other packages in your project, you can use the `--legacy-peer-deps` flag:
+If you're using React 19 and encounter peer dependency warnings with other packages in your project, you can use the `--legacy-peer-deps` flag:
 
 ```bash
 npm install @tantainnovative/ndpr-toolkit --legacy-peer-deps
@@ -89,12 +107,107 @@ legacy-peer-deps=true
 
 This will make npm ignore peer dependency conflicts during installation.
 
+## Import Styles
+
+The toolkit supports three import styles so you can pull in only what your application needs:
+
+### 1. Lightweight (Core) — Types and Utilities Only
+
+No React dependency. Works in any JavaScript or TypeScript environment — Node.js servers, edge functions, CLI tools, or shared validation libraries.
+
+```ts
+import {
+  validateConsent,
+  assessDPIARisk,
+  calculateBreachSeverity,
+  validateTransfer,
+  assessTransferRisk,
+  validateProcessingRecord,
+  generateROPASummary,
+} from '@tantainnovative/ndpr-toolkit/core';
+
+import type { ConsentOption, BreachReport, CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/core';
+```
+
+### 2. Hooks Only — React State Management Without UI
+
+Requires React as a peer dependency but ships zero UI components. Ideal when you need compliance logic with your own custom UI.
+
+```ts
+import {
+  useConsent,
+  useDSR,
+  useDPIA,
+  useBreach,
+  usePrivacyPolicy,
+  useLawfulBasis,
+  useCrossBorderTransfer,
+  useROPA,
+} from '@tantainnovative/ndpr-toolkit/hooks';
+```
+
+### 3. Full UI — Components, Hooks, and Utilities
+
+The default import path. Ships everything: React components, hooks, utilities, and types.
+
+```tsx
+import {
+  ConsentBanner,
+  ConsentManager,
+  useConsent,
+  DSRRequestForm,
+  LawfulBasisTracker,
+  CrossBorderTransferManager,
+  ROPAManager,
+} from '@tantainnovative/ndpr-toolkit';
+```
+
+### Per-Module Imports
+
+For maximum tree-shaking, import from individual module entry points. Each module bundles only its own component(s), hook, utilities, and types.
+
+```tsx
+// Only consent management — nothing else is bundled
+import { ConsentBanner, ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit/consent';
+
+// Only breach notification
+import { BreachReportForm, useBreach } from '@tantainnovative/ndpr-toolkit/breach';
+
+// Only lawful basis tracking
+import { LawfulBasisTracker, useLawfulBasis } from '@tantainnovative/ndpr-toolkit/lawful-basis';
+
+// Only cross-border transfers
+import { CrossBorderTransferManager, useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/cross-border';
+
+// Only ROPA
+import { ROPAManager, useROPA } from '@tantainnovative/ndpr-toolkit/ropa';
+```
+
+## Import Paths Reference
+
+| Path | Contents | React Required |
+|------|----------|:--------------:|
+| `@tantainnovative/ndpr-toolkit` | All components, hooks, utilities, types | Yes |
+| `@tantainnovative/ndpr-toolkit/core` | Types and utility functions only | No |
+| `@tantainnovative/ndpr-toolkit/hooks` | All React hooks and related types | Yes |
+| `@tantainnovative/ndpr-toolkit/consent` | ConsentBanner, ConsentManager, ConsentStorage, useConsent | Yes |
+| `@tantainnovative/ndpr-toolkit/dsr` | DSRRequestForm, DSRDashboard, DSRTracker, useDSR | Yes |
+| `@tantainnovative/ndpr-toolkit/dpia` | DPIAQuestionnaire, DPIAReport, StepIndicator, useDPIA | Yes |
+| `@tantainnovative/ndpr-toolkit/breach` | BreachReportForm, BreachRiskAssessment, BreachNotificationManager, RegulatoryReportGenerator, useBreach | Yes |
+| `@tantainnovative/ndpr-toolkit/policy` | PolicyGenerator, PolicyPreview, PolicyExporter, usePrivacyPolicy | Yes |
+| `@tantainnovative/ndpr-toolkit/lawful-basis` | LawfulBasisTracker, useLawfulBasis | Yes |
+| `@tantainnovative/ndpr-toolkit/cross-border` | CrossBorderTransferManager, useCrossBorderTransfer | Yes |
+| `@tantainnovative/ndpr-toolkit/ropa` | ROPAManager, useROPA | Yes |
+| `@tantainnovative/ndpr-toolkit/unstyled` | All components without default styles | Yes |
+| `@tantainnovative/ndpr-toolkit/styles` | Default CSS stylesheet | No |
+
 ## Quick Start
 
 ### Consent Management
 
-```jsx
-import { ConsentBanner, ConsentManager, ConsentStorage, useConsent } from '@tantainnovative/ndpr-toolkit';
+```tsx
+import { ConsentBanner, ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
+import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
 
 function MyApp() {
   return (
@@ -129,10 +242,8 @@ function MyApp() {
 }
 
 function AppContent() {
-  // Use the useConsent hook to manage consent state
   const { consents, hasConsented, updateConsent } = useConsent();
   
-  // Check if user has given consent for analytics
   if (hasConsented('analytics')) {
     // Initialize analytics
   }
@@ -147,14 +258,15 @@ function AppContent() {
 
 ### Privacy Policy Generator
 
-```jsx
-import { PolicyGenerator, PolicyPreview, PolicyExporter, usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
+```tsx
+import { PolicyGenerator, PolicyPreview, PolicyExporter } from '@tantainnovative/ndpr-toolkit/policy';
+import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/hooks';
+import { generatePolicyText } from '@tantainnovative/ndpr-toolkit/core';
 
 function PrivacyPolicyPage() {
   const { policy, updateVariableValue, generatePolicy } = usePrivacyPolicy();
   const [generatedPolicy, setGeneratedPolicy] = useState(null);
   
-  // Define your variables
   const variables = {
     organizationName: 'Acme Corporation',
     websiteUrl: 'https://acme.com',
@@ -185,7 +297,6 @@ function PrivacyPolicyPage() {
           ]}
           variables={variables}
           onComplete={(data) => {
-            // Generate policy with variables
             const result = generatePolicyText(data.sections, variables);
             setGeneratedPolicy({
               title: `Privacy Policy for ${variables.organizationName}`,
@@ -211,6 +322,71 @@ function PrivacyPolicyPage() {
           />
         </>
       )}
+    </div>
+  );
+}
+```
+
+### Lawful Basis Tracking
+
+```tsx
+import { LawfulBasisTracker } from '@tantainnovative/ndpr-toolkit/lawful-basis';
+import { useLawfulBasis } from '@tantainnovative/ndpr-toolkit/hooks';
+
+function LawfulBasisPage() {
+  const { activities, addActivity, assessGaps, summary } = useLawfulBasis();
+
+  return (
+    <LawfulBasisTracker
+      activities={activities}
+      onAddActivity={addActivity}
+      onAssessGaps={assessGaps}
+      summary={summary}
+    />
+  );
+}
+```
+
+### Cross-Border Data Transfers
+
+```tsx
+import { CrossBorderTransferManager } from '@tantainnovative/ndpr-toolkit/cross-border';
+import { useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/hooks';
+import { isNDPCApprovalRequired } from '@tantainnovative/ndpr-toolkit/core';
+
+function TransferManagement() {
+  const { transfers, addTransfer, assessRisk } = useCrossBorderTransfer();
+
+  return (
+    <CrossBorderTransferManager
+      transfers={transfers}
+      onAddTransfer={addTransfer}
+      onAssessRisk={assessRisk}
+    />
+  );
+}
+```
+
+### Record of Processing Activities
+
+```tsx
+import { ROPAManager } from '@tantainnovative/ndpr-toolkit/ropa';
+import { useROPA } from '@tantainnovative/ndpr-toolkit/hooks';
+import { exportROPAToCSV } from '@tantainnovative/ndpr-toolkit/core';
+
+function ProcessingRecords() {
+  const { records, addRecord, summary } = useROPA();
+
+  return (
+    <div>
+      <ROPAManager
+        records={records}
+        onAddRecord={addRecord}
+        summary={summary}
+      />
+      <button onClick={() => exportROPAToCSV(records)}>
+        Export to CSV
+      </button>
     </div>
   );
 }
@@ -253,13 +429,31 @@ function PrivacyPolicyPage() {
 - `generatePolicyText`: Utility for creating dynamic policies with variable support
 - `usePrivacyPolicy`: Hook for managing privacy policy state
 
+### Lawful Basis Tracking
+- `LawfulBasisTracker`: Component for documenting lawful basis per processing activity (NDPA Section 25)
+- `useLawfulBasis`: Hook for managing lawful basis state
+- `validateProcessingActivity`, `assessComplianceGaps`, `generateLawfulBasisSummary`: Utility functions
+- Types: `LawfulBasis`, `ProcessingActivity`, `LawfulBasisSummary` for structured tracking
+
+### Cross-Border Data Transfers
+- `CrossBorderTransferManager`: Component for assessing and documenting international transfers (NDPA Part VI)
+- `useCrossBorderTransfer`: Hook for managing transfer state
+- `validateTransfer`, `assessTransferRisk`, `isNDPCApprovalRequired`: Utility functions
+- Types: `CrossBorderTransfer`, `TransferImpactAssessment`, `CrossBorderSummary` for compliance documentation
+
+### Record of Processing Activities (ROPA)
+- `ROPAManager`: Component for maintaining processing records (NDPA accountability principle)
+- `useROPA`: Hook for managing processing records
+- `validateProcessingRecord`, `generateROPASummary`, `exportROPAToCSV`, `identifyComplianceGaps`: Utility functions
+- Types: `ProcessingRecord`, `RecordOfProcessingActivities`, `ROPASummary` for structured records
+
 ## Implementation Guides
 
 ### Setting Up Consent Management
 
-```jsx
+```tsx
 // 1. Wrap your application with ConsentManager
-import { ConsentManager } from 'ndpr-toolkit';
+import { ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
 
 function App() {
   return (
@@ -279,7 +473,7 @@ function App() {
 }
 
 // 2. Add the ConsentBanner to your layout
-import { ConsentBanner } from 'ndpr-toolkit';
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 
 function Layout({ children }) {
   return (
@@ -295,7 +489,7 @@ function Layout({ children }) {
 }
 
 // 3. Use the consent values in your components
-import { useConsent } from 'ndpr-toolkit';
+import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
 
 function AnalyticsComponent() {
   const { hasConsented } = useConsent();
@@ -312,8 +506,9 @@ function AnalyticsComponent() {
 
 ### Implementing a Data Subject Rights Portal
 
-```jsx
-import { DSRRequestForm, DSRTracker, DSRDashboard, useDSR } from '@tantainnovative/ndpr-toolkit';
+```tsx
+import { DSRRequestForm, DSRDashboard } from '@tantainnovative/ndpr-toolkit/dsr';
+import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
 
 // 1. Create a form for data subjects to submit requests
 function DSRPortal() {
@@ -330,7 +525,6 @@ function DSRPortal() {
       details: formData.details
     });
     
-    // Show confirmation with tracking ID
     alert(`Your request has been submitted. Your tracking ID is: ${request.id}`);
   };
   
@@ -350,8 +544,6 @@ function DSRPortal() {
 }
 
 // 2. Create an admin dashboard for managing requests
-import { DSRDashboard } from '@tantainnovative/ndpr-toolkit';
-
 function AdminDashboard() {
   const { requests, updateRequest, deleteRequest } = useDSR();
   
@@ -367,8 +559,9 @@ function AdminDashboard() {
 
 ### Setting Up a Breach Notification System
 
-```jsx
-import { BreachReportForm, BreachRiskAssessment, RegulatoryReportGenerator, useBreach } from '@tantainnovative/ndpr-toolkit';
+```tsx
+import { BreachReportForm, BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit/breach';
+import { useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
 
 // 1. Create a form for reporting breaches
 function BreachReporting() {
@@ -390,7 +583,6 @@ function BreachReporting() {
       status: 'ongoing'
     });
     
-    // Redirect to risk assessment
     navigate(`/breach/${report.id}/assess`);
   };
   
@@ -426,9 +618,7 @@ function RiskAssessment({ breachId }) {
       riskAssessmentId: assessment.id
     });
     
-    // Show notification requirements
     if (requirements.nitdaNotificationRequired) {
-      // Deadline is 72 hours from discovery
       const deadline = new Date(requirements.nitdaNotificationDeadline);
       alert(`NDPC notification required by ${deadline.toLocaleString()}`);
     }
@@ -456,6 +646,9 @@ Detailed API documentation is available for all components:
 - [DPIA Questionnaire](https://ndpr-toolkit.tantainnovative.com/docs/components/dpia-questionnaire)
 - [Breach Notification](https://ndpr-toolkit.tantainnovative.com/docs/components/breach-notification)
 - [Privacy Policy Generator](https://ndpr-toolkit.tantainnovative.com/docs/components/privacy-policy-generator)
+- [Lawful Basis Tracking](https://ndpr-toolkit.tantainnovative.com/docs/components/lawful-basis-tracking)
+- [Cross-Border Transfers](https://ndpr-toolkit.tantainnovative.com/docs/components/cross-border-transfers)
+- [Record of Processing Activities](https://ndpr-toolkit.tantainnovative.com/docs/components/ropa)
 - [React Hooks](https://ndpr-toolkit.tantainnovative.com/docs/components/hooks)
 
 ## Contributing
@@ -464,4 +657,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT © Tanta Innovative
+MIT (c) Tanta Innovative

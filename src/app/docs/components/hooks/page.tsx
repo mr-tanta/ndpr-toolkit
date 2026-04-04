@@ -37,7 +37,7 @@ export default function HooksDocs() {
               A hook for managing consent state and preferences.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
 
 function ConsentManager() {
   const { 
@@ -74,7 +74,7 @@ function ConsentManager() {
               A hook for managing Data Subject Rights (DSR) requests.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
 
 function DSRManager() {
   const { 
@@ -120,7 +120,7 @@ function DSRManager() {
               A hook for managing Data Protection Impact Assessment (DPIA) state.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useDPIA } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { useDPIA } from '@tantainnovative/ndpr-toolkit/hooks';
 
 function DPIAManager() {
   const { 
@@ -155,7 +155,7 @@ function DPIAManager() {
               A hook for managing data breach notifications and assessments.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useBreach } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
 
 function BreachManager() {
   const { 
@@ -190,7 +190,7 @@ function BreachManager() {
               A hook for managing privacy policy generation and customization.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/hooks';
 
 function PrivacyPolicyManager() {
   const { 

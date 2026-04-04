@@ -69,7 +69,7 @@ export default function BreachNotificationDocs() {
               A form for internal staff to report suspected data breaches, capturing essential details.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/breach';
 
 <BreachReportForm 
   onSubmit={handleSubmitBreachReport}
@@ -90,7 +90,7 @@ export default function BreachNotificationDocs() {
               A tool for assessing the risk level of a data breach and determining notification requirements.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit/breach';
 
 <BreachRiskAssessment 
   breachData={breachData}
@@ -105,7 +105,7 @@ export default function BreachNotificationDocs() {
               A dashboard for managing breach notifications, including tracking notification status and deadlines.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachNotificationManager } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { BreachNotificationManager } from '@tantainnovative/ndpr-toolkit/breach';
 
 <BreachNotificationManager 
   breaches={breaches}
@@ -121,7 +121,7 @@ export default function BreachNotificationDocs() {
               A tool for generating NDPA-compliant breach notification reports for submission to the NDPC.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit/breach';
 
 <RegulatoryReportGenerator 
   breachData={breachData}
@@ -145,7 +145,7 @@ import {
   BreachRiskAssessment, 
   BreachNotificationManager,
   RegulatoryReportGenerator
-} from '@tantainnovative/ndpr-toolkit';
+} from '@tantainnovative/ndpr-toolkit/breach';
 
 // Define breach categories
 const breachCategories = [
@@ -674,7 +674,7 @@ function BreachManagementDashboard() {
         <h3 className="text-xl font-bold mt-8 mb-4">useBreach Hook</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`// Import the hook
-import { useBreach } from '@tantainnovative/ndpr-toolkit';
+import { useBreach } from '@tantainnovative/ndpr-toolkit/breach';
 
 // Use the hook in your component
 const { 

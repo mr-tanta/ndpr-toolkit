@@ -67,7 +67,7 @@ yarn add @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
           Import and use the DPIAQuestionnaire component in your React application:
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
 
 // Define your DPIA questions
 const dpiaQuestions = [
@@ -180,7 +180,7 @@ function MyDPIAForm() {
         
         <h3 className="text-xl font-bold mb-4">Basic Example</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-6">
-          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
 
 const basicQuestions = [
   {
@@ -217,7 +217,7 @@ function BasicDPIA() {
 
         <h3 className="text-xl font-bold mb-4">With Initial Values</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-6">
-          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
 
 function DPIAWithInitialValues() {
   const initialAnswers = {
@@ -240,7 +240,7 @@ function DPIAWithInitialValues() {
 
         <h3 className="text-xl font-bold mb-4">With Risk Calculation</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
 import { useState } from 'react';
 
 function DPIAWithRiskCalculation() {
@@ -533,7 +533,7 @@ function DPIAWithRiskCalculation() {
         <h3 className="text-xl font-bold mt-8 mb-4">useDPIA Hook</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`// Import the hook
-import { useDPIA } from '@tantainnovative/ndpr-toolkit';
+import { useDPIA } from '@tantainnovative/ndpr-toolkit/dpia';
 
 // Use the hook in your component
 const { 

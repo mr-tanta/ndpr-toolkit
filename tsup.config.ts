@@ -1,16 +1,40 @@
 import { defineConfig } from "tsup";
 
+const PKG = "packages/ndpr-toolkit/src";
+
 export default defineConfig({
   entry: {
-    index: "src/index.ts",
+    index: `${PKG}/index.ts`,
+    core: `${PKG}/core.ts`,
+    hooks: `${PKG}/hooks-entry.ts`,
+    consent: `${PKG}/consent.ts`,
+    dsr: `${PKG}/dsr.ts`,
+    dpia: `${PKG}/dpia.ts`,
+    breach: `${PKG}/breach.ts`,
+    policy: `${PKG}/policy.ts`,
+    "lawful-basis": `${PKG}/lawful-basis-entry.ts`,
+    "cross-border": `${PKG}/cross-border-entry.ts`,
+    ropa: `${PKG}/ropa-entry.ts`,
     unstyled: "src/unstyled.ts",
   },
   format: ["cjs", "esm"],
-  dts: true, // Generate TypeScript declarations
-  splitting: false,
+  dts: true,
+  splitting: true,
   sourcemap: true,
   clean: true,
-  external: ["react", "react-dom"],
+  external: [
+    "react",
+    "react-dom",
+    "jspdf",
+    "@radix-ui/react-label",
+    "@radix-ui/react-slot",
+    "@radix-ui/react-switch",
+    "@radix-ui/react-tabs",
+    "lucide-react",
+    "class-variance-authority",
+    "clsx",
+    "tailwind-merge",
+  ],
   minify: true,
   treeshake: true,
   target: "es2015",
@@ -21,17 +45,14 @@ export default defineConfig({
     };
   },
   onSuccess: async () => {
-    // Copy CSS files
     const fs = await import("fs");
     const path = await import("path");
 
-    // Create styles directory
     const stylesDir = path.join("dist", "styles");
     if (!fs.existsSync(stylesDir)) {
       fs.mkdirSync(stylesDir, { recursive: true });
     }
 
-    // Copy animation styles
     const animationsSource = path.join("src", "styles", "animations.css");
     const animationsDest = path.join("dist", "styles.css");
 

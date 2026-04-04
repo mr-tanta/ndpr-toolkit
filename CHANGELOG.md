@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0] — 2026-04-04
+
+### Added
+- Modular import paths: `/core`, `/hooks`, `/consent`, `/dsr`, `/dpia`, `/breach`, `/policy`, `/lawful-basis`, `/cross-border`, `/ropa`
+- Zero-dependency `/core` entry point with all types and utility functions
+- React-only `/hooks` entry point for hook consumers
+- Per-module entry points for granular tree-shaking
+- TypeScript `typesVersions` for IDE auto-completion on all subpaths
+- Code splitting via tsup for optimal bundle size
+
+### Changed
+- UI dependencies (Radix UI, lucide-react, jspdf, class-variance-authority, clsx, tailwind-merge) moved from `dependencies` to optional `peerDependencies`
+- Consumers using only `/core` or `/hooks` no longer install any UI dependencies
+- Bundle is now split into shared chunks for better tree-shaking
+
 ## [2.0.0] — 2026-04-04
 
 ### Breaking Changes

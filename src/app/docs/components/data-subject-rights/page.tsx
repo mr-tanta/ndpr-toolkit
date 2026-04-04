@@ -70,7 +70,7 @@ export default function DataSubjectRightsDocs() {
               A form for data subjects to submit rights requests, with support for different request types.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { DSRRequestForm, DSRType } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { DSRRequestForm, DSRType } from '@tantainnovative/ndpr-toolkit/dsr';
 
 <DSRRequestForm 
   onSubmit={handleSubmitRequest}
@@ -92,7 +92,7 @@ export default function DataSubjectRightsDocs() {
               An admin dashboard for managing and responding to data subject rights requests.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { DSRDashboard } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { DSRDashboard } from '@tantainnovative/ndpr-toolkit/dsr';
 
 <DSRDashboard 
   requests={dsrRequests}
@@ -109,7 +109,7 @@ export default function DataSubjectRightsDocs() {
               A component for data subjects to track the status of their requests.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit/dsr';
 
 <DSRTracker 
   requestId="dsr-123456"
@@ -124,7 +124,7 @@ export default function DataSubjectRightsDocs() {
               A form for reporting data breaches, which is a requirement under the NDPA.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit';
+              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/dsr';
 
 <BreachReportForm 
   onSubmit={handleSubmitBreachReport}
@@ -150,7 +150,7 @@ import {
   useDSR,
   DSRType,
   DSRStatus
-} from '@tantainnovative/ndpr-toolkit';
+} from '@tantainnovative/ndpr-toolkit/dsr';
 
 // Define your request types
 const requestTypes = [
@@ -294,7 +294,7 @@ function DSRPortal() {
         <h3 className="text-xl font-bold mt-8 mb-4">useDSR Hook</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`// Import the hook
-import { useDSR } from '@tantainnovative/ndpr-toolkit';
+import { useDSR } from '@tantainnovative/ndpr-toolkit/dsr';
 
 // Use the hook in your component
 const { 
