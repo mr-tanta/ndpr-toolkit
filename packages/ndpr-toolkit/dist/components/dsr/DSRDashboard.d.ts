@@ -24,7 +24,7 @@ export interface DSRDashboardProps {
     title?: string;
     /**
      * Description text displayed on the dashboard
-     * @default "Track and manage data subject requests in compliance with NDPR requirements."
+     * @default "Track and manage data subject requests in compliance with NDPA requirements."
      */
     description?: string;
     /**

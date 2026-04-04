@@ -114,31 +114,21 @@ export default function LawfulBasisGuide() {
       <section className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Using the Lawful Basis Tracker</h2>
         <p className="mb-4">
-          The NDPR Toolkit provides the <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">LawfulBasisAssessment</code> component
+          The NDPR Toolkit provides the <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">LawfulBasisTracker</code> component
+          and <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">useLawfulBasis</code> hook
           to guide you through the assessment process:
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { LawfulBasisAssessment } from '@tantainnovative/ndpr-toolkit/lawful-basis';
+          <pre><code>{`import { LawfulBasisTracker, useLawfulBasis } from '@tantainnovative/ndpr-toolkit';
 
 function LawfulBasisPage() {
-  const handleComplete = (result) => {
-    // Save the assessment result to your backend
-    fetch('/api/lawful-basis', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(result),
-    });
-  };
+  const { activities, addActivity, getSummary } = useLawfulBasis();
 
   return (
-    <LawfulBasisAssessment
-      processingActivity={{
-        id: 'pa-email-marketing',
-        name: 'Email Marketing Campaigns',
-        description: 'Sending promotional emails to existing customers',
-        dataCategories: ['email', 'name', 'purchase history'],
-      }}
-      onComplete={handleComplete}
+    <LawfulBasisTracker
+      activities={activities}
+      onAddActivity={addActivity}
+      summary={getSummary()}
     />
   );
 }`}</code></pre>

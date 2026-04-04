@@ -18,7 +18,7 @@ export default function ConsentManagementDocs() {
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/src/components/consent" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/components/consent" target="_blank" rel="noopener noreferrer">
             View Source
           </a>
         </Button>
@@ -63,7 +63,7 @@ export default function ConsentManagementDocs() {
               A cookie consent banner that appears at the bottom of the page when a user first visits your site. Fully customizable with support for multiple consent options.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+              <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
 
 <ConsentBanner
   options={[
@@ -95,29 +95,12 @@ export default function ConsentManagementDocs() {
           </div>
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">ConsentPreferences</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              A detailed interface for users to manage their consent preferences after the initial consent has been given.
-            </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentPreferences } from '@tantainnovative/ndpr-toolkit/consent';
-
-<ConsentPreferences 
-  options={consentOptions}
-  currentConsent={currentConsent}
-  onSave={handleSaveConsent}
-  onReset={handleResetConsent}
-/>`}</code></pre>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-bold mb-2">ConsentManager</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               A higher-order component that manages the consent state and provides methods for checking and updating consent. Works with the useConsent hook to provide a complete consent management solution.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit/consent';
+              <pre><code>{`import { ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit';
 
 function App() {
   return (
@@ -175,7 +158,8 @@ function MyApp() {
               A component for handling the storage and retrieval of consent settings. Supports both local storage and custom storage mechanisms.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentStorage, ConsentSettings } from '@tantainnovative/ndpr-toolkit/consent';
+              <pre><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit';
+import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 import { useState } from 'react';
 
 function ConsentStorageExample() {
@@ -229,11 +213,10 @@ function ConsentStorageExample() {
           <pre><code>{`import { useState, useEffect } from 'react';
 import {
   ConsentBanner,
-  ConsentPreferences,
   ConsentManager,
   ConsentStorage,
   useConsent
-} from '@tantainnovative/ndpr-toolkit/consent';
+} from '@tantainnovative/ndpr-toolkit';
 
 // Define your consent options
 const consentOptions = [
@@ -299,28 +282,35 @@ function App() {
 }
 
 function PreferencesModal({ onClose }) {
-  const { 
-    consents, 
-    updateConsent, 
-    saveConsents, 
-    resetConsents 
+  const {
+    consents,
+    updateConsent,
+    saveConsents,
+    resetConsents
   } = useConsent();
-  
+
   const handleSave = () => {
     saveConsents();
     onClose();
   };
-  
+
   return (
     <div className="modal">
       <div className="modal-content">
         <h2>Cookie Preferences</h2>
-        <ConsentPreferences 
-          options={consentOptions}
-          currentConsent={consents}
-          onSave={handleSave}
-          onReset={resetConsents}
-        />
+        {consentOptions.map(option => (
+          <label key={option.id}>
+            <input
+              type="checkbox"
+              checked={consents[option.id] || false}
+              disabled={option.required}
+              onChange={(e) => updateConsent(option.id, e.target.checked)}
+            />
+            {option.label}
+          </label>
+        ))}
+        <button onClick={handleSave}>Save</button>
+        <button onClick={resetConsents}>Reset</button>
         <button onClick={onClose}>Cancel</button>
       </div>
     </div>
@@ -544,7 +534,7 @@ function AnalyticsComponent() {
                 Report bugs or request features on our GitHub repository.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
                   View Issues
                 </a>
               </Button>

@@ -86,7 +86,7 @@ interface UseDPIAReturn {
     progress: number;
 }
 /**
- * Hook for conducting Data Protection Impact Assessments in compliance with NDPR
+ * Hook for conducting Data Protection Impact Assessments in compliance with the NDPA 2023
  */
 export declare function useDPIA({ sections, initialAnswers, storageKey, useLocalStorage, onComplete }: UseDPIAOptions): UseDPIAReturn;
 export {};

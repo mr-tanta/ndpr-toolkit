@@ -11,6 +11,56 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks-entry.d.ts",
+      "import": "./dist/hooks-entry.mjs",
+      "require": "./dist/hooks-entry.js"
+    },
+    "./consent": {
+      "types": "./dist/consent.d.ts",
+      "import": "./dist/consent.mjs",
+      "require": "./dist/consent.js"
+    },
+    "./dsr": {
+      "types": "./dist/dsr.d.ts",
+      "import": "./dist/dsr.mjs",
+      "require": "./dist/dsr.js"
+    },
+    "./dpia": {
+      "types": "./dist/dpia.d.ts",
+      "import": "./dist/dpia.mjs",
+      "require": "./dist/dpia.js"
+    },
+    "./breach": {
+      "types": "./dist/breach.d.ts",
+      "import": "./dist/breach.mjs",
+      "require": "./dist/breach.js"
+    },
+    "./policy": {
+      "types": "./dist/policy.d.ts",
+      "import": "./dist/policy.mjs",
+      "require": "./dist/policy.js"
+    },
+    "./lawful-basis": {
+      "types": "./dist/lawful-basis-entry.d.ts",
+      "import": "./dist/lawful-basis-entry.mjs",
+      "require": "./dist/lawful-basis-entry.js"
+    },
+    "./cross-border": {
+      "types": "./dist/cross-border-entry.d.ts",
+      "import": "./dist/cross-border-entry.mjs",
+      "require": "./dist/cross-border-entry.js"
+    },
+    "./ropa": {
+      "types": "./dist/ropa-entry.d.ts",
+      "import": "./dist/ropa-entry.mjs",
+      "require": "./dist/ropa-entry.js"
+    },
     "./unstyled": {
       "types": "./dist/unstyled.d.ts",
       "import": "./dist/unstyled.mjs",
@@ -19,6 +69,20 @@
     "./styles": {
       "import": "./dist/styles.css",
       "require": "./dist/styles.css"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "core": ["./dist/core.d.ts"],
+      "hooks": ["./dist/hooks-entry.d.ts"],
+      "consent": ["./dist/consent.d.ts"],
+      "dsr": ["./dist/dsr.d.ts"],
+      "dpia": ["./dist/dpia.d.ts"],
+      "breach": ["./dist/breach.d.ts"],
+      "policy": ["./dist/policy.d.ts"],
+      "lawful-basis": ["./dist/lawful-basis-entry.d.ts"],
+      "cross-border": ["./dist/cross-border-entry.d.ts"],
+      "ropa": ["./dist/ropa-entry.d.ts"]
     }
   },
   "files": [

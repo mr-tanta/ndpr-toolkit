@@ -68,14 +68,14 @@ export const trackingTechnologies = [
 export const transferSafeguards = [
   'Standard Contractual Clauses (SCCs)',
   'Binding Corporate Rules (BCRs)',
-  'Adequacy decisions by the Nigerian Data Protection Commission',
+  'Adequacy decisions by the Nigeria Data Protection Commission',
   'Data Processing Agreements with appropriate safeguards',
   'Explicit consent of the data subject',
   'Necessary for the performance of a contract',
   'Necessary for important reasons of public interest',
   'Necessary to protect vital interests',
   'Transfer is from a register intended to provide information to the public',
-  'Compliance with NDPA Section 44 on international transfers',
+  'Compliance with NDPA Sections 41-45 on international transfers',
 ];
 
 export const defaultCookieTypes = [

@@ -137,8 +137,8 @@
   "publishConfig": {
     "access": "public"
   },
+  "sideEffects": ["*.css"],
   "dependencies": {
-    "tslib": "^2.4.0",
     "uuid": "^13.0.0"
   },
   "peerDependencies": {

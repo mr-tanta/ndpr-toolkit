@@ -18,7 +18,7 @@ export default function BreachNotificationDocs() {
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/src/components/breach-notification" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/components/breach-notification" target="_blank" rel="noopener noreferrer">
             View Source
           </a>
         </Button>
@@ -63,7 +63,7 @@ export default function BreachNotificationDocs() {
               A form for internal staff to report suspected data breaches, capturing essential details.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/breach';
+              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit';
 
 <BreachReportForm 
   onSubmit={handleSubmitBreachReport}
@@ -84,7 +84,7 @@ export default function BreachNotificationDocs() {
               A tool for assessing the risk level of a data breach and determining notification requirements.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit/breach';
+              <pre><code>{`import { BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit';
 
 <BreachRiskAssessment 
   breachData={breachData}
@@ -99,7 +99,7 @@ export default function BreachNotificationDocs() {
               A dashboard for managing breach notifications, including tracking notification status and deadlines.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachNotificationManager } from '@tantainnovative/ndpr-toolkit/breach';
+              <pre><code>{`import { BreachNotificationManager } from '@tantainnovative/ndpr-toolkit';
 
 <BreachNotificationManager 
   breaches={breaches}
@@ -115,7 +115,7 @@ export default function BreachNotificationDocs() {
               A tool for generating NDPA-compliant breach notification reports for submission to the NDPC.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit/breach';
+              <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
 
 <RegulatoryReportGenerator 
   breachData={breachData}
@@ -139,7 +139,7 @@ import {
   BreachRiskAssessment, 
   BreachNotificationManager,
   RegulatoryReportGenerator
-} from '@tantainnovative/ndpr-toolkit/breach';
+} from '@tantainnovative/ndpr-toolkit';
 
 // Define breach categories
 const breachCategories = [
@@ -668,7 +668,7 @@ function BreachManagementDashboard() {
         <h3 className="text-xl font-bold mt-8 mb-4">useBreach Hook</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`// Import the hook
-import { useBreach } from '@tantainnovative/ndpr-toolkit/breach';
+import { useBreach } from '@tantainnovative/ndpr-toolkit';
 
 // Use the hook in your component
 const { 
@@ -765,7 +765,7 @@ if (requirements.ndpcNotificationRequired) {
                 Report bugs or request features on our GitHub repository.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
                   View Issues
                 </a>
               </Button>

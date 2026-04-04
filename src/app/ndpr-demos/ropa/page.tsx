@@ -687,39 +687,39 @@ export default function ROPADemoPage() {
                       <div className="p-4 space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium mb-1.5">Activity Name *</label>
-                            <input type="text" value={formActivity} onChange={(e) => setFormActivity(e.target.value)} placeholder="e.g., Customer Data Processing" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+                            <label htmlFor="ropa-activity" className="block text-sm font-medium mb-1.5">Activity Name *</label>
+                            <input id="ropa-activity" type="text" value={formActivity} onChange={(e) => setFormActivity(e.target.value)} placeholder="e.g., Customer Data Processing" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-1.5">Department</label>
-                            <select value={formDepartment} onChange={(e) => setFormDepartment(e.target.value)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                            <label htmlFor="ropa-department" className="block text-sm font-medium mb-1.5">Department</label>
+                            <select id="ropa-department" value={formDepartment} onChange={(e) => setFormDepartment(e.target.value)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
                               <option value="">Select department</option>
                               {DEPARTMENTS.map((d) => (<option key={d} value={d}>{d}</option>))}
                             </select>
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-1.5">Purpose of Processing *</label>
-                          <textarea value={formPurpose} onChange={(e) => setFormPurpose(e.target.value)} placeholder="Describe the purpose of this data processing activity" rows={2} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+                          <label htmlFor="ropa-purpose" className="block text-sm font-medium mb-1.5">Purpose of Processing *</label>
+                          <textarea id="ropa-purpose" value={formPurpose} onChange={(e) => setFormPurpose(e.target.value)} placeholder="Describe the purpose of this data processing activity" rows={2} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
-                            <label className="block text-sm font-medium mb-1.5">Lawful Basis</label>
-                            <select value={formBasis} onChange={(e) => setFormBasis(e.target.value as LawfulBasis)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                            <label htmlFor="ropa-basis" className="block text-sm font-medium mb-1.5">Lawful Basis</label>
+                            <select id="ropa-basis" value={formBasis} onChange={(e) => setFormBasis(e.target.value as LawfulBasis)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
                               {(Object.entries(LAWFUL_BASIS_LABELS) as [LawfulBasis, string][]).map(([key, label]) => (<option key={key} value={key}>{label}</option>))}
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-1.5">Risk Level</label>
-                            <select value={formRisk} onChange={(e) => setFormRisk(e.target.value as RiskLevel)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
+                            <label htmlFor="ropa-risk" className="block text-sm font-medium mb-1.5">Risk Level</label>
+                            <select id="ropa-risk" value={formRisk} onChange={(e) => setFormRisk(e.target.value as RiskLevel)} className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow">
                               <option value="low">Low</option>
                               <option value="medium">Medium</option>
                               <option value="high">High</option>
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-1.5">DPO Contact</label>
-                            <input type="email" value={formDpo} onChange={(e) => setFormDpo(e.target.value)} placeholder="dpo@company.com" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+                            <label htmlFor="ropa-dpo" className="block text-sm font-medium mb-1.5">DPO Contact</label>
+                            <input id="ropa-dpo" type="email" value={formDpo} onChange={(e) => setFormDpo(e.target.value)} placeholder="dpo@company.com" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                         </div>
                       </div>
@@ -766,12 +766,12 @@ export default function ROPADemoPage() {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium mb-1.5">Recipients</label>
-                            <input type="text" value={formRecipients} onChange={(e) => setFormRecipients(e.target.value)} placeholder="Comma-separated (e.g., HR Dept, Cloud Provider)" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+                            <label htmlFor="ropa-recipients" className="block text-sm font-medium mb-1.5">Recipients</label>
+                            <input id="ropa-recipients" type="text" value={formRecipients} onChange={(e) => setFormRecipients(e.target.value)} placeholder="Comma-separated (e.g., HR Dept, Cloud Provider)" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium mb-1.5">Retention Period</label>
-                            <input type="text" value={formRetention} onChange={(e) => setFormRetention(e.target.value)} placeholder="e.g., 3 years after last interaction" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+                            <label htmlFor="ropa-retention" className="block text-sm font-medium mb-1.5">Retention Period</label>
+                            <input id="ropa-retention" type="text" value={formRetention} onChange={(e) => setFormRetention(e.target.value)} placeholder="e.g., 3 years after last interaction" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                         </div>
                       </div>
@@ -830,8 +830,8 @@ export default function ROPADemoPage() {
                         </label>
                         {formCrossBorder && (
                           <div>
-                            <label className="block text-sm font-medium mb-1.5">Destination Countries</label>
-                            <input type="text" value={formCountries} onChange={(e) => setFormCountries(e.target.value)} placeholder="Comma-separated (e.g., United States, United Kingdom)" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
+                            <label htmlFor="ropa-countries" className="block text-sm font-medium mb-1.5">Destination Countries</label>
+                            <input id="ropa-countries" type="text" value={formCountries} onChange={(e) => setFormCountries(e.target.value)} placeholder="Comma-separated (e.g., United States, United Kingdom)" className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow" />
                           </div>
                         )}
                       </div>
@@ -856,11 +856,11 @@ export default function ROPADemoPage() {
                     <CardDescription>{displayedRecords.length} of {records.length} records</CardDescription>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} className="text-xs px-2 py-1 border rounded-lg bg-white dark:bg-gray-900">
+                    <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} className="text-xs px-2 py-1 border rounded-lg bg-white dark:bg-gray-900" aria-label="Filter by department">
                       <option value="all">All Departments</option>
                       {DEPARTMENTS.filter((d) => records.some((r) => r.department === d)).map((d) => (<option key={d} value={d}>{d}</option>))}
                     </select>
-                    <select value={filterRisk} onChange={(e) => setFilterRisk(e.target.value as RiskLevel | 'all')} className="text-xs px-2 py-1 border rounded-lg bg-white dark:bg-gray-900">
+                    <select value={filterRisk} onChange={(e) => setFilterRisk(e.target.value as RiskLevel | 'all')} className="text-xs px-2 py-1 border rounded-lg bg-white dark:bg-gray-900" aria-label="Filter by risk level">
                       <option value="all">All Risks</option>
                       <option value="low">Low Risk</option>
                       <option value="medium">Medium Risk</option>
@@ -1027,19 +1027,20 @@ export default function ROPADemoPage() {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Button
                     onClick={() => {
+                      const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
                       const csv = [csvPreview.headers.join(',')].concat(
                         records.map((r) => [
-                          `"${r.activityName}"`,
-                          `"${r.purpose}"`,
-                          `"${LAWFUL_BASIS_LABELS[r.lawfulBasis]}"`,
-                          `"${r.department}"`,
-                          `"${r.dataCategories.join('; ')}"`,
-                          `"${r.dataSubjects.join('; ')}"`,
-                          `"${r.recipients.join('; ')}"`,
-                          `"${r.retentionPeriod}"`,
+                          esc(r.activityName),
+                          esc(r.purpose),
+                          esc(LAWFUL_BASIS_LABELS[r.lawfulBasis]),
+                          esc(r.department),
+                          esc(r.dataCategories.join('; ')),
+                          esc(r.dataSubjects.join('; ')),
+                          esc(r.recipients.join('; ')),
+                          esc(r.retentionPeriod),
                           r.riskLevel,
                           r.status,
-                          r.crossBorderTransfer ? `"${r.transferCountries.join('; ')}"` : 'No',
+                          r.crossBorderTransfer ? esc(r.transferCountries.join('; ')) : 'No',
                           r.dpoContact,
                         ].join(','))
                       ).join('\n');

@@ -19,12 +19,12 @@ export interface PolicyGeneratorProps {
     }) => void;
     /**
      * Title displayed on the generator
-     * @default "NDPR Privacy Policy Generator"
+     * @default "NDPA Privacy Policy Generator"
      */
     title?: string;
     /**
      * Description text displayed on the generator
-     * @default "Generate an NDPR-compliant privacy policy for your organization."
+     * @default "Generate an NDPA-compliant privacy policy for your organization."
      */
     description?: string;
     /**

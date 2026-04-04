@@ -13,7 +13,7 @@ export default function HooksDocs() {
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/src/hooks" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/hooks" target="_blank" rel="noopener noreferrer">
             View Source
           </a>
         </Button>
@@ -36,18 +36,19 @@ export default function HooksDocs() {
           <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
         </div>
         <p className="mb-4">
-          Import hooks from the dedicated hooks entry point, or from each module directly:
+          Import hooks from the main package:
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`// From the hooks entry point
-import { useConsent, useDSR, useDPIA, useBreach, usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/hooks';
-
-// Or from individual modules
-import { useConsent } from '@tantainnovative/ndpr-toolkit/consent';
-import { useDSR } from '@tantainnovative/ndpr-toolkit/dsr';
-import { useDPIA } from '@tantainnovative/ndpr-toolkit/dpia';
-import { useBreach } from '@tantainnovative/ndpr-toolkit/breach';
-import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/policy';`}</code></pre>
+          <pre><code>{`import {
+  useConsent,
+  useDSR,
+  useDPIA,
+  useBreach,
+  usePrivacyPolicy,
+  useLawfulBasis,
+  useCrossBorderTransfer,
+  useROPA,
+} from '@tantainnovative/ndpr-toolkit';`}</code></pre>
         </div>
       </section>
 
@@ -61,7 +62,7 @@ import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/policy';`}</code
               A hook for managing consent state and preferences.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+              <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
 
 function ConsentManager() {
   const { 
@@ -98,7 +99,7 @@ function ConsentManager() {
               A hook for managing Data Subject Rights (DSR) requests.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
+              <pre><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
 
 function DSRManager() {
   const { 
@@ -144,7 +145,7 @@ function DSRManager() {
               A hook for managing Data Protection Impact Assessment (DPIA) state.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useDPIA } from '@tantainnovative/ndpr-toolkit/hooks';
+              <pre><code>{`import { useDPIA } from '@tantainnovative/ndpr-toolkit';
 
 function DPIAManager() {
   const { 
@@ -179,7 +180,7 @@ function DPIAManager() {
               A hook for managing data breach notifications and assessments.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
+              <pre><code>{`import { useBreach } from '@tantainnovative/ndpr-toolkit';
 
 function BreachManager() {
   const { 
@@ -214,7 +215,7 @@ function BreachManager() {
               A hook for managing privacy policy generation and customization.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/hooks';
+              <pre><code>{`import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
 
 function PrivacyPolicyManager() {
   const { 

@@ -714,7 +714,7 @@ export default function BreachDemoPage() {
                         <div>
                           <p className="text-gray-500 dark:text-gray-400 font-medium">Reference Number</p>
                           <p className="text-gray-900 dark:text-white font-mono">
-                            BR-{new Date().getFullYear()}-{String(Date.now()).slice(-6)}
+                            BR-{new Date(discoveryTime).getFullYear()}-{String(discoveryTime).slice(-6)}
                           </p>
                         </div>
                         <div>
@@ -1094,6 +1094,11 @@ function RiskSlider({
           max={5}
           value={value}
           onChange={e => onChange(parseInt(e.target.value))}
+          aria-label={`${label}: ${labels[value - 1]}`}
+          aria-valuemin={1}
+          aria-valuemax={5}
+          aria-valuenow={value}
+          aria-valuetext={labels[value - 1]}
           className="w-full h-2 rounded-full appearance-none cursor-pointer
             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5
             [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2

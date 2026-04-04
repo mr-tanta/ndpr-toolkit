@@ -133,30 +133,22 @@ export default function CrossBorderTransfersGuide() {
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`import {
-  CrossBorderTransferAssessment,
-  TransferMechanismSelector,
-} from '@tantainnovative/ndpr-toolkit/cross-border';
+  CrossBorderTransferManager,
+  useCrossBorderTransfer,
+  validateTransfer,
+  assessTransferRisk,
+} from '@tantainnovative/ndpr-toolkit';
 
 function TransferAssessmentPage() {
+  const { transfers, addTransfer, getSummary } = useCrossBorderTransfer();
+
   return (
     <div>
       <h1>Cross-Border Transfer Assessment</h1>
-      <CrossBorderTransferAssessment
-        transfer={{
-          id: 'transfer-aws',
-          destinationCountry: 'United States',
-          dataCategories: ['user profiles', 'usage analytics'],
-          purpose: 'Cloud infrastructure hosting',
-          recipient: 'Amazon Web Services',
-          recipientType: 'processor',
-        }}
-        onComplete={(result) => {
-          if (result.isPermitted) {
-            console.log('Transfer permitted with safeguards:', result.safeguards);
-          } else {
-            console.log('Transfer not permitted. Risks:', result.risks);
-          }
-        }}
+      <CrossBorderTransferManager
+        transfers={transfers}
+        onAddTransfer={addTransfer}
+        summary={getSummary()}
       />
     </div>
   );

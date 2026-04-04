@@ -162,36 +162,49 @@ function deriveRisks(answers: RiskAnswer[], dataTypes: string[]): IdentifiedRisk
   const q5 = answers.find((a) => a.questionId === 'q5');
   const q6 = answers.find((a) => a.questionId === 'q6');
 
+  // Determine whether multiple high-risk factors compound each other
+  const highRiskCount = [q1, q2, q3].filter(
+    (a) => a && RISK_VALUE_MAP[a.value] === 3
+  ).length;
+  // When 2+ of scale/sensitivity/automation are all high, escalate the compound risk
+  const compoundEscalation = highRiskCount >= 2 ? 1 : 0;
+
   if (q1 && RISK_VALUE_MAP[q1.value] >= 2) {
+    const likelihood = RISK_VALUE_MAP[q1.value] + 1 + compoundEscalation;
+    const impact = RISK_VALUE_MAP[q1.value] + 1;
     risks.push({
       id: 'r1',
       title: 'Large-scale data processing',
       description: 'Processing affects a significant number of data subjects, increasing the potential scope of harm if a breach or misuse occurs.',
-      likelihood: RISK_VALUE_MAP[q1.value] + 1,
-      impact: RISK_VALUE_MAP[q1.value] + 1,
-      level: riskLevelFromScore((RISK_VALUE_MAP[q1.value] + 1) * (RISK_VALUE_MAP[q1.value] + 1)),
+      likelihood: Math.min(likelihood, 5),
+      impact: Math.min(impact, 5),
+      level: riskLevelFromScore(Math.min(likelihood, 5) * Math.min(impact, 5)),
     });
   }
 
   if (q2 && RISK_VALUE_MAP[q2.value] >= 2) {
+    const likelihood = RISK_VALUE_MAP[q2.value] + compoundEscalation;
+    const impact = RISK_VALUE_MAP[q2.value] + 2;
     risks.push({
       id: 'r2',
       title: 'Sensitive data exposure risk',
       description: 'Processing includes sensitive or special-category personal data which carries heightened risk to data subjects if compromised.',
-      likelihood: RISK_VALUE_MAP[q2.value],
-      impact: RISK_VALUE_MAP[q2.value] + 2,
-      level: riskLevelFromScore(RISK_VALUE_MAP[q2.value] * (RISK_VALUE_MAP[q2.value] + 2)),
+      likelihood: Math.min(likelihood, 5),
+      impact: Math.min(impact, 5),
+      level: riskLevelFromScore(Math.min(likelihood, 5) * Math.min(impact, 5)),
     });
   }
 
   if (q3 && RISK_VALUE_MAP[q3.value] >= 2) {
+    const likelihood = RISK_VALUE_MAP[q3.value] + 1;
+    const impact = RISK_VALUE_MAP[q3.value] + 1 + compoundEscalation;
     risks.push({
       id: 'r3',
       title: 'Automated decision-making risk',
       description: 'Use of automated decision-making or profiling may produce unfair or discriminatory outcomes without adequate human oversight.',
-      likelihood: RISK_VALUE_MAP[q3.value] + 1,
-      impact: RISK_VALUE_MAP[q3.value] + 1,
-      level: riskLevelFromScore((RISK_VALUE_MAP[q3.value] + 1) * (RISK_VALUE_MAP[q3.value] + 1)),
+      likelihood: Math.min(likelihood, 5),
+      impact: Math.min(impact, 5),
+      level: riskLevelFromScore(Math.min(likelihood, 5) * Math.min(impact, 5)),
     });
   }
 
@@ -238,7 +251,7 @@ function deriveRisks(answers: RiskAnswer[], dataTypes: string[]): IdentifiedRisk
       description: 'Biometric data is irreplaceable and its compromise can cause irreversible harm to data subjects.',
       likelihood: 3,
       impact: 4,
-      level: 'high',
+      level: riskLevelFromScore(3 * 4),
     });
   }
   if (hasChildren && !risks.find((r) => r.id === 'r2')) {
@@ -246,9 +259,9 @@ function deriveRisks(answers: RiskAnswer[], dataTypes: string[]): IdentifiedRisk
       id: 'r8',
       title: "Processing children's data",
       description: "Personal data of minors requires enhanced protection. Additional safeguards and parental consent are mandatory under the NDPA.",
-      likelihood: 2,
+      likelihood: 3,
       impact: 4,
-      level: 'high',
+      level: riskLevelFromScore(3 * 4),
     });
   }
 
@@ -314,26 +327,31 @@ function deriveMitigations(risks: IdentifiedRisk[]): Mitigation[] {
 
 const STEP_LABELS = ['Project Details', 'Risk Assessment', 'Mitigation', 'Report'];
 
-function StepIndicator({ currentStep }: { currentStep: number }) {
+function StepIndicator({ currentStep, onStepClick }: { currentStep: number; onStepClick?: (step: number) => void }) {
   return (
     <div className="flex items-center justify-center mb-10">
       {STEP_LABELS.map((label, idx) => {
         const stepNum = idx + 1;
         const isActive = stepNum === currentStep;
         const isCompleted = stepNum < currentStep;
+        const isClickable = isCompleted && !!onStepClick;
 
         return (
           <React.Fragment key={label}>
             <div className="flex flex-col items-center">
-              <div
+              <button
+                type="button"
+                disabled={!isClickable}
+                onClick={() => isClickable && onStepClick!(stepNum)}
                 className={`
                   flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold border-2 transition-all duration-300
                   ${isActive
                     ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200 dark:shadow-blue-900/50'
                     : isCompleted
-                      ? 'bg-emerald-500 border-emerald-500 text-white'
+                      ? 'bg-emerald-500 border-emerald-500 text-white cursor-pointer hover:bg-emerald-600 hover:border-emerald-600'
                       : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500'
                   }
+                  ${!isClickable && !isActive ? 'cursor-default' : ''}
                 `}
               >
                 {isCompleted ? (
@@ -343,7 +361,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
                 ) : (
                   stepNum
                 )}
-              </div>
+              </button>
               <span
                 className={`mt-2 text-xs font-medium whitespace-nowrap hidden sm:block ${
                   isActive
@@ -638,7 +656,7 @@ export default function DPIADemoPage() {
         </div>
 
         {/* Step Indicator */}
-        <StepIndicator currentStep={currentStep} />
+        <StepIndicator currentStep={currentStep} onStepClick={setCurrentStep} />
 
         {/* ================================================================= */}
         {/* STEP 1: Project Details */}

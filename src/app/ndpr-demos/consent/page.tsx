@@ -657,7 +657,7 @@ export default function ConsentDemoPage() {
               </CardHeader>
               <CardContent>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-auto">
-                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
 
 <ConsentBanner
   position="${bannerPosition}"
@@ -688,7 +688,7 @@ export default function ConsentDemoPage() {
               </CardHeader>
               <CardContent>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-auto">
-                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
+                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit';
 
 <ConsentManager
   settings={{
@@ -736,8 +736,8 @@ export default function ConsentDemoPage() {
               </CardHeader>
               <CardContent>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-auto">
-                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentStorage, validateConsent } from '@tantainnovative/ndpr-toolkit/consent';
-import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit/core';
+                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentStorage, validateConsent } from '@tantainnovative/ndpr-toolkit';
+import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 
 function App() {
   const [consent, setConsent] = useState<ConsentSettings>(initialConsent);

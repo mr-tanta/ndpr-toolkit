@@ -20,7 +20,7 @@ export default function ROPADocs() {
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/ropa" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/ropa" target="_blank" rel="noopener noreferrer">
             View Source
           </a>
         </Button>
@@ -56,20 +56,15 @@ export default function ROPADocs() {
 
       <section id="import" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Import</h2>
-        <p className="mb-4">Use the per-module import for optimal tree-shaking:</p>
+        <p className="mb-4">Import from the main package:</p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>{`// Per-module import (recommended)
-import {
+          <pre><code>{`import {
   ROPAManager,
-  ProcessingActivityForm,
-  ROPAReport,
-} from '@tantainnovative/ndpr-toolkit/ropa';
-
-// Or from the main package
-import {
-  ROPAManager,
-  ProcessingActivityForm,
-  ROPAReport,
+  useROPA,
+  validateProcessingRecord,
+  generateROPASummary,
+  exportROPAToCSV,
+  identifyComplianceGaps,
 } from '@tantainnovative/ndpr-toolkit';`}</code></pre>
         </div>
       </section>
@@ -88,7 +83,7 @@ import {
               search, categorisation, and bulk operations.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ROPAManager } from '@tantainnovative/ndpr-toolkit/ropa';
+              <pre><code>{`import { ROPAManager } from '@tantainnovative/ndpr-toolkit';
 
 <ROPAManager
   activities={processingActivities}
@@ -101,38 +96,39 @@ import {
           </div>
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">ProcessingActivityForm</h3>
+            <h3 className="text-xl font-bold mb-2">useROPA Hook</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              A guided form for adding or editing a processing activity record, capturing all fields required by the NDPA.
+              A React hook for managing processing records, generating summaries, and exporting data.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ProcessingActivityForm } from '@tantainnovative/ndpr-toolkit/ropa';
+              <pre><code>{`import { useROPA, exportROPAToCSV } from '@tantainnovative/ndpr-toolkit';
 
-<ProcessingActivityForm
-  onSubmit={(activity) => {
-    console.log('Activity:', activity.name);
-    console.log('Lawful basis:', activity.lawfulBasis);
-    console.log('Data categories:', activity.dataCategories);
-  }}
-  onCancel={() => console.log('Cancelled')}
-/>`}</code></pre>
-            </div>
-          </div>
+function ProcessingRecords() {
+  const { ropa, addRecord, getSummary } = useROPA({
+    initialData: {
+      id: 'ropa-1',
+      organizationName: 'Your Company Ltd',
+      organizationContact: 'dpo@yourcompany.com',
+      organizationAddress: 'Lagos, Nigeria',
+      records: [],
+      lastUpdated: Date.now(),
+      version: '1.0',
+    },
+  });
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">ROPAReport</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Generates a formatted report of all processing activities, suitable for submission to the NDPC or for internal audit.
-            </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ROPAReport } from '@tantainnovative/ndpr-toolkit/ropa';
-
-<ROPAReport
-  activities={processingActivities}
-  organisationName="Your Company Ltd"
-  dpoContact="dpo@yourcompany.com"
-  exportFormat="pdf"
-/>`}</code></pre>
+  return (
+    <div>
+      <ROPAManager
+        records={ropa.records}
+        onAddRecord={addRecord}
+        summary={getSummary()}
+      />
+      <button onClick={() => exportROPAToCSV(ropa.records)}>
+        Export to CSV
+      </button>
+    </div>
+  );
+}`}</code></pre>
             </div>
           </div>
         </div>
@@ -206,7 +202,7 @@ type ROPAManagerProps = {
                 Report bugs or request features on our GitHub repository.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
                   View Issues
                 </a>
               </Button>

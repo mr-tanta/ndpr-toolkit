@@ -28,7 +28,7 @@ export interface PolicyPreviewProps {
     title?: string;
     /**
      * Description text displayed on the preview
-     * @default "Preview your NDPR-compliant privacy policy before exporting."
+     * @default "Preview your NDPA-compliant privacy policy before exporting."
      */
     description?: string;
     /**

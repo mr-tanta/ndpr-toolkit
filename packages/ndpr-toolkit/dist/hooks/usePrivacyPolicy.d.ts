@@ -81,7 +81,7 @@ interface UsePrivacyPolicyReturn {
     };
 }
 /**
- * Hook for generating NDPR-compliant privacy policies
+ * Hook for generating NDPA-compliant privacy policies
  */
 export declare function usePrivacyPolicy({ templates, initialPolicy, storageKey, useLocalStorage, onGenerate }: UsePrivacyPolicyOptions): UsePrivacyPolicyReturn;
 export {};

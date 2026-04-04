@@ -91,7 +91,7 @@ interface UseBreachReturn {
     clearBreachData: () => void;
 }
 /**
- * Hook for managing data breach notifications in compliance with NDPR
+ * Hook for managing data breach notifications in compliance with the NDPA (Section 40)
  */
 export declare function useBreach({ categories, initialReports, storageKey, useLocalStorage, onReport, onAssessment, onNotification }: UseBreachOptions): UseBreachReturn;
 export {};

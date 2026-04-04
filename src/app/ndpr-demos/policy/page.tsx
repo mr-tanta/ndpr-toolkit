@@ -718,10 +718,11 @@ export default function PolicyDemoPage() {
               <div className="p-4 space-y-4">
                 {/* Organization Name */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label htmlFor="policy-org-name" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Organization Name
                   </label>
                   <input
+                    id="policy-org-name"
                     type="text"
                     value={org.orgName}
                     onChange={(e) => updateOrg("orgName", e.target.value)}
@@ -732,10 +733,11 @@ export default function PolicyDemoPage() {
 
                 {/* Website */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label htmlFor="policy-website" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Website
                   </label>
                   <input
+                    id="policy-website"
                     type="url"
                     value={org.website}
                     onChange={(e) => updateOrg("website", e.target.value)}
@@ -746,10 +748,11 @@ export default function PolicyDemoPage() {
 
                 {/* Email */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label htmlFor="policy-email" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Contact Email
                   </label>
                   <input
+                    id="policy-email"
                     type="email"
                     value={org.email}
                     onChange={(e) => updateOrg("email", e.target.value)}
@@ -760,10 +763,11 @@ export default function PolicyDemoPage() {
 
                 {/* DPO Name */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label htmlFor="policy-dpo" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Data Protection Officer
                   </label>
                   <input
+                    id="policy-dpo"
                     type="text"
                     value={org.dpoName}
                     onChange={(e) => updateOrg("dpoName", e.target.value)}
@@ -774,10 +778,11 @@ export default function PolicyDemoPage() {
 
                 {/* Industry */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label htmlFor="policy-industry" className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Industry
                   </label>
                   <select
+                    id="policy-industry"
                     value={org.industry}
                     onChange={(e) => updateOrg("industry", e.target.value)}
                     className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
@@ -813,9 +818,10 @@ export default function PolicyDemoPage() {
                 <button
                   onClick={() => {
                     const text = toMarkdown();
-                    navigator.clipboard.writeText(text).then(() => {
-                      alert("Markdown copied to clipboard.");
-                    });
+                    navigator.clipboard.writeText(text).then(
+                      () => alert("Markdown copied to clipboard."),
+                      () => alert("Failed to copy — please check clipboard permissions."),
+                    );
                   }}
                   className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
                 >
@@ -837,9 +843,10 @@ export default function PolicyDemoPage() {
                 <button
                   onClick={() => {
                     const text = toPlainText();
-                    navigator.clipboard.writeText(text).then(() => {
-                      alert("Plain text copied to clipboard.");
-                    });
+                    navigator.clipboard.writeText(text).then(
+                      () => alert("Plain text copied to clipboard."),
+                      () => alert("Failed to copy — please check clipboard permissions."),
+                    );
                   }}
                   className="w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors"
                 >

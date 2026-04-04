@@ -66,7 +66,7 @@ export default function ManagingConsentGuide() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+                <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
 
 function App() {
   const consentOptions = [
@@ -136,46 +136,37 @@ function App() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit/consent';
+                <pre><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit';
+import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 
-// Create a consent storage instance
-const consentStorage = new ConsentStorage({
-  storageType: 'localStorage', // or 'cookie', 'indexedDB', 'api'
-  apiEndpoint: '/api/consents', // Only required for 'api' storage type
-  cookieOptions: {             // Only required for 'cookie' storage type
-    domain: 'example.com',
-    secure: true,
-    sameSite: 'strict',
-    maxAge: 60 * 60 * 24 * 365 // 1 year in seconds
-  }
-});
+// Use the ConsentStorage component with autoLoad and autoSave
+function ConsentStorageExample() {
+  const [settings, setSettings] = useState<ConsentSettings | null>(null);
 
-// Save consent
-function saveConsent(userId, consents) {
-  return consentStorage.saveConsent(userId, consents);
-}
-
-// Retrieve consent
-async function getConsent(userId) {
-  return await consentStorage.getConsent(userId);
-}
-
-// Example usage
-const userId = 'user123';
-const consents = {
-  necessary: true,
-  analytics: true,
-  marketing: false,
-  timestamp: new Date().toISOString(),
-  version: '1.0'
-};
-
-saveConsent(userId, consents);
-
-// Later, retrieve the consent
-getConsent(userId).then(savedConsents => {
-  console.log('Retrieved consents:', savedConsents);
-});`}</code></pre>
+  return (
+    <ConsentStorage
+      settings={settings || { necessary: true, lastUpdated: Date.now() }}
+      storageOptions={{
+        key: 'my-app-consent',
+        storage: 'localStorage',
+      }}
+      onLoad={(loaded) => {
+        if (loaded) setSettings(loaded);
+      }}
+      onSave={(saved) => console.log('Saved:', saved)}
+      autoLoad={true}
+      autoSave={true}
+    >
+      {({ saveSettings, clearSettings, loaded }) => (
+        <div>
+          <p>Settings loaded: {loaded ? 'Yes' : 'No'}</p>
+          <button onClick={() => saveSettings(settings!)}>Save</button>
+          <button onClick={() => clearSettings()}>Clear</button>
+        </div>
+      )}
+    </ConsentStorage>
+  );
+}`}</code></pre>
               </div>
             </div>
           </div>
@@ -192,7 +183,7 @@ getConsent(userId).then(savedConsents => {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit/consent';
+                <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
 
 function AnalyticsComponent() {
   const { hasConsent, isLoading } = useConsent('analytics');
@@ -243,7 +234,7 @@ function MarketingComponent() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
+                <pre><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit';
 
 function PrivacySettingsPage() {
   const consentOptions = [
@@ -316,51 +307,37 @@ function PrivacySettingsPage() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentRecorder } from '@tantainnovative/ndpr-toolkit/consent';
+                <pre><code>{`// Consent records should be maintained server-side.
+// When saving consent via the ConsentManager, also record
+// the event in your backend for audit compliance.
 
-// Create a consent recorder instance
-const consentRecorder = new ConsentRecorder({
-  storageType: 'api',
-  apiEndpoint: '/api/consent-records'
-});
-
-// Record a consent event
-function recordConsentEvent(userId, event) {
-  const consentEvent = {
+async function recordConsentEvent(userId, consents, eventType) {
+  const consentRecord = {
     userId,
-    eventType: event.type, // 'given', 'updated', 'withdrawn'
-    consents: event.consents,
+    eventType, // 'given', 'updated', 'withdrawn'
+    consents,
     timestamp: new Date().toISOString(),
-    source: event.source, // 'banner', 'settings', 'account-deletion', etc.
-    ipAddress: event.ipAddress,
-    userAgent: event.userAgent,
-    version: event.version
+    source: eventType === 'given' ? 'banner' : 'settings',
+    userAgent: navigator.userAgent,
+    version: '1.0',
   };
-  
-  return consentRecorder.recordEvent(consentEvent);
+
+  await fetch('/api/consent-records', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(consentRecord),
+  });
 }
 
-// Example usage
-const userId = 'user123';
-const consentEvent = {
-  type: 'given',
-  consents: {
-    necessary: true,
-    analytics: true,
-    marketing: false
-  },
-  source: 'banner',
-  ipAddress: '192.168.1.1',
-  userAgent: 'Mozilla/5.0...',
-  version: '1.0'
-};
-
-recordConsentEvent(userId, consentEvent);
-
-// Retrieve consent history for a user
-consentRecorder.getEventHistory(userId).then(history => {
-  console.log('Consent history:', history);
-});`}</code></pre>
+// Use with the ConsentManager onSave callback
+<ConsentManager
+  options={consentOptions}
+  onSave={(consents) => {
+    recordConsentEvent(userId, consents, 'given');
+  }}
+>
+  <App />
+</ConsentManager>`}</code></pre>
               </div>
             </div>
           </div>
@@ -392,15 +369,12 @@ consentRecorder.getEventHistory(userId).then(history => {
           Here&apos;s a complete example of how to implement a consent management system using the NDPR Toolkit:
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { useState, useEffect } from 'react';
+          <pre><code>{`import { useEffect } from 'react';
 import {
   ConsentBanner,
   ConsentManager,
-  ConsentStorage,
-  ConsentRecorder,
-  ConsentContext,
-  useConsent
-} from '@tantainnovative/ndpr-toolkit/consent';
+  useConsent,
+} from '@tantainnovative/ndpr-toolkit';
 
 // Define consent options
 const consentOptions = [
@@ -408,199 +382,69 @@ const consentOptions = [
     id: 'necessary',
     label: 'Necessary Cookies',
     description: 'These cookies are essential for the website to function properly.',
-    required: true
+    required: true,
   },
   {
     id: 'analytics',
     label: 'Analytics Cookies',
     description: 'These cookies help us understand how visitors interact with our website.',
-    required: false
+    required: false,
   },
   {
     id: 'marketing',
     label: 'Marketing Cookies',
-    description: 'These cookies are used to track visitors across websites to display relevant advertisements.',
-    required: false
+    description: 'These cookies are used to track visitors across websites.',
+    required: false,
   },
-  {
-    id: 'personalization',
-    label: 'Personalization',
-    description: 'These cookies allow us to provide personalized content and recommendations.',
-    required: false
-  }
 ];
-
-// Create storage and recorder instances
-const consentStorage = new ConsentStorage({ storageType: 'localStorage' });
-const consentRecorder = new ConsentRecorder({ storageType: 'api', apiEndpoint: '/api/consent-records' });
 
 // Main application with consent management
 function App() {
-  const [userId, setUserId] = useState(null);
-  const [showBanner, setShowBanner] = useState(false);
-  const [consents, setConsents] = useState(null);
-  
-  useEffect(() => {
-    // Generate or retrieve user ID
-    const storedUserId = localStorage.getItem('userId');
-    if (storedUserId) {
-      setUserId(storedUserId);
-    } else {
-      const newUserId = \`user_\${Date.now()}\`;
-      localStorage.setItem('userId', newUserId);
-      setUserId(newUserId);
-    }
-  }, []);
-  
-  useEffect(() => {
-    if (userId) {
-      // Check if user has already given consent
-      consentStorage.getConsent(userId).then(storedConsents => {
-        if (storedConsents) {
-          setConsents(storedConsents);
-        } else {
-          // No stored consents, show the banner
-          setShowBanner(true);
-        }
-      });
-    }
-  }, [userId]);
-  
-  const handleSaveConsent = (newConsents) => {
-    // Save the consent preferences
-    setConsents(newConsents);
-    consentStorage.saveConsent(userId, newConsents);
-    
-    // Record the consent event
-    const eventType = consents ? 'updated' : 'given';
-    consentRecorder.recordEvent({
-      userId,
-      eventType,
-      consents: newConsents,
-      timestamp: new Date().toISOString(),
-      source: eventType === 'given' ? 'banner' : 'settings',
-      userAgent: navigator.userAgent,
-      version: '1.0'
-    });
-    
-    // Hide the banner if it&apos;s showing
-    setShowBanner(false);
-  };
-  
-  const openConsentManager = () => {
-    // Open a modal with the consent manager
-    setShowConsentManager(true);
-  };
-  
-  const [showConsentManager, setShowConsentManager] = useState(false);
-  
   return (
-    <ConsentContext.Provider value={{ consents, openConsentManager }}>
-      <div className="app">
-        <header>
-          <h1>My NDPA-Compliant Website</h1>
-          <nav>
-            <ul>
-              <li><a href="/">Home</a></li>
-              <li><a href="/about">About</a></li>
-              <li><a href="/contact">Contact</a></li>
-              <li>
-                <button onClick={openConsentManager}>
-                  Privacy Settings
-                </button>
-              </li>
-            </ul>
-          </nav>
-        </header>
-        
-        <main>
-          {/* Main content of your application */}
-          <HomePage />
-        </main>
-        
-        <footer>
-          <p>© 2023 My Company</p>
-          <button onClick={openConsentManager}>
-            Manage Cookie Preferences
-          </button>
-        </footer>
-        
-        {/* Consent banner */}
-        {showBanner && (
-          <ConsentBanner
-            options={consentOptions}
-            onSave={handleSaveConsent}
-            privacyPolicyUrl="/privacy-policy"
-            position="bottom"
-            showCloseButton={false}
-          />
-        )}
-        
-        {/* Consent manager modal */}
-        {showConsentManager && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>Privacy Settings</h2>
-              <ConsentManager
-                options={consentOptions}
-                onSave={(newConsents) => {
-                  handleSaveConsent(newConsents);
-                  setShowConsentManager(false);
-                }}
-                initialValues={consents || {}}
-                onCancel={() => setShowConsentManager(false)}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    </ConsentContext.Provider>
+    <ConsentManager
+      options={consentOptions}
+      storageKey="my-app-consent"
+      autoLoad={true}
+      autoSave={true}
+    >
+      <header>
+        <h1>My NDPA-Compliant Website</h1>
+      </header>
+
+      <main>
+        <HomePage />
+      </main>
+
+      {/* Consent banner appears automatically for new visitors */}
+      <ConsentBanner
+        options={consentOptions}
+        onSave={(consents) => console.log('Consent saved:', consents)}
+        privacyPolicyUrl="/privacy-policy"
+        position="bottom"
+      />
+    </ConsentManager>
   );
 }
 
 // Example component that uses consent
 function HomePage() {
-  const { hasConsent: hasAnalyticsConsent } = useConsent('analytics');
-  const { hasConsent: hasMarketingConsent } = useConsent('marketing');
-  const { hasConsent: hasPersonalizationConsent } = useConsent('personalization');
-  const { openConsentManager } = useConsent();
-  
+  const { hasConsented } = useConsent();
+
   useEffect(() => {
-    if (hasAnalyticsConsent) {
-      // Initialize analytics
+    if (hasConsented('analytics')) {
       console.log('Initializing analytics...');
     }
-  }, [hasAnalyticsConsent]);
-  
+  }, [hasConsented]);
+
   useEffect(() => {
-    if (hasMarketingConsent) {
-      // Initialize marketing tools
+    if (hasConsented('marketing')) {
       console.log('Initializing marketing tools...');
     }
-  }, [hasMarketingConsent]);
-  
+  }, [hasConsented]);
+
   return (
     <div>
       <h2>Welcome to our website</h2>
-      
-      {hasPersonalizationConsent ? (
-        <div>
-          <h3>Personalized Content</h3>
-          <p>Here&apos;s some content tailored just for you!</p>
-        </div>
-      ) : (
-        <div>
-          <h3>Standard Content</h3>
-          <p>
-            Enable personalization to see content tailored to your interests.
-            <button onClick={openConsentManager}>
-              Update Privacy Settings
-            </button>
-          </p>
-        </div>
-      )}
-      
-      {/* More content... */}
     </div>
   );
 }`}</code></pre>

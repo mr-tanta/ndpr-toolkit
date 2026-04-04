@@ -19,7 +19,7 @@ export default function ComplianceChecklist() {
             <ul className="space-y-2">
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
-                <span>Appoint a Data Protection Officer (DPO) as required under NDPA Section 31 or designate someone responsible for data protection</span>
+                <span>Appoint a Data Protection Officer (DPO) as required under the NDPA or designate someone responsible for data protection</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
@@ -153,7 +153,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">5</span>
-            Data Security (NDPA Section 39)
+            Data Security (NDPA Section 37)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
@@ -250,7 +250,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">8</span>
-            Data Protection Impact Assessment (NDPA Section 36)
+            Data Protection Impact Assessment (NDPA Section 38)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">

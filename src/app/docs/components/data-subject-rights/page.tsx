@@ -18,7 +18,7 @@ export default function DataSubjectRightsDocs() {
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/src/components/data-subject-rights" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/components/data-subject-rights" target="_blank" rel="noopener noreferrer">
             View Source
           </a>
         </Button>
@@ -64,7 +64,7 @@ export default function DataSubjectRightsDocs() {
               A form for data subjects to submit rights requests, with support for different request types.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { DSRRequestForm, DSRType } from '@tantainnovative/ndpr-toolkit/dsr';
+              <pre><code>{`import { DSRRequestForm, DSRType } from '@tantainnovative/ndpr-toolkit';
 
 <DSRRequestForm 
   onSubmit={handleSubmitRequest}
@@ -86,7 +86,7 @@ export default function DataSubjectRightsDocs() {
               An admin dashboard for managing and responding to data subject rights requests.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { DSRDashboard } from '@tantainnovative/ndpr-toolkit/dsr';
+              <pre><code>{`import { DSRDashboard } from '@tantainnovative/ndpr-toolkit';
 
 <DSRDashboard 
   requests={dsrRequests}
@@ -103,7 +103,7 @@ export default function DataSubjectRightsDocs() {
               A component for data subjects to track the status of their requests.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit/dsr';
+              <pre><code>{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit';
 
 <DSRTracker 
   requestId="dsr-123456"
@@ -119,7 +119,7 @@ export default function DataSubjectRightsDocs() {
               <Link href="/docs/components/breach-notification" className="text-blue-600 dark:text-blue-400 underline">Breach Notification</Link> documentation.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/breach';
+              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit';
 
 <BreachReportForm
   onSubmit={handleSubmitBreachReport}
@@ -145,7 +145,7 @@ import {
   useDSR,
   DSRType,
   DSRStatus
-} from '@tantainnovative/ndpr-toolkit/dsr';
+} from '@tantainnovative/ndpr-toolkit';
 
 // Define your request types
 const requestTypes = [
@@ -289,7 +289,7 @@ function DSRPortal() {
         <h3 className="text-xl font-bold mt-8 mb-4">useDSR Hook</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`// Import the hook
-import { useDSR } from '@tantainnovative/ndpr-toolkit/dsr';
+import { useDSR } from '@tantainnovative/ndpr-toolkit';
 
 // Use the hook in your component
 const { 
@@ -480,7 +480,7 @@ const accessRequests = filterRequestsByType('access');`}</code></pre>
                 Report bugs or request features on our GitHub repository.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
                   View Issues
                 </a>
               </Button>

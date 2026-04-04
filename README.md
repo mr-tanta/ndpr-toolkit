@@ -109,14 +109,14 @@ import { ConsentBanner, ConsentManager, useConsent, validateConsent } from '@tan
 
 ```tsx
 <ConsentManager
-  position="bottom"
-  animation="slide"
-  onConsentChange={(consent) => {
-    if (consent.analytics) loadAnalytics();
+  options={[
+    { id: 'essential', label: 'Essential', description: 'Required for the site to function', required: true, purpose: 'Site operation' },
+    { id: 'analytics', label: 'Analytics', description: 'Help us improve', required: false, purpose: 'Usage analytics' },
+  ]}
+  onSave={(settings) => {
+    if (settings.consents.analytics) loadAnalytics();
   }}
->
-  <App />
-</ConsentManager>
+/>
 ```
 
 **Key exports:** `ConsentBanner`, `ConsentManager`, `ConsentStorage`, `useConsent`, `validateConsent`, `validateConsentOptions`
@@ -152,7 +152,7 @@ import { DPIAQuestionnaire, DPIAReport, useDPIA, assessDPIARisk } from '@tantain
 ```
 
 ```tsx
-const { currentSection, answers, goToNextSection, getResult } = useDPIA({
+const { currentSection, answers, nextSection, completeDPIA } = useDPIA({
   sections: dpiaSections,
   onComplete: (result) => saveAssessment(result),
 });
@@ -171,7 +171,7 @@ import { BreachReportForm, BreachNotificationManager, useBreach, calculateBreach
 ```
 
 ```tsx
-const { createReport, reports, assessRisk } = useBreach({
+const { reportBreach, reports, assessRisk } = useBreach({
   categories: breachCategories,
   onReport: (report) => notifyNDPC(report),
 });
@@ -190,7 +190,11 @@ import { PolicyGenerator, PolicyPreview, usePrivacyPolicy, generatePolicyText } 
 ```
 
 ```tsx
-<PolicyGenerator />
+<PolicyGenerator
+  sections={policySections}
+  variables={policyVariables}
+  onGenerate={({ content }) => console.log(content)}
+/>
 ```
 
 The wizard covers organization info, data collection practices, data sharing, custom sections, and a preview with export.

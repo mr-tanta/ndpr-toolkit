@@ -252,6 +252,8 @@ export default function CrossBorderDemoPage() {
   const [formPurpose, setFormPurpose] = useState('');
   const [formSafeguards, setFormSafeguards] = useState<string[]>([]);
   const [formNotes, setFormNotes] = useState('');
+  const [formNdpcRef, setFormNdpcRef] = useState('');
+  const [formNdpcDate, setFormNdpcDate] = useState('');
 
   useEffect(() => {
     setIsClient(true);
@@ -277,6 +279,11 @@ export default function CrossBorderDemoPage() {
 
   const handleAddTransfer = () => {
     if (!formName.trim() || !formCountry.trim() || !formRecipient.trim() || !formPurpose.trim()) return;
+    if (formMechanism === 'ndpc_authorization' && (!formNdpcRef.trim() || !formNdpcDate)) return;
+
+    const ndpcNote = formMechanism === 'ndpc_authorization'
+      ? `NDPC Ref: ${formNdpcRef} | Authorized: ${formNdpcDate}. ${formNotes}`
+      : formNotes;
 
     const newTransfer: CrossBorderTransfer = {
       id: `xfer-${Date.now()}`,
@@ -292,7 +299,7 @@ export default function CrossBorderDemoPage() {
       status: 'pending',
       riskScore: formRiskScore ?? 50,
       createdAt: Date.now(),
-      notes: formNotes,
+      notes: ndpcNote,
     };
 
     setTransfers((prev) => [newTransfer, ...prev]);
@@ -306,6 +313,8 @@ export default function CrossBorderDemoPage() {
     setFormPurpose('');
     setFormSafeguards([]);
     setFormNotes('');
+    setFormNdpcRef('');
+    setFormNdpcDate('');
     setActiveTab('register');
   };
 
@@ -705,8 +714,9 @@ export default function CrossBorderDemoPage() {
                   <div className="space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1.5">Transfer Name *</label>
+                        <label htmlFor="cb-transfer-name" className="block text-sm font-medium mb-1.5">Transfer Name *</label>
                         <input
+                          id="cb-transfer-name"
                           type="text"
                           value={formName}
                           onChange={(e) => setFormName(e.target.value)}
@@ -715,8 +725,9 @@ export default function CrossBorderDemoPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1.5">Destination Country *</label>
+                        <label htmlFor="cb-dest-country" className="block text-sm font-medium mb-1.5">Destination Country *</label>
                         <select
+                          id="cb-dest-country"
                           value={formCountry}
                           onChange={(e) => setFormCountry(e.target.value)}
                           className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
@@ -732,8 +743,9 @@ export default function CrossBorderDemoPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-1.5">Description</label>
+                      <label htmlFor="cb-description" className="block text-sm font-medium mb-1.5">Description</label>
                       <textarea
+                        id="cb-description"
                         value={formDescription}
                         onChange={(e) => setFormDescription(e.target.value)}
                         placeholder="Describe the nature and context of the transfer"
@@ -744,8 +756,9 @@ export default function CrossBorderDemoPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1.5">Recipient Organisation *</label>
+                        <label htmlFor="cb-recipient" className="block text-sm font-medium mb-1.5">Recipient Organisation *</label>
                         <input
+                          id="cb-recipient"
                           type="text"
                           value={formRecipient}
                           onChange={(e) => setFormRecipient(e.target.value)}
@@ -754,8 +767,9 @@ export default function CrossBorderDemoPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1.5">Data Subjects</label>
+                        <label htmlFor="cb-subjects" className="block text-sm font-medium mb-1.5">Data Subjects</label>
                         <input
+                          id="cb-subjects"
                           type="text"
                           value={formSubjects}
                           onChange={(e) => setFormSubjects(e.target.value)}
@@ -766,8 +780,9 @@ export default function CrossBorderDemoPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-1.5">Purpose of Transfer *</label>
+                      <label htmlFor="cb-purpose" className="block text-sm font-medium mb-1.5">Purpose of Transfer *</label>
                       <textarea
+                        id="cb-purpose"
                         value={formPurpose}
                         onChange={(e) => setFormPurpose(e.target.value)}
                         placeholder="Describe the purpose of this cross-border data transfer"
@@ -840,9 +855,46 @@ export default function CrossBorderDemoPage() {
                       </div>
                     </div>
 
+                    {/* NDPC Authorization fields — shown only when mechanism is ndpc_authorization */}
+                    {formMechanism === 'ndpc_authorization' && (
+                      <div className="rounded-xl border-2 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-4 space-y-4">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-base">🛡</span>
+                          <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-200">NDPC Authorization Details</h4>
+                        </div>
+                        <p className="text-xs text-blue-700 dark:text-blue-400">
+                          When relying on NDPC Authorization (NDPA Section 44), you must provide the authorization reference and date issued by the Nigeria Data Protection Commission.
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="cb-ndpc-ref" className="block text-sm font-medium mb-1.5">NDPC Reference Number *</label>
+                            <input
+                              id="cb-ndpc-ref"
+                              type="text"
+                              value={formNdpcRef}
+                              onChange={(e) => setFormNdpcRef(e.target.value)}
+                              placeholder="e.g., NDPC/AUTH/2025/0042"
+                              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                            />
+                          </div>
+                          <div>
+                            <label htmlFor="cb-ndpc-date" className="block text-sm font-medium mb-1.5">Authorization Date *</label>
+                            <input
+                              id="cb-ndpc-date"
+                              type="date"
+                              value={formNdpcDate}
+                              onChange={(e) => setFormNdpcDate(e.target.value)}
+                              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <div>
-                      <label className="block text-sm font-medium mb-1.5">Additional Notes</label>
+                      <label htmlFor="cb-notes" className="block text-sm font-medium mb-1.5">Additional Notes</label>
                       <textarea
+                        id="cb-notes"
                         value={formNotes}
                         onChange={(e) => setFormNotes(e.target.value)}
                         placeholder="Any additional notes or context for this transfer"
@@ -853,7 +905,13 @@ export default function CrossBorderDemoPage() {
 
                     <Button
                       onClick={handleAddTransfer}
-                      disabled={!formName.trim() || !formCountry.trim() || !formRecipient.trim() || !formPurpose.trim()}
+                      disabled={
+                        !formName.trim() ||
+                        !formCountry.trim() ||
+                        !formRecipient.trim() ||
+                        !formPurpose.trim() ||
+                        (formMechanism === 'ndpc_authorization' && (!formNdpcRef.trim() || !formNdpcDate))
+                      }
                       className="w-full md:w-auto"
                     >
                       Add Transfer

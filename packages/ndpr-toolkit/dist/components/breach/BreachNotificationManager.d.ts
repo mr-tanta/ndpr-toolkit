@@ -32,7 +32,7 @@ export interface BreachNotificationManagerProps {
     title?: string;
     /**
      * Description text displayed on the manager
-     * @default "Manage data breach notifications and track compliance with NDPR requirements."
+     * @default "Manage data breach notifications and track compliance with NDPA requirements."
      */
     description?: string;
     /**

@@ -49,12 +49,12 @@ export interface RegulatoryReportGeneratorProps {
     onGenerate: (report: RegulatoryNotification) => void;
     /**
      * Title displayed on the generator form
-     * @default "Generate NITDA Notification Report"
+     * @default "Generate NDPC Notification Report"
      */
     title?: string;
     /**
      * Description text displayed on the generator form
-     * @default "Generate a report for submission to NITDA in compliance with the NDPR breach notification requirements."
+     * @default "Generate a report for submission to the NDPC in compliance with the NDPA breach notification requirements."
      */
     description?: string;
     /**

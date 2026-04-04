@@ -593,8 +593,9 @@ export default function LawfulBasisDemoPage() {
                   <div className="space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1.5">Activity Name *</label>
+                        <label htmlFor="lb-activity-name" className="block text-sm font-medium mb-1.5">Activity Name *</label>
                         <input
+                          id="lb-activity-name"
                           type="text"
                           value={formName}
                           onChange={(e) => setFormName(e.target.value)}
@@ -603,8 +604,9 @@ export default function LawfulBasisDemoPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1.5">Department</label>
+                        <label htmlFor="lb-department" className="block text-sm font-medium mb-1.5">Department</label>
                         <input
+                          id="lb-department"
                           type="text"
                           value={formDepartment}
                           onChange={(e) => setFormDepartment(e.target.value)}
@@ -615,8 +617,9 @@ export default function LawfulBasisDemoPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-1.5">Description *</label>
+                      <label htmlFor="lb-description" className="block text-sm font-medium mb-1.5">Description *</label>
                       <textarea
+                        id="lb-description"
                         value={formDescription}
                         onChange={(e) => setFormDescription(e.target.value)}
                         placeholder="Describe the processing activity in detail"
@@ -676,8 +679,9 @@ export default function LawfulBasisDemoPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1.5">Data Subjects *</label>
+                        <label htmlFor="lb-subjects" className="block text-sm font-medium mb-1.5">Data Subjects *</label>
                         <input
+                          id="lb-subjects"
                           type="text"
                           value={formSubjects}
                           onChange={(e) => setFormSubjects(e.target.value)}
@@ -686,8 +690,9 @@ export default function LawfulBasisDemoPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1.5">Retention Period</label>
+                        <label htmlFor="lb-retention" className="block text-sm font-medium mb-1.5">Retention Period</label>
                         <input
+                          id="lb-retention"
                           type="text"
                           value={formRetention}
                           onChange={(e) => setFormRetention(e.target.value)}
@@ -698,8 +703,9 @@ export default function LawfulBasisDemoPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-1.5">Justification</label>
+                      <label htmlFor="lb-justification" className="block text-sm font-medium mb-1.5">Justification</label>
                       <textarea
+                        id="lb-justification"
                         value={formJustification}
                         onChange={(e) => setFormJustification(e.target.value)}
                         placeholder="Explain why this lawful basis applies to this processing activity"

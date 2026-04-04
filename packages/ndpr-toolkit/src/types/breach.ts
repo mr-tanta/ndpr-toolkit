@@ -60,7 +60,7 @@ export interface BreachReport {
   /** Types of data involved in the breach */
   dataTypes: string[];
 
-  /** Whether sensitive personal data is involved (NDPA Section 30) */
+  /** Whether sensitive personal data is involved (NDPA Section 27) */
   involvesSensitiveData?: boolean;
 
   /** Estimated number of data subjects affected */

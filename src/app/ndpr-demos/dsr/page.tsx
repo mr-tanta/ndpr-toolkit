@@ -141,6 +141,8 @@ interface TimelineStep {
 }
 
 function buildTimeline(req: DSRRequest): TimelineStep[] {
+  const isRejected = req.status === 'rejected';
+
   const steps: TimelineStep[] = [
     {
       label: 'Submitted',
@@ -157,21 +159,33 @@ function buildTimeline(req: DSRRequest): TimelineStep[] {
       completed: req.status !== 'pending',
     },
     {
-      label: 'In Progress',
-      timestamp: req.status === 'in-progress' || req.status === 'completed' ? req.updatedAt : null,
+      label: isRejected ? 'Rejected' : 'In Progress',
+      timestamp:
+        isRejected
+          ? req.updatedAt
+          : req.status === 'in-progress' || req.status === 'completed'
+            ? req.updatedAt
+            : null,
       note:
-        req.status === 'in-progress'
-          ? 'Request is being processed'
-          : req.status === 'completed'
-            ? 'Processing completed'
-            : 'Waiting for previous steps',
+        isRejected
+          ? 'Request was reviewed and rejected'
+          : req.status === 'in-progress'
+            ? 'Request is being processed'
+            : req.status === 'completed'
+              ? 'Processing completed'
+              : 'Waiting for previous steps',
       active: req.status === 'in-progress',
-      completed: req.status === 'completed',
+      completed: req.status === 'completed' || isRejected,
     },
     {
       label: 'Completed',
       timestamp: req.completedAt ?? null,
-      note: req.status === 'completed' ? 'Request fulfilled and response sent' : 'Pending completion',
+      note:
+        isRejected
+          ? 'Request was not fulfilled'
+          : req.status === 'completed'
+            ? 'Request fulfilled and response sent'
+            : 'Pending completion',
       active: false,
       completed: req.status === 'completed',
     },
@@ -212,7 +226,7 @@ function createSampleRequests(): DSRRequest[] {
       createdAt: Date.now() - 20 * 24 * 60 * 60 * 1000,
       updatedAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
       completedAt: Date.now() - 5 * 24 * 60 * 60 * 1000,
-      dueDate: Date.now() - 2 * 24 * 60 * 60 * 1000,
+      dueDate: Date.now() + 10 * 24 * 60 * 60 * 1000,
       subject: { name: 'Chidi Eze', email: 'chidi@example.com' },
       description: 'My phone number and address are outdated. Please update to +234 801 555 1234 and 15 Marina Street, Lagos.',
     },
@@ -297,6 +311,7 @@ export default function DSRDemoPage() {
   // Refs
   const formRef = useRef<HTMLDivElement>(null);
   const trackerRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -312,6 +327,13 @@ export default function DSRDemoPage() {
     setFormSubmitted(false);
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }, []);
+
+  const viewTimeline = useCallback((requestId: string) => {
+    setSelectedRequestId(requestId);
+    setTimeout(() => {
+      timelineRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
   }, []);
 
@@ -516,10 +538,7 @@ export default function DSRDemoPage() {
                     Submit Another
                   </Button>
                   <Button
-                    onClick={() => {
-                      setSelectedRequestId(lastSubmittedId);
-                      trackerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }}
+                    onClick={() => viewTimeline(lastSubmittedId)}
                   >
                     Track Request
                   </Button>
@@ -623,6 +642,7 @@ export default function DSRDemoPage() {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         multiple
                         onChange={handleFileInput}
+                        aria-label="Upload supporting documents"
                       />
                     </div>
                     {formFiles.length > 0 && (
@@ -637,6 +657,7 @@ export default function DSRDemoPage() {
                               type="button"
                               onClick={() => setFormFiles((prev) => prev.filter((_, idx) => idx !== i))}
                               className="ml-1 text-gray-400 hover:text-red-500"
+                              aria-label={`Remove file ${f}`}
                             >
                               &times;
                             </button>
@@ -839,7 +860,7 @@ export default function DSRDemoPage() {
                               variant="ghost"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setSelectedRequestId(req.id);
+                                viewTimeline(req.id);
                               }}
                             >
                               View Timeline
@@ -852,7 +873,7 @@ export default function DSRDemoPage() {
                             variant="ghost"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedRequestId(req.id);
+                              viewTimeline(req.id);
                             }}
                           >
                             View Timeline
@@ -871,7 +892,7 @@ export default function DSRDemoPage() {
         {/* TIMELINE + COMPLIANCE METER                                     */}
         {/* ================================================================ */}
         {selectedRequest && (
-          <section className="scroll-mt-8">
+          <section ref={timelineRef} className="scroll-mt-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Timeline */}
               <div className="lg:col-span-2">

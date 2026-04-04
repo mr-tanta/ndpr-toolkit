@@ -1,30 +1,22 @@
 /**
+ * Privacy policy types aligned with NDPA 2023
+ * Privacy policies must clearly inform data subjects of their rights under the NDPA
+ */
+/**
  * Represents a section in a privacy policy
  */
 export interface PolicySection {
-    /**
-     * Unique identifier for the section
-     */
+    /** Unique identifier for the section */
     id: string;
-    /**
-     * Title of the section
-     */
+    /** Title of the section */
     title: string;
-    /**
-     * Description of the section
-     */
+    /** Description of the section */
     description?: string;
-    /**
-     * Order of the section in the policy
-     */
+    /** Order of the section in the policy */
     order?: number;
-    /**
-     * Whether the section is required by NDPR
-     */
+    /** Whether the section is required by NDPA */
     required: boolean;
-    /**
-     * Template text for the section
-     */
+    /** Template text for the section */
     template: string;
     /**
      * Default content for the section (legacy field)
@@ -36,169 +28,109 @@ export interface PolicySection {
      * @deprecated Use template instead
      */
     customContent?: string;
-    /**
-     * Whether the section is included in the policy
-     */
+    /** Whether the section is included in the policy */
     included: boolean;
-    /**
-     * Variables that can be used in the section content
-     */
+    /** Variables that can be used in the section content */
     variables?: string[];
 }
 /**
  * Represents a privacy policy template
  */
 export interface PolicyTemplate {
-    /**
-     * Unique identifier for the template
-     */
+    /** Unique identifier for the template */
     id: string;
-    /**
-     * Name of the template
-     */
+    /** Name of the template */
     name: string;
-    /**
-     * Description of the template
-     */
+    /** Description of the template */
     description: string;
-    /**
-     * Type of organization the template is designed for
-     */
+    /** Type of organization the template is designed for */
     organizationType: 'business' | 'nonprofit' | 'government' | 'educational';
-    /**
-     * Sections included in the template
-     */
+    /** Sections included in the template */
     sections: PolicySection[];
-    /**
-     * Variables used across the template
-     */
+    /** Variables used across the template */
     variables: Record<string, {
         name: string;
         description: string;
         required: boolean;
         defaultValue?: string;
     }>;
-    /**
-     * Version of the template
-     */
+    /** Version of the template */
     version: string;
-    /**
-     * Last updated date of the template
-     */
+    /** Last updated date of the template */
     lastUpdated: number;
+    /**
+     * Whether this template is NDPA 2023 compliant
+     */
+    ndpaCompliant: boolean;
 }
 /**
  * Represents organization information for a privacy policy
  */
 export interface OrganizationInfo {
-    /**
-     * Name of the organization
-     */
+    /** Name of the organization */
     name: string;
-    /**
-     * Website URL of the organization
-     */
+    /** Website URL of the organization */
     website: string;
-    /**
-     * Contact email for privacy inquiries
-     */
+    /** Contact email for privacy inquiries */
     privacyEmail: string;
-    /**
-     * Physical address of the organization
-     */
+    /** Physical address of the organization */
     address?: string;
-    /**
-     * Phone number for privacy inquiries
-     */
+    /** Phone number for privacy inquiries */
     privacyPhone?: string;
-    /**
-     * Name of the Data Protection Officer (if applicable)
-     */
+    /** Name of the Data Protection Officer */
     dpoName?: string;
-    /**
-     * Email of the Data Protection Officer (if applicable)
-     */
+    /** Email of the Data Protection Officer */
     dpoEmail?: string;
-    /**
-     * Industry or sector of the organization
-     */
+    /** Industry or sector of the organization */
     industry?: string;
+    /** NDPC registration number (if registered) */
+    ndpcRegistrationNumber?: string;
 }
 /**
  * Represents a variable in a privacy policy
  */
 export interface PolicyVariable {
-    /**
-     * Unique identifier for the variable
-     */
+    /** Unique identifier for the variable */
     id: string;
-    /**
-     * Name of the variable as it appears in the template
-     */
+    /** Name of the variable as it appears in the template */
     name: string;
-    /**
-     * Description of the variable
-     */
+    /** Description of the variable */
     description: string;
-    /**
-     * Default value for the variable
-     */
+    /** Default value for the variable */
     defaultValue?: string;
-    /**
-     * Current value of the variable
-     */
+    /** Current value of the variable */
     value: string;
-    /**
-     * Type of input for the variable
-     */
+    /** Type of input for the variable */
     inputType: 'text' | 'textarea' | 'email' | 'url' | 'date' | 'select';
-    /**
-     * Options for select inputs
-     */
+    /** Options for select inputs */
     options?: string[];
-    /**
-     * Whether the variable is required
-     */
+    /** Whether the variable is required */
     required: boolean;
 }
 /**
  * Represents a generated privacy policy
  */
 export interface PrivacyPolicy {
-    /**
-     * Unique identifier for the policy
-     */
+    /** Unique identifier for the policy */
     id: string;
-    /**
-     * Title of the policy
-     */
+    /** Title of the policy */
     title: string;
-    /**
-     * Template used to generate the policy
-     */
+    /** Template used to generate the policy */
     templateId: string;
-    /**
-     * Organization information
-     */
+    /** Organization information */
     organizationInfo: OrganizationInfo;
-    /**
-     * Sections of the policy
-     */
+    /** Sections of the policy */
     sections: PolicySection[];
-    /**
-     * Values for the variables used in the policy
-     */
+    /** Values for the variables used in the policy */
     variableValues: Record<string, string>;
-    /**
-     * Effective date of the policy
-     */
+    /** Effective date of the policy */
     effectiveDate: number;
-    /**
-     * Last updated date of the policy
-     */
+    /** Last updated date of the policy */
     lastUpdated: number;
-    /**
-     * Version of the policy
-     */
+    /** Version of the policy */
     version: string;
+    /**
+     * Applicable legal frameworks
+     */
+    applicableFrameworks?: ('ndpa' | 'ndpr' | 'gdpr' | 'ccpa')[];
 }

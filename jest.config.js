@@ -18,6 +18,10 @@ const customJestConfig = {
     '<rootDir>/.next/',
     '<rootDir>/out/'
   ],
+  // Transform ESM-only packages (uuid v13+ ships as pure ESM)
+  transformIgnorePatterns: [
+    '/node_modules/(?!(uuid)/)',
+  ],
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
@@ -28,4 +32,13 @@ const customJestConfig = {
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig);
+// We must override transformIgnorePatterns *after* next/jest resolves its config,
+// because next/jest sets its own transformIgnorePatterns that block ESM-only packages like uuid v13+.
+module.exports = async () => {
+  const jestConfig = await createJestConfig(customJestConfig)();
+  jestConfig.transformIgnorePatterns = [
+    '/node_modules/(?!.pnpm)(?!(uuid)/)',
+    '/node_modules/.pnpm/(?!(uuid)@)',
+  ];
+  return jestConfig;
+};

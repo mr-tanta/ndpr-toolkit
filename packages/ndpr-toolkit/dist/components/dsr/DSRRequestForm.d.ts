@@ -16,7 +16,7 @@ export interface DSRRequestFormProps {
     title?: string;
     /**
      * Description text displayed on the form
-     * @default "Use this form to exercise your rights under the Nigeria Data Protection Regulation (NDPR)."
+     * @default "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA)."
      */
     description?: string;
     /**

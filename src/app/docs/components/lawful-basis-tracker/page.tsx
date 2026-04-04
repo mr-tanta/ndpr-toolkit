@@ -20,7 +20,7 @@ export default function LawfulBasisTrackerDocs() {
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/lawful-basis" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/lawful-basis" target="_blank" rel="noopener noreferrer">
             View Source
           </a>
         </Button>
@@ -55,62 +55,47 @@ export default function LawfulBasisTrackerDocs() {
 
       <section id="import" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Import</h2>
-        <p className="mb-4">Use the per-module import for optimal tree-shaking:</p>
+        <p className="mb-4">Import from the main package:</p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>{`// Per-module import (recommended)
-import { LawfulBasisAssessment, LawfulBasisReport } from '@tantainnovative/ndpr-toolkit/lawful-basis';
+          <pre><code>{`import { LawfulBasisTracker, useLawfulBasis } from '@tantainnovative/ndpr-toolkit';
 
-// Or from the main package
-import { LawfulBasisAssessment, LawfulBasisReport } from '@tantainnovative/ndpr-toolkit';`}</code></pre>
+// Utility functions
+import {
+  validateProcessingActivity,
+  getLawfulBasisDescription,
+  assessComplianceGaps,
+  generateLawfulBasisSummary,
+} from '@tantainnovative/ndpr-toolkit';`}</code></pre>
         </div>
       </section>
 
       <section id="components" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Components</h2>
         <p className="mb-4">
-          The Lawful Basis Tracker includes two primary components:
+          The Lawful Basis Tracker provides a component and hook for managing lawful basis records:
         </p>
 
         <div className="space-y-6">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">LawfulBasisAssessment</h3>
+            <h3 className="text-xl font-bold mb-2">LawfulBasisTracker</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              An interactive form for assessing and documenting the lawful basis for a specific data processing activity.
-              It guides users through identifying the correct basis and collecting required justification details.
+              A comprehensive component for tracking and documenting the lawful basis for each data processing activity.
+              It provides a UI for adding, editing, and reviewing processing activities with their associated lawful basis.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { LawfulBasisAssessment } from '@tantainnovative/ndpr-toolkit/lawful-basis';
+              <pre><code>{`import { LawfulBasisTracker, useLawfulBasis } from '@tantainnovative/ndpr-toolkit';
 
-<LawfulBasisAssessment
-  processingActivity={{
-    id: 'pa-001',
-    name: 'Customer email marketing',
-    description: 'Sending promotional emails to customers',
-    dataCategories: ['email', 'name', 'purchase history'],
-  }}
-  onComplete={(result) => {
-    console.log('Lawful basis:', result.basis);
-    console.log('Justification:', result.justification);
-  }}
-  onSave={(draft) => console.log('Draft saved:', draft)}
-/>`}</code></pre>
-            </div>
-          </div>
+function LawfulBasisPage() {
+  const { activities, addActivity, getSummary } = useLawfulBasis();
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">LawfulBasisReport</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Generates a comprehensive report of all documented lawful bases across processing activities, suitable
-              for audit and regulatory review.
-            </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { LawfulBasisReport } from '@tantainnovative/ndpr-toolkit/lawful-basis';
-
-<LawfulBasisReport
-  activities={assessedActivities}
-  exportFormat="pdf"
-  showComplianceStatus={true}
-/>`}</code></pre>
+  return (
+    <LawfulBasisTracker
+      activities={activities}
+      onAddActivity={addActivity}
+      summary={getSummary()}
+    />
+  );
+}`}</code></pre>
             </div>
           </div>
         </div>
@@ -119,7 +104,7 @@ import { LawfulBasisAssessment, LawfulBasisReport } from '@tantainnovative/ndpr-
       <section id="api" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">API Reference</h2>
 
-        <h3 className="text-xl font-bold mt-8 mb-4">LawfulBasisAssessment Props</h3>
+        <h3 className="text-xl font-bold mt-8 mb-4">LawfulBasisTracker Props</h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
@@ -220,7 +205,7 @@ type LawfulBasisResult = {
                 Report bugs or request features on our GitHub repository.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
                   View Issues
                 </a>
               </Button>

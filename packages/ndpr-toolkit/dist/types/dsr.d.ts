@@ -1,7 +1,18 @@
 /**
- * Represents a type of data subject request
+ * Data Subject Rights types aligned with NDPA 2023 Part IV (Sections 29-36)
  */
-export type DSRType = 'access' | 'rectification' | 'erasure' | 'restriction' | 'portability' | 'objection';
+/**
+ * Types of data subject requests per NDPA Part IV
+ * - 'information': Right to be informed (Section 29)
+ * - 'access': Right of access (Section 30)
+ * - 'rectification': Right to rectification (Section 31)
+ * - 'erasure': Right to erasure (Section 32)
+ * - 'restriction': Right to restrict processing (Section 33)
+ * - 'portability': Right to data portability (Section 34)
+ * - 'objection': Right to object (Section 35)
+ * - 'automated_decision_making': Rights related to automated decision-making (Section 36)
+ */
+export type DSRType = 'information' | 'access' | 'rectification' | 'erasure' | 'restriction' | 'portability' | 'objection' | 'automated_decision_making';
 /**
  * Status of a data subject request
  */
@@ -10,29 +21,24 @@ export type DSRStatus = 'pending' | 'awaitingVerification' | 'inProgress' | 'com
  * Represents a type of data subject request (detailed configuration)
  */
 export interface RequestType {
-    /**
-     * Unique identifier for the request type
-     */
+    /** Unique identifier for the request type */
     id: string;
-    /**
-     * Display name for the request type
-     */
+    /** Display name for the request type */
     name: string;
-    /**
-     * Description of what this request type entails
-     */
+    /** Description of what this request type entails */
     description: string;
     /**
+     * NDPA section reference (e.g., "Section 30" for access requests)
+     */
+    ndpaSection?: string;
+    /**
      * Estimated time to fulfill this type of request (in days)
+     * NDPA requires response within 30 days
      */
     estimatedCompletionTime: number;
-    /**
-     * Whether additional information is required for this request type
-     */
+    /** Whether additional information is required for this request type */
     requiresAdditionalInfo: boolean;
-    /**
-     * Custom fields required for this request type
-     */
+    /** Custom fields required for this request type */
     additionalFields?: Array<{
         id: string;
         label: string;
@@ -51,107 +57,58 @@ export type RequestStatus = 'pending' | 'verifying' | 'processing' | 'completed'
  * Represents a data subject request
  */
 export interface DSRRequest {
-    /**
-     * Unique identifier for the request
-     */
+    /** Unique identifier for the request */
     id: string;
-    /**
-     * Type of request
-     */
+    /** Type of request */
     type: DSRType;
-    /**
-     * Current status of the request
-     */
+    /** Current status of the request */
     status: DSRStatus;
-    /**
-     * Timestamp when the request was submitted
-     */
+    /** Timestamp when the request was submitted */
     createdAt: number;
-    /**
-     * Timestamp when the request was last updated
-     */
+    /** Timestamp when the request was last updated */
     updatedAt: number;
-    /**
-     * Timestamp when the request was completed (if applicable)
-     */
+    /** Timestamp when the request was completed (if applicable) */
     completedAt?: number;
-    /**
-     * Timestamp when the identity was verified (if applicable)
-     */
+    /** Timestamp when the identity was verified (if applicable) */
     verifiedAt?: number;
     /**
      * Due date for responding to the request (timestamp)
+     * NDPA requires response within 30 days of receipt
      */
     dueDate?: number;
-    /**
-     * Description or details of the request
-     */
+    /** Description or details of the request */
     description?: string;
     /**
-     * Data subject information
+     * The lawful basis under which the data was originally processed
+     * Relevant for evaluating objection and erasure requests
      */
+    lawfulBasis?: string;
+    /** Data subject information */
     subject: {
-        /**
-         * Name of the data subject
-         */
         name: string;
-        /**
-         * Email address of the data subject
-         */
         email: string;
-        /**
-         * Phone number of the data subject (optional)
-         */
         phone?: string;
-        /**
-         * Identifier used to verify the data subject's identity (optional)
-         */
         identifierValue?: string;
-        /**
-         * Type of identifier used (e.g., "email", "account", "customer_id") (optional)
-         */
         identifierType?: string;
     };
-    /**
-     * Additional information provided by the data subject
-     */
+    /** Additional information provided by the data subject */
     additionalInfo?: Record<string, any>;
-    /**
-     * Notes added by staff processing the request
-     */
+    /** Notes added by staff processing the request */
     internalNotes?: Array<{
         timestamp: number;
         author: string;
         note: string;
     }>;
-    /**
-     * Verification status
-     */
+    /** Verification status */
     verification?: {
-        /**
-         * Whether the identity has been verified
-         */
         verified: boolean;
-        /**
-         * Method used for verification
-         */
         method?: string;
-        /**
-         * Timestamp when verification was completed
-         */
         verifiedAt?: number;
-        /**
-         * Staff member who performed the verification
-         */
         verifiedBy?: string;
     };
-    /**
-     * Reason for rejection (if status is 'rejected')
-     */
+    /** Reason for rejection (if status is 'rejected') */
     rejectionReason?: string;
-    /**
-     * Files attached to the request (e.g., exported data, verification documents)
-     */
+    /** Files attached to the request */
     attachments?: Array<{
         id: string;
         name: string;
@@ -159,4 +116,11 @@ export interface DSRRequest {
         url: string;
         addedAt: number;
     }>;
+    /**
+     * Whether an extension was requested for this DSR
+     * NDPA allows a one-time extension of 30 days with justification
+     */
+    extensionRequested?: boolean;
+    /** Reason for the extension, if requested */
+    extensionReason?: string;
 }

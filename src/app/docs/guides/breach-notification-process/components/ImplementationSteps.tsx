@@ -17,7 +17,7 @@ export default function ImplementationSteps() {
             BreachReportForm component provides a structured way for staff to report suspected breaches.
           </p>
           <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/breach';
+            <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit';
 
 function BreachReportingPage() {
   const breachCategories = [
@@ -91,7 +91,7 @@ function BreachReportingPage() {
             The BreachRiskAssessment component guides users through this process.
           </p>
           <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit/breach';
+            <pre><code>{`import { BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit';
 
 function RiskAssessmentPage({ breachData }) {
   const handleRiskAssessmentComplete = (assessment) => {
@@ -163,7 +163,7 @@ function RiskAssessmentPage({ breachData }) {
             The BreachNotificationManager component provides a dashboard for tracking notifications.
           </p>
           <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { BreachNotificationManager } from '@tantainnovative/ndpr-toolkit/breach';
+            <pre><code>{`import { BreachNotificationManager } from '@tantainnovative/ndpr-toolkit';
 
 function NotificationManagementPage() {
   const [breaches, setBreaches] = useState([]);
@@ -236,7 +236,7 @@ function NotificationManagementPage() {
             The RegulatoryReportGenerator component helps create NDPA 2023-compliant breach notification reports.
           </p>
           <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit/breach';
+            <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
 
 function ReportGenerationPage({ breachData }) {
   const organizationInfo = {

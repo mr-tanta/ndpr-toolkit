@@ -57,7 +57,7 @@ interface UseConsentReturn {
     resetConsent: () => void;
 }
 /**
- * Hook for managing user consent in compliance with NDPR
+ * Hook for managing user consent in compliance with NDPA
  */
 export declare function useConsent({ options, storageOptions, version, onChange }: UseConsentOptions): UseConsentReturn;
 export {};

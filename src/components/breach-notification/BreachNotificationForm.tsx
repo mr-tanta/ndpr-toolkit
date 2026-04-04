@@ -446,7 +446,7 @@ export default function BreachNotificationForm({
             name="reportedToAuthorities"
             checked={formData.reportedToAuthorities}
             onChange={handleChange}
-            label="Reported to Nigerian Data Protection Commission (NDPC)"
+            label="Reported to Nigeria Data Protection Commission (NDPC)"
           />
           
           <Checkbox

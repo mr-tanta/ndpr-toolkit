@@ -66,7 +66,7 @@ interface UseDSRReturn {
     clearRequests: () => void;
 }
 /**
- * Hook for managing Data Subject Requests in compliance with NDPR
+ * Hook for managing Data Subject Requests in compliance with the NDPA
  */
 export declare function useDSR({ initialRequests, requestTypes, storageKey, useLocalStorage, onSubmit, onUpdate }: UseDSROptions): UseDSRReturn;
 export {};

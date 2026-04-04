@@ -18,7 +18,7 @@ export default function PrivacyPolicyGeneratorDocs() {
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/policy" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/policy" target="_blank" rel="noopener noreferrer">
             View Source
           </a>
         </Button>
@@ -65,7 +65,7 @@ export default function PrivacyPolicyGeneratorDocs() {
               The main component that allows users to create a policy by configuring sections and variables with an intuitive interface.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { PolicyGenerator } from '@tantainnovative/ndpr-toolkit/policy';
+              <pre><code>{`import { PolicyGenerator } from '@tantainnovative/ndpr-toolkit';
 
 <PolicyGenerator 
   sections={policySections}
@@ -90,7 +90,7 @@ export default function PrivacyPolicyGeneratorDocs() {
               A component for displaying the generated privacy policy with professional formatting and navigation features.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { PolicyPreview } from '@tantainnovative/ndpr-toolkit/policy';
+              <pre><code>{`import { PolicyPreview } from '@tantainnovative/ndpr-toolkit';
 
 <PolicyPreview 
   content={policyContent} // Markdown content of the policy
@@ -110,7 +110,7 @@ export default function PrivacyPolicyGeneratorDocs() {
               A utility component for exporting the generated policy in various formats (PDF, HTML, Markdown) with professional formatting.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { PolicyExporter } from '@tantainnovative/ndpr-toolkit/policy';
+              <pre><code>{`import { PolicyExporter } from '@tantainnovative/ndpr-toolkit';
 
 <PolicyExporter 
   content={policyContent} // Markdown content of the policy
@@ -207,7 +207,7 @@ If you have any questions about this Privacy Policy, please contact us:
 \`;
 
 // Using the template with the generatePolicyText utility
-import { generatePolicyText } from '@tantainnovative/ndpr-toolkit/policy';
+import { generatePolicyText } from '@tantainnovative/ndpr-toolkit';
 
 const variables = {
   organizationName: 'Acme Corporation',
@@ -247,7 +247,7 @@ console.log(result.sectionTexts);`}</code></pre>
         </p>
         
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { generatePolicyText, PolicySection } from '@tantainnovative/ndpr-toolkit/policy';
+          <pre><code>{`import { generatePolicyText, PolicySection } from '@tantainnovative/ndpr-toolkit';
 
 const policySections: PolicySection[] = [
   {
@@ -294,10 +294,10 @@ console.log(result.sectionTexts.contact);`}</code></pre>
 import { 
   PolicyGenerator, 
   PolicyPreview, 
-  PolicyExport,
+  PolicyExporter,
   generatePolicyText,
-  PolicySection
-} from '@tantainnovative/ndpr-toolkit/policy';
+} from '@tantainnovative/ndpr-toolkit';
+import type { PolicySection } from '@tantainnovative/ndpr-toolkit';
 
 // Define your policy templates
 const policyTemplates = [
@@ -413,7 +413,7 @@ function PrivacyPolicyPage() {
           
           <div className="mt-6">
             <h3 className="text-lg font-bold mb-2">Export Options</h3>
-            <PolicyExport 
+            <PolicyExporter
               policy={generatedPolicy}
               formats={['html', 'pdf', 'markdown']}
               filename={\`privacy-policy-\${policyData.organizationName.toLowerCase().replace(/\\s+/g, '-')}\`}
@@ -598,7 +598,7 @@ function generatePolicyText(
                 Report bugs or request features on our GitHub repository.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
                   View Issues
                 </a>
               </Button>

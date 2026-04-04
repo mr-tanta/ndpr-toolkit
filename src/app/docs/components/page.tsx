@@ -52,19 +52,19 @@ export default function ComponentsPage() {
             title: 'Lawful Basis Assessment',
             description: 'Tools for identifying and documenting the lawful basis for processing personal data under the NDPA 2023',
             href: '/docs/components/lawful-basis-tracker',
-            components: ['LawfulBasisAssessment', 'LawfulBasisReport']
+            components: ['LawfulBasisTracker', 'useLawfulBasis']
           },
           {
             title: 'Cross-Border Transfer',
             description: 'Components for managing and documenting cross-border data transfers in compliance with NDPA requirements',
             href: '/docs/components/cross-border-transfers',
-            components: ['CrossBorderTransferAssessment', 'TransferMechanismSelector']
+            components: ['CrossBorderTransferManager', 'useCrossBorderTransfer']
           },
           {
             title: 'Records of Processing Activities (ROPA)',
             description: 'Maintain comprehensive records of all data processing activities as required by the NDPA 2023',
             href: '/docs/components/ropa',
-            components: ['ROPAManager', 'ProcessingActivityForm', 'ROPAReport']
+            components: ['ROPAManager', 'useROPA']
           },
         ].map((component) => (
           <Card key={component.title}>

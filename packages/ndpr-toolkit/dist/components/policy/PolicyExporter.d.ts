@@ -27,7 +27,7 @@ export interface PolicyExporterProps {
     componentTitle?: string;
     /**
      * Description text displayed on the exporter
-     * @default "Export your NDPR-compliant privacy policy in various formats."
+     * @default "Export your NDPA-compliant privacy policy in various formats."
      */
     description?: string;
     /**
@@ -44,7 +44,7 @@ export interface PolicyExporterProps {
      */
     showExportHistory?: boolean;
     /**
-     * Whether to include the NDPR compliance notice in the exported policy
+     * Whether to include the NDPA compliance notice in the exported policy
      * @default true
      */
     includeComplianceNotice?: boolean;

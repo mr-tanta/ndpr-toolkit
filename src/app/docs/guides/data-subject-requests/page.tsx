@@ -68,7 +68,7 @@ export default function DataSubjectRequestsGuide() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DSRRequestForm } from '@tantainnovative/ndpr-toolkit/dsr';
+                <pre><code>{`import { DSRRequestForm } from '@tantainnovative/ndpr-toolkit';
 
 function DSRSubmissionPage() {
   const requestTypes = [
@@ -169,40 +169,37 @@ function DSRSubmissionPage() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DSRAssessment } from '@tantainnovative/ndpr-toolkit/dsr';
+                <pre><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
 
-function AssessRequest({ request }) {
-  const handleAssessment = (assessment) => {
-    // Save assessment to your backend
-    console.log('Assessment completed:', assessment);
-    
-    // Example: Update request with assessment
-    fetch(\`/api/dsr-requests/\${request.id}/assessment\`, {
+function AssessRequest({ requestId }) {
+  const { getRequestById, updateRequest } = useDSR();
+  const request = getRequestById(requestId);
+
+  const handleAssessment = (status) => {
+    // Update request status
+    updateRequest(requestId, { status });
+
+    // Also save to your backend
+    fetch(\`/api/dsr-requests/\${requestId}/assessment\`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(assessment),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
     });
   };
+
+  if (!request) return <p>Request not found</p>;
 
   return (
     <div>
       <h2>Assess Request</h2>
       <p>Request ID: {request.id}</p>
       <p>Request Type: {request.type}</p>
-      
-      <DSRAssessment
-        request={request}
-        onComplete={handleAssessment}
-        dataSystems={[
-          { id: 'crm', name: 'CRM System' },
-          { id: 'marketing', name: 'Marketing Platform' },
-          { id: 'analytics', name: 'Analytics Tools' },
-          { id: 'email', name: 'Email System' },
-          { id: 'billing', name: 'Billing System' }
-        ]}
-      />
+      <button onClick={() => handleAssessment('inProgress')}>
+        Mark In Progress
+      </button>
+      <button onClick={() => handleAssessment('completed')}>
+        Mark Completed
+      </button>
     </div>
   );
 }`}</code></pre>
@@ -240,40 +237,39 @@ function AssessRequest({ request }) {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DSRResponse } from '@tantainnovative/ndpr-toolkit/dsr';
+                <pre><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
 
-function GenerateResponse({ request, assessment, fulfillment }) {
-  const handleGenerateResponse = (response) => {
-    // Save response to your backend
-    console.log('Response generated:', response);
-    
-    // Example: Send response to data subject
-    fetch(\`/api/dsr-requests/\${request.id}/response\`, {
+function RespondToRequest({ requestId }) {
+  const { getRequestById, updateRequest } = useDSR();
+  const request = getRequestById(requestId);
+
+  const handleComplete = async () => {
+    // Mark request as completed
+    updateRequest(requestId, {
+      status: 'completed',
+    });
+
+    // Send response to data subject via your backend
+    await fetch(\`/api/dsr-requests/\${requestId}/response\`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(response),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requestId,
+        responseType: 'email',
+        completedAt: Date.now(),
+      }),
     });
   };
 
+  if (!request) return <p>Request not found</p>;
+
   return (
     <div>
-      <h2>Generate Response</h2>
+      <h2>Respond to Request</h2>
       <p>Request ID: {request.id}</p>
       <p>Request Type: {request.type}</p>
-      
-      <DSRResponse
-        request={request}
-        assessment={assessment}
-        fulfillment={fulfillment}
-        onGenerate={handleGenerateResponse}
-        responseTypes={[
-          'email',
-          'letter',
-          'portal'
-        ]}
-      />
+      <p>Status: {request.status}</p>
+      <button onClick={handleComplete}>Mark Completed & Notify</button>
     </div>
   );
 }`}</code></pre>
@@ -309,7 +305,7 @@ function GenerateResponse({ request, assessment, fulfillment }) {
           and their status. The NDPR Toolkit&apos;s DSRDashboard component is designed for this purpose.
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { DSRDashboard } from '@tantainnovative/ndpr-toolkit/dsr';
+          <pre><code>{`import { DSRDashboard } from '@tantainnovative/ndpr-toolkit';
 
 function AdminDashboard() {
   const [requests, setRequests] = useState([]);
@@ -413,7 +409,7 @@ function AdminDashboard() {
           provides a user interface for this purpose.
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit/dsr';
+          <pre><code>{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit';
 
 function RequestTrackingPage() {
   const [requestId, setRequestId] = useState('');

@@ -11,12 +11,14 @@ describe('ConsentManager (NDPA Privacy Settings)', () => {
       id: 'necessary',
       label: 'Necessary Cookies',
       description: 'Essential cookies for the website to function.',
+      purpose: 'Core website functionality',
       required: true
     },
     {
       id: 'analytics',
       label: 'Analytics Cookies',
       description: 'Cookies that help us understand how you use our website.',
+      purpose: 'Usage analytics and site improvement',
       required: false
     }
   ];

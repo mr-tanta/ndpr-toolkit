@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ndprtoolkit.com.ng"),
   title: "Nigeria Data Protection Toolkit — NDPA 2023",
   description: "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features in Nigerian applications",
   other: {

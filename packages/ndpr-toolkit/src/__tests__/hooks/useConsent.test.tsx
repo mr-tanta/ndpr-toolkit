@@ -35,18 +35,21 @@ describe('useConsent (NDPA Consent Management Hook)', () => {
       id: 'necessary',
       label: 'Necessary',
       description: 'Essential cookies',
+      purpose: 'Core website functionality',
       required: true,
     },
     {
       id: 'analytics',
       label: 'Analytics',
       description: 'Analytics cookies',
+      purpose: 'Usage analytics',
       required: false,
     },
     {
       id: 'marketing',
       label: 'Marketing',
       description: 'Marketing cookies',
+      purpose: 'Personalized advertising',
       required: false,
     },
   ];

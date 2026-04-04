@@ -109,7 +109,16 @@ export default function DPIAQuestionnaire({
                   ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 dark:border-blue-400"
                   : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
               }`}
+              role="option"
+              aria-selected={answers[question.id] === parseInt(option.value)}
+              tabIndex={0}
               onClick={() => handleAnswerChange(question.id, option.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleAnswerChange(question.id, option.value);
+                }
+              }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center">

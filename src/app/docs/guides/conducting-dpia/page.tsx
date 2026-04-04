@@ -92,7 +92,7 @@ export default function ConductingDPIAGuide() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
+                <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
 
 // Define the processing description questions
 const processingQuestions = [
@@ -164,7 +164,7 @@ function ProcessingDescriptionStep() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
+                <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
 
 // Define risk assessment questions
 const riskQuestions = [
@@ -264,7 +264,7 @@ function RiskAssessmentStep() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DPIAReport } from '@tantainnovative/ndpr-toolkit/dpia';
+                <pre><code>{`import { DPIAReport } from '@tantainnovative/ndpr-toolkit';
 
 function GenerateDPIAReport({ dpiaData }) {
   const handleExport = (format) => {
@@ -317,7 +317,7 @@ import {
   DPIAQuestionnaire,
   DPIAReport,
   StepIndicator
-} from '@tantainnovative/ndpr-toolkit/dpia';
+} from '@tantainnovative/ndpr-toolkit';
 
 // Import question sets for each step
 import { 

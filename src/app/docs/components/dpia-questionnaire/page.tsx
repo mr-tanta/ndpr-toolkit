@@ -18,7 +18,7 @@ export default function DPIAQuestionnaireDocs() {
           </Link>
         </Button>
         <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/tantainnovative/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/dpia" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/dpia" target="_blank" rel="noopener noreferrer">
             View Source
           </a>
         </Button>
@@ -57,7 +57,7 @@ export default function DPIAQuestionnaireDocs() {
           Import and use the DPIAQuestionnaire component in your React application:
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
+          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
 
 // Define your DPIA questions
 const dpiaQuestions = [
@@ -170,7 +170,7 @@ function MyDPIAForm() {
         
         <h3 className="text-xl font-bold mb-4">Basic Example</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-6">
-          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
+          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
 
 const basicQuestions = [
   {
@@ -207,7 +207,7 @@ function BasicDPIA() {
 
         <h3 className="text-xl font-bold mb-4">With Initial Values</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-6">
-          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
+          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
 
 function DPIAWithInitialValues() {
   const initialAnswers = {
@@ -230,7 +230,7 @@ function DPIAWithInitialValues() {
 
         <h3 className="text-xl font-bold mb-4">With Risk Calculation</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
+          <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
 import { useState } from 'react';
 
 function DPIAWithRiskCalculation() {
@@ -523,7 +523,7 @@ function DPIAWithRiskCalculation() {
         <h3 className="text-xl font-bold mt-8 mb-4">useDPIA Hook</h3>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`// Import the hook
-import { useDPIA } from '@tantainnovative/ndpr-toolkit/dpia';
+import { useDPIA } from '@tantainnovative/ndpr-toolkit';
 
 // Use the hook in your component
 const { 
@@ -630,7 +630,7 @@ const report = generateReport(newDPIA.id);
                 Report bugs or request features on our GitHub repository.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/tantainnovative/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
                   View Issues
                 </a>
               </Button>

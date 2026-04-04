@@ -190,48 +190,50 @@ import { ROPAManager, useROPA } from '@tantainnovative/ndpr-toolkit/ropa';
 ### Consent Management
 
 ```tsx
-import { ConsentBanner, ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
 
+const consentOptions = [
+  {
+    id: 'necessary',
+    label: 'Necessary Cookies',
+    description: 'Essential cookies for the website to function.',
+    required: true,
+    purpose: 'Site operation'
+  },
+  {
+    id: 'analytics',
+    label: 'Analytics Cookies',
+    description: 'Cookies that help us understand how you use our website.',
+    required: false,
+    purpose: 'Usage analytics'
+  }
+];
+
 function MyApp() {
+  const { hasConsent, acceptAll, rejectAll, shouldShowBanner } = useConsent({
+    options: consentOptions,
+  });
+
   return (
-    <ConsentManager
-      options={[
-        {
-          id: 'necessary',
-          label: 'Necessary Cookies',
-          description: 'Essential cookies for the website to function.',
-          required: true
-        },
-        {
-          id: 'analytics',
-          label: 'Analytics Cookies',
-          description: 'Cookies that help us understand how you use our website.',
-          required: false
-        }
-      ]}
-      storageKey="my-app-consent"
-      autoLoad={true}
-      autoSave={true}
-    >
-      <AppContent />
-      <ConsentBanner 
-        position="bottom"
-        privacyPolicyUrl="/privacy-policy"
-        showPreferences={true}
-        onSave={(consents) => console.log('Consent saved:', consents)}
-      />
-    </ConsentManager>
+    <div>
+      {shouldShowBanner && (
+        <ConsentBanner
+          options={consentOptions}
+          position="bottom"
+          onSave={(settings) => console.log('Consent saved:', settings)}
+        />
+      )}
+      <AppContent hasConsent={hasConsent} />
+    </div>
   );
 }
 
-function AppContent() {
-  const { consents, hasConsented, updateConsent } = useConsent();
-  
-  if (hasConsented('analytics')) {
+function AppContent({ hasConsent }: { hasConsent: (id: string) => boolean }) {
+  if (hasConsent('analytics')) {
     // Initialize analytics
   }
-  
+
   return (
     <div>
       {/* Your app content */}
@@ -244,65 +246,49 @@ function AppContent() {
 
 ```tsx
 import { PolicyGenerator, PolicyPreview, PolicyExporter } from '@tantainnovative/ndpr-toolkit/policy';
-import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/hooks';
-import { generatePolicyText } from '@tantainnovative/ndpr-toolkit/core';
+import { useState } from 'react';
+
+const policySections = [
+  {
+    id: 'introduction',
+    title: 'Introduction',
+    template: 'This Privacy Policy explains how {{name}} collects, uses, and protects your personal data when you visit {{website}}.',
+    required: true,
+    included: true
+  },
+  // More sections...
+];
+
+const policyVariables = [
+  { id: 'org-name', name: 'name', description: 'Organization name', value: 'Acme Corporation', inputType: 'text' as const, required: true },
+  { id: 'org-website', name: 'website', description: 'Website URL', value: 'https://acme.com', inputType: 'url' as const, required: true },
+];
 
 function PrivacyPolicyPage() {
-  const { policy, updateVariableValue, generatePolicy } = usePrivacyPolicy();
-  const [generatedPolicy, setGeneratedPolicy] = useState(null);
-  
-  const variables = {
-    organizationName: 'Acme Corporation',
-    websiteUrl: 'https://acme.com',
-    contactEmail: 'privacy@acme.com',
-    lastUpdated: new Date().toLocaleDateString()
-  };
-  
+  const [generatedContent, setGeneratedContent] = useState<string | null>(null);
+
   return (
     <div>
-      {!generatedPolicy ? (
-        <PolicyGenerator 
-          templates={[
-            {
-              id: 'standard',
-              name: 'Standard Privacy Policy',
-              description: 'A comprehensive privacy policy suitable for most websites and applications.',
-              sections: [
-                {
-                  id: 'introduction',
-                  title: 'Introduction',
-                  template: 'This Privacy Policy explains how {{organizationName}} collects, uses, and protects your personal data when you visit {{websiteUrl}}.',
-                  required: true,
-                  included: true
-                },
-                // More sections...
-              ]
-            }
-          ]}
-          variables={variables}
-          onComplete={(data) => {
-            const result = generatePolicyText(data.sections, variables);
-            setGeneratedPolicy({
-              title: `Privacy Policy for ${variables.organizationName}`,
-              content: result.fullText,
-              lastUpdated: new Date()
-            });
+      {!generatedContent ? (
+        <PolicyGenerator
+          sections={policySections}
+          variables={policyVariables}
+          onGenerate={({ content }) => {
+            setGeneratedContent(content);
           }}
         />
       ) : (
         <>
-          <PolicyPreview 
-            policy={generatedPolicy}
-            variables={variables}
-            onVariableChange={(newVariables) => {
-              // Update variables and regenerate policy
-            }}
+          <PolicyPreview
+            content={generatedContent}
+            sections={policySections}
+            variables={policyVariables}
           />
-          
+
           <PolicyExporter
-            policy={generatedPolicy}
-            formats={['html', 'pdf', 'markdown']}
-            filename="privacy-policy"
+            content={generatedContent}
+            title="Privacy Policy for Acme Corporation"
+            organizationName="Acme Corporation"
           />
         </>
       )}
@@ -318,14 +304,14 @@ import { LawfulBasisTracker } from '@tantainnovative/ndpr-toolkit/lawful-basis';
 import { useLawfulBasis } from '@tantainnovative/ndpr-toolkit/hooks';
 
 function LawfulBasisPage() {
-  const { activities, addActivity, assessGaps, summary } = useLawfulBasis();
+  const { activities, addActivity, updateActivity, removeActivity } = useLawfulBasis();
 
   return (
     <LawfulBasisTracker
       activities={activities}
       onAddActivity={addActivity}
-      onAssessGaps={assessGaps}
-      summary={summary}
+      onUpdateActivity={updateActivity}
+      onArchiveActivity={removeActivity}
     />
   );
 }
@@ -336,16 +322,17 @@ function LawfulBasisPage() {
 ```tsx
 import { CrossBorderTransferManager } from '@tantainnovative/ndpr-toolkit/cross-border';
 import { useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/hooks';
-import { isNDPCApprovalRequired } from '@tantainnovative/ndpr-toolkit/core';
 
 function TransferManagement() {
-  const { transfers, addTransfer, assessRisk } = useCrossBorderTransfer();
+  const { transfers, addTransfer, updateTransfer, removeTransfer, getSummary } = useCrossBorderTransfer();
 
   return (
     <CrossBorderTransferManager
       transfers={transfers}
       onAddTransfer={addTransfer}
-      onAssessRisk={assessRisk}
+      onUpdateTransfer={updateTransfer}
+      onRemoveTransfer={removeTransfer}
+      summary={getSummary()}
     />
   );
 }
@@ -356,19 +343,21 @@ function TransferManagement() {
 ```tsx
 import { ROPAManager } from '@tantainnovative/ndpr-toolkit/ropa';
 import { useROPA } from '@tantainnovative/ndpr-toolkit/hooks';
-import { exportROPAToCSV } from '@tantainnovative/ndpr-toolkit/core';
 
 function ProcessingRecords() {
-  const { records, addRecord, summary } = useROPA();
+  const { ropa, addRecord, updateRecord, archiveRecord, exportCSV } = useROPA({
+    initialData: { id: 'ropa-1', organizationName: 'Acme Ltd', organizationContact: 'dpo@acme.ng', organizationAddress: 'Lagos, Nigeria', records: [], lastUpdated: Date.now(), version: '1.0' },
+  });
 
   return (
     <div>
       <ROPAManager
-        records={records}
+        ropa={ropa}
         onAddRecord={addRecord}
-        summary={summary}
+        onUpdateRecord={updateRecord}
+        onArchiveRecord={archiveRecord}
       />
-      <button onClick={() => exportROPAToCSV(records)}>
+      <button onClick={() => { const csv = exportCSV(); console.log(csv); }}>
         Export to CSV
       </button>
     </div>
@@ -436,54 +425,42 @@ function ProcessingRecords() {
 ### Setting Up Consent Management
 
 ```tsx
-// 1. Wrap your application with ConsentManager
-import { ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
-
-function App() {
-  return (
-    <ConsentManager
-      options={[
-        { id: 'necessary', label: 'Necessary', description: '...', required: true },
-        { id: 'analytics', label: 'Analytics', description: '...', required: false },
-        { id: 'marketing', label: 'Marketing', description: '...', required: false }
-      ]}
-      storageKey="my-app-consent"
-      autoLoad={true}
-      autoSave={true}
-    >
-      <YourApp />
-    </ConsentManager>
-  );
-}
-
-// 2. Add the ConsentBanner to your layout
 import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
-
-function Layout({ children }) {
-  return (
-    <>
-      {children}
-      <ConsentBanner
-        position="bottom"
-        privacyPolicyUrl="/privacy-policy"
-        showPreferences={true}
-      />
-    </>
-  );
-}
-
-// 3. Use the consent values in your components
 import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
 
-function AnalyticsComponent() {
-  const { hasConsented } = useConsent();
-  
+const consentOptions = [
+  { id: 'necessary', label: 'Necessary', description: 'Required for the site to function', required: true, purpose: 'Site operation' },
+  { id: 'analytics', label: 'Analytics', description: 'Help us understand usage', required: false, purpose: 'Usage analytics' },
+  { id: 'marketing', label: 'Marketing', description: 'Personalized ads', required: false, purpose: 'Marketing' }
+];
+
+// 1. Use the useConsent hook and ConsentBanner in your app
+function App() {
+  const { hasConsent, shouldShowBanner } = useConsent({ options: consentOptions });
+
+  return (
+    <div>
+      {shouldShowBanner && (
+        <ConsentBanner
+          options={consentOptions}
+          position="bottom"
+          onSave={(settings) => console.log('Consent saved:', settings)}
+        />
+      )}
+      <AnalyticsLoader hasConsent={hasConsent} />
+      <YourApp />
+    </div>
+  );
+}
+
+// 2. Check consent before loading third-party scripts
+function AnalyticsLoader({ hasConsent }: { hasConsent: (id: string) => boolean }) {
   useEffect(() => {
-    if (hasConsented('analytics')) {
+    if (hasConsent('analytics')) {
       // Initialize analytics
     }
-  }, [hasConsented]);
-  
+  }, [hasConsent]);
+
   return null;
 }
 ```
@@ -494,11 +471,20 @@ function AnalyticsComponent() {
 import { DSRRequestForm, DSRDashboard } from '@tantainnovative/ndpr-toolkit/dsr';
 import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
 
+const requestTypes = [
+  { id: 'access', name: 'Access my data', description: 'Right of access (Section 30)', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'rectification', name: 'Correct my data', description: 'Right to rectification (Section 31)', estimatedCompletionTime: 30, requiresAdditionalInfo: true },
+  { id: 'erasure', name: 'Delete my data', description: 'Right to erasure (Section 32)', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'restriction', name: 'Restrict processing', description: 'Right to restrict processing (Section 33)', estimatedCompletionTime: 30, requiresAdditionalInfo: true },
+  { id: 'portability', name: 'Data portability', description: 'Right to data portability (Section 34)', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'objection', name: 'Object to processing', description: 'Right to object (Section 35)', estimatedCompletionTime: 30, requiresAdditionalInfo: true },
+];
+
 // 1. Create a form for data subjects to submit requests
 function DSRPortal() {
-  const { submitRequest } = useDSR();
-  
-  const handleSubmit = (formData) => {
+  const { submitRequest } = useDSR({ requestTypes });
+
+  const handleSubmit = (formData: any) => {
     const request = submitRequest({
       type: formData.type,
       subject: {
@@ -506,36 +492,28 @@ function DSRPortal() {
         email: formData.email,
         phone: formData.phone
       },
-      details: formData.details
+      description: formData.details
     });
-    
+
     alert(`Your request has been submitted. Your tracking ID is: ${request.id}`);
   };
-  
+
   return (
     <DSRRequestForm
       onSubmit={handleSubmit}
-      requestTypes={[
-        { id: 'access', label: 'Access my data' },
-        { id: 'rectification', label: 'Correct my data' },
-        { id: 'erasure', label: 'Delete my data' },
-        { id: 'restriction', label: 'Restrict processing of my data' },
-        { id: 'portability', label: 'Data portability' },
-        { id: 'objection', label: 'Object to processing' }
-      ]}
+      requestTypes={requestTypes}
     />
   );
 }
 
 // 2. Create an admin dashboard for managing requests
 function AdminDashboard() {
-  const { requests, updateRequest, deleteRequest } = useDSR();
-  
+  const { requests, updateRequest } = useDSR({ requestTypes });
+
   return (
     <DSRDashboard
       requests={requests}
-      onUpdateRequest={updateRequest}
-      onDeleteRequest={deleteRequest}
+      onUpdateStatus={(id, status) => updateRequest(id, { status })}
     />
   );
 }
@@ -547,12 +525,18 @@ function AdminDashboard() {
 import { BreachReportForm, BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit/breach';
 import { useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
 
+const breachCategories = [
+  { id: 'unauthorized-access', name: 'Unauthorized Access', description: 'Unauthorized person accessed data', defaultSeverity: 'high' as const },
+  { id: 'data-loss', name: 'Data Loss', description: 'Data was lost or destroyed', defaultSeverity: 'high' as const },
+  { id: 'system-compromise', name: 'System Compromise', description: 'System was compromised', defaultSeverity: 'critical' as const }
+];
+
 // 1. Create a form for reporting breaches
 function BreachReporting() {
-  const { submitBreachReport } = useBreach();
-  
-  const handleSubmit = (formData) => {
-    const report = submitBreachReport({
+  const { reportBreach, getReport } = useBreach({ categories: breachCategories });
+
+  const handleSubmit = (formData: any) => {
+    const report = reportBreach({
       title: formData.title,
       description: formData.description,
       category: formData.category,
@@ -566,51 +550,38 @@ function BreachReporting() {
       dataTypes: formData.dataTypes,
       status: 'ongoing'
     });
-    
+
     navigate(`/breach/${report.id}/assess`);
   };
-  
+
   return (
     <BreachReportForm
       onSubmit={handleSubmit}
-      categories={[
-        { id: 'unauthorized-access', label: 'Unauthorized Access' },
-        { id: 'data-loss', label: 'Data Loss' },
-        { id: 'system-compromise', label: 'System Compromise' }
-      ]}
+      categories={breachCategories}
     />
   );
 }
 
 // 2. Create a risk assessment component
-function RiskAssessment({ breachId }) {
-  const { performRiskAssessment, determineNotificationRequirements } = useBreach();
-  
-  const handleAssessment = (assessmentData) => {
-    const assessment = performRiskAssessment({
-      breachId,
-      assessor: {
-        name: 'Jane Smith',
-        role: 'Data Protection Officer',
-        email: 'jane@example.com'
-      },
-      ...assessmentData
-    });
-    
-    const requirements = determineNotificationRequirements({
-      breachId,
-      riskAssessmentId: assessment.id
-    });
-    
-    if (requirements.nitdaNotificationRequired) {
-      const deadline = new Date(requirements.nitdaNotificationDeadline);
+function RiskAssessmentView({ breachId }: { breachId: string }) {
+  const { assessRisk, calculateNotificationRequirements, getReport } = useBreach({ categories: breachCategories });
+  const report = getReport(breachId);
+
+  if (!report) return <div>Breach not found</div>;
+
+  const handleAssessment = (assessment: any) => {
+    assessRisk(breachId, assessment);
+
+    const requirements = calculateNotificationRequirements(breachId);
+    if (requirements?.ndpcNotificationRequired) {
+      const deadline = new Date(requirements.ndpcNotificationDeadline);
       alert(`NDPC notification required by ${deadline.toLocaleString()}`);
     }
   };
-  
+
   return (
     <BreachRiskAssessment
-      breachId={breachId}
+      breachData={report}
       onComplete={handleAssessment}
     />
   );
