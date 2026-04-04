@@ -1,0 +1,207 @@
+---
+title: "Building a Data Subject Rights Portal: NDPA-Compliant DSAR Handling for Developers"
+description: "A developer guide to building a DSAR portal that handles all 8 data subject rights under NDPA Sections 29-36, with code examples using the NDPA Toolkit."
+date: "2026-03-29"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpa", "dsr", "dsar", "developers", "tutorial"]
+---
+
+# Building a Data Subject Rights Portal
+
+Part IV of the [NDPA 2023](/blog/understanding-ndpa-2023) grants Nigerian data subjects eight distinct rights over their personal data. If your application processes personal data, you are legally required to facilitate these rights. A standalone DSAR (Data Subject Access Request) portal is the cleanest way to do it — a single surface where users submit requests, your team tracks and fulfills them, and every interaction is auditable.
+
+This guide walks through the architecture, the legal requirements, and a working implementation using the [NDPA Toolkit](/docs).
+
+## The Eight Data Subject Rights
+
+Sections 29 through 36 of the NDPA define the rights your portal must support:
+
+1. **Right to be informed (Section 29)** — Data subjects must be told what data you collect, why, how long you keep it, and who you share it with. This right is typically fulfilled through your privacy notice, but your portal should link to it and surface relevant information contextually.
+
+2. **Right of access (Section 30)** — Users can request a copy of all personal data you hold on them. Your portal must be able to pull data from every system where it exists — your primary database, analytics platforms, CRM, email service providers.
+
+3. **Right to rectification (Section 31)** — If personal data is inaccurate or incomplete, the data subject can request correction. Your portal needs a mechanism for the user to specify what is wrong and what the correct data should be.
+
+4. **Right to erasure (Section 32)** — The right to have personal data deleted. This is the most technically complex right to implement properly, and we will address it in detail below.
+
+5. **Right to restrict processing (Section 33)** — The data subject can request that you stop processing their data while a dispute is resolved, without deleting it. Your system needs a "frozen" state for user records.
+
+6. **Right to data portability (Section 34)** — Users can request their data in a structured, commonly used, machine-readable format. JSON and CSV are the standard choices.
+
+7. **Right to object (Section 35)** — Data subjects can object to processing based on legitimate interests or public interest. If they object, you must stop processing unless you can demonstrate compelling legitimate grounds.
+
+8. **Automated decision-making rights (Section 36)** — If you make decisions based solely on automated processing that produce legal or similarly significant effects, the data subject has the right to human intervention, to express their point of view, and to contest the decision.
+
+## Response Timeline
+
+The NDPA does not prescribe an explicit response deadline the way the GDPR specifies 30 days. However, the NDPC's guidance and international best practice establish 30 calendar days as the reasonable benchmark. The toolkit defaults to this. The NDPA does allow a one-time extension of 30 additional days if the request is complex, but you must inform the data subject of the extension and the reason before the original deadline expires.
+
+Track deadlines aggressively. A missed deadline is a compliance failure.
+
+## Identity Verification
+
+Before fulfilling any request, you must verify that the requester is the actual data subject. Fulfilling a data access request for the wrong person is itself a data breach. Common verification methods include:
+
+- **Email verification** — Send a confirmation link to the email address on file.
+- **Account authentication** — If the requester is a logged-in user, match their session to the account.
+- **Document verification** — For high-sensitivity requests (erasure, portability), require government-issued ID.
+- **Knowledge-based verification** — Ask questions only the data subject would know (last transaction date, account creation date).
+
+The toolkit's `DSRRequest` type includes a `verification` field that tracks whether identity has been confirmed, the method used, and when verification occurred.
+
+## Portal Architecture
+
+A well-structured DSAR portal has four layers:
+
+**Intake** — A public-facing form where data subjects select the type of request, provide their identity details, and submit supporting information. The form should map directly to the eight NDPA right types.
+
+**Queue** — An internal dashboard where your data protection team sees all pending requests, sorted by priority and deadline. Requests approaching their 30-day deadline should surface to the top. The toolkit provides `DSRDashboard` for this.
+
+**Verification workflow** — Before any request moves to processing, the requester's identity must be confirmed. The request sits in an `awaitingVerification` status until cleared.
+
+**Response generation and delivery** — Once verified and processed, the portal generates the appropriate response: a data export for access requests, a confirmation of deletion for erasure requests, a correction receipt for rectification requests. Responses should be delivered through the same channel the request came in, or through a secure download link.
+
+## Implementation with the NDPA Toolkit
+
+Start by defining the request types your portal supports:
+
+```typescript
+import { useDSR, formatDSRRequest } from '@tantainnovative/ndpr-toolkit/dsr';
+
+const requestTypes = [
+  {
+    id: 'access',
+    name: 'Access My Data',
+    description: 'Request a copy of all personal data we hold about you',
+    ndpaSection: 'Section 30',
+    estimatedCompletionTime: 30,
+    requiresAdditionalInfo: false,
+  },
+  {
+    id: 'erasure',
+    name: 'Delete My Data',
+    description: 'Request deletion of your personal data from our systems',
+    ndpaSection: 'Section 32',
+    estimatedCompletionTime: 30,
+    requiresAdditionalInfo: true,
+    additionalFields: [
+      {
+        id: 'scope',
+        label: 'What data should be deleted?',
+        type: 'select' as const,
+        options: ['All data', 'Account data only', 'Marketing data only'],
+        required: true,
+      },
+    ],
+  },
+  {
+    id: 'portability',
+    name: 'Export My Data',
+    description: 'Receive your data in a machine-readable format (JSON/CSV)',
+    ndpaSection: 'Section 34',
+    estimatedCompletionTime: 30,
+    requiresAdditionalInfo: true,
+    additionalFields: [
+      {
+        id: 'format',
+        label: 'Preferred export format',
+        type: 'select' as const,
+        options: ['JSON', 'CSV'],
+        required: true,
+      },
+    ],
+  },
+];
+```
+
+Then use the `useDSR` hook to manage the full request lifecycle:
+
+```tsx
+function DSARPortal() {
+  const {
+    requests,
+    submitRequest,
+    updateRequest,
+    getRequestsByStatus,
+    formatRequest,
+  } = useDSR({
+    requestTypes,
+    onSubmit: async (request) => {
+      // Send confirmation email to the data subject
+      await sendConfirmationEmail(request.subject.email, request.id);
+      // Notify your data protection officer
+      await notifyDPO(request);
+    },
+    onUpdate: async (request) => {
+      if (request.status === 'completed') {
+        await sendCompletionNotice(request.subject.email, request.id);
+      }
+    },
+  });
+
+  const pendingVerification = getRequestsByStatus('awaitingVerification');
+  const overdue = requests.filter(
+    (r) => r.dueDate && r.dueDate < Date.now() && r.status !== 'completed'
+  );
+
+  // Render your portal UI...
+}
+```
+
+When a request is ready for response, use `formatDSRRequest` to validate and structure the output:
+
+```typescript
+const { formattedRequest, isValid, validationErrors } = formatDSRRequest(request);
+
+if (!isValid) {
+  console.error('Request incomplete:', validationErrors);
+  // Do not proceed until all required fields are present
+}
+```
+
+## Data Portability: Exporting User Data
+
+For portability requests (Section 34), you need to aggregate data from every system that holds the user's personal data and export it in a structured format. JSON is the most developer-friendly; CSV works better for non-technical users.
+
+```typescript
+async function generateDataExport(userId: string, format: 'json' | 'csv') {
+  const userData = {
+    profile: await db.users.findById(userId),
+    orders: await db.orders.findByUserId(userId),
+    preferences: await db.preferences.findByUserId(userId),
+    activityLog: await db.activityLogs.findByUserId(userId),
+    consents: await db.consentRecords.findByUserId(userId),
+  };
+
+  if (format === 'json') {
+    return JSON.stringify(userData, null, 2);
+  }
+
+  // For CSV, flatten nested objects and convert
+  return convertToCSV(userData);
+}
+```
+
+Do not include derived data (risk scores, internal classifications) unless it qualifies as personal data. Do include all data the user directly provided and all data observed from their behaviour.
+
+## Right to Erasure: The Hard Problem
+
+Erasure sounds simple — delete the row. In practice, it is the most technically demanding right to implement correctly. You must address:
+
+**Primary database** — Delete or anonymize the user's record. If full deletion breaks referential integrity (foreign keys in order tables, for instance), anonymize instead: replace the name with "Deleted User," the email with a hash, and null out optional fields.
+
+**Backups** — You are not required to delete data from encrypted, immutable backups immediately. But you must ensure that if a backup is restored, the erasure is re-applied. Maintain an erasure log that your restore process checks against.
+
+**Third-party processors** — If you share data with sub-processors (payment providers, email platforms, analytics tools), you must instruct them to delete the data as well. Document this chain. The NDPA holds you, the data controller, responsible.
+
+**Search indexes and caches** — Elasticsearch indexes, Redis caches, CDN caches — all must be purged. This is easy to forget and easy to audit.
+
+**Exemptions** — Not all erasure requests must be fulfilled. You can refuse if the data is needed for legal compliance, public interest, or the establishment or defence of legal claims. But you must inform the data subject of the refusal and the reason.
+
+## What Comes Next
+
+A DSAR portal is not a one-time build. As your application grows, new data stores appear, new third-party integrations are added, and the scope of what "all personal data" means expands. Revisit your data mapping quarterly. Test your erasure pipeline end to end. Make sure your portability exports actually contain everything.
+
+---
+
+*Explore the [interactive DSR demo](/ndpr-demos/dsr), read the [component documentation](/docs/components/data-subject-rights), or follow the step-by-step [DSR implementation guide](/docs/guides/data-subject-requests).*

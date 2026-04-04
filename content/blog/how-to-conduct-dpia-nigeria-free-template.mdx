@@ -1,0 +1,157 @@
+---
+title: "How to Conduct a DPIA Under Nigeria's NDPA (With Free Template)"
+description: "A practical walkthrough of conducting a Data Protection Impact Assessment under the NDPA 2023, with a free interactive template aligned to GAID Schedule 4."
+date: "2026-04-02"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpa", "dpia", "template", "compliance", "gaid"]
+---
+
+# How to Conduct a DPIA Under Nigeria's NDPA
+
+A Data Protection Impact Assessment is not a checkbox exercise. It is a structured process for identifying and mitigating privacy risks before they reach your users. Under the Nigeria Data Protection Act (NDPA) 2023, getting this wrong can halt your processing activity entirely — or expose you to enforcement action by the NDPC.
+
+## When Is a DPIA Required?
+
+Section 38 of the NDPA mandates a DPIA whenever processing is "likely to result in high risk to the rights and freedoms of data subjects." High-risk triggers include:
+
+- **Large-scale processing of sensitive data** — health records, biometrics, financial data, genetic data, or data revealing ethnic origin, religious beliefs, or political opinions
+- **Systematic monitoring of public areas** — CCTV, location tracking, or behavioural surveillance
+- **Automated decision-making with legal effects** — credit scoring, automated loan approvals, or algorithmic hiring
+- **Processing children's data** — any service directed at or knowingly collecting data from minors
+- **Cross-border transfers to jurisdictions without adequate protection** — sending Nigerian personal data to countries not on the NDPC's adequacy list
+- **New technologies** — novel processing methods where the privacy impact is not yet well understood
+
+If your processing activity falls into any of these categories, a DPIA is not optional.
+
+## GAID 2025 Compliance Timelines
+
+The General Application and Implementation Directive (GAID) 2025 sets clear deadlines. If you are commencing new processing of sensitive personal data, you must complete a DPIA within **4 months** of the processing start date. For existing processing activities that were already underway before the GAID took effect, the deadline extends to **6 months**. These are hard deadlines — not aspirational targets. Schedule 4 of the GAID provides the formal framework that this guide aligns with.
+
+## The Six-Step DPIA Process
+
+### Step 1: Describe the Processing
+
+Document what you are doing in concrete terms. This is not the place for vague descriptions. You need to answer:
+
+- **What personal data** is being collected? List every field.
+- **Why** is it being collected? State the specific purpose.
+- **How** is it collected, stored, processed, and shared?
+- **Who** has access to the data?
+- **How long** is it retained?
+- **What is the lawful basis** for processing?
+
+Be specific. "User data for service improvement" is not a description. "Full name, email address, BVN, NIN, and facial photograph collected via mobile app for identity verification under CBN KYC requirements" is a description.
+
+### Step 2: Assess Necessity and Proportionality
+
+Ask whether you genuinely need all the data you plan to collect. For each data point: could the same purpose be achieved with less data, with anonymised data, or without this processing altogether? The privacy intrusion must be proportionate to the benefit. Collecting location history to verify identity is disproportionate when a BVN lookup achieves the same result.
+
+### Step 3: Identify Risks to Data Subjects
+
+Think from the data subject's perspective. What could go wrong? Risks fall into several categories:
+
+- **Unauthorised access** — data breach exposing sensitive information
+- **Function creep** — data collected for one purpose being used for another
+- **Inaccuracy** — incorrect data leading to wrongful denial of services
+- **Excessive collection** — gathering more data than necessary
+- **Insufficient transparency** — users not understanding how their data is used
+- **Re-identification** — anonymised data being linked back to individuals
+
+### Step 4: Evaluate Risk Likelihood and Severity
+
+Each identified risk must be scored on two dimensions: how likely it is to occur, and how severe the impact would be if it did. Use a 1-to-5 scale for each dimension.
+
+**Risk Assessment Matrix**
+
+| | Negligible (1) | Minor (2) | Moderate (3) | Significant (4) | Severe (5) |
+|---|---|---|---|---|---|
+| **Almost Certain (5)** | 5 | 10 | 15 | 20 | 25 |
+| **Likely (4)** | 4 | 8 | 12 | 16 | 20 |
+| **Possible (3)** | 3 | 6 | 9 | 12 | 15 |
+| **Unlikely (2)** | 2 | 4 | 6 | 8 | 10 |
+| **Rare (1)** | 1 | 2 | 3 | 4 | 5 |
+
+- **Score 1-4:** Low risk — document and proceed
+- **Score 5-9:** Medium risk — implement additional safeguards
+- **Score 10-16:** High risk — mitigation required before proceeding
+- **Score 17-25:** Critical risk — consult the NDPC before processing
+
+### Step 5: Determine Mitigation Measures
+
+For every medium, high, or critical risk, define specific, actionable mitigation measures. Examples include encryption at rest and in transit, access controls with role-based permissions, data minimisation by removing unnecessary fields, pseudonymisation, regular access audits, staff training, and incident response procedures. Each measure should reduce either the likelihood or the severity of the risk. After applying mitigations, re-score the residual risk.
+
+### Step 6: Document Conclusion and Recommendations
+
+Summarise whether the processing can proceed, what conditions apply, and what ongoing monitoring is needed. This document is your evidence of compliance — the NDPC can request it at any time.
+
+## Example: Fintech KYC App
+
+Consider a fintech application that collects BVN (Bank Verification Number), NIN (National Identification Number), and facial biometric data for customer identity verification.
+
+**Processing description:** Mobile app collects BVN, NIN, and a live facial photograph. The photograph is compared against the NIN database record using a third-party verification API. Data is retained for the duration of the customer relationship plus 6 years (CBN regulatory requirement).
+
+**Key risks identified:**
+
+| Risk | Likelihood | Severity | Score | Level |
+|---|---|---|---|---|
+| Biometric data breach exposing facial photographs | 3 (Possible) | 5 (Severe) | 15 | High |
+| Third-party API provider misuses verification data | 2 (Unlikely) | 4 (Significant) | 8 | Medium |
+| BVN/NIN data re-identified from anonymised datasets | 2 (Unlikely) | 5 (Severe) | 10 | High |
+| Excessive retention beyond regulatory requirement | 3 (Possible) | 3 (Moderate) | 9 | Medium |
+
+With two high-risk items, this DPIA requires mitigation before processing can proceed. Mitigations would include encrypting biometric data with a dedicated key, contractual safeguards with the third-party API provider, deleting raw biometric data after verification is complete (retaining only the verification result), and automated retention enforcement with deletion after the regulatory period.
+
+## When to Consult the NDPC
+
+Section 39 of the NDPA is clear: if your DPIA concludes that **high residual risk** remains after mitigation, you must consult the Nigeria Data Protection Commission before proceeding. The NDPC has 8 weeks to respond and can impose conditions on the processing or prohibit it entirely. In our fintech example, if the biometric data breach risk remains high after mitigation, NDPC consultation is mandatory.
+
+## Using the Toolkit's DPIA Wizard
+
+The [interactive DPIA demo](/ndpr-demos/dpia) provides a guided wizard that walks you through each step of this process. It generates a structured assessment aligned with GAID Schedule 4 and automatically flags risks that require NDPC consultation.
+
+For programmatic risk assessment, use the `assessDPIARisk` function:
+
+```typescript
+import { assessDPIARisk } from '@tantainnovative/ndpr-toolkit/dpia';
+
+const assessment = assessDPIARisk({
+  id: 'dpia-kyc-2026',
+  title: 'KYC Identity Verification',
+  processingDescription: 'BVN, NIN, and biometric collection for KYC',
+  startedAt: Date.now(),
+  assessor: { name: 'Jane Okafor', role: 'DPO', email: 'dpo@fintechco.ng' },
+  answers: {},
+  risks: [
+    {
+      id: 'risk-1',
+      description: 'Biometric data breach',
+      likelihood: 3,
+      impact: 5,
+      score: 15,
+      level: 'high',
+      mitigated: true,
+      mitigationMeasures: [
+        'AES-256 encryption for biometric data',
+        'Dedicated encryption key with HSM storage',
+        'Delete raw biometrics after verification',
+      ],
+      residualScore: 6,
+      relatedQuestionIds: ['q-data-types', 'q-security'],
+    },
+  ],
+  overallRiskLevel: 'high',
+  canProceed: true,
+  conclusion: 'Processing may proceed with mitigations in place.',
+  version: '1.0',
+});
+
+console.log(assessment.requiresConsultation); // true
+console.log(assessment.recommendations);
+// ['Consult with the NDPC...', 'Schedule a review in 6 months...']
+```
+
+The function returns the overall risk level, whether NDPC consultation is required, whether processing can proceed, and actionable recommendations.
+
+---
+
+*Try the [interactive DPIA wizard](/ndpr-demos/dpia) to run your own assessment, read the [DPIA Questionnaire documentation](/docs/components/dpia-questionnaire) for component API details, or follow the [step-by-step conducting DPIA guide](/docs/guides/conducting-dpia) for integration instructions.*

@@ -1,0 +1,180 @@
+---
+title: "How to Handle a Data Breach in Nigeria: 72-Hour Response Guide"
+description: "A step-by-step incident response playbook for Nigerian businesses. From discovery to NDPC notification within 72 hours, with templates and timelines."
+date: "2026-04-04"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpa", "breach", "compliance", "guide", "ndpc"]
+---
+
+# How to Handle a Data Breach in Nigeria: 72-Hour Response Guide
+
+When personal data is compromised, the Nigeria Data Protection Act (NDPA) 2023 gives you exactly 72 hours to notify the Nigeria Data Protection Commission (NDPC). Not 72 business hours. Not three working days. Seventy-two consecutive hours, including weekends and public holidays.
+
+The clock starts the moment you "become aware" of the breach — not when you confirm every detail, not when management is briefed, and not when the forensics report is complete. The moment a staff member has reasonable certainty that personal data has been compromised, the countdown begins.
+
+Most Nigerian businesses that face enforcement action after a breach do not fail because the breach itself was catastrophic. They fail because they had no plan, wasted 48 hours in confusion, and missed the notification deadline. This guide gives you a structured, hour-by-hour playbook to avoid that outcome.
+
+## Hour 0-8: Contain the Breach and Preserve Evidence
+
+The first eight hours are about stopping the bleeding and protecting the evidence trail.
+
+**Immediate containment (Hour 0-2):**
+- Isolate affected systems. If a server is compromised, take it offline. If credentials are leaked, revoke them immediately. If an employee account is involved, suspend access.
+- Do not wipe, reformat, or "fix" anything yet. Preserving evidence is critical both for your investigation and for any future NDPC inquiry.
+- Activate your incident response team. If you do not have one, designate a lead immediately — this person owns the next 72 hours.
+
+**Initial documentation (Hour 2-8):**
+- Record the exact time and date the breach was discovered, and by whom. This establishes when the 72-hour clock started.
+- Document what you know so far: which systems are affected, what type of data may be exposed, and how the breach appears to have occurred.
+- Preserve server logs, access logs, email records, and any other digital evidence. Copy them to a secure location before anything is overwritten by normal system operations.
+
+**Do not** notify the public or media at this stage. Do not speculate internally about the scale. Focus on containment and facts.
+
+## Hour 8-24: Assess the Scope
+
+Once the breach is contained, you need to understand what happened and who is affected.
+
+**Determine what data was compromised:**
+- What categories of personal data are involved? Names and emails are one thing. Financial records, health data, BVN numbers, or biometric data escalate the severity significantly.
+- How many data subjects are affected? An exact count is not required at this stage — a reasonable estimate is acceptable for the NDPC notification.
+- Was the data encrypted? If the exposed data was properly encrypted and the encryption keys were not compromised, the practical risk to data subjects may be lower.
+
+**Determine how it happened:**
+- Was this an external attack (hacking, phishing, ransomware), an internal error (misconfigured database, accidental email), or a malicious insider?
+- Is the breach contained, or is it still ongoing?
+- What systems and services were affected?
+
+**Conduct a severity assessment.** This is where you determine whether NDPC notification is required and whether data subjects need to be informed. The [NDPA Toolkit](/docs/components/breach-notification) provides a programmatic way to calculate breach severity:
+
+```typescript
+import { calculateBreachSeverity } from '@tantainnovative/ndpr-toolkit/core';
+
+const severity = calculateBreachSeverity({
+  id: 'BR-2026-001',
+  title: 'Customer database unauthorized access',
+  description: 'Unauthorized access to customer records via compromised admin credentials',
+  category: 'unauthorized-access',
+  discoveredAt: Date.now(),
+  reportedAt: Date.now(),
+  reporter: {
+    name: 'IT Security Lead',
+    email: 'security@company.ng',
+    department: 'Information Security',
+  },
+  affectedSystems: ['customer-database', 'crm-portal'],
+  dataTypes: ['financial', 'contact', 'identity'],
+  estimatedAffectedSubjects: 5200,
+  status: 'contained',
+});
+
+// severity.severityLevel → 'high'
+// severity.notificationRequired → true
+// severity.urgentNotificationRequired → true
+// severity.timeframeHours → 72
+```
+
+The function evaluates factors including whether the breach is ongoing, whether sensitive data types are involved, the scale of affected subjects, and how quickly the breach was discovered. Use this output to drive your notification decisions.
+
+## Hour 24-48: Prepare the NDPC Notification
+
+Section 40 of the NDPA specifies what the notification to the NDPC must contain. Do not submit a vague, one-paragraph email. The NDPC expects a structured report.
+
+**Required fields in the NDPC notification:**
+
+1. **Nature of the breach** — What type of breach occurred (unauthorized access, accidental disclosure, data loss, ransomware, etc.)
+2. **Categories of personal data affected** — Contact information, financial data, health records, identification numbers, biometric data, etc.
+3. **Approximate number of data subjects affected** — A reasonable estimate is acceptable if the exact number is not yet known
+4. **Categories of data subjects** — Customers, employees, minors, patients, etc.
+5. **Name and contact details of your Data Protection Officer** — Or another contact point where the NDPC can obtain more information
+6. **Description of likely consequences** — What harm could result from this breach (identity theft, financial loss, discrimination, reputational damage)
+7. **Measures taken or proposed** — What you have done to contain the breach and mitigate harm to data subjects
+8. **Timeline** — When the breach occurred, when it was discovered, and when it was contained
+
+If you do not have all the information by the 72-hour deadline, Section 40 allows you to provide information in phases. Submit what you have and supplement it as your investigation progresses. A partial but timely notification is far better than a complete but late one.
+
+## Hour 48-72: Submit to NDPC and Notify Data Subjects
+
+**Submit to the NDPC:**
+- File your notification through the NDPC's official portal or via their designated email address.
+- Keep a timestamped copy of everything you submit. This is your proof of compliance with the 72-hour deadline.
+- Assign a single point of contact for all follow-up communications with the NDPC.
+
+**Notify data subjects (when required):**
+
+Under Section 40(4) of the NDPA, you must notify affected data subjects "without undue delay" when the breach is likely to result in a **high risk to their rights and freedoms**. This means:
+
+- Financial data was exposed and could enable fraud
+- Health records or other sensitive data could lead to discrimination
+- Identity documents or credentials were leaked, creating risk of identity theft
+- The data could be used for targeted phishing or social engineering
+
+The notification to data subjects must be in **clear, plain language** and must include what happened, what data was affected, what you are doing about it, and what steps they can take to protect themselves (such as changing passwords, monitoring bank accounts, or placing fraud alerts).
+
+You can explore what a compliant breach notification workflow looks like in the [interactive breach notification demo](/ndpr-demos/breach).
+
+## What a Breach Notification Looks Like
+
+Here is a template structure for the NDPC notification:
+
+```
+TO: Nigeria Data Protection Commission (NDPC)
+FROM: [Company Name], [DPO Name], [DPO Email], [DPO Phone]
+DATE: [Submission Date]
+RE: Personal Data Breach Notification — Section 40, NDPA 2023
+
+1. BREACH SUMMARY
+   Nature of breach: [e.g., Unauthorized access to customer database]
+   Date of breach: [Date occurred or estimated range]
+   Date discovered: [Date and time]
+   Current status: [Ongoing / Contained / Resolved]
+
+2. DATA AFFECTED
+   Categories of data: [e.g., Names, email addresses, financial records]
+   Sensitive data involved: [Yes/No — specify if health, biometric, etc.]
+   Estimated data subjects affected: [Number or range]
+   Categories of data subjects: [e.g., Customers, employees]
+
+3. LIKELY CONSEQUENCES
+   [Description of potential harm to data subjects]
+
+4. MEASURES TAKEN
+   Containment: [Actions taken to stop the breach]
+   Mitigation: [Steps to reduce harm to affected individuals]
+   Prevention: [Changes to prevent recurrence]
+
+5. DATA SUBJECT NOTIFICATION
+   Data subjects notified: [Yes/No]
+   If yes, method and date: [Email, SMS, public notice — date]
+   If no, justification: [Why notification is not required or is being delayed]
+
+6. CONTACT
+   Data Protection Officer: [Name]
+   Email: [Email]
+   Phone: [Phone]
+```
+
+## When the Multichoice N766M Fine Happened
+
+The Multichoice case remains one of the most significant data protection enforcement actions in Nigeria. The NDPC imposed a fine of 766 million Naira against the company. While the full details of the case involve multiple compliance failures, the core lesson for every Nigerian business is this: the NDPC is not a paper regulator.
+
+What went wrong was not a single dramatic failure. It was a pattern — inadequate response to data subject complaints, insufficient transparency about data processing practices, and a failure to demonstrate that the company had the systems and processes required by law. By the time the enforcement action was public, the compliance failures had been compounding for months.
+
+The lesson is clear: you cannot retrofit compliance after the regulator comes knocking. The businesses that avoid these outcomes are the ones that invested in compliance infrastructure before the incident — documented [lawful bases](/ndpr-demos/lawful-basis) for processing, functioning [consent management](/ndpr-demos/consent), a tested breach response plan, and a culture that treats data protection as an operational requirement, not a legal afterthought.
+
+## Building Your Breach Response Plan Now
+
+Do not wait for a breach to figure out your process. Build your response plan today:
+
+1. **Designate your incident response team.** Name the people, not just the roles. Include IT, legal, communications, and a senior decision-maker.
+2. **Create your notification templates.** Use the template above as a starting point. Pre-fill everything you can — your DPO's details, your company information, your standard security measures.
+3. **Test the process.** Run a tabletop exercise. Simulate a breach on a Friday afternoon and see if your team can produce a compliant NDPC notification by Monday afternoon.
+4. **Implement breach severity assessment.** Integrate the [NDPA Toolkit's breach module](/docs/components/breach-notification) into your incident response workflow so severity calculations and notification requirements are determined automatically, not debated in a crisis.
+5. **Train your staff.** Everyone in your organization should know who to contact if they suspect a data breach. The 72-hour clock starts when any employee becomes aware — not when the DPO is informed.
+
+The [NDPA Toolkit documentation](/docs) provides the technical building blocks. The [interactive demos](/ndpr-demos) let you see each compliance requirement in action. The rest is execution.
+
+Seventy-two hours is not a lot of time. But with a plan in place, it is enough.
+
+---
+
+*The NDPA Toolkit is open-source and available on [GitHub](https://github.com/mr-tanta/ndpr-toolkit). Built for Nigerian businesses by Nigerian developers.*

@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { SiteHeader } from '@/components/site/SiteHeader';
+import { SiteFooter } from '@/components/site/SiteFooter';
 
 export const metadata: Metadata = {
   title: 'Interactive NDPA Demos | NDPA Toolkit',
@@ -37,5 +39,11 @@ export default function NDPRDemosLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <SiteHeader />
+      <main className="min-h-screen">{children}</main>
+      <SiteFooter />
+    </>
+  );
 }

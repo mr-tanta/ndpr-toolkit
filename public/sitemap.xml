@@ -231,4 +231,34 @@
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://ndprtoolkit.com.ng/blog/data-breach-72-hour-response-guide</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://ndprtoolkit.com.ng/blog/cross-border-transfers-nigerian-startups-cloud</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://ndprtoolkit.com.ng/blog/how-to-conduct-dpia-nigeria-free-template</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://ndprtoolkit.com.ng/blog/ndpc-registration-guide-2026</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://ndprtoolkit.com.ng/blog/building-dsar-portal-ndpa-developers</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>
