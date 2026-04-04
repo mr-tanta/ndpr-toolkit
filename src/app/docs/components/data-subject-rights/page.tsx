@@ -46,14 +46,8 @@ export default function DataSubjectRightsDocs() {
         <p className="mb-4">
           Install the NDPR Toolkit package which includes the Data Subject Rights components:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>npm install @tantainnovative/ndpr-toolkit</code></pre>
-        </div>
-        <p>
-          Or if you&apos;re using yarn:
-        </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>yarn add @tantainnovative/ndpr-toolkit</code></pre>
+          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
         </div>
       </section>
 
@@ -121,12 +115,13 @@ export default function DataSubjectRightsDocs() {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-bold mb-2">BreachReportForm</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              A form for reporting data breaches, which is a requirement under the NDPA.
+              A form for reporting data breaches, which is a requirement under the NDPA. See also the dedicated{' '}
+              <Link href="/docs/components/breach-notification" className="text-blue-600 dark:text-blue-400 underline">Breach Notification</Link> documentation.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/dsr';
+              <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/breach';
 
-<BreachReportForm 
+<BreachReportForm
   onSubmit={handleSubmitBreachReport}
   formDescription="Report a data breach that has occurred within your organization."
   recipientEmail="dpo@example.com"
@@ -447,7 +442,7 @@ const accessRequests = filterRequestsByType('access');`}</code></pre>
             <strong>Response Timeframe:</strong> The NDPA requires organizations to respond to DSARs within 30 days. Ensure your process allows for timely responses.
           </li>
           <li>
-            <strong>Complete Responses:</strong> Provide complete information in response to access requests, including what data you hold, howit&apos;s used, whoit&apos;s shared with, and its source.
+            <strong>Complete Responses:</strong> Provide complete information in response to access requests, including what data you hold, how it&apos;s used, who it&apos;s shared with, and its source.
           </li>
           <li>
             <strong>Record Keeping:</strong> Maintain records of all DSARs and your responses to them. The DSRDashboard component helps with this.

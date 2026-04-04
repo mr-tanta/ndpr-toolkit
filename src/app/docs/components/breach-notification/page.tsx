@@ -45,14 +45,8 @@ export default function BreachNotificationDocs() {
         <p className="mb-4">
           Install the NDPR Toolkit package which includes the Breach Notification components:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>npm install @tantainnovative/ndpr-toolkit</code></pre>
-        </div>
-        <p>
-          Or if you&apos;re using yarn:
-        </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>yarn add @tantainnovative/ndpr-toolkit</code></pre>
+          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
         </div>
       </section>
 

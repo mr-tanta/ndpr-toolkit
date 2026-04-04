@@ -92,7 +92,7 @@ export default function ConductingDPIAGuide() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
 
 // Define the processing description questions
 const processingQuestions = [
@@ -164,7 +164,7 @@ function ProcessingDescriptionStep() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
 
 // Define risk assessment questions
 const riskQuestions = [
@@ -264,7 +264,7 @@ function RiskAssessmentStep() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DPIAReport } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { DPIAReport } from '@tantainnovative/ndpr-toolkit/dpia';
 
 function GenerateDPIAReport({ dpiaData }) {
   const handleExport = (format) => {
@@ -313,11 +313,11 @@ function GenerateDPIAReport({ dpiaData }) {
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`import { useState } from 'react';
-import { 
-  DPIAQuestionnaire, 
+import {
+  DPIAQuestionnaire,
   DPIAReport,
   StepIndicator
-} from '@tantainnovative/ndpr-toolkit';
+} from '@tantainnovative/ndpr-toolkit/dpia';
 
 // Import question sets for each step
 import { 
@@ -495,7 +495,7 @@ function DPIAProcess() {
             <CardContent className="p-6">
               <h3 className="font-bold text-lg mb-2">Be Thorough</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                don&apos;t rush the DPIA process. Take the time to thoroughly identify and assess all potential risks. 
+                Do not rush the DPIA process. Take the time to thoroughly identify and assess all potential risks. 
                 A comprehensive DPIA is more effective at protecting both individuals and your organization.
               </p>
             </CardContent>

@@ -50,7 +50,7 @@ export default function CrossBorderTransfersDocs() {
           Install the NDPR Toolkit package which includes the Cross-Border Transfer components:
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>npm install @tantainnovative/ndpr-toolkit</code></pre>
+          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
         </div>
       </section>
 

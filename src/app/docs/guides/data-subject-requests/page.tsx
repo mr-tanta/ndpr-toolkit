@@ -68,7 +68,7 @@ export default function DataSubjectRequestsGuide() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DSRRequestForm } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { DSRRequestForm } from '@tantainnovative/ndpr-toolkit/dsr';
 
 function DSRSubmissionPage() {
   const requestTypes = [
@@ -164,12 +164,12 @@ function DSRSubmissionPage() {
             <h3 className="text-xl font-bold">Request Assessment</h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
               Once the identity of the data subject has been verified, you need to assess the request to determine what action is required. 
-              This includes identifying what data is involved, what systemsit&apos;s stored in, and what actions need to be taken.
+              This includes identifying what data is involved, what systems it&apos;s stored in, and what actions need to be taken.
             </p>
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DSRAssessment } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { DSRAssessment } from '@tantainnovative/ndpr-toolkit/dsr';
 
 function AssessRequest({ request }) {
   const handleAssessment = (assessment) => {
@@ -240,7 +240,7 @@ function AssessRequest({ request }) {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { DSRResponse } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { DSRResponse } from '@tantainnovative/ndpr-toolkit/dsr';
 
 function GenerateResponse({ request, assessment, fulfillment }) {
   const handleGenerateResponse = (response) => {
@@ -309,7 +309,7 @@ function GenerateResponse({ request, assessment, fulfillment }) {
           and their status. The NDPR Toolkit&apos;s DSRDashboard component is designed for this purpose.
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { DSRDashboard } from '@tantainnovative/ndpr-toolkit';
+          <pre><code>{`import { DSRDashboard } from '@tantainnovative/ndpr-toolkit/dsr';
 
 function AdminDashboard() {
   const [requests, setRequests] = useState([]);
@@ -413,7 +413,7 @@ function AdminDashboard() {
           provides a user interface for this purpose.
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit';
+          <pre><code>{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit/dsr';
 
 function RequestTrackingPage() {
   const [requestId, setRequestId] = useState('');
@@ -580,7 +580,7 @@ function RequestTrackingPage() {
         <ul className="list-disc pl-6 mb-6">
           <li>Verify the identity of the data subject</li>
           <li>Verify the accuracy of the new data provided</li>
-          <li>Update the data in all systems whereit&apos;s stored</li>
+          <li>Update the data in all systems where it&apos;s stored</li>
           <li>Inform any third parties with whom you&apos;ve shared the data about the correction</li>
         </ul>
         
@@ -591,7 +591,7 @@ function RequestTrackingPage() {
         <ul className="list-disc pl-6 mb-6">
           <li>Verify the identity of the data subject</li>
           <li>Determine if one of the grounds for erasure applies</li>
-          <li>Delete the data from all systems whereit&apos;s stored</li>
+          <li>Delete the data from all systems where it&apos;s stored</li>
           <li>Inform any third parties with whom you&apos;ve shared the data about the erasure</li>
           <li>Implement technical measures to ensure the data is permanently deleted</li>
         </ul>

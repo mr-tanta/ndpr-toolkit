@@ -66,7 +66,7 @@ export default function ManagingConsentGuide() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 
 function App() {
   const consentOptions = [
@@ -136,7 +136,7 @@ function App() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit/consent';
 
 // Create a consent storage instance
 const consentStorage = new ConsentStorage({
@@ -192,7 +192,7 @@ getConsent(userId).then(savedConsents => {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit/consent';
 
 function AnalyticsComponent() {
   const { hasConsent, isLoading } = useConsent('analytics');
@@ -243,7 +243,7 @@ function MarketingComponent() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
 
 function PrivacySettingsPage() {
   const consentOptions = [
@@ -316,7 +316,7 @@ function PrivacySettingsPage() {
             <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
               <h4 className="font-medium mb-2">Code Example</h4>
               <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentRecorder } from '@tantainnovative/ndpr-toolkit';
+                <pre><code>{`import { ConsentRecorder } from '@tantainnovative/ndpr-toolkit/consent';
 
 // Create a consent recorder instance
 const consentRecorder = new ConsentRecorder({
@@ -393,14 +393,14 @@ consentRecorder.getEventHistory(userId).then(history => {
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`import { useState, useEffect } from 'react';
-import { 
-  ConsentBanner, 
+import {
+  ConsentBanner,
   ConsentManager,
   ConsentStorage,
   ConsentRecorder,
   ConsentContext,
   useConsent
-} from '@tantainnovative/ndpr-toolkit';
+} from '@tantainnovative/ndpr-toolkit/consent';
 
 // Define consent options
 const consentOptions = [
@@ -483,7 +483,7 @@ function App() {
       version: '1.0'
     });
     
-    // Hide the banner ifit&apos;s showing
+    // Hide the banner if it&apos;s showing
     setShowBanner(false);
   };
   
@@ -634,7 +634,7 @@ function HomePage() {
             <CardContent className="p-6">
               <h3 className="font-bold text-lg mb-2">Granular Consent</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Provide granular consent options for different types of processing. don&apos;t bundle multiple purposes into a single 
+                Provide granular consent options for different types of processing. Do not bundle multiple purposes into a single
                 consent option. This allows users to consent to some types of processing but not others.
               </p>
             </CardContent>

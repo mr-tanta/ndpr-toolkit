@@ -27,6 +27,30 @@ export default function HooksDocs() {
         </p>
       </section>
 
+      <section id="installation" className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Installation</h2>
+        <p className="mb-4">
+          Install the NDPR Toolkit package which includes all hooks:
+        </p>
+        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
+          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
+        </div>
+        <p className="mb-4">
+          Import hooks from the dedicated hooks entry point, or from each module directly:
+        </p>
+        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
+          <pre><code>{`// From the hooks entry point
+import { useConsent, useDSR, useDPIA, useBreach, usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/hooks';
+
+// Or from individual modules
+import { useConsent } from '@tantainnovative/ndpr-toolkit/consent';
+import { useDSR } from '@tantainnovative/ndpr-toolkit/dsr';
+import { useDPIA } from '@tantainnovative/ndpr-toolkit/dpia';
+import { useBreach } from '@tantainnovative/ndpr-toolkit/breach';
+import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/policy';`}</code></pre>
+        </div>
+      </section>
+
       <section id="hooks" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Available Hooks</h2>
         
