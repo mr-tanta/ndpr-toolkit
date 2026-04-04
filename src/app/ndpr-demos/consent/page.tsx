@@ -662,22 +662,14 @@ export default function ConsentDemoPage() {
 <ConsentBanner
   position="${bannerPosition}"
   options={[
-    { id: 'necessary', label: 'Necessary', required: true },
-    { id: 'analytics', label: 'Analytics', required: false },
-    { id: 'marketing', label: 'Marketing', required: false },
-    { id: 'preferences', label: 'Preferences', required: false },
+    { id: 'necessary', label: 'Necessary', description: 'Required for site functionality', purpose: 'Essential operations', required: true },
+    { id: 'analytics', label: 'Analytics', description: 'Usage tracking', purpose: 'Measure site usage', required: false },
+    { id: 'marketing', label: 'Marketing', description: 'Targeted advertising', purpose: 'Deliver relevant ads', required: false },
+    { id: 'preferences', label: 'Preferences', description: 'Remember your settings', purpose: 'Personalisation', required: false },
   ]}
-  onAcceptAll={() => {
-    // All categories accepted
-    saveConsent({ method: 'accept-all', /* ... */ });
-  }}
-  onDeclineAll={() => {
-    // Only required categories kept
-    saveConsent({ method: 'decline', /* ... */ });
-  }}
-  onSavePreferences={(consents) => {
-    // Custom selection saved
-    saveConsent({ method: 'custom', consents });
+  onSave={(settings) => {
+    // Called with full ConsentSettings when the user accepts, declines, or customises
+    console.log('Consent saved:', settings);
   }}
 />`}</code></pre>
                 </div>
@@ -699,27 +691,30 @@ export default function ConsentDemoPage() {
                   <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit/consent';
 
 <ConsentManager
-  initialConsent={{
-    necessary: true,
-    analytics: false,
-    marketing: false,
-    preferences: false,
+  settings={{
+    consents: { necessary: true, analytics: false, marketing: false, preferences: false },
+    timestamp: Date.now(),
+    version: '1.0',
+    method: 'banner',
+    hasInteracted: true,
   }}
-  onConsentChange={(consents) => {
-    // Fires when any toggle changes
-    console.log('Updated consents:', consents);
+  onSave={(settings) => {
+    // Called when the user saves updated preferences
+    console.log('Updated consent settings:', settings);
   }}
   options={[
     {
       id: 'necessary',
       label: 'Necessary',
       description: 'Essential cookies',
+      purpose: 'Core site functionality',
       required: true,
     },
     {
       id: 'analytics',
       label: 'Analytics',
       description: 'Usage tracking',
+      purpose: 'Measure site usage',
       required: false,
     },
     // ...
