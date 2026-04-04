@@ -213,4 +213,22 @@
     <priority>0.7</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://ndprtoolkit.com.ng/blog/ndpa-penalties-what-businesses-need-to-know</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://ndprtoolkit.com.ng/blog/ndpa-vs-gdpr-key-differences</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://ndprtoolkit.com.ng/blog/5-steps-ndpa-compliance-small-business</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
 </urlset>
