@@ -1,8 +1,8 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "1.0.12",
+  "version": "2.0.0",
   "private": false,
-  "description": "Nigerian Data Protection Compliance Toolkit for implementing NDPR and DPA compliant features",
+  "description": "Nigeria Data Protection Toolkit — enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build && node scripts/post-build.js",
@@ -20,13 +20,20 @@
     "release:patch": "standard-version --release-as patch"
   },
   "keywords": [
+    "ndpa",
     "ndpr",
-    "dpa",
     "nigeria",
     "data-protection",
     "compliance",
     "privacy",
-    "gdpr"
+    "ndpc",
+    "consent",
+    "dpia",
+    "data-subject-rights",
+    "breach-notification",
+    "cross-border-transfer",
+    "ropa",
+    "lawful-basis"
   ],
   "author": {
     "name": "Abraham Esandayinze Tanta",
@@ -74,8 +81,6 @@
     "clsx": "^2.1.1",
     "jspdf": "^3.0.3",
     "lucide-react": "^0.507.0",
-    "posthog-js": "^1.268.8",
-    "posthog-node": "^5.9.2",
     "tailwind-merge": "^2.6.0",
     "tslib": "^2.4.0",
     "uuid": "^13.0.0"
@@ -100,6 +105,8 @@
     "eslint-plugin-react-hooks": "^4.5.0",
     "gh-pages": "^6.3.0",
     "husky": "^9.1.7",
+    "posthog-js": "^1.268.8",
+    "posthog-node": "^5.9.2",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^30.2.0",
     "lint-staged": "^16.2.3",

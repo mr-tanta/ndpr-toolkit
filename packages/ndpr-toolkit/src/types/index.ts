@@ -4,11 +4,19 @@ export * from './dsr';
 export * from './dpia';
 export * from './breach';
 export * from './privacy';
+export * from './lawful-basis';
+export * from './cross-border';
+export * from './ropa';
 
-// Additional shared types
+/**
+ * Global configuration for the Nigeria Data Protection Toolkit
+ * Aligned with NDPA 2023
+ */
 export interface NDPRConfig {
   organizationName: string;
   organizationContact: string;
+  dpoEmail?: string;
+  ndpcRegistrationNumber?: string;
   defaultLanguage?: string;
   enableAnalytics?: boolean;
   consentOptions?: {
