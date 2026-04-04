@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { DSRRequestForm } from '../../../components/dsr/DSRRequestForm';
 // Note: We'll mock the DSR context instead of importing it directly
 
-describe('DSRRequestForm', () => {
+describe('DSRRequestForm (NDPA Part IV - Data Subject Rights)', () => {
   const mockOnSubmit = jest.fn();
   
   const renderComponent = (props = {}) => {
@@ -24,7 +24,7 @@ describe('DSRRequestForm', () => {
     mockOnSubmit.mockClear();
   });
 
-  it('renders the form correctly', () => {
+  it('renders the NDPA data subject request form correctly', () => {
     renderComponent();
     
     expect(screen.getByText(/submit a data subject request/i)).toBeInTheDocument();

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0] — 2026-04-04
+
+### Breaking Changes
+- Rebranded from NDPR focus to NDPA 2023 (Nigeria Data Protection Act)
+- `NotificationRequirement.nitdaNotificationRequired` → `ndpcNotificationRequired` (old field deprecated)
+- `NotificationRequirement.nitdaNotificationDeadline` → `ndpcNotificationDeadline` (old field deprecated)
+- `RegulatoryNotification.nitdaContact` → `ndpcContact` (old field deprecated)
+
+### Added
+- Lawful Basis Tracker module (NDPA Section 25)
+- Cross-Border Transfer Assessment module (NDPA Part VI)
+- Record of Processing Activities (ROPA) module
+- New DSR types: 'information' (Section 29) and 'automated_decision_making' (Section 36)
+- NDPC consultation fields in DPIA results
+- Lawful basis field in consent settings
+- NDPC registration number in organization info
+- Transfer Impact Assessment types
+
+### Changed
+- All legal references updated from NDPR to NDPA 2023
+- Regulatory body references updated from NITDA to NDPC
+- Section references updated to NDPA sections
+- Privacy policy templates updated for NDPA compliance
+- Breach notification workflow targets NDPC instead of NITDA
+- PostHog moved from dependencies to devDependencies
+
 ### [1.0.12](https://github.com/tantainnovative/ndpr-toolkit/compare/v1.0.11...v1.0.12) (2025-09-30)
 
 

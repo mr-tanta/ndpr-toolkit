@@ -51,7 +51,7 @@ Object.defineProperty(document, 'cookie', {
   value: '',
 });
 
-describe('ConsentStorage', () => {
+describe('ConsentStorage (NDPA Consent Persistence)', () => {
   const testConsents: ConsentSettings = {
     consents: {
       necessary: true,

@@ -4,7 +4,7 @@
 
 ![NDPR Toolkit Logo](https://via.placeholder.com/200x200?text=NDPR+Toolkit)
 
-A comprehensive enterprise solution for implementing NDPR-compliant features in web applications, aligned with the Nigerian Data Protection Regulation (NDPR) and Data Protection Act (DPA).
+A comprehensive enterprise solution for implementing NDPR-compliant features in web applications, aligned with the Nigeria Data Protection Act (NDP Act) and its subsidiary regulations.
 
 [![npm version](https://img.shields.io/npm/v/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![license](https://img.shields.io/npm/l/@tantainnovative/ndpr-toolkit.svg)](https://github.com/tantainnovative/ndpr-toolkit/blob/main/LICENSE)
@@ -242,7 +242,7 @@ function PrivacyPolicyPage() {
 - `BreachReportForm`: Form for reporting data breaches
 - `BreachRiskAssessment`: Tool for assessing breach risk and severity
 - `BreachNotificationManager`: Component for managing breach notifications
-- `RegulatoryReportGenerator`: Tool for generating regulatory reports for NITDA
+- `RegulatoryReportGenerator`: Tool for generating regulatory reports for NDPC
 - `useBreach`: Hook for managing breach notification state
 - Types: `BreachReport`, `RiskAssessment`, `NotificationRequirement` for compliance with 72-hour notification requirements
 
@@ -430,7 +430,7 @@ function RiskAssessment({ breachId }) {
     if (requirements.nitdaNotificationRequired) {
       // Deadline is 72 hours from discovery
       const deadline = new Date(requirements.nitdaNotificationDeadline);
-      alert(`NITDA notification required by ${deadline.toLocaleString()}`);
+      alert(`NDPC notification required by ${deadline.toLocaleString()}`);
     }
   };
   

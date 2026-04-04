@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { DSRTracker } from '../../../components/dsr/DSRTracker';
 import { DSRRequest } from '../../../types/dsr';
 
-describe('DSRTracker', () => {
+describe('DSRTracker (NDPA Request Tracking)', () => {
   const mockRequest: DSRRequest = {
     id: 'dsr-123',
     type: 'access',
@@ -23,7 +23,7 @@ describe('DSRTracker', () => {
     mockTrackHandler.mockClear();
   });
 
-  it('renders the tracking form correctly', () => {
+  it('renders the NDPA-compliant tracking form correctly', () => {
     render(
       <DSRTracker
         requests={[]}

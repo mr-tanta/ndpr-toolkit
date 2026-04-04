@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ConsentManager } from '../../../components/consent/ConsentManager';
 import { ConsentOption, ConsentSettings } from '../../../types/consent';
 
-describe('ConsentManager', () => {
+describe('ConsentManager (NDPA Privacy Settings)', () => {
   const mockOnSave = jest.fn();
   
   const consentOptions: ConsentOption[] = [
@@ -25,7 +25,7 @@ describe('ConsentManager', () => {
     mockOnSave.mockClear();
   });
 
-  it('renders the consent manager correctly', () => {
+  it('renders the NDPA-compliant consent manager correctly', () => {
     render(
       <ConsentManager
         options={consentOptions}
@@ -46,7 +46,7 @@ describe('ConsentManager', () => {
     expect(screen.getByRole('button', { name: /Reset to Defaults/i })).toBeInTheDocument();
   });
 
-  it('calls onSave when Save Preferences is clicked', () => {
+  it('records consent preferences per NDPA when Save Preferences is clicked', () => {
     render(
       <ConsentManager
         options={consentOptions}

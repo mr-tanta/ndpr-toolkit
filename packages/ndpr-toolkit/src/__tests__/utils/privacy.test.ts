@@ -1,8 +1,8 @@
 import { generatePolicyText } from '../../utils/privacy';
 import { PolicySection } from '../../types/privacy';
 
-describe('generatePolicyText', () => {
-  it('should replace variables in templates', () => {
+describe('generatePolicyText (NDPA-compliant Privacy Policy)', () => {
+  it('should replace variables in NDPA-compliant policy templates', () => {
     const sections: PolicySection[] = [
       {
         id: 'introduction',

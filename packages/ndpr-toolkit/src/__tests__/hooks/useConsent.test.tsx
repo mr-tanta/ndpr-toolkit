@@ -24,7 +24,7 @@ Object.defineProperty(window, 'localStorage', {
   value: mockLocalStorage,
 });
 
-describe('useConsent', () => {
+describe('useConsent (NDPA Consent Management Hook)', () => {
   beforeEach(() => {
     mockLocalStorage.clear();
     jest.clearAllMocks();
@@ -51,7 +51,7 @@ describe('useConsent', () => {
     },
   ];
 
-  it('should initialize with default consent settings', () => {
+  it('should initialize with default consent settings per NDPA requirements', () => {
     const { result } = renderHook(() => useConsent({
       options: consentOptions,
       storageOptions: { storageKey: 'test-consent' }
@@ -125,7 +125,7 @@ describe('useConsent', () => {
     expect(result.current.shouldShowBanner).toBe(true);
   });
 
-  it('should reject all non-required consent options', () => {
+  it('should reject all non-required consent options per NDPA Section 26 withdrawal right', () => {
     const { result } = renderHook(() => useConsent({
       options: consentOptions,
       storageOptions: { storageKey: 'test-consent' }

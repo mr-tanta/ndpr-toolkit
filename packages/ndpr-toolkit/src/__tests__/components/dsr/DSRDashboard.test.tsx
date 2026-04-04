@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { DSRDashboard } from '../../../components/dsr/DSRDashboard';
 import { DSRRequest } from '../../../types/dsr';
 
-describe('DSRDashboard', () => {
+describe('DSRDashboard (NDPA Data Subject Request Management)', () => {
   const mockRequests: DSRRequest[] = [
     {
       id: '1',

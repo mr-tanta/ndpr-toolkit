@@ -1,8 +1,8 @@
 import { validateConsent } from '../../utils/consent';
 import { ConsentSettings } from '../../types/consent';
 
-describe('validateConsent', () => {
-  it('should validate valid consent settings', () => {
+describe('validateConsent (NDPA Section 26)', () => {
+  it('should validate valid consent settings per NDPA requirements', () => {
     const settings: ConsentSettings = {
       consents: {
         necessary: true,
@@ -20,7 +20,7 @@ describe('validateConsent', () => {
     expect(result.errors).toEqual([]);
   });
 
-  it('should invalidate settings with missing consents', () => {
+  it('should invalidate settings with missing consents per NDPA requirements', () => {
     const settings: ConsentSettings = {
       consents: {},
       timestamp: Date.now(),

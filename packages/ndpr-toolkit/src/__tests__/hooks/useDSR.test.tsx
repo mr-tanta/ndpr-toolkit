@@ -24,7 +24,7 @@ Object.defineProperty(window, 'localStorage', {
   value: mockLocalStorage,
 });
 
-describe('useDSR', () => {
+describe('useDSR (NDPA Data Subject Rights Hook)', () => {
   beforeEach(() => {
     mockLocalStorage.clear();
     jest.clearAllMocks();
@@ -64,7 +64,7 @@ describe('useDSR', () => {
     expect(result.current.requests).toEqual([]);
   });
 
-  it('should submit a new DSR request', () => {
+  it('should submit a new DSR request per NDPA Part IV', () => {
     const { result } = renderHook(() => useDSR({
       requestTypes: mockRequestTypes,
       storageKey: 'test-dsr',

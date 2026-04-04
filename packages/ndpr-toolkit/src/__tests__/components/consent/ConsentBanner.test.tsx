@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { ConsentBanner } from '../../../components/consent/ConsentBanner';
 import { ConsentOption } from '../../../types/consent';
 
-describe('ConsentBanner', () => {
+describe('ConsentBanner (NDPA Consent Management)', () => {
   const mockOnSave = jest.fn();
   
   const consentOptions: ConsentOption[] = [
@@ -44,7 +44,7 @@ describe('ConsentBanner', () => {
     mockOnSave.mockClear();
   });
 
-  it('renders the consent banner correctly', () => {
+  it('renders the NDPA-compliant consent banner correctly', () => {
     renderComponent();
     
     expect(screen.getByText(/We Value Your Privacy/i)).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe('ConsentBanner', () => {
     expect(screen.getByRole('button', { name: /customize/i })).toBeInTheDocument();
   });
 
-  it('calls onSave when "Accept All" is clicked', () => {
+  it('records consent per NDPA Section 26 when "Accept All" is clicked', () => {
     renderComponent();
     
     fireEvent.click(screen.getByRole('button', { name: /accept all/i }));

@@ -1,8 +1,8 @@
 import { assessDPIARisk } from '../../utils/dpia';
 import { DPIAResult, DPIARisk } from '../../types/dpia';
 
-describe('assessDPIARisk', () => {
-  it('should correctly assess risk based on high risk data', () => {
+describe('assessDPIARisk (NDPA Section 39 - NDPC Consultation)', () => {
+  it('should correctly assess high risk data and require NDPC consultation per NDPA Section 39', () => {
     // Create a DPIA result with high risks
     const dpiaResult: DPIAResult = {
       id: '123',
@@ -59,12 +59,15 @@ describe('assessDPIARisk', () => {
     const result = assessDPIARisk(dpiaResult);
     
     expect(result.overallRiskLevel).toBe('high');
+    // NDPA Section 39 requires consultation with the NDPC for high risk
     expect(result.requiresConsultation).toBe(true);
     expect(result.canProceed).toBe(false);
     expect(result.recommendations.length).toBeGreaterThan(0);
+    // Verify the recommendation mentions consulting with the NDPC
+    expect(result.recommendations.some(r => r.includes('Consult with the NDPC'))).toBe(true);
   });
 
-  it('should handle medium risk levels', () => {
+  it('should handle medium risk levels without requiring NDPC consultation', () => {
     // Create a DPIA result with medium risks
     const dpiaResult: DPIAResult = {
       id: '456',
@@ -111,12 +114,13 @@ describe('assessDPIARisk', () => {
     const result = assessDPIARisk(dpiaResult);
     
     expect(result.overallRiskLevel).toBe('medium');
+    // Medium risk does not require NDPC consultation under NDPA Section 39
     expect(result.requiresConsultation).toBe(false);
     expect(result.canProceed).toBe(true);
     expect(result.recommendations.length).toBeGreaterThan(0);
   });
 
-  it('should handle low risk levels', () => {
+  it('should handle low risk levels without requiring NDPC consultation', () => {
     // Create a DPIA result with no significant risks
     const dpiaResult: DPIAResult = {
       id: '789',
@@ -153,8 +157,11 @@ describe('assessDPIARisk', () => {
     const result = assessDPIARisk(dpiaResult);
     
     expect(result.overallRiskLevel).toBe('low');
+    // Low risk does not require NDPC consultation under NDPA Section 39
     expect(result.requiresConsultation).toBe(false);
     expect(result.canProceed).toBe(true);
     expect(result.recommendations.length).toBeGreaterThan(0);
+    // Verify no recommendation mentions NDPC consultation for low risk
+    expect(result.recommendations.some(r => r.includes('Consult with the NDPC'))).toBe(false);
   });
 });

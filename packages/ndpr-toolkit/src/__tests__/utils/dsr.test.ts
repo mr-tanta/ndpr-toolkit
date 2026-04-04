@@ -1,8 +1,8 @@
 import { formatDSRRequest } from '../../utils/dsr';
 import { DSRRequest, DSRType, DSRStatus } from '../../types/dsr';
 
-describe('formatDSRRequest', () => {
-  it('should format a DSR request correctly', () => {
+describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
+  it('should format a DSR access request correctly per NDPA Section 30', () => {
     const request: DSRRequest = {
       id: '123',
       type: 'access',
@@ -77,6 +77,48 @@ describe('formatDSRRequest', () => {
     expect(result.formattedRequest.dataSubject.name).toBe('Bob Johnson');
     expect(result.formattedRequest.requestType).toBe('rectification');
     expect(result.formattedRequest.status).toBe('completed');
+  });
+
+  it('should handle NDPA Section 29 information request type', () => {
+    const request: DSRRequest = {
+      id: '201',
+      type: 'information',
+      status: 'pending',
+      createdAt: 1620000000000,
+      updatedAt: 1620000000000,
+      subject: {
+        name: 'Grace Obi',
+        email: 'grace@example.com'
+      },
+      description: 'I want to know what data you hold about me'
+    };
+
+    const result = formatDSRRequest(request);
+
+    expect(result.isValid).toBe(true);
+    expect(result.formattedRequest.requestType).toBe('information');
+    expect(result.formattedRequest.dataSubject.name).toBe('Grace Obi');
+  });
+
+  it('should handle NDPA Section 36 automated decision-making request type', () => {
+    const request: DSRRequest = {
+      id: '202',
+      type: 'automated_decision_making',
+      status: 'pending',
+      createdAt: 1620000000000,
+      updatedAt: 1620000000000,
+      subject: {
+        name: 'Emeka Nwankwo',
+        email: 'emeka@example.com'
+      },
+      description: 'I want to understand decisions made about me by automated systems'
+    };
+
+    const result = formatDSRRequest(request);
+
+    expect(result.isValid).toBe(true);
+    expect(result.formattedRequest.requestType).toBe('automated_decision_making');
+    expect(result.formattedRequest.dataSubject.name).toBe('Emeka Nwankwo');
   });
 
   it('should handle additional info when present', () => {
