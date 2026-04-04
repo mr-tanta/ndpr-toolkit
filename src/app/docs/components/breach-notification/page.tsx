@@ -306,7 +306,7 @@ function BreachReportingPage() {
                 Risk Level: <strong>{currentBreach.riskAssessment.riskLevel}</strong>
               </p>
               <p>
-                {currentBreach.riskAssessment.requiresNitdaNotification 
+                {currentBreach.riskAssessment.requiresNdpcNotification 
                   ? 'NDPC notification is required within 72 hours.'
                   : 'NDPC notification is not required.'}
               </p>
@@ -361,7 +361,7 @@ function BreachManagementDashboard() {
       />
       
       {selectedBreach && selectedBreach.riskAssessment && 
-       selectedBreach.riskAssessment.requiresNitdaNotification && (
+       selectedBreach.riskAssessment.requiresNdpcNotification && (
         <div>
           <h2>Regulatory Report Generator</h2>
           <p>
@@ -652,12 +652,12 @@ function BreachManagementDashboard() {
   /**
    * Whether NDPC notification is required
    */
-  nitdaNotificationRequired: boolean;
+  ndpcNotificationRequired: boolean;
 
   /**
    * Deadline for NDPC notification (72 hours from discovery)
    */
-  nitdaNotificationDeadline: number;
+  ndpcNotificationDeadline: number;
   
   /**
    * Whether data subject notification is required
@@ -728,7 +728,7 @@ const requirements = determineNotificationRequirements({
 });
 
 // Generate a regulatory report for the NDPC
-if (requirements.nitdaNotificationRequired) {
+if (requirements.ndpcNotificationRequired) {
   const report = generateRegulatoryReport({
     breachId: newBreachReport.id,
     riskAssessmentId: riskAssessment.id

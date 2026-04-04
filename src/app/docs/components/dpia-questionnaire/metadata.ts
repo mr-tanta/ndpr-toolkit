@@ -1,20 +1,20 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'DPIA Questionnaire Component | NDPR Toolkit Documentation',
-  description: 'Learn how to implement an NDPR-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPR Toolkit.',
-  keywords: 'DPIA, Data Protection Impact Assessment, NDPR Compliance, Risk Assessment, Privacy Impact',
+  title: 'DPIA Questionnaire Component | NDPA Toolkit Documentation',
+  description: 'Learn how to implement an NDPA-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPA Toolkit.',
+  keywords: 'DPIA, Data Protection Impact Assessment, NDPA Compliance, NDPA 2023, Risk Assessment, Privacy Impact',
   openGraph: {
-    title: 'DPIA Questionnaire Component | NDPR Toolkit Documentation',
-    description: 'Learn how to implement an NDPR-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPR Toolkit.',
+    title: 'DPIA Questionnaire Component | NDPA Toolkit Documentation',
+    description: 'Learn how to implement an NDPA-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPA Toolkit.',
     url: 'https://tantainnovatives.com/ndpr-toolkit/docs/components/dpia-questionnaire',
-    siteName: 'Tanta Innovative NDPR Toolkit',
+    siteName: 'NDPA Toolkit',
     images: [
       {
         url: '/og-dpia-docs.png',
         width: 1200,
         height: 630,
-        alt: 'NDPR Toolkit DPIA Component Documentation',
+        alt: 'NDPA Toolkit DPIA Component Documentation',
       },
     ],
     locale: 'en_US',
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DPIA Questionnaire Component | NDPR Toolkit Documentation',
-    description: 'Learn how to implement an NDPR-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPR Toolkit.',
+    title: 'DPIA Questionnaire Component | NDPA Toolkit Documentation',
+    description: 'Learn how to implement an NDPA-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPA Toolkit.',
     images: ['/og-dpia-docs.png'],
   },
 };

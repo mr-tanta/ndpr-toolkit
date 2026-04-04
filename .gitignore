@@ -54,7 +54,7 @@ next-env.d.ts
 .cursor/
 .cursorignore
 
-# Claude related files
+# Local config files
 .claude/
 CLAUDE.md
 claude.md

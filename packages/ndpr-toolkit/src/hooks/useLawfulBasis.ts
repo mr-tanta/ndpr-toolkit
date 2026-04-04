@@ -3,7 +3,7 @@ import { ProcessingActivity, LawfulBasisSummary } from '../types/lawful-basis';
 import {
   validateProcessingActivity,
   generateLawfulBasisSummary,
-  ValidationResult,
+  LawfulBasisValidationResult,
 } from '../utils/lawful-basis';
 
 interface UseLawfulBasisOptions {
@@ -74,7 +74,7 @@ interface UseLawfulBasisReturn {
   /**
    * Validate a processing activity
    */
-  validateActivity: (activity: ProcessingActivity) => ValidationResult;
+  validateActivity: (activity: ProcessingActivity) => LawfulBasisValidationResult;
 }
 
 /**
@@ -107,7 +107,7 @@ export function useLawfulBasis({
 
   // Persist activities to local storage when they change
   useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined' && activities.length > 0) {
+    if (useLocalStorage && typeof window !== 'undefined') {
       try {
         localStorage.setItem(storageKey, JSON.stringify(activities));
       } catch (error) {
@@ -118,7 +118,7 @@ export function useLawfulBasis({
 
   // Generate a unique ID
   const generateId = (): string => {
-    return 'lb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    return 'lb_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
   };
 
   // Add a new processing activity
@@ -202,7 +202,7 @@ export function useLawfulBasis({
 
   // Validate a processing activity
   const validateActivity = useCallback(
-    (activity: ProcessingActivity): ValidationResult => {
+    (activity: ProcessingActivity): LawfulBasisValidationResult => {
       return validateProcessingActivity(activity);
     },
     []

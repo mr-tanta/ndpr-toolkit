@@ -10,7 +10,7 @@ import {
   getLawfulBasisDescription,
   assessComplianceGaps,
   generateLawfulBasisSummary,
-  ComplianceGap,
+  LawfulBasisComplianceGap,
 } from '../../utils/lawful-basis';
 
 export interface LawfulBasisTrackerProps {
@@ -192,7 +192,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   };
 
   const summary: LawfulBasisSummary = generateLawfulBasisSummary(activities);
-  const complianceGaps: ComplianceGap[] = assessComplianceGaps(activities);
+  const complianceGaps: LawfulBasisComplianceGap[] = assessComplianceGaps(activities);
 
   // Parse comma-separated string into array
   const parseList = (value: string): string[] => {

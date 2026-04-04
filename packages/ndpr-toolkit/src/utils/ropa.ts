@@ -8,7 +8,7 @@ import type {
 /**
  * Compliance gap found in a processing record
  */
-export interface ComplianceGap {
+export interface ROPAComplianceGap {
   recordId: string;
   recordName: string;
   gaps: string[];
@@ -17,7 +17,7 @@ export interface ComplianceGap {
 /**
  * Validation result for a processing record
  */
-export interface ValidationResult {
+export interface ROPAValidationResult {
   valid: boolean;
   errors: string[];
 }
@@ -40,7 +40,7 @@ const ALL_LAWFUL_BASES: LawfulBasis[] = [
  */
 export function validateProcessingRecord(
   record: ProcessingRecord
-): ValidationResult {
+): ROPAValidationResult {
   const errors: string[] = [];
 
   if (!record.id || record.id.trim() === '') {
@@ -345,8 +345,8 @@ export function exportROPAToCSV(ropa: RecordOfProcessingActivities): string {
  */
 export function identifyComplianceGaps(
   ropa: RecordOfProcessingActivities
-): ComplianceGap[] {
-  const gaps: ComplianceGap[] = [];
+): ROPAComplianceGap[] {
+  const gaps: ROPAComplianceGap[] = [];
   const now = Date.now();
 
   for (const record of ropa.records) {

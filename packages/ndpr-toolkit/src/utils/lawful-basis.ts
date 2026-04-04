@@ -7,7 +7,7 @@ import {
 /**
  * Validation result for a processing activity
  */
-export interface ValidationResult {
+export interface LawfulBasisValidationResult {
   isValid: boolean;
   errors: string[];
   warnings: string[];
@@ -16,7 +16,7 @@ export interface ValidationResult {
 /**
  * Compliance gap identified across processing activities
  */
-export interface ComplianceGap {
+export interface LawfulBasisComplianceGap {
   activityId: string;
   activityName: string;
   type: 'missing_approval' | 'overdue_review' | 'missing_justification' | 'missing_lia' | 'missing_sensitive_condition' | 'missing_retention' | 'missing_data_categories' | 'missing_purposes';
@@ -34,7 +34,7 @@ export interface ComplianceGap {
  * @param activity The processing activity to validate
  * @returns Validation result with errors and warnings
  */
-export function validateProcessingActivity(activity: ProcessingActivity): ValidationResult {
+export function validateProcessingActivity(activity: ProcessingActivity): LawfulBasisValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
 
@@ -155,8 +155,8 @@ export function getLawfulBasisDescription(basis: LawfulBasis): string {
  * @param activities Array of processing activities to analyze
  * @returns Array of identified compliance gaps
  */
-export function assessComplianceGaps(activities: ProcessingActivity[]): ComplianceGap[] {
-  const gaps: ComplianceGap[] = [];
+export function assessComplianceGaps(activities: ProcessingActivity[]): LawfulBasisComplianceGap[] {
+  const gaps: LawfulBasisComplianceGap[] = [];
 
   for (const activity of activities) {
     // Skip archived activities

@@ -96,7 +96,7 @@ export function useCrossBorderTransfer({
   onAdd,
   onUpdate,
   onRemove,
-}: UseCrossBorderTransferOptions): UseCrossBorderTransferReturn {
+}: UseCrossBorderTransferOptions = {}): UseCrossBorderTransferReturn {
   const [transfers, setTransfers] = useState<CrossBorderTransfer[]>(initialTransfers);
 
   // Load transfers from storage on mount
@@ -115,7 +115,7 @@ export function useCrossBorderTransfer({
 
   // Save transfers to storage when they change
   useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined' && transfers.length > 0) {
+    if (useLocalStorage && typeof window !== 'undefined') {
       try {
         localStorage.setItem(storageKey, JSON.stringify(transfers));
       } catch (error) {
@@ -126,7 +126,7 @@ export function useCrossBorderTransfer({
 
   // Generate a unique ID
   const generateId = (): string => {
-    return 'cbt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    return 'cbt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11);
   };
 
   // Add a new transfer
@@ -136,10 +136,10 @@ export function useCrossBorderTransfer({
     ): CrossBorderTransfer => {
       const now = Date.now();
       const newTransfer: CrossBorderTransfer = {
+        ...transferData,
         id: generateId(),
         createdAt: now,
         updatedAt: now,
-        ...transferData,
       };
 
       setTransfers((prev) => [...prev, newTransfer]);

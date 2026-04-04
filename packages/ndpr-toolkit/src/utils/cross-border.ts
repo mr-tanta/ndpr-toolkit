@@ -274,7 +274,7 @@ export function assessTransferRisk(transfer: CrossBorderTransfer): TransferRiskR
   }
 
   // Factor 7: Safeguards count
-  if (transfer.safeguards.length < 3) {
+  if ((transfer.safeguards?.length || 0) < 3) {
     riskScore += 1;
     factors.push('Limited number of safeguards documented.');
     recommendations.push('Document additional technical, organizational, and contractual safeguards.');

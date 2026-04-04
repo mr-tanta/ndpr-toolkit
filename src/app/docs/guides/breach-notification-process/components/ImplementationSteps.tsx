@@ -110,7 +110,7 @@ function RiskAssessmentPage({ breachData }) {
     .then(data => {
       // Update UI based on assessment results
       setAssessmentComplete(true);
-      setRequiresNotification(assessment.requiresNitdaNotification);
+      setRequiresNotification(assessment.requiresNdpcNotification);
     });
   };
 

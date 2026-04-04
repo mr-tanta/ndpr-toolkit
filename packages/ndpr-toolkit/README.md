@@ -4,7 +4,7 @@
 
 ![NDPR Toolkit Logo](https://via.placeholder.com/200x200?text=NDPR+Toolkit)
 
-A comprehensive enterprise solution for implementing NDPR-compliant features in web applications, aligned with the Nigeria Data Protection Act (NDP Act) and its subsidiary regulations.
+A comprehensive enterprise solution for implementing NDPA-compliant features in web applications, aligned with the Nigeria Data Protection Act (NDPA) 2023 and its subsidiary regulations.
 
 [![npm version](https://img.shields.io/npm/v/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![license](https://img.shields.io/npm/l/@tantainnovative/ndpr-toolkit.svg)](https://github.com/tantainnovative/ndpr-toolkit/blob/main/LICENSE)
@@ -15,7 +15,7 @@ A comprehensive enterprise solution for implementing NDPR-compliant features in 
 
 ## Overview
 
-The NDPR Toolkit is an enterprise-grade solution that provides a comprehensive set of React components, hooks, and utilities to help organizations implement NDPR-compliant features in their web applications with minimal development effort. Designed by compliance experts and developers, this toolkit offers a complete solution for privacy policy management, consent handling, data subject rights, breach notification, and data protection impact assessments.
+The NDPR Toolkit is an enterprise-grade solution that provides a comprehensive set of React components, hooks, and utilities to help organizations implement NDPA-compliant features in their web applications with minimal development effort. Designed by compliance experts and developers, this toolkit offers a complete solution for privacy policy management, consent handling, data subject rights, breach notification, and data protection impact assessments.
 
 > **NDPR Toolkit is actively maintained and regularly updated to ensure compliance with the latest Nigerian data protection regulations.**
 
@@ -23,7 +23,7 @@ The NDPR Toolkit is an enterprise-grade solution that provides a comprehensive s
 
 ### Privacy Policy Management
 
-- **PolicyGenerator**: Create customizable, NDPR-compliant privacy policies with an intuitive form interface
+- **PolicyGenerator**: Create customizable, NDPA-compliant privacy policies with an intuitive form interface
 - **PolicyPreview**: Display generated policies with professional formatting and section navigation
 - **PolicyExporter**: Export policies in multiple formats (PDF, HTML, Markdown) with compliance notices
 
@@ -49,7 +49,7 @@ The NDPR Toolkit is an enterprise-grade solution that provides a comprehensive s
 
 - **BreachReportForm**: Collect essential information about data breaches
 - **BreachRiskAssessment**: Evaluate the risk level of reported breaches
-- **RegulatoryReportGenerator**: Create NDPR-compliant breach notification reports
+- **RegulatoryReportGenerator**: Create NDPA-compliant breach notification reports for NDPC submission
 - **BreachNotificationManager**: Manage the entire breach notification workflow
 
 ### Enterprise Features

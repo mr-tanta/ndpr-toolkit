@@ -5,7 +5,7 @@ import type {
   RecordOfProcessingActivities,
   ROPASummary,
 } from '../../types/ropa';
-import type { ComplianceGap } from '../../utils/ropa';
+import type { ROPAComplianceGap } from '../../utils/ropa';
 import {
   validateProcessingRecord,
   generateROPASummary,
@@ -84,7 +84,7 @@ type ViewMode = 'list' | 'form' | 'summary';
 function createEmptyRecord(): ProcessingRecord {
   const now = Date.now();
   return {
-    id: `proc_${now}`,
+    id: `proc_${now}_${Math.random().toString(36).substring(2, 11)}`,
     name: '',
     description: '',
     controllerDetails: { name: '', contact: '', address: '' },
@@ -268,7 +268,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     link.href = url;
     link.download = `ropa_${ropa.organizationName.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 100);
   };
 
   const handleCancelForm = () => {

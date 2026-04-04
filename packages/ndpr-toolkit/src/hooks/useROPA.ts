@@ -8,7 +8,7 @@ import {
   generateROPASummary,
   exportROPAToCSV,
   identifyComplianceGaps,
-  type ComplianceGap,
+  type ROPAComplianceGap,
 } from '../utils/ropa';
 
 export interface UseROPAOptions {
@@ -72,7 +72,7 @@ export interface UseROPAReturn {
   /**
    * Identify compliance gaps across all records
    */
-  getComplianceGaps: () => ComplianceGap[];
+  getComplianceGaps: () => ROPAComplianceGap[];
 }
 
 /**
@@ -149,7 +149,7 @@ export function useROPA({
     return exportROPAToCSV(ropa);
   }, [ropa]);
 
-  const getComplianceGaps = useCallback((): ComplianceGap[] => {
+  const getComplianceGaps = useCallback((): ROPAComplianceGap[] => {
     return identifyComplianceGaps(ropa);
   }, [ropa]);
 

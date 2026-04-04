@@ -14,14 +14,14 @@ export type { DSRRequest, RequestType, DSRStatus, DSRType, RequestStatus } from 
 export { DPIAQuestionnaire } from './components/dpia/DPIAQuestionnaire';
 export { DPIAReport } from './components/dpia/DPIAReport';
 export { StepIndicator } from './components/dpia/StepIndicator';
-export type { DPIAQuestion, DPIASection, DPIAResult } from './types/dpia';
+export type { DPIAQuestion, DPIASection, DPIAResult, DPIARisk } from './types/dpia';
 
 // Breach Notification Components
 export { BreachReportForm } from './components/breach/BreachReportForm';
 export { BreachRiskAssessment } from './components/breach/BreachRiskAssessment';
 export { BreachNotificationManager } from './components/breach/BreachNotificationManager';
 export { RegulatoryReportGenerator } from './components/breach/RegulatoryReportGenerator';
-export type { BreachReport, RiskAssessment, NotificationRequirement, RegulatoryNotification } from './types/breach';
+export type { BreachReport, BreachCategory, RiskAssessment, NotificationRequirement, RegulatoryNotification } from './types/breach';
 
 // Privacy Policy Generator Components
 export { PolicyGenerator } from './components/policy/PolicyGenerator';
@@ -48,7 +48,8 @@ export { LawfulBasisTracker } from './components/lawful-basis/LawfulBasisTracker
 export type { LawfulBasis, SensitiveDataCondition, ProcessingActivity, LegitimateInterestAssessment, LawfulBasisSummary } from './types/lawful-basis';
 
 // Lawful Basis Utilities
-export { validateProcessingActivity, getLawfulBasisDescription, assessComplianceGaps } from './utils/lawful-basis';
+export { validateProcessingActivity, getLawfulBasisDescription, assessComplianceGaps, generateLawfulBasisSummary } from './utils/lawful-basis';
+export type { LawfulBasisComplianceGap, LawfulBasisValidationResult } from './utils/lawful-basis';
 
 // Lawful Basis Hook
 export { useLawfulBasis } from './hooks/useLawfulBasis';
@@ -70,7 +71,7 @@ export type { ProcessingRecord, RecordOfProcessingActivities, ROPASummary } from
 
 // ROPA Utilities
 export { validateProcessingRecord, generateROPASummary, exportROPAToCSV, identifyComplianceGaps } from './utils/ropa';
-export type { ComplianceGap, ValidationResult } from './utils/ropa';
+export type { ROPAComplianceGap, ROPAValidationResult } from './utils/ropa';
 
 // ROPA Hook
 export { useROPA } from './hooks/useROPA';
