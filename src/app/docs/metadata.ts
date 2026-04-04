@@ -1,12 +1,15 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'NDPA Toolkit Documentation | Implementation Guides & API Reference',
-  description: 'Comprehensive documentation for implementing NDPA-compliant features in your applications, including guides, API references, and compliance information.',
-  keywords: 'NDPA Documentation, Nigeria Data Protection Act, Compliance Guides, API Reference, Implementation Tutorials',
+  title: 'Documentation | NDPA Toolkit',
+  description:
+    'Comprehensive NDPA 2023 compliance docs: component API reference, implementation guides, and NDPC best practices. Start building compliant apps now.',
+  keywords:
+    'NDPA documentation, Nigeria Data Protection docs, NDPC compliance guide, NDPA 2023 API reference, data protection implementation',
   openGraph: {
-    title: 'NDPA Toolkit Documentation | Implementation Guides & API Reference',
-    description: 'Comprehensive documentation for implementing NDPA-compliant features in your applications, including guides, API references, and compliance information.',
+    title: 'Documentation | NDPA Toolkit',
+    description:
+      'Comprehensive NDPA 2023 compliance docs: component API reference, implementation guides, and NDPC best practices. Start building compliant apps now.',
     url: 'https://ndprtoolkit.com.ng/docs',
     siteName: 'NDPA Toolkit',
     images: [
@@ -22,8 +25,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NDPA Toolkit Documentation | Implementation Guides & API Reference',
-    description: 'Comprehensive documentation for implementing NDPA-compliant features in your applications, including guides, API references, and compliance information.',
+    title: 'Documentation | NDPA Toolkit',
+    description:
+      'Comprehensive NDPA 2023 compliance docs: component API reference, implementation guides, and NDPC best practices. Start building compliant apps now.',
     images: ['/og-docs.png'],
   },
 };

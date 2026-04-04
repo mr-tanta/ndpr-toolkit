@@ -11,7 +11,7 @@ image: "/blog/modular-imports.png"
 
 One of the first questions developers ask when evaluating a third-party library is: "How much will this add to my bundle?" It is a fair question. Nobody wants a compliance toolkit inflating their production bundle by hundreds of kilobytes when they only need a consent banner.
 
-With NDPA Toolkit v2, we solved this with modular import paths. Here is how to use them effectively.
+With [NDPA Toolkit v2](/blog/introducing-ndpa-toolkit-v2), we solved this with modular import paths. Here is how to use them effectively.
 
 ## The Three Import Styles
 
@@ -19,7 +19,7 @@ The toolkit exposes three levels of imports, each designed for a different use c
 
 ### 1. Core Utilities (~848 bytes gzipped)
 
-If you only need validation functions, consent logic, or utility helpers — without any React components — import from `/core`:
+If you only need validation functions, [consent](/docs/components/consent-management) logic, or utility helpers — without any React components — import from `/core`:
 
 ```typescript
 import { validateConsent, generatePolicyText } from '@tantainnovative/ndpr-toolkit/core';
@@ -80,19 +80,19 @@ Use this only if you genuinely need most of the toolkit's features, such as in a
 Beyond the three main paths, every module has its own import path. This is the sweet spot for most applications — you get full components but only for the features you actually use:
 
 ```typescript
-// Only consent components (~12 KB)
+// Only consent components (~12 KB) — try the [consent demo](/ndpr-demos/consent)
 import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 
-// Only breach notification (~15 KB)
+// Only breach notification (~15 KB) — try the [breach demo](/ndpr-demos/breach)
 import { BreachNotificationForm } from '@tantainnovative/ndpr-toolkit/breach';
 
-// Only lawful basis tracking (~10 KB)
+// Only lawful basis tracking (~10 KB) — try the [lawful basis demo](/ndpr-demos/lawful-basis)
 import { LawfulBasisTracker } from '@tantainnovative/ndpr-toolkit/lawful-basis';
 
-// Only cross-border assessment (~11 KB)
+// Only cross-border assessment (~11 KB) — try the [cross-border demo](/ndpr-demos/cross-border)
 import { CrossBorderAssessment } from '@tantainnovative/ndpr-toolkit/cross-border';
 
-// Only ROPA management (~14 KB)
+// Only ROPA management (~14 KB) — try the [ROPA demo](/ndpr-demos/ropa)
 import { ROPAManager } from '@tantainnovative/ndpr-toolkit/ropa';
 ```
 
@@ -135,4 +135,4 @@ Make sure your bundler is configured for ESM resolution to get the best results.
 
 ---
 
-*Check your bundle impact with `npx @next/bundle-analyzer` and see the difference modular imports make. Full documentation is available in the [import guide](/docs).*
+*Check your bundle impact with `npx @next/bundle-analyzer` and see the difference modular imports make. Full documentation is available in the [import guide](/docs). Install the package from [npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit).*

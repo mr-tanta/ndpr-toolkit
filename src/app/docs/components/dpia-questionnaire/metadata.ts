@@ -1,12 +1,15 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'DPIA Questionnaire Component | NDPA Toolkit Documentation',
-  description: 'Learn how to implement an NDPA-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPA Toolkit.',
-  keywords: 'DPIA, Data Protection Impact Assessment, NDPA Compliance, NDPA 2023, Risk Assessment, Privacy Impact',
+  title: 'DPIA Questionnaire Docs | NDPA Toolkit',
+  description:
+    'Implement an NDPA 2023-compliant DPIA questionnaire with risk scoring and NDPC guidance. Full API reference, props, and integration examples included.',
+  keywords:
+    'DPIA questionnaire component, Data Protection Impact Assessment API, NDPA 2023 risk assessment, NDPC DPIA, privacy impact assessment toolkit',
   openGraph: {
-    title: 'DPIA Questionnaire Component | NDPA Toolkit Documentation',
-    description: 'Learn how to implement an NDPA-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPA Toolkit.',
+    title: 'DPIA Questionnaire Docs | NDPA Toolkit',
+    description:
+      'Implement an NDPA 2023-compliant DPIA questionnaire with risk scoring and NDPC guidance. Full API reference, props, and integration examples included.',
     url: 'https://ndprtoolkit.com.ng/docs/components/dpia-questionnaire',
     siteName: 'NDPA Toolkit',
     images: [
@@ -14,7 +17,7 @@ export const metadata: Metadata = {
         url: '/og-dpia-docs.png',
         width: 1200,
         height: 630,
-        alt: 'NDPA Toolkit DPIA Component Documentation',
+        alt: 'NDPA Toolkit DPIA Questionnaire Component Documentation',
       },
     ],
     locale: 'en_US',
@@ -22,8 +25,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DPIA Questionnaire Component | NDPA Toolkit Documentation',
-    description: 'Learn how to implement an NDPA-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPA Toolkit.',
+    title: 'DPIA Questionnaire Docs | NDPA Toolkit',
+    description:
+      'Implement an NDPA 2023-compliant DPIA questionnaire with risk scoring and NDPC guidance. Full API reference, props, and integration examples included.',
     images: ['/og-dpia-docs.png'],
   },
 };

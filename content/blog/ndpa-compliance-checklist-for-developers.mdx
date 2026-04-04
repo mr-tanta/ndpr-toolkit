@@ -12,7 +12,7 @@ If you are building a web application that processes personal data of Nigerian u
 
 This guide cuts through the legal jargon and gives you a practical, code-first checklist.
 
-## 1. Consent Collection (NDPA Section 25-26)
+## 1. [Consent](/ndpr-demos/consent) Collection (NDPA Section 25-26)
 
 Before processing personal data based on consent, you need:
 
@@ -37,9 +37,9 @@ const options = [
 ];
 ```
 
-**Key rule:** Consent must be refreshed every 13 months. The toolkit handles this automatically.
+**Key rule:** Consent must be refreshed every 13 months. The toolkit handles this automatically. For a deeper dive, read [Consent Management Best Practices](/blog/consent-management-best-practices).
 
-## 2. Data Subject Rights (NDPA Sections 29-36)
+## 2. [Data Subject Rights](/ndpr-demos/dsr) (NDPA Sections 29-36)
 
 Nigerian users have 8 rights under the NDPA. Your application must support all of them:
 
@@ -58,7 +58,7 @@ Nigerian users have 8 rights under the NDPA. Your application must support all o
 import { useDSR, formatDSRRequest } from '@tantainnovative/ndpr-toolkit/dsr';
 ```
 
-## 3. Breach Notification (NDPA Section 40)
+## 3. [Breach Notification](/ndpr-demos/breach) (NDPA Section 40)
 
 If you discover a data breach:
 
@@ -74,7 +74,7 @@ const result = calculateBreachSeverity(breachReport, riskAssessment);
 // result.timeframeHours — 72 hours
 ```
 
-## 4. Data Protection Impact Assessment (NDPA Section 38)
+## 4. [Data Protection Impact Assessment](/ndpr-demos/dpia) (NDPA Section 38)
 
 A DPIA is required when processing is likely to result in **high risk** to data subjects. This includes:
 
@@ -86,7 +86,7 @@ A DPIA is required when processing is likely to result in **high risk** to data 
 
 If the DPIA indicates high residual risk, you must consult the NDPC **before** processing (Section 39).
 
-## 5. Cross-Border Transfers (NDPA Sections 41-45)
+## 5. [Cross-Border Transfers](/ndpr-demos/cross-border) (NDPA Sections 41-45)
 
 Transferring personal data outside Nigeria requires one of these mechanisms:
 
@@ -117,7 +117,7 @@ Every processing activity must have a documented lawful basis. The NDPA recognis
 
 If you rely on legitimate interests, you must conduct a **Legitimate Interest Assessment (LIA)**.
 
-## 7. Record of Processing Activities
+## 7. [Record of Processing Activities](/ndpr-demos/ropa)
 
 Maintain a comprehensive register of all processing activities, including:
 
@@ -138,4 +138,4 @@ pnpm add @tantainnovative/ndpr-toolkit
 
 Start with the `/core` import for types and utilities (zero UI dependencies), then add components as needed.
 
-For the full API reference, visit [ndprtoolkit.com.ng/docs](https://ndprtoolkit.com.ng/docs).
+For the full API reference, visit the [documentation](/docs) or explore the [interactive demos](/ndpr-demos).

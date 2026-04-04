@@ -17,28 +17,38 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ndprtoolkit.com.ng"),
-  title: "Nigeria Data Protection Toolkit — NDPA 2023",
-  description: "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features in Nigerian applications",
+  title: {
+    default: "NDPA Toolkit | Nigeria Data Protection",
+    template: "%s | NDPA Toolkit",
+  },
+  description:
+    "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features. Consent, DSR, DPIA, breach notification, and more.",
+  keywords:
+    "NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, compliance toolkit, React, Next.js, open source",
   other: {
     "theme-color": "#1d4ed8",
   },
   openGraph: {
-    title: "Nigeria Data Protection Toolkit — NDPA 2023",
-    description: "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features in Nigerian applications",
+    title: "NDPA Toolkit | Nigeria Data Protection",
+    description:
+      "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features. Consent, DSR, DPIA, breach notification, and more.",
     type: "website",
+    siteName: "NDPA Toolkit",
+    locale: "en_US",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "NDPR Toolkit — NDPA 2023 Compliance Components",
+        alt: "NDPA Toolkit — Nigeria Data Protection Compliance Components",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nigeria Data Protection Toolkit — NDPA 2023",
-    description: "Open-source toolkit for implementing NDPA 2023 compliant features in Nigerian applications",
+    title: "NDPA Toolkit | Nigeria Data Protection",
+    description:
+      "Open-source toolkit for NDPA 2023 compliance: consent management, DSR, DPIA, breach notification, and more for Nigerian applications.",
     images: ["/og-image.png"],
   },
 };

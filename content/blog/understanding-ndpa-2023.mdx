@@ -11,7 +11,7 @@ image: "/blog/ndpa-guide.png"
 
 On 12 June 2023, President Bola Ahmed Tinubu signed the Nigeria Data Protection Act into law, replacing the NDPR 2019 as the primary data protection legislation in Nigeria. For developers building applications that handle Nigerian users' personal data, this is not something you can afford to ignore. Penalties under the NDPA can reach up to 2% of annual gross revenue or 10 million Naira, whichever is greater.
 
-This guide breaks down the NDPA from a developer's perspective — what you need to know, what you need to build, and how the NDPA Toolkit can help.
+This guide breaks down the NDPA from a developer's perspective — what you need to know, what you need to build, and how the [NDPA Toolkit](/docs) can help.
 
 ## What is the NDPA 2023?
 
@@ -35,7 +35,7 @@ The NDPA is Nigeria's comprehensive data protection law. It establishes the Nige
 
 Under the NDPA, you cannot process personal data without a lawful basis. Section 25 defines six:
 
-**1. Consent** — The data subject has given clear, informed consent for a specific purpose. This is the basis most developers will use for marketing, analytics, and non-essential processing.
+**1. Consent** — The data subject has given clear, informed consent for a specific purpose. This is the basis most developers will use for marketing, analytics, and non-essential processing. See our [consent management best practices](/blog/consent-management-best-practices) for implementation details.
 
 **2. Contract** — Processing is necessary to fulfil a contract with the data subject. Think order processing, account management, or service delivery.
 
@@ -83,7 +83,7 @@ The NDPA expands the rights available to data subjects across Sections 29-36:
 7. **Right Against Automated Decision-Making** (Section 35) — They have the right not to be subject to decisions based solely on automated processing.
 8. **Right to Withdraw Consent** (Section 36) — They can withdraw consent at any time, and withdrawal must be as easy as giving consent.
 
-The toolkit's `DataSubjectRights` component provides a ready-made portal for handling these requests:
+The toolkit's [`DataSubjectRights`](/docs/components/data-subject-rights) component provides a ready-made portal for handling these requests:
 
 ```typescript
 import { DataSubjectRightsForm } from '@tantainnovative/ndpr-toolkit/dsr';
@@ -98,7 +98,7 @@ import { DataSubjectRightsForm } from '@tantainnovative/ndpr-toolkit/dsr';
 
 Section 40 of the NDPA requires data controllers to notify the NDPC of a personal data breach within 72 hours of becoming aware of it. If the breach is likely to result in high risk to the rights of data subjects, you must also notify the affected individuals without undue delay.
 
-This is not optional, and the clock starts ticking the moment you become aware. The toolkit's `BreachNotification` module includes timeline tracking to help you stay within the 72-hour window:
+This is not optional, and the clock starts ticking the moment you become aware. The toolkit's [`BreachNotification`](/docs/components/breach-notification) module includes timeline tracking to help you stay within the 72-hour window:
 
 ```typescript
 import { BreachNotificationForm } from '@tantainnovative/ndpr-toolkit/breach';
@@ -136,4 +136,4 @@ Get started with the [documentation](/docs) or explore the [interactive demos](/
 
 ---
 
-*The NDPA Toolkit is open-source and available on [GitHub](https://github.com/mr-tanta/ndpr-toolkit). Contributions are welcome.*
+*The NDPA Toolkit is open-source and available on [GitHub](https://github.com/mr-tanta/ndpr-toolkit) and [npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit). For a practical implementation walkthrough, see the [developer's compliance checklist](/blog/ndpa-compliance-checklist-for-developers).*

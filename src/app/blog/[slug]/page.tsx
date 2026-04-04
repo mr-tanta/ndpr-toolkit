@@ -14,15 +14,32 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) return { title: 'Post Not Found' };
 
   return {
-    title: `${post.title} — NDPA Toolkit Blog`,
+    title: `${post.title} | NDPA Toolkit Blog`,
     description: post.description,
+    keywords: `NDPA, Nigeria Data Protection, NDPC, ${post.title}`,
     authors: [{ name: post.author }],
     openGraph: {
-      title: post.title,
+      title: `${post.title} | NDPA Toolkit Blog`,
       description: post.description,
       type: 'article',
       publishedTime: post.date,
       authors: [post.author],
+      siteName: 'NDPA Toolkit',
+      locale: 'en_US',
+      images: [
+        {
+          url: '/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: `${post.title} - NDPA Toolkit Blog`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image' as const,
+      title: `${post.title} | NDPA Toolkit Blog`,
+      description: post.description,
+      images: ['/og-image.png'],
     },
   };
 }
