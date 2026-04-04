@@ -421,53 +421,49 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+      <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-6 md:mb-0">
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">NT</div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">NDPA Toolkit</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    <a href="https://ndprtoolkit.com.ng" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tanta Innovative</a>
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Brand */}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">NDPA Toolkit</h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023.
+              </p>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Resources</h4>
+              <ul className="mt-3 space-y-2">
+                <li><a href="/docs" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Documentation</a></li>
+                <li><a href="/ndpr-demos" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Interactive Demos</a></li>
+                <li><a href="https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">npm Package</a></li>
+                <li><a href="https://github.com/mr-tanta/ndpr-toolkit" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">GitHub</a></li>
+              </ul>
+            </div>
+
+            {/* Author */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">Built by</h4>
+              <div className="mt-3">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">Abraham Esandayinze Tanta</p>
+                <ul className="mt-2 space-y-2">
+                  <li><a href="https://github.com/mr-tanta" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">GitHub</a></li>
+                  <li><a href="https://linkedin.com/in/mr-tanta" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">LinkedIn</a></li>
+                  <li><a href="https://tantainnovatives.com" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tanta Innovative</a></li>
+                </ul>
               </div>
             </div>
-            <div className="flex space-x-6">
-              <a href="https://github.com/mr-tanta/ndpr-toolkit" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-500">
-                <span className="sr-only">GitHub</span>
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-              </a>
-              <a href="/docs" className="text-gray-400 hover:text-gray-500">
-                <span className="sr-only">Documentation</span>
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              </a>
-              <a href="https://tantainnovatives.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-500">
-                <span className="sr-only">Tanta Innovative Website</span>
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
-                </svg>
-              </a>
-            </div>
           </div>
-          <div className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8 text-center">
-            <p className="text-base text-gray-500 dark:text-gray-400">
-              &copy; {new Date().getFullYear()} <a href="https://tantainnovatives.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tanta Innovative</a>. All rights reserved.
+
+          <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-400 dark:text-gray-500">
+              &copy; {new Date().getFullYear()} Abraham Esandayinze Tanta. MIT License.
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-              Developed as an open-source solution for Nigerian tech businesses.
+            <p className="text-sm text-gray-400 dark:text-gray-500">
+              Open-source compliance toolkit for Nigerian businesses.
             </p>
-            <div className="flex justify-center mt-4 space-x-4">
-              <a href="https://tantainnovatives.com/contact-us" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Us</a>
-              <a href="https://tantainnovatives.com/services" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Services</a>
-              <a href="https://tantainnovatives.com/about-us" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a>
-            </div>
           </div>
         </div>
       </footer>
