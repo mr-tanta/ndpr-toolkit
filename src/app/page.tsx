@@ -192,20 +192,22 @@ export default function Home() {
 
               </div>
               
-              <div className="mt-8 flex items-center justify-center lg:justify-start text-sm text-gray-500 dark:text-gray-400">
-                <div className="flex -space-x-2 mr-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">NG</div>
-                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">NDPA</div>
-                  <div className="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center text-white text-xs font-bold">UI</div>
-                </div>
-                <span>Built for Nigerian businesses with enterprise-ready components</span>
-              </div>
-              
-              <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                <div className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full">
-                  <span className="mr-1 text-blue-600 dark:text-blue-400">v2.1.0</span>
-                  <span className="px-1.5 py-0.5 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded-full ml-2">React 19 Compatible</span>
-                </div>
+              <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <span className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full text-blue-700 dark:text-blue-300 font-medium">
+                  v2.1.1
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                  8 compliance modules
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                  194 tests passing
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                  TypeScript native
+                </span>
               </div>
             </div>
             
