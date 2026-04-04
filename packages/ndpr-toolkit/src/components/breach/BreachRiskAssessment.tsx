@@ -124,7 +124,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
     const requiresNotification = risksToRightsAndFreedoms || level === 'high' || level === 'critical';
     setNotificationRequired(requiresNotification);
     
-    // Calculate notification deadline (72 hours from discovery under NDPR)
+    // Calculate notification deadline (72 hours from discovery under NDPA Section 40)
     const deadline = breachData.discoveredAt + (72 * 60 * 60 * 1000);
     setNotificationDeadline(deadline);
     
@@ -277,14 +277,14 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
               {notificationRequired ? (
                 <div>
                   <p className={`text-sm font-bold mb-2 ${
-                    hoursRemaining > 24 
-                      ? 'text-yellow-800 dark:text-yellow-200' 
+                    hoursRemaining > 24
+                      ? 'text-yellow-800 dark:text-yellow-200'
                       : 'text-red-800 dark:text-red-200'
                   }`}>
-                    NITDA Notification Required
+                    NDPC Notification Required
                   </p>
                   <p className="text-sm mb-2">
-                    Under the NDPR, this breach must be reported to NITDA within 72 hours of discovery.
+                    Under the NDPA (Section 40), this breach must be reported to the NDPC within 72 hours of discovery.
                   </p>
                   <p className="text-sm mb-2">
                     <span className="font-medium">Notification Deadline:</span> {formatDate(notificationDeadline)}
@@ -297,16 +297,16 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                   </p>
                   <p className="text-sm mb-2">
                     <span className="font-medium">Data Subject Notification:</span>{' '}
-                    {highRisksToRightsAndFreedoms ? 'Required' : 'Not required unless directed by NITDA'}
+                    {highRisksToRightsAndFreedoms ? 'Required (NDPA Section 40(4))' : 'Not required unless directed by NDPC'}
                   </p>
                 </div>
               ) : (
                 <div>
                   <p className="text-sm font-bold mb-2 text-green-800 dark:text-green-200">
-                    NITDA Notification Not Required
+                    NDPC Notification Not Required
                   </p>
                   <p className="text-sm mb-2">
-                    Based on this assessment, this breach does not need to be reported to NITDA.
+                    Based on this assessment, this breach does not need to be reported to the NDPC.
                   </p>
                   <p className="text-sm mb-2">
                     However, the breach should still be documented internally for compliance purposes.
@@ -319,7 +319,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 <ul className="list-disc pl-5 mt-1">
                   {notificationRequired ? (
                     <>
-                      <li>Prepare a notification report for NITDA</li>
+                      <li>Prepare a notification report for the NDPC</li>
                       <li>Document all aspects of the breach and your response</li>
                       {highRisksToRightsAndFreedoms && <li>Prepare communications for affected data subjects</li>}
                       <li>Implement measures to mitigate the impact of the breach</li>
@@ -489,7 +489,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                   </label>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 ml-6">
-                  Under the NDPR, breaches that pose a risk to rights and freedoms must be reported to NITDA within 72 hours.
+                  Under the NDPA (Section 40), breaches that pose a risk to rights and freedoms must be reported to the NDPC within 72 hours.
                 </p>
               </div>
               
@@ -507,7 +507,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                   </label>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 ml-6">
-                  Under the NDPR, breaches that pose a high risk to rights and freedoms also require notification to affected data subjects.
+                  Under the NDPA (Section 40(4)), breaches that pose a high risk to rights and freedoms also require notification to affected data subjects without undue delay.
                 </p>
               </div>
             </div>
@@ -543,11 +543,11 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
               </div>
             </div>
             
-            {/* NDPR Notice */}
+            {/* NDPA Notice */}
             <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-              <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPR Breach Notification Requirements</h3>
+              <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Breach Notification Requirements</h3>
               <p className="text-blue-700 dark:text-blue-300 text-sm">
-                Under the Nigeria Data Protection Regulation (NDPR), data breaches that pose a risk to the rights and freedoms of data subjects must be reported to NITDA within 72 hours of discovery.
+                Under the Nigeria Data Protection Act (NDPA), Section 40, data breaches that pose a risk to the rights and freedoms of data subjects must be reported to the NDPC within 72 hours of discovery.
                 This assessment will determine if notification is required for this breach.
               </p>
             </div>

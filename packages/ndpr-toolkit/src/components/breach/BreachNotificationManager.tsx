@@ -41,7 +41,7 @@ export interface BreachNotificationManagerProps {
   
   /**
    * Description text displayed on the manager
-   * @default "Manage data breach notifications and track compliance with NDPR requirements."
+   * @default "Manage data breach notifications and track compliance with NDPA requirements."
    */
   description?: string;
   
@@ -82,7 +82,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   onRequestAssessment,
   onRequestNotification,
   title = "Breach Notification Manager",
-  description = "Manage data breach notifications and track compliance with NDPR requirements.",
+  description = "Manage data breach notifications and track compliance with NDPA requirements.",
   className = "",
   buttonClassName = "",
   showBreachDetails = true,
@@ -208,12 +208,12 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   ): NotificationRequirement | null {
     const result = calculateBreachSeverity(breach, assessment || undefined);
     
-    // Calculate the deadline (72 hours from discovery under NDPR)
+    // Calculate the deadline (72 hours from discovery under NDPA Section 40)
     const deadline = breach.discoveredAt + (result.timeframeHours * 60 * 60 * 1000);
-    
+
     return {
-      nitdaNotificationRequired: result.notificationRequired,
-      nitdaNotificationDeadline: deadline,
+      ndpcNotificationRequired: result.notificationRequired,
+      ndpcNotificationDeadline: deadline,
       dataSubjectNotificationRequired: assessment?.highRisksToRightsAndFreedoms || false,
       justification: result.justification
     };
@@ -263,19 +263,19 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   const renderNotificationStatus = () => {
     if (!selectedBreach || !notificationRequirements) return null;
     
-    if (!notificationRequirements.nitdaNotificationRequired) {
+    if (!notificationRequirements.ndpcNotificationRequired) {
       return (
         <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
           <p className="text-sm text-green-800 dark:text-green-200 font-medium">
             Notification Not Required
           </p>
           <p className="text-xs text-green-700 dark:text-green-300 mt-1">
-            Based on the risk assessment, NITDA notification is not required for this breach.
+            Based on the risk assessment, NDPC notification is not required for this breach.
           </p>
         </div>
       );
     }
-    
+
     if (selectedNotification) {
       return (
         <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
@@ -283,14 +283,14 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
             Notification Sent
           </p>
           <p className="text-xs text-green-700 dark:text-green-300 mt-1">
-            Notification was sent to NITDA on {formatDate(selectedNotification.sentAt)}.
+            Notification was sent to the NDPC on {formatDate(selectedNotification.sentAt)}.
           </p>
         </div>
       );
     }
-    
-    const hoursRemaining = calculateHoursRemaining(notificationRequirements.nitdaNotificationDeadline);
-    
+
+    const hoursRemaining = calculateHoursRemaining(notificationRequirements.ndpcNotificationDeadline);
+
     if (hoursRemaining <= 0) {
       return (
         <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
@@ -298,12 +298,12 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
             Notification Deadline Passed
           </p>
           <p className="text-xs text-red-700 dark:text-red-300 mt-1">
-            The 72-hour deadline for NITDA notification has passed. Notification should be sent immediately.
+            The 72-hour deadline for NDPC notification has passed. Notification should be sent immediately.
           </p>
         </div>
       );
     }
-    
+
     if (hoursRemaining <= 24) {
       return (
         <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
@@ -311,19 +311,19 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
             Urgent: Notification Due Soon
           </p>
           <p className="text-xs text-red-700 dark:text-red-300 mt-1">
-            Only {hoursRemaining} hours remaining until the NITDA notification deadline.
+            Only {hoursRemaining} hours remaining until the NDPC notification deadline.
           </p>
         </div>
       );
     }
-    
+
     return (
       <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
         <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
           Notification Required
         </p>
         <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
-          NITDA notification is required by {formatDate(notificationRequirements.nitdaNotificationDeadline)} ({hoursRemaining} hours remaining).
+          NDPC notification is required by {formatDate(notificationRequirements.ndpcNotificationDeadline)} ({hoursRemaining} hours remaining).
         </p>
       </div>
     );
@@ -350,14 +350,14 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
       }
     ];
     
-    if (notificationRequirements?.nitdaNotificationRequired) {
+    if (notificationRequirements?.ndpcNotificationRequired) {
       timeline.push({
-        title: 'NITDA Notification',
+        title: 'NDPC Notification',
         date: selectedNotification?.sentAt,
         completed: !!selectedNotification,
-        description: selectedNotification 
-          ? `Notification sent to NITDA on ${formatDate(selectedNotification.sentAt)}.` 
-          : `Notification must be sent to NITDA by ${formatDate(notificationRequirements.nitdaNotificationDeadline)}.`
+        description: selectedNotification
+          ? `Notification sent to the NDPC on ${formatDate(selectedNotification.sentAt)}.`
+          : `Notification must be sent to the NDPC by ${formatDate(notificationRequirements.ndpcNotificationDeadline)}.`
       });
     }
     
@@ -472,7 +472,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                 
                 // Calculate notification status for the list item
                 let notificationStatus = null;
-                if (requirements?.nitdaNotificationRequired) {
+                if (requirements?.ndpcNotificationRequired) {
                   if (notification) {
                     notificationStatus = (
                       <span className="text-xs text-green-600 dark:text-green-400">
@@ -480,7 +480,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                       </span>
                     );
                   } else {
-                    const hoursRemaining = calculateHoursRemaining(requirements.nitdaNotificationDeadline);
+                    const hoursRemaining = calculateHoursRemaining(requirements.ndpcNotificationDeadline);
                     if (hoursRemaining <= 0) {
                       notificationStatus = (
                         <span className="text-xs text-red-600 dark:text-red-400 font-bold">
@@ -653,18 +653,18 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                         <span className="font-medium">Reference Number:</span> {selectedNotification.referenceNumber}
                       </p>
                     )}
-                    {selectedNotification.nitdaContact && (
+                    {(selectedNotification.ndpcContact || selectedNotification.nitdaContact) && (
                       <p className="text-sm mb-2">
-                        <span className="font-medium">NITDA Contact:</span> {selectedNotification.nitdaContact.name}
+                        <span className="font-medium">NDPC Contact:</span> {(selectedNotification.ndpcContact || selectedNotification.nitdaContact)?.name}
                       </p>
                     )}
                   </div>
                 ) : (
                   <div>
-                    {notificationRequirements?.nitdaNotificationRequired ? (
+                    {notificationRequirements?.ndpcNotificationRequired ? (
                       <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
                         <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                          NITDA notification is required but has not been sent yet.
+                          NDPC notification is required but has not been sent yet.
                         </p>
                         <button
                           onClick={handleRequestNotification}
@@ -676,7 +676,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                     ) : (
                       <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
                         <p className="text-sm text-green-800 dark:text-green-200">
-                          NITDA notification is not required for this breach.
+                          NDPC notification is not required for this breach.
                         </p>
                       </div>
                     )}

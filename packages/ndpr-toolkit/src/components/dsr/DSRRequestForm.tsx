@@ -20,7 +20,7 @@ export interface DSRRequestFormProps {
   
   /**
    * Description text displayed on the form
-   * @default "Use this form to exercise your rights under the Nigeria Data Protection Regulation (NDPR)."
+   * @default "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA)."
    */
   description?: string;
   
@@ -89,7 +89,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   requestTypes,
   onSubmit,
   title = "Submit a Data Subject Request",
-  description = "Use this form to exercise your rights under the Nigeria Data Protection Regulation (NDPR).",
+  description = "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA).",
   submitButtonText = "Submit Request",
   className = "",
   buttonClassName = "",

@@ -61,13 +61,13 @@ export interface RegulatoryReportGeneratorProps {
   
   /**
    * Title displayed on the generator form
-   * @default "Generate NITDA Notification Report"
+   * @default "Generate NDPC Notification Report"
    */
   title?: string;
-  
+
   /**
    * Description text displayed on the generator form
-   * @default "Generate a report for submission to NITDA in compliance with the NDPR breach notification requirements."
+   * @default "Generate a report for submission to the NDPC in compliance with the NDPA breach notification requirements."
    */
   description?: string;
   
@@ -117,8 +117,8 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
   assessmentData,
   organizationInfo,
   onGenerate,
-  title = "Generate NITDA Notification Report",
-  description = "Generate a report for submission to NITDA in compliance with the NDPR breach notification requirements.",
+  title = "Generate NDPC Notification Report",
+  description = "Generate a report for submission to the NDPC in compliance with the NDPA breach notification requirements.",
   generateButtonText = "Generate Report",
   className = "",
   buttonClassName = "",
@@ -166,9 +166,11 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
     });
     
     return `
-NITDA DATA BREACH NOTIFICATION
+NDPC DATA BREACH NOTIFICATION
 
 Date: ${formattedDate}
+
+Reference: NDPA Section 40 - Breach Notification
 
 ORGANIZATION DETAILS
 -------------------
@@ -221,7 +223,7 @@ ${breachData.initialActions || 'To be determined'}
 Measures taken or proposed to mitigate possible adverse effects:
 [Please specify measures taken to mitigate adverse effects]
 
-NOTIFICATION TO DATA SUBJECTS
+NOTIFICATION TO DATA SUBJECTS (NDPA Section 40(4))
 ----------------------------
 Have data subjects been notified: [Yes/No]
 If yes, date of notification: [Date]
@@ -232,7 +234,7 @@ ADDITIONAL INFORMATION
 ---------------------
 [Any additional information relevant to the breach]
 
-This notification is made in compliance with the Nigeria Data Protection Regulation (NDPR).
+This notification is made in compliance with the Nigeria Data Protection Act (NDPA), Section 40.
     `;
   };
   
@@ -246,7 +248,7 @@ This notification is made in compliance with the Nigeria Data Protection Regulat
       sentAt: Date.now(),
       method,
       referenceNumber: referenceNumber || undefined,
-      nitdaContact: contactName ? {
+      ndpcContact: contactName ? {
         name: contactName,
         email: contactEmail,
         phone: contactPhone || undefined
@@ -267,7 +269,7 @@ This notification is made in compliance with the Nigeria Data Protection Regulat
     const element = document.createElement('a');
     const file = new Blob([reportContent], {type: 'text/plain'});
     element.href = URL.createObjectURL(file);
-    element.download = `NITDA_Breach_Notification_${new Date().toISOString().split('T')[0]}.txt`;
+    element.download = `NDPC_Breach_Notification_${new Date().toISOString().split('T')[0]}.txt`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -277,7 +279,7 @@ This notification is made in compliance with the Nigeria Data Protection Regulat
   const renderMethodOptions = () => {
     const options = [
       { value: 'email', label: 'Email' },
-      { value: 'portal', label: 'NITDA Portal' },
+      { value: 'portal', label: 'NDPC Portal' },
       { value: 'letter', label: 'Formal Letter' },
       { value: 'other', label: 'Other' }
     ];
@@ -299,8 +301,8 @@ This notification is made in compliance with the Nigeria Data Protection Regulat
           <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-md">
             <h3 className="text-lg font-bold text-green-800 dark:text-green-200 mb-2">Report Generated Successfully</h3>
             <p className="text-green-700 dark:text-green-300">
-              Your NITDA notification report has been generated and is ready for submission.
-              Please review the report carefully before submitting it to NITDA.
+              Your NDPC notification report has been generated and is ready for submission.
+              Please review the report carefully before submitting it to the NDPC.
             </p>
           </div>
           
@@ -380,16 +382,16 @@ This notification is made in compliance with the Nigeria Data Protection Regulat
                     id="referenceNumber"
                     value={referenceNumber}
                     onChange={e => setReferenceNumber(e.target.value)}
-                    placeholder="e.g. NITDA/BR/2023/001"
+                    placeholder="e.g. NDPC/BR/2024/001"
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
             </div>
             
-            {/* NITDA Contact */}
+            {/* NDPC Contact */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">NITDA Contact (if known)</h3>
+              <h3 className="text-lg font-semibold mb-3">NDPC Contact (if known)</h3>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
                   <label htmlFor="contactName" className="block text-sm font-medium mb-1">
@@ -470,11 +472,11 @@ This notification is made in compliance with the Nigeria Data Protection Regulat
               </div>
             )}
             
-            {/* NDPR Notice */}
+            {/* NDPA Notice */}
             <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-              <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPR Breach Notification Requirements</h3>
+              <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Breach Notification Requirements</h3>
               <p className="text-blue-700 dark:text-blue-300 text-sm">
-                Under the Nigeria Data Protection Regulation (NDPR), data breaches that pose a risk to the rights and freedoms of data subjects must be reported to NITDA within 72 hours of discovery.
+                Under the Nigeria Data Protection Act (NDPA), Section 40, data breaches that pose a risk to the rights and freedoms of data subjects must be reported to the NDPC within 72 hours of discovery.
                 This report will help you comply with this requirement.
               </p>
             </div>

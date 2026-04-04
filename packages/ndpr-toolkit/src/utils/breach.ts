@@ -20,13 +20,13 @@ export function calculateBreachSeverity(
   if (assessment) {
     const { riskLevel, risksToRightsAndFreedoms, highRisksToRightsAndFreedoms } = assessment;
     
-    // Under NDPR, notification is required if tHere&apos;s a risk to rights and freedoms
+    // Under the NDPA (Section 40), notification to the NDPC is required if there is a risk to rights and freedoms
     const notificationRequired = risksToRightsAndFreedoms;
-    
-    // Urgent notification is needed for high risks
+
+    // Urgent notification is needed for high risks (NDPA Section 40(4))
     const urgentNotificationRequired = highRisksToRightsAndFreedoms;
-    
-    // NDPR requires notification within 72 hours
+
+    // NDPA Section 40 requires notification within 72 hours
     const timeframeHours = 72;
     
     return {
@@ -73,13 +73,13 @@ export function calculateBreachSeverity(
     severityLevel = 'critical';
   }
   
-  // Under NDPR, notification is required for medium or higher severity
+  // Under the NDPA (Section 40), notification to the NDPC is required for medium or higher severity
   const notificationRequired = severityLevel !== 'low';
-  
-  // Urgent notification for high/critical severity
+
+  // Urgent notification for high/critical severity (NDPA Section 40(4))
   const urgentNotificationRequired = severityLevel === 'high' || severityLevel === 'critical';
-  
-  // NDPR requires notification within 72 hours
+
+  // NDPA Section 40 requires notification within 72 hours
   const timeframeHours = 72;
   
   // Build justification

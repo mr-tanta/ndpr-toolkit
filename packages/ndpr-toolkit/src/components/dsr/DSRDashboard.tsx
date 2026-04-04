@@ -31,7 +31,7 @@ export interface DSRDashboardProps {
   
   /**
    * Description text displayed on the dashboard
-   * @default "Track and manage data subject requests in compliance with NDPR requirements."
+   * @default "Track and manage data subject requests in compliance with NDPA requirements."
    */
   description?: string;
   
@@ -75,7 +75,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   onUpdateStatus,
   onAssignRequest,
   title = "Data Subject Request Dashboard",
-  description = "Track and manage data subject requests in compliance with NDPR requirements.",
+  description = "Track and manage data subject requests in compliance with NDPA requirements.",
   className = "",
   buttonClassName = "",
   showRequestDetails = true,
@@ -192,18 +192,31 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   
   // Render type badge
   const renderTypeBadge = (type: DSRType) => {
-    const colorClasses = {
+    const colorClasses: Record<DSRType, string> = {
+      information: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
       access: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
       rectification: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
       erasure: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
       restriction: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
       portability: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      objection: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+      objection: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      automated_decision_making: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
     };
-    
+
+    const typeLabels: Record<DSRType, string> = {
+      information: 'Information',
+      access: 'Access',
+      rectification: 'Rectification',
+      erasure: 'Erasure',
+      restriction: 'Restriction',
+      portability: 'Portability',
+      objection: 'Objection',
+      automated_decision_making: 'Automated Decision-Making'
+    };
+
     return (
       <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[type]}`}>
-        {type.charAt(0).toUpperCase() + type.slice(1)}
+        {typeLabels[type]}
       </span>
     );
   };
@@ -376,12 +389,14 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   const renderTypeOptions = () => {
     const options = [
       { value: 'all', label: 'All Types' },
-      { value: 'access', label: 'Access' },
-      { value: 'rectification', label: 'Rectification' },
-      { value: 'erasure', label: 'Erasure' },
-      { value: 'restriction', label: 'Restriction' },
-      { value: 'portability', label: 'Portability' },
-      { value: 'objection', label: 'Objection' }
+      { value: 'information', label: 'Information (NDPA Section 29)' },
+      { value: 'access', label: 'Access (NDPA Section 30)' },
+      { value: 'rectification', label: 'Rectification (NDPA Section 31)' },
+      { value: 'erasure', label: 'Erasure (NDPA Section 32)' },
+      { value: 'restriction', label: 'Restriction (NDPA Section 33)' },
+      { value: 'portability', label: 'Portability (NDPA Section 34)' },
+      { value: 'objection', label: 'Objection (NDPA Section 35)' },
+      { value: 'automated_decision_making', label: 'Automated Decision-Making (NDPA Section 36)' }
     ];
     
     return options.map(option => (
@@ -600,7 +615,18 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                     </div>
                     <div>
                       <p className="text-sm">
-                        <span className="font-medium">Request Type:</span> {selectedRequest.type.charAt(0).toUpperCase() + selectedRequest.type.slice(1)}
+                        <span className="font-medium">Request Type:</span> {
+                          ({
+                            information: 'Information',
+                            access: 'Access',
+                            rectification: 'Rectification',
+                            erasure: 'Erasure',
+                            restriction: 'Restriction',
+                            portability: 'Portability',
+                            objection: 'Objection',
+                            automated_decision_making: 'Automated Decision-Making'
+                          } as Record<string, string>)[selectedRequest.type] || selectedRequest.type
+                        }
                       </p>
                       <p className="text-sm">
                         <span className="font-medium">Status:</span> {

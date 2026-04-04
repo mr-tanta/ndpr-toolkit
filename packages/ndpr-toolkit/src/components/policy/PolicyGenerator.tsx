@@ -22,13 +22,13 @@ export interface PolicyGeneratorProps {
   
   /**
    * Title displayed on the generator
-   * @default "NDPR Privacy Policy Generator"
+   * @default "NDPA Privacy Policy Generator"
    */
   title?: string;
-  
+
   /**
    * Description text displayed on the generator
-   * @default "Generate an NDPR-compliant privacy policy for your organization."
+   * @default "Generate an NDPA-compliant privacy policy for your organization."
    */
   description?: string;
   
@@ -65,8 +65,8 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   sections: initialSections,
   variables: initialVariables,
   onGenerate,
-  title = "NDPR Privacy Policy Generator",
-  description = "Generate an NDPR-compliant privacy policy for your organization.",
+  title = "NDPA Privacy Policy Generator",
+  description = "Generate an NDPA-compliant privacy policy for your organization.",
   className = "",
   buttonClassName = "",
   generateButtonText = "Generate Policy",
@@ -437,13 +437,13 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
         </ol>
       </div>
       
-      {/* NDPR Notice */}
+      {/* NDPA Notice */}
       <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-        <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPR Compliance Notice</h3>
+        <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Compliance Notice</h3>
         <p className="text-blue-700 dark:text-blue-300 text-sm">
-          This tool helps you generate a privacy policy that aligns with the Nigeria Data Protection Regulation (NDPR).
+          This tool helps you generate a privacy policy that aligns with the Nigeria Data Protection Act (NDPA) 2023.
           While we strive to ensure compliance, we recommend having the final policy reviewed by a legal professional
-          familiar with NDPR requirements.
+          familiar with NDPA requirements.
         </p>
       </div>
       

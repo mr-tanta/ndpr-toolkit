@@ -34,7 +34,7 @@ export interface PolicyExporterProps {
   
   /**
    * Description text displayed on the exporter
-   * @default "Export your NDPR-compliant privacy policy in various formats."
+   * @default "Export your NDPA-compliant privacy policy in various formats."
    */
   description?: string;
   
@@ -55,7 +55,7 @@ export interface PolicyExporterProps {
   showExportHistory?: boolean;
   
   /**
-   * Whether to include the NDPR compliance notice in the exported policy
+   * Whether to include the NDPA compliance notice in the exported policy
    * @default true
    */
   includeComplianceNotice?: boolean;
@@ -92,7 +92,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   lastUpdated = new Date(),
   onExportComplete,
   componentTitle = "Export Privacy Policy",
-  description = "Export your NDPR-compliant privacy policy in various formats.",
+  description = "Export your NDPA-compliant privacy policy in various formats.",
   className = "",
   buttonClassName = "",
   showExportHistory = true,
@@ -215,8 +215,8 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
     if (includeComplianceNotice) {
       html += `
   <div class="compliance-notice">
-    <strong>NDPR Compliance Notice:</strong> This privacy policy has been created to comply with the Nigeria Data Protection Regulation (NDPR).
-    It outlines how we collect, use, disclose, and protect your personal information in accordance with NDPR requirements.
+    <strong>NDPA Compliance Notice:</strong> This privacy policy has been created to comply with the Nigeria Data Protection Act (NDPA) 2023.
+    It outlines how we collect, use, disclose, and protect your personal information in accordance with NDPA requirements.
   </div>`;
     }
     
@@ -427,10 +427,10 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
           </div>
           <div className="ml-3 text-sm">
             <label htmlFor="include-compliance-notice" className="font-medium text-gray-900 dark:text-white">
-              Include NDPR Compliance Notice
+              Include NDPA Compliance Notice
             </label>
             <p className="text-gray-500 dark:text-gray-400">
-              Adds a notice explaining that this policy complies with NDPR requirements.
+              Adds a notice explaining that this policy complies with NDPA requirements.
             </p>
           </div>
         </div>

@@ -84,7 +84,7 @@ interface UseDSRReturn {
 }
 
 /**
- * Hook for managing Data Subject Requests in compliance with NDPR
+ * Hook for managing Data Subject Requests in compliance with the NDPA
  */
 export function useDSR({
   initialRequests = [],

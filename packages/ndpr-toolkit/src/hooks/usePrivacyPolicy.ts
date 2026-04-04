@@ -101,7 +101,7 @@ interface UsePrivacyPolicyReturn {
 }
 
 /**
- * Hook for generating NDPR-compliant privacy policies
+ * Hook for generating NDPA-compliant privacy policies
  */
 export function usePrivacyPolicy({
   templates,

@@ -280,7 +280,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
         <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-md">
           <h3 className="text-sm font-bold text-yellow-800 dark:text-yellow-200 mb-2">Important: Next Steps</h3>
           <p className="text-yellow-700 dark:text-yellow-300 text-sm">
-            Under the NDPR, data breaches that pose a risk to the rights and freedoms of data subjects must be reported to NITDA within 72 hours of discovery.
+            Under the NDPA (Section 40), data breaches that pose a risk to the rights and freedoms of data subjects must be reported to the NDPC within 72 hours of discovery.
             The data protection team will assess this breach and determine if notification is required.
           </p>
         </div>
@@ -606,11 +606,11 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
             </div>
           )}
           
-          {/* NDPR Notice */}
+          {/* NDPA Notice */}
           <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-            <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPR Breach Notification Requirements</h3>
+            <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Breach Notification Requirements</h3>
             <p className="text-blue-700 dark:text-blue-300 text-sm">
-              Under the Nigeria Data Protection Regulation (NDPR), data breaches that pose a risk to the rights and freedoms of data subjects must be reported to NITDA within 72 hours of discovery.
+              Under the Nigeria Data Protection Act (NDPA), Section 40, data breaches that pose a risk to the rights and freedoms of data subjects must be reported to the NDPC within 72 hours of discovery.
               The data protection team will assess this breach and determine if notification is required.
             </p>
           </div>

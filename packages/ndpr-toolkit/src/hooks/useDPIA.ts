@@ -104,7 +104,7 @@ interface UseDPIAReturn {
 }
 
 /**
- * Hook for conducting Data Protection Impact Assessments in compliance with NDPR
+ * Hook for conducting Data Protection Impact Assessments in compliance with the NDPA 2023
  */
 export function useDPIA({
   sections,

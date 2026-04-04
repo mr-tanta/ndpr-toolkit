@@ -114,7 +114,7 @@ interface UseBreachReturn {
 }
 
 /**
- * Hook for managing data breach notifications in compliance with NDPR
+ * Hook for managing data breach notifications in compliance with the NDPA (Section 40)
  */
 export function useBreach({
   categories,
@@ -273,12 +273,12 @@ export function useBreach({
     
     const { severityLevel, notificationRequired, timeframeHours, justification } = calculateBreachSeverity(report, assessment || undefined);
     
-    // Calculate the deadline (72 hours from discovery under NDPR)
+    // Calculate the deadline (72 hours from discovery under NDPA Section 40)
     const deadline = report.discoveredAt + (timeframeHours * 60 * 60 * 1000);
-    
+
     return {
-      nitdaNotificationRequired: notificationRequired,
-      nitdaNotificationDeadline: deadline,
+      ndpcNotificationRequired: notificationRequired,
+      ndpcNotificationDeadline: deadline,
       dataSubjectNotificationRequired: severityLevel === 'high' || severityLevel === 'critical',
       justification
     };
@@ -359,11 +359,11 @@ export function useBreach({
       }
       
       const requirements = calculateNotificationRequirements(report.id);
-      if (!requirements || !requirements.nitdaNotificationRequired) {
+      if (!requirements || !requirements.ndpcNotificationRequired) {
         return;
       }
-      
-      const timeRemaining = requirements.nitdaNotificationDeadline - now;
+
+      const timeRemaining = requirements.ndpcNotificationDeadline - now;
       const hoursRemaining = timeRemaining / (60 * 60 * 1000);
       
       if (hoursRemaining <= hoursThreshold) {

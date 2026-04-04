@@ -73,7 +73,7 @@ interface UseConsentReturn {
 }
 
 /**
- * Hook for managing user consent in compliance with NDPR
+ * Hook for managing user consent in compliance with NDPA
  */
 export function useConsent({
   options,

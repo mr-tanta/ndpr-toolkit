@@ -364,7 +364,7 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
       
       {/* Footer */}
       <div className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
-        <p>This DPIA was conducted in accordance with the Nigeria Data Protection Regulation (NDPR).</p>
+        <p>This DPIA was conducted in accordance with the Nigeria Data Protection Act (NDPA) 2023.</p>
         <p>DPIA Report Version: {result.version}</p>
         <p>Generated on: {new Date().toLocaleDateString()}</p>
       </div>

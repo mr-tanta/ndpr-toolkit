@@ -189,12 +189,14 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
     });
     
     return {
+      information: counts.information || 0,
       access: counts.access || 0,
       rectification: counts.rectification || 0,
       erasure: counts.erasure || 0,
       restriction: counts.restriction || 0,
       portability: counts.portability || 0,
-      objection: counts.objection || 0
+      objection: counts.objection || 0,
+      automated_decision_making: counts.automated_decision_making || 0
     };
   };
   
@@ -217,18 +219,31 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
   
   // Render type badge
   const renderTypeBadge = (type: DSRType) => {
-    const colorClasses = {
+    const colorClasses: Record<DSRType, string> = {
+      information: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
       access: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
       rectification: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
       erasure: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
       restriction: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
       portability: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      objection: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+      objection: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      automated_decision_making: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
     };
-    
+
+    const typeLabels: Record<DSRType, string> = {
+      information: 'Information',
+      access: 'Access',
+      rectification: 'Rectification',
+      erasure: 'Erasure',
+      restriction: 'Restriction',
+      portability: 'Portability',
+      objection: 'Objection',
+      automated_decision_making: 'Automated Decision-Making'
+    };
+
     return (
       <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[type]}`}>
-        {type.charAt(0).toUpperCase() + type.slice(1)}
+        {typeLabels[type]}
       </span>
     );
   };

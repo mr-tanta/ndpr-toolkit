@@ -35,7 +35,7 @@ export interface PolicyPreviewProps {
   
   /**
    * Description text displayed on the preview
-   * @default "Preview your NDPR-compliant privacy policy before exporting."
+   * @default "Preview your NDPA-compliant privacy policy before exporting."
    */
   description?: string;
   
@@ -91,7 +91,7 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   onExport,
   onEdit,
   title = "Privacy Policy Preview",
-  description = "Preview your NDPR-compliant privacy policy before exporting.",
+  description = "Preview your NDPA-compliant privacy policy before exporting.",
   className = "",
   buttonClassName = "",
   showExportOptions = true,
@@ -267,12 +267,12 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
         )}
       </div>
       
-      {/* NDPR Notice */}
+      {/* NDPA Notice */}
       <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-        <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPR Compliance Notice</h3>
+        <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Compliance Notice</h3>
         <p className="text-blue-700 dark:text-blue-300 text-sm">
-          This privacy policy has been generated to align with the Nigeria Data Protection Regulation (NDPR).
-          We recommend having the final policy reviewed by a legal professional familiar with NDPR requirements
+          This privacy policy has been generated to align with the Nigeria Data Protection Act (NDPA) 2023.
+          We recommend having the final policy reviewed by a legal professional familiar with NDPA requirements
           before publishing it on your website or sharing it with your users.
         </p>
       </div>
