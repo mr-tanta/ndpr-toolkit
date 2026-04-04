@@ -284,15 +284,31 @@ export function useDPIA({
     return false;
   };
   
-  // Check if the DPIA is complete
+  // Check if the DPIA is complete (pure read — no state mutation)
   const isComplete = (): boolean => {
-    return sections.every((section, index) => {
-      // Temporarily set the current section to check ifit&apos;s valid
-      setCurrentSectionIndex(index);
-      const valid = isCurrentSectionValid();
-      // Restore the current section
-      setCurrentSectionIndex(currentSectionIndex);
-      return valid;
+    return sections.every((section) => {
+      const visibleQuestions = section.questions.filter(q => {
+        if (!q.showWhen || q.showWhen.length === 0) return true;
+        return q.showWhen.some(condition => {
+          const answer = answers[condition.questionId];
+          switch (condition.operator) {
+            case 'equals': return answer === condition.value;
+            case 'contains': return Array.isArray(answer) && answer.includes(condition.value);
+            case 'greaterThan': return typeof answer === 'number' && answer > condition.value;
+            case 'lessThan': return typeof answer === 'number' && answer < condition.value;
+            default: return false;
+          }
+        });
+      });
+
+      return visibleQuestions.every(q => {
+        if (!q.required) return true;
+        const answer = answers[q.id];
+        if (answer === undefined || answer === null) return false;
+        if (typeof answer === 'string' && answer.trim() === '') return false;
+        if (Array.isArray(answer) && answer.length === 0) return false;
+        return true;
+      });
     });
   };
   
