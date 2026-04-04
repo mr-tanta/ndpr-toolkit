@@ -77,6 +77,7 @@ function MockWebsite({
   bannerTheme,
   consentOptions,
   consentSettings,
+  draftConsents,
   showCustomize,
   onAcceptAll,
   onDeclineAll,
@@ -88,6 +89,7 @@ function MockWebsite({
   bannerTheme: BannerTheme;
   consentOptions: ConsentOption[];
   consentSettings: ConsentSettings | null;
+  draftConsents: Record<string, boolean>;
   showCustomize: boolean;
   onAcceptAll: () => void;
   onDeclineAll: () => void;
@@ -133,7 +135,7 @@ function MockWebsite({
           {showCustomize && (
             <div className={`border rounded-md p-3 space-y-2 ${bannerDark ? 'border-gray-700 bg-gray-800/50' : 'border-gray-200 bg-gray-50'}`}>
               {consentOptions.map((opt) => {
-                const checked = consentSettings?.consents[opt.id] ?? opt.required;
+                const checked = draftConsents[opt.id] ?? opt.required;
                 return (
                   <label
                     key={opt.id}
@@ -282,10 +284,12 @@ function MockWebsite({
 
 function StateInspector({
   consentSettings,
+  draftConsents,
   events,
   storageType,
 }: {
   consentSettings: ConsentSettings | null;
+  draftConsents: Record<string, boolean>;
   events: ConsentEvent[];
   storageType: StorageType;
 }) {
@@ -297,7 +301,10 @@ function StateInspector({
           Consent State
         </h4>
         <div className="bg-gray-900 rounded-lg p-4 text-xs font-mono text-green-400 overflow-auto max-h-52">
-          <pre>{JSON.stringify(consentSettings, null, 2) || '// No consent recorded yet'}</pre>
+          <pre>{consentSettings
+            ? JSON.stringify(consentSettings, null, 2)
+            : JSON.stringify({ status: 'pending', draft: draftConsents }, null, 2)
+          }</pre>
         </div>
       </div>
 
@@ -588,6 +595,7 @@ export default function ConsentDemoPage() {
               bannerTheme={bannerTheme}
               consentOptions={consentOptions}
               consentSettings={consentSettings}
+              draftConsents={draftConsents}
               showCustomize={showCustomize}
               onAcceptAll={handleAcceptAll}
               onDeclineAll={handleDeclineAll}
@@ -615,6 +623,7 @@ export default function ConsentDemoPage() {
               <CardContent>
                 <StateInspector
                   consentSettings={consentSettings}
+                  draftConsents={draftConsents}
                   events={events}
                   storageType={storageType}
                 />
