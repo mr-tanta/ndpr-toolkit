@@ -6,11 +6,25 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 
 export default function ConsentManagementDocs() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'Consent Management — NDPA Toolkit Documentation',
+    description: 'NDPA 2023-compliant consent management system for handling user consent preferences',
+    author: { '@type': 'Person', name: 'Abraham Esandayinze Tanta' },
+    publisher: { '@type': 'Organization', name: 'NDPA Toolkit', url: 'https://ndprtoolkit.com.ng' },
+    about: { '@type': 'SoftwareApplication', name: 'NDPA Toolkit' },
+  };
+
   return (
     <DocLayout
       title="Consent Management"
       description="NDPA 2023-compliant consent management system for handling user consent preferences"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
           <Link href="/ndpr-demos/consent">

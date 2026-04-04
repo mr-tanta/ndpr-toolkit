@@ -6,11 +6,25 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 
 export default function DataSubjectRightsDocs() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'Data Subject Rights Portal — NDPA Toolkit Documentation',
+    description: 'NDPA 2023-compliant portal for managing data subject rights requests',
+    author: { '@type': 'Person', name: 'Abraham Esandayinze Tanta' },
+    publisher: { '@type': 'Organization', name: 'NDPA Toolkit', url: 'https://ndprtoolkit.com.ng' },
+    about: { '@type': 'SoftwareApplication', name: 'NDPA Toolkit' },
+  };
+
   return (
     <DocLayout
       title="Data Subject Rights Portal"
       description="NDPA 2023-compliant portal for managing data subject rights requests"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
           <Link href="/ndpr-demos/dsr">

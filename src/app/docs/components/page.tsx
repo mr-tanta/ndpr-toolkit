@@ -6,11 +6,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 
 export default function ComponentsPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'Components — NDPA Toolkit Documentation',
+    description: 'Documentation for NDPR Toolkit components',
+    author: { '@type': 'Person', name: 'Abraham Esandayinze Tanta' },
+    publisher: { '@type': 'Organization', name: 'NDPA Toolkit', url: 'https://ndprtoolkit.com.ng' },
+    about: { '@type': 'SoftwareApplication', name: 'NDPA Toolkit' },
+  };
+
   return (
     <DocLayout
       title="Components"
       description="Documentation for NDPR Toolkit components"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <p className="mb-6">
         The NDPR Toolkit provides a comprehensive set of components to help you implement NDPA 2023-compliant features in your applications.
         Each component is designed to address specific compliance requirements and can be easily integrated into your existing codebase.

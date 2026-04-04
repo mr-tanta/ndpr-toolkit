@@ -7,11 +7,25 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 
 export default function CrossBorderTransfersDocs() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'Cross-Border Transfers — NDPA Toolkit Documentation',
+    description: 'Manage and validate cross-border data transfers in compliance with NDPA 2023 Section 41',
+    author: { '@type': 'Person', name: 'Abraham Esandayinze Tanta' },
+    publisher: { '@type': 'Organization', name: 'NDPA Toolkit', url: 'https://ndprtoolkit.com.ng' },
+    about: { '@type': 'SoftwareApplication', name: 'NDPA Toolkit' },
+  };
+
   return (
     <DocLayout
       title="Cross-Border Transfers"
       description="Manage and validate cross-border data transfers in compliance with NDPA 2023 Section 41"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="flex mb-6 space-x-2">
         <Badge variant="success" className="text-xs">New in v2.1</Badge>
         <Button asChild variant="outline" size="sm">

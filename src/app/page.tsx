@@ -4,12 +4,15 @@ import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 
 export const metadata = {
-  title: 'NDPA Toolkit | NDPA 2023 Compliance Made Easy',
-  description: 'Open-source toolkit for Nigerian developers to implement NDPA 2023 (Nigeria Data Protection Act) compliant features in web applications with minimal effort.',
-  keywords: 'NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, Compliance, Toolkit, React, Next.js, Open Source',
+  title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
+  description:
+    'Build NDPA 2023-compliant apps with our open-source toolkit. Consent management, DSR, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
+  keywords:
+    'NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, compliance toolkit, React, Next.js, open source, data protection Nigeria',
   openGraph: {
-    title: 'NDPA Toolkit | NDPA 2023 Compliance Made Easy',
-    description: 'Open-source toolkit for Nigerian developers to implement NDPA 2023 (Nigeria Data Protection Act) compliant features in web applications with minimal effort.',
+    title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
+    description:
+      'Build NDPA 2023-compliant apps with our open-source toolkit. Consent management, DSR, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
     url: 'https://ndprtoolkit.com.ng',
     siteName: 'NDPA Toolkit',
     images: [
@@ -17,7 +20,7 @@ export const metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'NDPA Toolkit by Tanta Innovative',
+        alt: 'NDPA Toolkit - Nigeria Data Protection Compliance',
       },
     ],
     locale: 'en_US',
@@ -25,13 +28,36 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NDPA Toolkit | NDPA 2023 Compliance Made Easy',
-    description: 'Open-source toolkit for Nigerian developers to implement NDPA 2023 (Nigeria Data Protection Act) compliant features in web applications with minimal effort.',
+    title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
+    description:
+      'Build NDPA 2023-compliant apps with our open-source toolkit. Consent management, DSR, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
     images: ['/og-image.png'],
   },
 };
 
 export default function Home() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'NDPA Toolkit',
+    description: 'Enterprise-grade React components for Nigeria Data Protection Act (NDPA) 2023 compliance',
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Any',
+    url: 'https://ndprtoolkit.com.ng',
+    author: {
+      '@type': 'Person',
+      name: 'Abraham Esandayinze Tanta',
+      url: 'https://linkedin.com/in/mr-tanta',
+    },
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'NGN',
+    },
+    license: 'https://opensource.org/licenses/MIT',
+    programmingLanguage: 'TypeScript',
+  };
+
   // Features of the NDPA Toolkit
   const features = [
     {
@@ -122,6 +148,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-950/20 opacity-50"></div>

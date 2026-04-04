@@ -7,11 +7,25 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 
 export default function ROPADocs() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'Records of Processing Activities (ROPA) — NDPA Toolkit Documentation',
+    description: 'Maintain comprehensive records of all data processing activities as required by the NDPA 2023',
+    author: { '@type': 'Person', name: 'Abraham Esandayinze Tanta' },
+    publisher: { '@type': 'Organization', name: 'NDPA Toolkit', url: 'https://ndprtoolkit.com.ng' },
+    about: { '@type': 'SoftwareApplication', name: 'NDPA Toolkit' },
+  };
+
   return (
     <DocLayout
       title="Records of Processing Activities (ROPA)"
       description="Maintain comprehensive records of all data processing activities as required by the NDPA 2023"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="flex mb-6 space-x-2">
         <Badge variant="success" className="text-xs">New in v2.1</Badge>
         <Button asChild variant="outline" size="sm">

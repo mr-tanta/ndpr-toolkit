@@ -6,11 +6,25 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 
 export default function HooksDocs() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: 'React Hooks — NDPA Toolkit Documentation',
+    description: 'Custom React hooks for managing state and logic in NDPA-compliant applications',
+    author: { '@type': 'Person', name: 'Abraham Esandayinze Tanta' },
+    publisher: { '@type': 'Organization', name: 'NDPA Toolkit', url: 'https://ndprtoolkit.com.ng' },
+    about: { '@type': 'SoftwareApplication', name: 'NDPA Toolkit' },
+  };
+
   return (
     <DocLayout
       title="React Hooks"
       description="Custom React hooks for managing state and logic in NDPA-compliant applications"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
           <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/hooks" target="_blank" rel="noopener noreferrer">
