@@ -48,17 +48,7 @@ export default function PrivacyPolicyGeneratorDocs() {
           Install the NDPR Toolkit package which includes the Privacy Policy Generator components:
         </p>
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>npm install @tantainnovative/ndpr-toolkit</code></pre>
-          <pre><code># Or with legacy peer deps if using React 19
-npm install @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
-        </div>
-        <p>
-          Or if you&apos;re using yarn:
-        </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>yarn add @tantainnovative/ndpr-toolkit</code></pre>
-          <pre><code># Or with legacy peer deps if using React 19
-yarn add @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
+          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
         </div>
       </section>
 

@@ -109,9 +109,7 @@ export default function DocsPage() {
 
           <h3>Installation</h3>
           <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>npm install @tantainnovative/ndpr-toolkit</code></pre>
-            <pre><code># Or with legacy peer deps if using React 19
-npm install @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
+            <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
           </div>
 
           <h3>Import Paths</h3>
