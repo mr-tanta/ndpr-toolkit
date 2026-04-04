@@ -17,53 +17,56 @@ export function BlogMDX({ source }: { source: string }) {
 }
 
 function markdownToHtml(md: string): string {
-  let html = md;
-
-  // Code blocks (``` ... ```)
-  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (_match, lang, code) => {
-    const escaped = escapeHtml(code.trim());
-    const langAttr = lang ? ` data-language="${lang}"` : '';
-    return `<pre class="bg-gray-900 text-gray-300 rounded-lg p-4 overflow-x-auto text-sm my-6"${langAttr}><code>${escaped}</code></pre>`;
+  // Step 1: Extract code blocks and replace with placeholders to protect them
+  const codeBlocks: string[] = [];
+  let processed = md.replace(/```(\w+)?\n([\s\S]*?)```/g, (_match, lang, code) => {
+    const escaped = escapeHtml(code.trimEnd());
+    const langLabel = lang ? `<div class="flex items-center justify-between px-4 py-2 bg-gray-800 border-b border-gray-700 rounded-t-lg"><span class="text-xs font-mono text-gray-400 uppercase">${lang}</span></div>` : '';
+    const preClass = lang ? 'rounded-b-lg' : 'rounded-lg';
+    const html = `<div class="my-6 border border-gray-700 rounded-lg overflow-hidden">${langLabel}<pre class="bg-gray-900 text-gray-300 p-4 overflow-x-auto text-sm leading-relaxed ${preClass}"><code>${escaped}</code></pre></div>`;
+    codeBlocks.push(html);
+    return `%%CODEBLOCK_${codeBlocks.length - 1}%%`;
   });
 
+  // Step 2: Process inline elements
   // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  processed = processed.replace(/`([^`]+)`/g, '<code class="bg-gray-100 dark:bg-gray-800 text-sm px-1.5 py-0.5 rounded font-mono">$1</code>');
 
   // Images
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-lg my-6" />');
+  processed = processed.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-lg my-6" />');
 
   // Links
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 dark:text-blue-400 hover:underline">$1</a>');
+  processed = processed.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-blue-600 dark:text-blue-400 hover:underline">$1</a>');
 
   // Headers
-  html = html.replace(/^#### (.+)$/gm, '<h4 class="text-lg font-bold text-gray-900 dark:text-white mt-8 mb-3">$1</h4>');
-  html = html.replace(/^### (.+)$/gm, '<h3 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-4">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 class="text-3xl font-extrabold text-gray-900 dark:text-white mt-12 mb-6">$1</h1>');
+  processed = processed.replace(/^#### (.+)$/gm, '<h4 class="text-lg font-bold text-gray-900 dark:text-white mt-8 mb-3">$1</h4>');
+  processed = processed.replace(/^### (.+)$/gm, '<h3 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-4">$1</h3>');
+  processed = processed.replace(/^## (.+)$/gm, '<h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4">$1</h2>');
+  processed = processed.replace(/^# (.+)$/gm, '<h1 class="text-3xl font-extrabold text-gray-900 dark:text-white mt-12 mb-6">$1</h1>');
 
   // Bold and italic
-  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  processed = processed.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  processed = processed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  processed = processed.replace(/\*(.+?)\*/g, '<em>$1</em>');
 
   // Blockquotes
-  html = html.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-blue-500 pl-4 py-1 my-4 text-gray-600 dark:text-gray-400 italic">$1</blockquote>');
+  processed = processed.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-blue-500 pl-4 py-1 my-4 text-gray-600 dark:text-gray-400 italic">$1</blockquote>');
 
   // Horizontal rules
-  html = html.replace(/^---$/gm, '<hr class="my-8 border-gray-200 dark:border-gray-700" />');
+  processed = processed.replace(/^---$/gm, '<hr class="my-8 border-gray-200 dark:border-gray-700" />');
 
   // Unordered lists
-  html = html.replace(/^- (.+)$/gm, '<li class="ml-6 list-disc text-gray-700 dark:text-gray-300 mb-1">$1</li>');
+  processed = processed.replace(/^- (.+)$/gm, '<li class="ml-6 list-disc text-gray-700 dark:text-gray-300 mb-1">$1</li>');
 
   // Ordered lists
-  html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-6 list-decimal text-gray-700 dark:text-gray-300 mb-1">$1</li>');
+  processed = processed.replace(/^\d+\. (.+)$/gm, '<li class="ml-6 list-decimal text-gray-700 dark:text-gray-300 mb-1">$1</li>');
 
-  // Wrap consecutive <li> elements in <ul> or <ol>
-  html = html.replace(/((?:<li class="ml-6 list-disc[^>]*>.*?<\/li>\n?)+)/g, '<ul class="my-4">$1</ul>');
-  html = html.replace(/((?:<li class="ml-6 list-decimal[^>]*>.*?<\/li>\n?)+)/g, '<ol class="my-4">$1</ol>');
+  // Wrap consecutive <li> elements
+  processed = processed.replace(/((?:<li class="ml-6 list-disc[^>]*>.*?<\/li>\n?)+)/g, '<ul class="my-4">$1</ul>');
+  processed = processed.replace(/((?:<li class="ml-6 list-decimal[^>]*>.*?<\/li>\n?)+)/g, '<ol class="my-4">$1</ol>');
 
-  // Paragraphs — wrap non-tag lines
-  const lines = html.split('\n');
+  // Step 3: Wrap paragraphs
+  const lines = processed.split('\n');
   const result: string[] = [];
   let inParagraph = false;
 
@@ -77,7 +80,9 @@ function markdownToHtml(md: string): string {
       continue;
     }
 
-    const isBlock = /^<(h[1-6]|pre|ul|ol|li|blockquote|hr|div|table|img)/.test(trimmed);
+    const isBlock = /^<(h[1-6]|pre|ul|ol|li|blockquote|hr|div|table|img)/.test(trimmed)
+      || /^%%CODEBLOCK_\d+%%$/.test(trimmed);
+
     if (isBlock) {
       if (inParagraph) {
         result.push('</p>');
@@ -94,7 +99,13 @@ function markdownToHtml(md: string): string {
   }
   if (inParagraph) result.push('</p>');
 
-  return result.join('\n');
+  // Step 4: Restore code blocks from placeholders
+  let final = result.join('\n');
+  codeBlocks.forEach((block, i) => {
+    final = final.replace(`%%CODEBLOCK_${i}%%`, block);
+  });
+
+  return final;
 }
 
 function escapeHtml(str: string): string {
