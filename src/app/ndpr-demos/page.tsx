@@ -136,8 +136,8 @@ export default function NDPRDemosPage() {
             >
               <Card
                 className="
-                  h-full border-l-4 border-blue-600 dark:border-blue-500
-                  bg-white dark:bg-slate-800/50
+                  h-full border border-gray-200 dark:border-gray-700
+                  bg-white dark:bg-gray-800/50
                   transition-all duration-200
                   group-hover:scale-[1.02] group-hover:shadow-lg
                   cursor-pointer
