@@ -2,7 +2,7 @@
 export { ConsentBanner } from './components/consent/ConsentBanner';
 export { ConsentManager } from './components/consent/ConsentManager';
 export { ConsentStorage } from './components/consent/ConsentStorage';
-export type { ConsentOption, ConsentSettings, ConsentStorageOptions } from './types/consent';
+export type { ConsentOption, ConsentSettings, ConsentStorageOptions, LawfulBasisType } from './types/consent';
 
 // Data Subject Rights Components
 export { DSRRequestForm } from './components/dsr/DSRRequestForm';
@@ -30,7 +30,7 @@ export { PolicyExporter } from './components/policy/PolicyExporter';
 export type { PolicySection, PolicyTemplate, PolicyVariable, OrganizationInfo, PrivacyPolicy } from './types/privacy';
 
 // Utility Functions
-export { validateConsent } from './utils/consent';
+export { validateConsent, validateConsentOptions } from './utils/consent';
 export { formatDSRRequest } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
@@ -42,3 +42,36 @@ export { useDSR } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
+
+// Lawful Basis Tracking Components
+export { LawfulBasisTracker } from './components/lawful-basis/LawfulBasisTracker';
+export type { LawfulBasis, SensitiveDataCondition, ProcessingActivity, LegitimateInterestAssessment, LawfulBasisSummary } from './types/lawful-basis';
+
+// Lawful Basis Utilities
+export { validateProcessingActivity, getLawfulBasisDescription, assessComplianceGaps } from './utils/lawful-basis';
+
+// Lawful Basis Hook
+export { useLawfulBasis } from './hooks/useLawfulBasis';
+
+// Cross-Border Transfer Components
+export { CrossBorderTransferManager } from './components/cross-border/CrossBorderTransferManager';
+export type { TransferMechanism, AdequacyStatus, CrossBorderTransfer, TransferImpactAssessment, CrossBorderSummary } from './types/cross-border';
+
+// Cross-Border Transfer Utilities
+export { validateTransfer, getTransferMechanismDescription, assessTransferRisk, isNDPCApprovalRequired } from './utils/cross-border';
+export type { TransferValidationResult, TransferRiskResult } from './utils/cross-border';
+
+// Cross-Border Transfer Hook
+export { useCrossBorderTransfer } from './hooks/useCrossBorderTransfer';
+
+// Record of Processing Activities (ROPA) Components
+export { ROPAManager } from './components/ropa/ROPAManager';
+export type { ProcessingRecord, RecordOfProcessingActivities, ROPASummary } from './types/ropa';
+
+// ROPA Utilities
+export { validateProcessingRecord, generateROPASummary, exportROPAToCSV, identifyComplianceGaps } from './utils/ropa';
+export type { ComplianceGap, ValidationResult } from './utils/ropa';
+
+// ROPA Hook
+export { useROPA } from './hooks/useROPA';
+export type { UseROPAOptions, UseROPAReturn } from './hooks/useROPA';
