@@ -46,6 +46,7 @@ const navigation: NavItem[] = [
       { title: 'Data Subject Rights', href: '/docs/components/data-subject-rights' },
       { title: 'Breach Notification', href: '/docs/components/breach-notification' },
       { title: 'Privacy Policy Generator', href: '/docs/components/privacy-policy-generator' },
+      { title: 'Hooks', href: '/docs/components/hooks' },
       { title: 'Lawful Basis Tracker', href: '/docs/components/lawful-basis-tracker', isNew: true },
       { title: 'Cross-Border Transfers', href: '/docs/components/cross-border-transfers', isNew: true },
       { title: 'ROPA', href: '/docs/components/ropa', isNew: true },
@@ -65,6 +66,8 @@ const navigation: NavItem[] = [
       { title: 'Managing Consent', href: '/docs/guides/managing-consent' },
       { title: 'Handling Data Subject Requests', href: '/docs/guides/data-subject-requests' },
       { title: 'Breach Notification Process', href: '/docs/guides/breach-notification-process' },
+      { title: 'Lawful Basis for Processing', href: '/docs/guides/lawful-basis', isNew: true },
+      { title: 'Cross-Border Transfers', href: '/docs/guides/cross-border-transfers', isNew: true },
     ],
   },
 ];

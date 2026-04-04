@@ -51,13 +51,13 @@ export default function ComponentsPage() {
           {
             title: 'Lawful Basis Assessment',
             description: 'Tools for identifying and documenting the lawful basis for processing personal data under the NDPA 2023',
-            href: '/docs/components/lawful-basis',
+            href: '/docs/components/lawful-basis-tracker',
             components: ['LawfulBasisAssessment', 'LawfulBasisReport']
           },
           {
             title: 'Cross-Border Transfer',
             description: 'Components for managing and documenting cross-border data transfers in compliance with NDPA requirements',
-            href: '/docs/components/cross-border-transfer',
+            href: '/docs/components/cross-border-transfers',
             components: ['CrossBorderTransferAssessment', 'TransferMechanismSelector']
           },
           {

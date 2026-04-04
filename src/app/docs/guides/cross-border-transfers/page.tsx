@@ -1,0 +1,232 @@
+'use client';
+
+import Link from 'next/link';
+import { DocLayout } from '@/components/docs/DocLayout';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent } from '@/components/ui/Card';
+
+export default function CrossBorderTransfersGuide() {
+  return (
+    <DocLayout
+      title="Cross-Border Data Transfers"
+      description="Guide to managing cross-border data transfers in compliance with NDPA 2023 Section 41"
+    >
+      <div className="flex mb-6 space-x-2">
+        <Button asChild variant="outline" size="sm">
+          <Link href="/ndpr-demos/cross-border">
+            View Demo
+          </Link>
+        </Button>
+        <Button asChild variant="outline" size="sm">
+          <Link href="/docs/components/cross-border-transfers">
+            Component Docs
+          </Link>
+        </Button>
+      </div>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Introduction</h2>
+        <p className="mb-4">
+          Under the Nigeria Data Protection Act 2023 (NDPA), transferring personal data outside Nigeria is subject to
+          specific requirements. This guide walks you through the legal framework, the assessment process, and how to
+          use the NDPR Toolkit to manage cross-border transfers compliantly.
+        </p>
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
+          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">Why This Matters</h4>
+          <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
+            Many Nigerian businesses use international cloud services, payment processors, and SaaS platforms that process
+            data outside Nigeria. Each of these transfers must comply with Sections 41-45 of the NDPA 2023.
+          </p>
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Legal Requirements</h2>
+        <p className="mb-4">
+          The NDPA 2023 permits cross-border transfers of personal data only when one of the following conditions is met:
+        </p>
+        <ol className="list-decimal pl-6 space-y-3">
+          <li>
+            <strong>Adequacy Decision:</strong> The NDPC has determined that the destination country provides an
+            adequate level of data protection.
+          </li>
+          <li>
+            <strong>Appropriate Safeguards:</strong> The controller or processor has provided appropriate safeguards,
+            which may include:
+            <ul className="list-disc pl-6 mt-2 space-y-1">
+              <li>Standard contractual clauses approved by the NDPC</li>
+              <li>Binding corporate rules</li>
+              <li>An approved code of conduct with binding commitments</li>
+              <li>Certification mechanisms</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Derogations:</strong> In limited circumstances, transfers may be made based on explicit consent,
+            contractual necessity, public interest, legal claims, or vital interests.
+          </li>
+        </ol>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Step-by-Step Assessment Process</h2>
+        <div className="space-y-4">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">1</div>
+            <div>
+              <h3 className="font-semibold mb-1">Map Your Data Flows</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                Identify all instances where personal data leaves Nigeria, including cloud hosting, analytics services,
+                email providers, and third-party processors.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">2</div>
+            <div>
+              <h3 className="font-semibold mb-1">Check Adequacy Status</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                Verify whether the NDPC has issued an adequacy decision for the destination country. If yes, the transfer
+                can proceed without additional safeguards.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">3</div>
+            <div>
+              <h3 className="font-semibold mb-1">Select Transfer Mechanism</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                If no adequacy decision exists, choose and implement appropriate safeguards such as standard contractual
+                clauses or binding corporate rules.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">4</div>
+            <div>
+              <h3 className="font-semibold mb-1">Document the Transfer</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                Record all transfer details in your ROPA, including the destination, recipient, safeguards, and data categories.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">5</div>
+            <div>
+              <h3 className="font-semibold mb-1">Update Your Privacy Notice</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                Inform data subjects about cross-border transfers, including which countries receive their data and the
+                safeguards in place.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Using the Cross-Border Transfer Component</h2>
+        <p className="mb-4">
+          The NDPR Toolkit provides components to automate much of this process:
+        </p>
+        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
+          <pre><code>{`import {
+  CrossBorderTransferAssessment,
+  TransferMechanismSelector,
+} from '@tantainnovative/ndpr-toolkit/cross-border';
+
+function TransferAssessmentPage() {
+  return (
+    <div>
+      <h1>Cross-Border Transfer Assessment</h1>
+      <CrossBorderTransferAssessment
+        transfer={{
+          id: 'transfer-aws',
+          destinationCountry: 'United States',
+          dataCategories: ['user profiles', 'usage analytics'],
+          purpose: 'Cloud infrastructure hosting',
+          recipient: 'Amazon Web Services',
+          recipientType: 'processor',
+        }}
+        onComplete={(result) => {
+          if (result.isPermitted) {
+            console.log('Transfer permitted with safeguards:', result.safeguards);
+          } else {
+            console.log('Transfer not permitted. Risks:', result.risks);
+          }
+        }}
+      />
+    </div>
+  );
+}`}</code></pre>
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Common Transfer Scenarios</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead className="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Scenario</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Typical Mechanism</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+              <tr>
+                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Cloud hosting (AWS, GCP, Azure)</td>
+                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Standard contractual clauses + data processing agreement</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">SaaS tools (Salesforce, HubSpot)</td>
+                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Standard contractual clauses</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Intra-group transfers (multinational)</td>
+                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Binding corporate rules</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Payment processing (Stripe, Paystack)</td>
+                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Contractual necessity + standard contractual clauses</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="help-resources" className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Related Resources</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">Cross-Border Transfers Component</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
+                Full API reference and component documentation.
+              </p>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/docs/components/cross-border-transfers">
+                  View Docs
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPC Website</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
+                Official guidance from the Nigeria Data Protection Commission.
+              </p>
+              <Button asChild variant="outline" size="sm">
+                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                  Visit NDPC
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    </DocLayout>
+  );
+}

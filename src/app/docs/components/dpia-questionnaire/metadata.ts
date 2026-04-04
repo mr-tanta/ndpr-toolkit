@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'DPIA Questionnaire Component | NDPA Toolkit Documentation',
     description: 'Learn how to implement an NDPA-compliant Data Protection Impact Assessment (DPIA) questionnaire in your applications using the NDPA Toolkit.',
-    url: 'https://tantainnovatives.com/ndpr-toolkit/docs/components/dpia-questionnaire',
+    url: 'https://ndprtoolkit.com.ng/docs/components/dpia-questionnaire',
     siteName: 'NDPA Toolkit',
     images: [
       {

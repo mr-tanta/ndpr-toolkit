@@ -61,7 +61,7 @@ export default function Resources() {
               Downloadable templates for key data protection documents.
             </p>
             <Button asChild variant="outline" size="sm">
-              <a href="/templates/data-protection" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer">
                 View Templates
               </a>
             </Button>

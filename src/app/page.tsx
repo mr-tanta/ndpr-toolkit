@@ -203,7 +203,7 @@ export default function Home() {
               
               <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
                 <div className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full">
-                  <span className="mr-1 text-blue-600 dark:text-blue-400">v1.0.1</span>
+                  <span className="mr-1 text-blue-600 dark:text-blue-400">v2.1.0</span>
                   <span className="px-1.5 py-0.5 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 rounded-full ml-2">React 19 Compatible</span>
                 </div>
               </div>

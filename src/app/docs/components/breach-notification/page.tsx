@@ -13,7 +13,7 @@ export default function BreachNotificationDocs() {
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
-          <Link href="/ndpr-demos/breach-notification">
+          <Link href="/ndpr-demos/breach">
             View Demo
           </Link>
         </Button>

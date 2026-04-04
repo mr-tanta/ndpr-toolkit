@@ -13,7 +13,7 @@ export default function DataSubjectRequestsGuide() {
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
-          <Link href="/demo/data-subject-rights">
+          <Link href="/ndpr-demos/dsr">
             View DSR Demo
           </Link>
         </Button>

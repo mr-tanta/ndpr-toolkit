@@ -13,7 +13,7 @@ export default function ConductingDPIAGuide() {
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
-          <Link href="/demo/dpia">
+          <Link href="/ndpr-demos/dpia">
             View DPIA Demo
           </Link>
         </Button>

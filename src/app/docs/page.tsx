@@ -624,7 +624,7 @@ function AppContent() {
                 Get up and running with the NDPR Toolkit in minutes.
               </p>
               <Button asChild variant="outline" size="sm">
-                <Link href="/docs/guides/quick-start">
+                <Link href="/docs">
                   Read Guide
                 </Link>
               </Button>
@@ -640,7 +640,7 @@ function AppContent() {
                 Implement a complete consent management system.
               </p>
               <Button asChild variant="outline" size="sm">
-                <Link href="/docs/guides/implementing-consent">
+                <Link href="/docs/guides/managing-consent">
                   Read Guide
                 </Link>
               </Button>
@@ -656,7 +656,7 @@ function AppContent() {
                 Create a complete data subject rights management portal.
               </p>
               <Button asChild variant="outline" size="sm">
-                <Link href="/docs/guides/implementing-dsr">
+                <Link href="/docs/guides/data-subject-requests">
                   Read Guide
                 </Link>
               </Button>

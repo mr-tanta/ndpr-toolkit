@@ -983,7 +983,7 @@ export default function CrossBorderDemoPage() {
                 adequacy decisions, approve transfer mechanisms, and authorize specific transfers.
               </p>
               <Link
-                href="/docs/components/cross-border-transfer"
+                href="/docs/components/cross-border-transfers"
                 className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-teal-600 dark:text-teal-400 hover:underline"
               >
                 View full documentation

@@ -878,7 +878,7 @@ export default function LawfulBasisDemoPage() {
                 request evidence of lawful basis documentation during compliance audits.
               </p>
               <Link
-                href="/docs/components/lawful-basis"
+                href="/docs/components/lawful-basis-tracker"
                 className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
               >
                 View full documentation

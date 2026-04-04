@@ -48,7 +48,7 @@ export default function Resources() {
               A customizable template for creating your organization&apos;s breach response plan.
             </p>
             <Button asChild variant="outline" size="sm">
-              <a href="/templates/breach-response-plan.docx" target="_blank" rel="noopener noreferrer">
+              <a href="https://github.com/tantainnovative/ndpr-toolkit" target="_blank" rel="noopener noreferrer">
                 Download Template
               </a>
             </Button>
