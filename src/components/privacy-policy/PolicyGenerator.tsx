@@ -84,7 +84,7 @@ function generateSafeHTMLFromFormData(formData: PolicyFormData): string {
   // Introduction
   sections.push("<h2>Introduction</h2>");
   sections.push(
-    `<p>This Privacy Policy describes how ${escapeHtml(formData.organizationName)} collects, uses, and discloses your personal information.${formData.includeNDPRCompliance ? " This policy is compliant with the Nigeria Data Protection Regulation (NDPR) and the Data Protection Act (DPA)." : ""}</p>`,
+    `<p>This Privacy Policy describes how ${escapeHtml(formData.organizationName)} collects, uses, and discloses your personal information.${formData.includeNDPRCompliance ? " This policy is compliant with the Nigeria Data Protection Act (NDPA)." : ""}</p>`,
   );
 
   // About Us
@@ -173,7 +173,7 @@ function generateSafeHTMLFromFormData(formData: PolicyFormData): string {
   // Your Rights
   sections.push("<h2>Your Rights</h2>");
   sections.push(
-    `<p>${formData.includeNDPRCompliance ? "Under the NDPR and DPA, you have the following rights:" : "You have the following rights regarding your personal data:"}</p>`,
+    `<p>${formData.includeNDPRCompliance ? "Under the NDPA, you have the following rights:" : "You have the following rights regarding your personal data:"}</p>`,
   );
   sections.push("<ul>");
   sections.push("<li>Right to access your personal data</li>");
@@ -244,7 +244,7 @@ export default function PolicyGenerator({
     // Data Processing Information
     dataCollectionPurposes: [] as string[],
     dataRetentionPeriod: "",
-    legalBasisForProcessing: [] as string[], // New: Legal basis under NDPR/DPA
+    legalBasisForProcessing: [] as string[], // New: Legal basis under NDPA
     dataCategories: [] as string[], // New: Categories of personal data collected
     dataSubjects: [] as string[], // New: Categories of data subjects
     automatedDecisionMaking: false, // New: Whether automated decision-making is used
@@ -579,7 +579,7 @@ export default function PolicyGenerator({
       {
         id: "introduction",
         title: "Introduction",
-        content: `This Privacy Policy ("Policy") describes how ${formData.organizationName} ("we", "us", or "our") collects, uses, and discloses your personal information when you visit our website${formData.organizationWebsite ? ` at ${formData.organizationWebsite}` : ""}, use our services, or otherwise interact with us. This Policy applies to all personal data processed by us, regardless of the media on which it is stored. ${formData.includeNDPRCompliance ? `This Policy is designed to comply with the Nigeria Data Protection Regulation (NDPR) ${formData.includeLegalReferences ? "of 2019 " : ""}and the Data Protection Act (DPA) ${formData.includeLegalReferences ? "of 2023 " : ""}and reflects our commitment to the principles of data protection as outlined in ${formData.includeLegalReferences ? "Section 2.1(1) of the NDPR and Section 2 of the DPA" : "the applicable regulations"}.` : ""} Please read this Policy carefully to understand our practices regarding your personal data and how we will treat it.`,
+        content: `This Privacy Policy ("Policy") describes how ${formData.organizationName} ("we", "us", or "our") collects, uses, and discloses your personal information when you visit our website${formData.organizationWebsite ? ` at ${formData.organizationWebsite}` : ""}, use our services, or otherwise interact with us. This Policy applies to all personal data processed by us, regardless of the media on which it is stored. ${formData.includeNDPRCompliance ? `This Policy is designed to comply with the Nigeria Data Protection Act (NDPA) ${formData.includeLegalReferences ? "of 2023 " : ""}and reflects our commitment to the principles of data protection as outlined in ${formData.includeLegalReferences ? "NDPA Section 24 (Data protection principles)" : "the applicable regulations"}.` : ""} Please read this Policy carefully to understand our practices regarding your personal data and how we will treat it.`,
         required: true,
         included: true,
         order: 1,
@@ -587,7 +587,7 @@ export default function PolicyGenerator({
       {
         id: "about-us",
         title: "About Us",
-        content: `${formData.organizationName} ${formData.organizationType ? `is a ${formData.organizationType} operating in the ${formData.industryCategory} sector` : ""}${formData.registrationNumber ? `, registered with registration number ${formData.registrationNumber}` : ""}${formData.organizationAddress ? `, and located at ${formData.organizationAddress}` : ""}. ${formData.organizationWebsite ? `Our official website is ${formData.organizationWebsite}.` : ""} ${formData.includeNDPRCompliance ? `As a data controller under the NDPR and DPA, we are responsible for deciding how we hold and use personal information about you.` : ""}`,
+        content: `${formData.organizationName} ${formData.organizationType ? `is a ${formData.organizationType} operating in the ${formData.industryCategory} sector` : ""}${formData.registrationNumber ? `, registered with registration number ${formData.registrationNumber}` : ""}${formData.organizationAddress ? `, and located at ${formData.organizationAddress}` : ""}. ${formData.organizationWebsite ? `Our official website is ${formData.organizationWebsite}.` : ""} ${formData.includeNDPRCompliance ? `As a data controller under the NDPA, we are responsible for deciding how we hold and use personal information about you.` : ""}`,
         required: true,
         included: true,
         order: 2,
@@ -595,7 +595,7 @@ export default function PolicyGenerator({
       {
         id: "definitions",
         title: "Definitions",
-        content: `${formData.includeNDPRCompliance ? `For the purposes of this Policy and in accordance with the NDPR and DPA:\n\n- "Personal Data" means any information relating to an identified or identifiable natural person ('data subject'); an identifiable natural person is one who can be identified, directly or indirectly, in particular by reference to an identifier.\n- "Processing" means any operation or set of operations performed on personal data or on sets of personal data.\n- "Data Controller" means a person who either alone, jointly with other persons or in common with other persons or as a statutory body determines the purposes for and the manner in which personal data is processed or is to be processed.\n- "Data Subject" means any person, who can be identified, directly or indirectly, by reference to an identification number or to one or more factors specific to his physical, physiological, mental, economic, cultural or social identity.\n- "Consent" means any freely given, specific, informed and unambiguous indication of the data subject's wishes by which he or she, through a statement or a clear affirmative action, signifies agreement to the processing of personal data relating to him or her.` : `For the purposes of this Policy:\n\n- "Personal Data" means any information relating to an identified or identifiable individual.\n- "Processing" means any operation performed on personal data.\n- "Data Subject" means the individual to whom the personal data relates.`}`,
+        content: `${formData.includeNDPRCompliance ? `For the purposes of this Policy and in accordance with the NDPA:\n\n- "Personal Data" means any information relating to an identified or identifiable natural person ('data subject'); an identifiable natural person is one who can be identified, directly or indirectly, in particular by reference to an identifier.\n- "Processing" means any operation or set of operations performed on personal data or on sets of personal data.\n- "Data Controller" means a person who either alone, jointly with other persons or in common with other persons or as a statutory body determines the purposes for and the manner in which personal data is processed or is to be processed.\n- "Data Subject" means any person, who can be identified, directly or indirectly, by reference to an identification number or to one or more factors specific to his physical, physiological, mental, economic, cultural or social identity.\n- "Consent" means any freely given, specific, informed and unambiguous indication of the data subject's wishes by which he or she, through a statement or a clear affirmative action, signifies agreement to the processing of personal data relating to him or her.` : `For the purposes of this Policy:\n\n- "Personal Data" means any information relating to an identified or identifiable individual.\n- "Processing" means any operation performed on personal data.\n- "Data Subject" means the individual to whom the personal data relates.`}`,
         required: true,
         included: true,
         order: 3,
@@ -642,7 +642,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "legal-basis",
         title: "Legal Basis for Processing",
-        content: `${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Section 2.2 of the NDPR and Section 27 of the DPA" : "the NDPR and DPA"}, we process your personal data on the following legal grounds:` : "We process your personal data on the following legal grounds:"}\n\n${formData.legalBasisForProcessing.map((basis) => `- ${basis}`).join("\n")}`,
+        content: `${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 27" : "the NDPA"}, we process your personal data on the following legal grounds:` : "We process your personal data on the following legal grounds:"}\n\n${formData.legalBasisForProcessing.map((basis) => `- ${basis}`).join("\n")}`,
         required: true,
         included: true,
         order: order++,
@@ -653,7 +653,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "automated-decision-making",
         title: "Automated Decision-Making and Profiling",
-        content: `We use automated decision-making processes, including profiling, in the following circumstances:\n\n${formData.automatedDecisionDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Section 2.3(1)(c) of the NDPR and Section 41 of the DPA" : "the NDPR and DPA"}, you have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning you or similarly significantly affects you. You can exercise this right by contacting us at ${formData.organizationContact}.` : "You have the right not to be subject to a decision based solely on automated processing. You can exercise this right by contacting us."}`,
+        content: `We use automated decision-making processes, including profiling, in the following circumstances:\n\n${formData.automatedDecisionDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 41" : "the NDPA"}, you have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning you or similarly significantly affects you. You can exercise this right by contacting us at ${formData.organizationContact}.` : "You have the right not to be subject to a decision based solely on automated processing. You can exercise this right by contacting us."}`,
         required: false,
         included: true,
         order: order++,
@@ -664,7 +664,7 @@ export default function PolicyGenerator({
     sections.push({
       id: "data-retention",
       title: "Data Retention",
-      content: `We will retain your personal data for ${formData.dataRetentionPeriod}, or for as long as necessary to fulfill the purposes for which it was collected, including for the purposes of satisfying any legal, accounting, or reporting requirements. ${formData.includeNDPRCompliance ? `This is in accordance with ${formData.includeLegalReferences ? "Section 2.1(1)(e) of the NDPR and Section 33 of the DPA" : "the data retention principles of the NDPR and DPA"}.` : ""}\n\nTo determine the appropriate retention period for personal data, we consider the amount, nature, and sensitivity of the personal data, the potential risk of harm from unauthorized use or disclosure of your personal data, the purposes for which we process your personal data and whether we can achieve those purposes through other means, and the applicable legal requirements.`,
+      content: `We will retain your personal data for ${formData.dataRetentionPeriod}, or for as long as necessary to fulfill the purposes for which it was collected, including for the purposes of satisfying any legal, accounting, or reporting requirements. ${formData.includeNDPRCompliance ? `This is in accordance with ${formData.includeLegalReferences ? "NDPA Section 33" : "the data retention principles of the NDPA"}.` : ""}\n\nTo determine the appropriate retention period for personal data, we consider the amount, nature, and sensitivity of the personal data, the potential risk of harm from unauthorized use or disclosure of your personal data, the purposes for which we process your personal data and whether we can achieve those purposes through other means, and the applicable legal requirements.`,
       required: true,
       included: true,
       order: order++,
@@ -687,7 +687,7 @@ export default function PolicyGenerator({
         thirdPartyContent += `\n\nWe share your personal data with these third parties for the following purposes:\n${formData.thirdPartyPurposes.map((purpose) => `- ${purpose}`).join("\n")}`;
       }
 
-      thirdPartyContent += `\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Section 2.6 of the NDPR and Section 37 of the DPA" : "the NDPR and DPA"}, we require all third parties to respect the security of your personal data and to treat it in accordance with the law. We do not allow our third-party service providers to use your personal data for their own purposes and only permit them to process your personal data for specified purposes and in accordance with our instructions.` : "We require all third parties to respect the security of your personal data and to treat it in accordance with applicable law."}`;
+      thirdPartyContent += `\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 37 (Data processor agreements)" : "the NDPA"}, we require all third parties to respect the security of your personal data and to treat it in accordance with the law. We do not allow our third-party service providers to use your personal data for their own purposes and only permit them to process your personal data for specified purposes and in accordance with our instructions.` : "We require all third parties to respect the security of your personal data and to treat it in accordance with applicable law."}`;
 
       sections.push({
         id: "third-party-sharing",
@@ -735,7 +735,7 @@ export default function PolicyGenerator({
         transferContent += `\n\nWhenever we transfer your personal data out of Nigeria, we ensure a similar degree of protection is afforded to it by implementing the following safeguards:\n${formData.transferSafeguards.map((safeguard) => `- ${safeguard}`).join("\n")}`;
       }
 
-      transferContent += `\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Sections 2.11 and 2.12 of the NDPR and Section 44 of the DPA" : "the NDPR and DPA"}, we ensure that any international transfer of personal data is done in accordance with the provisions of the regulations and that adequate protection is guaranteed for the rights of data subjects.` : "We ensure that any international transfer of personal data is done with adequate protection for the rights of data subjects."}`;
+      transferContent += `\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 44" : "the NDPA"}, we ensure that any international transfer of personal data is done in accordance with the provisions of the Act and that adequate protection is guaranteed for the rights of data subjects.` : "We ensure that any international transfer of personal data is done with adequate protection for the rights of data subjects."}`;
 
       sections.push({
         id: "international-transfers",
@@ -752,7 +752,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "childrens-data",
         title: "Children's Privacy",
-        content: `Our services may be used by individuals under the age of 18. ${formData.childrenDataDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Section 2.2(d) of the NDPR and Section 39 of the DPA" : "the NDPR and DPA"}, we implement specific measures to protect the privacy of children, including obtaining parental consent where required by law.` : "We implement specific measures to protect the privacy of children, including obtaining parental consent where required by law."}`,
+        content: `Our services may be used by individuals under the age of 18. ${formData.childrenDataDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 39" : "the NDPA"}, we implement specific measures to protect the privacy of children, including obtaining parental consent where required by law.` : "We implement specific measures to protect the privacy of children, including obtaining parental consent where required by law."}`,
         required: false,
         included: true,
         order: order++,
@@ -764,7 +764,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "special-categories",
         title: "Special Categories of Personal Data",
-        content: `We may process special categories of personal data, which includes information about your race, ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, health data, sex life, or sexual orientation.\n\n${formData.specialCategoriesDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Section 2.2 of the NDPR and Section 28 of the DPA" : "the NDPR and DPA"}, we only process special categories of personal data when one of the specific legal bases for such processing is met, such as explicit consent or when processing is necessary for specific purposes outlined in the regulations.` : "We only process special categories of personal data when one of the specific legal bases for such processing is met, such as explicit consent."}`,
+        content: `We may process special categories of personal data, which includes information about your race, ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, health data, sex life, or sexual orientation.\n\n${formData.specialCategoriesDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 28" : "the NDPA"}, we only process special categories of personal data when one of the specific legal bases for such processing is met, such as explicit consent or when processing is necessary for specific purposes outlined in the Act.` : "We only process special categories of personal data when one of the specific legal bases for such processing is met, such as explicit consent."}`,
         required: false,
         included: true,
         order: order++,
@@ -773,7 +773,7 @@ export default function PolicyGenerator({
 
     // Add security measures section
     if (formData.securityMeasures.length > 0) {
-      let securityContent = `We have implemented appropriate security measures to prevent your personal data from being accidentally lost, used, or accessed in an unauthorized way, altered, or disclosed. These measures include:\n\n${formData.securityMeasures.map((measure) => `- ${measure}`).join("\n")}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Section 2.1(1)(d) of the NDPR and Section 31 of the DPA" : "the NDPR and DPA"}, we implement appropriate technical and organizational measures to ensure a level of security appropriate to the risk.` : "We regularly review and update our security measures to ensure the ongoing confidentiality, integrity, and availability of your personal data."}`;
+      let securityContent = `We have implemented appropriate security measures to prevent your personal data from being accidentally lost, used, or accessed in an unauthorized way, altered, or disclosed. These measures include:\n\n${formData.securityMeasures.map((measure) => `- ${measure}`).join("\n")}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 31" : "the NDPA"}, we implement appropriate technical and organizational measures to ensure a level of security appropriate to the risk.` : "We regularly review and update our security measures to ensure the ongoing confidentiality, integrity, and availability of your personal data."}`;
 
       if (formData.dataBreachProcedures) {
         securityContent += `\n\nData Breach Procedures: ${formData.dataBreachProcedures}`;
@@ -790,7 +790,7 @@ export default function PolicyGenerator({
     }
 
     // Add data subject rights section
-    const rightsContent = `${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Section 3.1 of the NDPR and Section 36 of the DPA" : "the NDPR and DPA"}, you have the following rights in relation to your personal data:` : "You have the following rights in relation to your personal data:"}\n\n- **Right to Access**: You have the right to request a copy of the personal data we hold about you.\n- **Right to Rectification**: You have the right to request correction of any inaccurate personal data we hold about you.\n- **Right to Erasure (Right to be Forgotten)**: You have the right to request erasure of your personal data in certain circumstances.\n- **Right to Restriction of Processing**: You have the right to request restriction of processing of your personal data in certain circumstances.\n- **Right to Data Portability**: You have the right to request the transfer of your personal data to you or to a third party in a structured, commonly used, machine-readable format.\n- **Right to Object**: You have the right to object to processing of your personal data in certain circumstances.\n- **Right to Withdraw Consent**: Where we rely on your consent to process your personal data, you have the right to withdraw your consent at any time.\n\nTo exercise any of these rights, please contact us at ${formData.organizationContact}.${formData.includeNDPRCompliance ? ` We will respond to your request within ${formData.includeLegalReferences ? "30 days as required by Section 3.1(7) of the NDPR" : "the timeframe specified by the regulations"}.` : ""}`;
+    const rightsContent = `${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 34 (Rights of data subjects)" : "the NDPA"}, you have the following rights in relation to your personal data:` : "You have the following rights in relation to your personal data:"}\n\n- **Right to Access**: You have the right to request a copy of the personal data we hold about you.\n- **Right to Rectification**: You have the right to request correction of any inaccurate personal data we hold about you.\n- **Right to Erasure (Right to be Forgotten)**: You have the right to request erasure of your personal data in certain circumstances.\n- **Right to Restriction of Processing**: You have the right to request restriction of processing of your personal data in certain circumstances.\n- **Right to Data Portability**: You have the right to request the transfer of your personal data to you or to a third party in a structured, commonly used, machine-readable format.\n- **Right to Object**: You have the right to object to processing of your personal data in certain circumstances.\n- **Right to Withdraw Consent**: Where we rely on your consent to process your personal data, you have the right to withdraw your consent at any time.\n\nTo exercise any of these rights, please contact us at ${formData.organizationContact}.${formData.includeNDPRCompliance ? ` We will respond to your request within ${formData.includeLegalReferences ? "30 days as required by NDPA Section 30 (Right of access)" : "the timeframe specified by the Act"}.` : ""}`;
 
     sections.push({
       id: "data-subject-rights",
@@ -816,7 +816,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "regulatory-compliance",
         title: "Regulatory Compliance",
-        content: `In addition to the ${formData.includeNDPRCompliance ? "NDPR and DPA" : "applicable data protection laws"}, we comply with the following regulations and standards:\n\n${formData.regulatoryCompliance.map((reg) => `- ${reg}`).join("\n")}`,
+        content: `In addition to the ${formData.includeNDPRCompliance ? "NDPA" : "applicable data protection laws"}, we comply with the following regulations and standards:\n\n${formData.regulatoryCompliance.map((reg) => `- ${reg}`).join("\n")}`,
         required: false,
         included: true,
         order: order++,
@@ -840,7 +840,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "dpo",
         title: "Data Protection Officer",
-        content: `We have appointed a Data Protection Officer (DPO) who is responsible for overseeing questions in relation to this Privacy Policy. You can contact our DPO at ${formData.dpoContact}.${formData.includeNDPRCompliance ? ` This appointment is in accordance with ${formData.includeLegalReferences ? "Section 2.5 of the NDPR and Section 30 of the DPA" : "the requirements of the NDPR and DPA"}.` : ""}`,
+        content: `We have appointed a Data Protection Officer (DPO) who is responsible for overseeing questions in relation to this Privacy Policy. You can contact our DPO at ${formData.dpoContact}.${formData.includeNDPRCompliance ? ` This appointment is in accordance with ${formData.includeLegalReferences ? "NDPA Section 30" : "the requirements of the NDPA"}.` : ""}`,
         required: false,
         included: true,
         order: order++,
@@ -852,7 +852,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "supervisory-authority",
         title: "Supervisory Authority",
-        content: `${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "Section 3.1(8) of the NDPR and Section 36(5) of the DPA" : "the NDPR and DPA"}, you have the right to lodge a complaint with the Nigeria Data Protection Commission (NDPC) if you are not satisfied with our response to your concerns. You can contact the NDPC at ${formData.supervisoryAuthorityContact}.` : `You have the right to lodge a complaint with the relevant data protection authority if you are not satisfied with our response to your concerns. You can contact them at ${formData.supervisoryAuthorityContact}.`}`,
+        content: `${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 36(5)" : "the NDPA"}, you have the right to lodge a complaint with the Nigeria Data Protection Commission (NDPC) if you are not satisfied with our response to your concerns. You can contact the NDPC at ${formData.supervisoryAuthorityContact}.` : `You have the right to lodge a complaint with the relevant data protection authority if you are not satisfied with our response to your concerns. You can contact them at ${formData.supervisoryAuthorityContact}.`}`,
         required: false,
         included: true,
         order: order++,

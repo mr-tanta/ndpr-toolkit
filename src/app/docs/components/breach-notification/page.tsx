@@ -9,7 +9,7 @@ export default function BreachNotificationDocs() {
   return (
     <DocLayout
       title="Breach Notification System"
-      description="NDPR-compliant system for managing and reporting data breaches"
+      description="NDPA 2023-compliant system for managing and reporting data breaches"
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
@@ -27,14 +27,14 @@ export default function BreachNotificationDocs() {
       <section id="overview" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
         <p className="mb-4">
-          The Breach Notification System provides a complete solution for detecting, managing, and reporting data breaches 
-          in compliance with the Nigeria Data Protection Regulation (NDPR). It includes components for breach reporting, 
+          The Breach Notification System provides a complete solution for detecting, managing, and reporting data breaches
+          in compliance with the Nigeria Data Protection Act 2023 (NDPA). It includes components for breach reporting,
           risk assessment, notification management, and regulatory reporting.
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Breach Notification Requirements</h4>
+          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA Breach Notification Requirements</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
-            Under the NDPR, organizations must report data breaches to the National Information Technology Development Agency (NITDA) 
+            Under the NDPA 2023, organizations must report data breaches to the Nigeria Data Protection Commission (NDPC)
             within 72 hours of becoming aware of the breach. Organizations must also notify affected data subjects without undue delay.
           </p>
         </div>
@@ -118,7 +118,7 @@ export default function BreachNotificationDocs() {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-bold mb-2">RegulatoryReportGenerator</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              A tool for generating NDPR-compliant breach notification reports for submission to NITDA.
+              A tool for generating NDPA-compliant breach notification reports for submission to the NDPC.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
               <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
@@ -307,8 +307,8 @@ function BreachReportingPage() {
               </p>
               <p>
                 {currentBreach.riskAssessment.requiresNitdaNotification 
-                  ? 'NITDA notification is required within 72 hours.' 
-                  : 'NITDA notification is not required.'}
+                  ? 'NDPC notification is required within 72 hours.'
+                  : 'NDPC notification is not required.'}
               </p>
               <p>
                 {currentBreach.riskAssessment.requiresDataSubjectNotification 
@@ -365,7 +365,7 @@ function BreachManagementDashboard() {
         <div>
           <h2>Regulatory Report Generator</h2>
           <p>
-            Generate a NITDA breach notification report for submission.
+            Generate an NDPC breach notification report for submission.
           </p>
           
           <RegulatoryReportGenerator 
@@ -445,7 +445,7 @@ function BreachManagementDashboard() {
       <section id="72-hour-timeline" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">72-Hour Notification Timeline</h2>
         <p className="mb-4">
-          The NDPR requires organizations to notify NITDA of data breaches within 72 hours of becoming aware of the breach. 
+          The NDPA requires organizations to notify the NDPC of data breaches within 72 hours of becoming aware of the breach. 
           Here&apos;s a recommended timeline for handling breaches:
         </p>
         
@@ -482,7 +482,7 @@ function BreachManagementDashboard() {
             </div>
             <h3 className="text-xl font-bold">Hour 24-48: Notification Preparation</h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
-              - Use the RegulatoryReportGenerator to prepare NITDA notification<br />
+              - Use the RegulatoryReportGenerator to prepare NDPC notification<br />
               - Draft data subject notifications if required<br />
               - Review and approve notifications<br />
               - Continue investigation and remediation
@@ -495,7 +495,7 @@ function BreachManagementDashboard() {
             </div>
             <h3 className="text-xl font-bold">Hour 48-72: Notification Submission</h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
-              - Submit notification to NITDA<br />
+              - Submit notification to NDPC<br />
               - Begin notifying affected data subjects if required<br />
               - Document all notification activities<br />
               - Continue remediation efforts
@@ -650,12 +650,12 @@ function BreachManagementDashboard() {
         <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
           <pre><code>{`export interface NotificationRequirement {
   /**
-   * Whether NITDA notification is required
+   * Whether NDPC notification is required
    */
   nitdaNotificationRequired: boolean;
-  
+
   /**
-   * Deadline for NITDA notification (72 hours from discovery)
+   * Deadline for NDPC notification (72 hours from discovery)
    */
   nitdaNotificationDeadline: number;
   
@@ -683,7 +683,7 @@ const {
   updateBreachReport,     // Function to update an existing breach report
   performRiskAssessment,  // Function to perform a risk assessment
   determineNotificationRequirements,  // Function to determine notification requirements
-  generateRegulatoryReport,  // Function to generate a report for NITDA
+  generateRegulatoryReport,  // Function to generate a report for the NDPC
   getBreachById,          // Function to get a breach by ID
 } = useBreach();
 
@@ -727,7 +727,7 @@ const requirements = determineNotificationRequirements({
   riskAssessmentId: riskAssessment.id
 });
 
-// Generate a regulatory report for NITDA
+// Generate a regulatory report for the NDPC
 if (requirements.nitdaNotificationRequired) {
   const report = generateRegulatoryReport({
     breachId: newBreachReport.id,
@@ -761,7 +761,7 @@ if (requirements.nitdaNotificationRequired) {
       <section id="help-resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Need Help?</h2>
         <p className="mb-4">
-          If you have questions about implementing the Breach Notification system or need assistance with NDPR compliance, check out these resources:
+          If you have questions about implementing the Breach Notification system or need assistance with NDPA compliance, check out these resources:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
@@ -779,13 +779,13 @@ if (requirements.nitdaNotificationRequired) {
           </Card>
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Resources</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA Resources</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Learn more about NDPR compliance requirements.
+                Learn more about NDPA 2023 compliance requirements.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                  NDPR Framework
+                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                  NDPA Framework
                 </a>
               </Button>
             </CardContent>

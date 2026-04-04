@@ -1,8 +1,8 @@
-# NDPR Toolkit - Upgrade Summary
+# NDPA Toolkit - Upgrade Summary
 
 ## Overview
 
-Based on the comprehensive feedback from the development team, we have implemented major improvements to make the NDPR Toolkit more flexible, customizable, and developer-friendly. The toolkit now supports multiple usage patterns while maintaining backward compatibility.
+Based on the comprehensive feedback from the development team, we have implemented major improvements to make the NDPA Toolkit more flexible, customizable, and developer-friendly. The toolkit now supports multiple usage patterns while maintaining backward compatibility.
 
 ## Key Improvements Implemented
 
@@ -204,4 +204,4 @@ The implementation maintains backward compatibility while adding new features:
 
 ## Conclusion
 
-The NDPR Toolkit now provides the flexibility requested by the development team while maintaining ease of use for developers who prefer pre-built solutions. It follows the patterns of popular headless UI libraries like Radix UI and Headless UI, making it familiar to modern React developers.
+The NDPA Toolkit now provides the flexibility requested by the development team while maintaining ease of use for developers who prefer pre-built solutions. It follows the patterns of popular headless UI libraries like Radix UI and Headless UI, making it familiar to modern React developers.

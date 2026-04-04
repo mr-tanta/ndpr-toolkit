@@ -9,7 +9,7 @@ export default function PrivacyPolicyGeneratorDocs() {
   return (
     <DocLayout
       title="Privacy Policy Generator"
-      description="NDPR-compliant privacy policy generator for websites and applications"
+      description="NDPA 2023-compliant privacy policy generator for websites and applications"
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
@@ -28,14 +28,14 @@ export default function PrivacyPolicyGeneratorDocs() {
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
         <p className="mb-4">
           The Privacy Policy Management components provide a comprehensive solution for creating, previewing, and exporting
-          customized, NDPR-compliant privacy policies for your website or application. The system includes three main components:
+          customized, NDPA-compliant privacy policies for your website or application. The system includes three main components:
           PolicyGenerator, PolicyPreview, and PolicyExporter, which work together to create professional, enterprise-ready
           privacy policies with variable support.
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Privacy Policy Requirements</h4>
+          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA Privacy Policy Requirements</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
-            Under the NDPR, organizations must maintain a clear and accessible privacy policy that informs data subjects 
+            Under the NDPA 2023, organizations must maintain a clear and accessible privacy policy that informs data subjects 
             about how their personal data is collected, processed, stored, and protected. The policy must be written in 
             clear, plain language and cover specific elements required by the regulation.
           </p>
@@ -65,7 +65,7 @@ yarn add @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
       <section id="components" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Components</h2>
         <p className="mb-4">
-          The Privacy Policy Management system includes three main components that work together to create, preview, and export NDPR-compliant privacy policies:
+          The Privacy Policy Management system includes three main components that work together to create, preview, and export NDPA-compliant privacy policies:
         </p>
         
         <div className="space-y-6">
@@ -87,7 +87,7 @@ yarn add @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
     setPolicyContent(policy.content);
   }}
   title="Privacy Policy Generator"
-  description="Create your NDPR-compliant privacy policy"
+  description="Create your NDPA-compliant privacy policy"
   showPreview={true}
   allowEditing={true}
 />`}</code></pre>
@@ -587,7 +587,7 @@ function generatePolicyText(
             <strong>Customization:</strong> While the generator provides a solid template, customize the policy to accurately reflect your specific data practices.
           </li>
           <li>
-            <strong>Legal Review:</strong> Have your generated privacy policy reviewed by a legal professional familiar with the NDPR to ensure compliance.
+            <strong>Legal Review:</strong> Have your generated privacy policy reviewed by a legal professional familiar with the NDPA to ensure compliance.
           </li>
           <li>
             <strong>Use Variables:</strong> Leverage the variable system to create reusable templates that can be easily updated when your organization information changes.
@@ -598,7 +598,7 @@ function generatePolicyText(
       <section id="help-resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Need Help?</h2>
         <p className="mb-4">
-          If you have questions about implementing the Privacy Policy Generator or need assistance with NDPR compliance, check out these resources:
+          If you have questions about implementing the Privacy Policy Generator or need assistance with NDPA compliance, check out these resources:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
@@ -616,13 +616,13 @@ function generatePolicyText(
           </Card>
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Resources</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA Resources</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Learn more about NDPR compliance requirements.
+                Learn more about NDPA 2023 compliance requirements.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                  NDPR Framework
+                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                  NDPA Framework
                 </a>
               </Button>
             </CardContent>

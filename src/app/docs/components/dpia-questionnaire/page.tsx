@@ -27,14 +27,14 @@ export default function DPIAQuestionnaireDocs() {
       <section id="overview" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
         <p className="mb-4">
-          The DPIA Questionnaire component provides an interactive form for conducting Data Protection Impact Assessments (DPIAs) 
-          in compliance with the Nigeria Data Protection Regulation (NDPR). This component helps organizations identify and 
+          The DPIA Questionnaire component provides an interactive form for conducting Data Protection Impact Assessments (DPIAs)
+          in compliance with the Nigeria Data Protection Act 2023 (NDPA). This component helps organizations identify and
           minimize data protection risks in their projects or systems.
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
           <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">When to use a DPIA</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
-            Under the NDPR, a DPIA is required when processing is likely to result in a high risk to the rights and freedoms of individuals. 
+            Under the NDPA 2023, a DPIA is required when processing is likely to result in a high risk to the rights and freedoms of individuals. 
             This includes systematic and extensive profiling, processing of special categories of data on a large scale, or systematic 
             monitoring of public areas.
           </p>
@@ -273,7 +273,7 @@ function DPIAWithRiskCalculation() {
     } else {
       level = 'High Risk';
       recs = [
-        'Consult with NITDA before proceeding',
+        'Consult with the NDPC before proceeding',
         'Implement strict access controls',
         'Conduct comprehensive security audit',
         'Consider data minimization strategies',
@@ -600,13 +600,13 @@ const report = generateReport(newDPIA.id);
             <strong>Risk Scoring:</strong> Implement a risk scoring system to help identify high-risk areas that need additional mitigation measures.
           </li>
           <li>
-            <strong>Documentation:</strong> Ensure the DPIA results are documented and stored for compliance purposes. The NDPR requires organizations to maintain records of processing activities.
+            <strong>Documentation:</strong> Ensure the DPIA results are documented and stored for compliance purposes. The NDPA requires organizations to maintain records of processing activities.
           </li>
           <li>
             <strong>Regular Reviews:</strong> DPIAs should be reviewed periodically, especially when there are changes to the processing activities.
           </li>
           <li>
-            <strong>Consultation:</strong> For high-risk processing, consider consulting with NITDA or a data protection expert.
+            <strong>Consultation:</strong> For high-risk processing, consider consulting with the NDPC or a data protection expert.
           </li>
         </ul>
       </section>
@@ -630,7 +630,7 @@ const report = generateReport(newDPIA.id);
       <section id="help-resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Need Help?</h2>
         <p className="mb-4">
-          If you have questions about implementing the DPIA Questionnaire or need assistance with NDPR compliance, check out these resources:
+          If you have questions about implementing the DPIA Questionnaire or need assistance with NDPA compliance, check out these resources:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
@@ -648,13 +648,13 @@ const report = generateReport(newDPIA.id);
           </Card>
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Resources</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA Resources</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Learn more about NDPR compliance requirements.
+                Learn more about NDPA 2023 compliance requirements.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                  NDPR Framework
+                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                  NDPA Framework
                 </a>
               </Button>
             </CardContent>

@@ -1,8 +1,8 @@
-# NDPR Toolkit - Consent Management Documentation
+# NDPA Toolkit - Consent Management Documentation
 
 ## Overview
 
-The NDPR Toolkit provides a flexible, customizable consent management system that can be used in three ways:
+The NDPA Toolkit provides a flexible, customizable consent management system compliant with the Nigeria Data Protection Act (NDPA). The toolkit supports three usage modes:
 
 1. **Full UI Mode** - Pre-built components with theming
 2. **Headless Mode** - State management only, bring your own UI
@@ -103,6 +103,46 @@ const {
   closeSettings,     // Hide settings modal
   updateConsent,     // Update individual category
 } = useConsent();
+```
+
+## NDPA Compliance
+
+The toolkit is designed to meet the requirements of the Nigeria Data Protection Act (NDPA), enforced by the Nigeria Data Protection Commission (NDPC).
+
+### Lawful Basis for Processing (NDPA Section 25)
+
+Under Section 25 of the NDPA, personal data may only be processed when there is a lawful basis. The most common bases include:
+
+- **Consent** of the data subject
+- **Contractual necessity** — processing needed to perform a contract
+- **Legal obligation** — required by law
+- **Vital interest** — protecting life
+- **Public interest** — performing a task in the public interest
+- **Legitimate interest** — where not overridden by the data subject's rights
+
+### Consent Conditions (NDPA Section 26)
+
+Section 26 of the NDPA sets out the conditions for valid consent:
+
+- Consent must be **freely given**, **specific**, **informed**, and **unambiguous**
+- The data controller must be able to **demonstrate** that consent was obtained
+- Consent requests must be clearly distinguishable, in plain language
+- Data subjects must be able to **withdraw consent** at any time, and withdrawal must be as easy as giving consent
+- Pre-ticked boxes or inactivity do **not** constitute valid consent
+
+### Consent Refresh (13-Month Requirement)
+
+Consent must be refreshed at least every **13 months**. The toolkit supports automatic consent expiry tracking. Configure this via the `ConsentManager`:
+
+```tsx
+<ConsentManager
+  consentExpiryDays={395} // 13 months ≈ 395 days
+  onConsentExpired={() => {
+    // Re-prompt user for consent
+  }}
+>
+  {children}
+</ConsentManager>
 ```
 
 ## Customization Options

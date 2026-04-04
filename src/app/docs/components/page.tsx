@@ -12,7 +12,7 @@ export default function ComponentsPage() {
       description="Documentation for NDPR Toolkit components"
     >
       <p className="mb-6">
-        The NDPR Toolkit provides a comprehensive set of components to help you implement NDPR-compliant features in your applications.
+        The NDPR Toolkit provides a comprehensive set of components to help you implement NDPA 2023-compliant features in your applications.
         Each component is designed to address specific compliance requirements and can be easily integrated into your existing codebase.
       </p>
       
@@ -20,13 +20,13 @@ export default function ComponentsPage() {
         {[
           {
             title: 'Privacy Policy Management',
-            description: 'Components for creating, previewing, and exporting NDPR-compliant privacy policies',
+            description: 'Components for creating, previewing, and exporting NDPA-compliant privacy policies',
             href: '/docs/components/privacy-policy-generator',
             components: ['PolicyGenerator', 'PolicyPreview', 'PolicyExporter']
           },
           {
             title: 'Consent Management',
-            description: 'Components for collecting, storing, and managing user consent in compliance with NDPR requirements',
+            description: 'Components for collecting, storing, and managing user consent in compliance with NDPA requirements',
             href: '/docs/components/consent-management',
             components: ['ConsentBanner', 'ConsentManager', 'ConsentStorage']
           },
@@ -47,6 +47,24 @@ export default function ComponentsPage() {
             description: 'Comprehensive tools for managing, assessing, and reporting data breaches within required timeframes',
             href: '/docs/components/breach-notification',
             components: ['BreachReportForm', 'BreachRiskAssessment', 'RegulatoryReportGenerator', 'BreachNotificationManager']
+          },
+          {
+            title: 'Lawful Basis Assessment',
+            description: 'Tools for identifying and documenting the lawful basis for processing personal data under the NDPA 2023',
+            href: '/docs/components/lawful-basis',
+            components: ['LawfulBasisAssessment', 'LawfulBasisReport']
+          },
+          {
+            title: 'Cross-Border Transfer',
+            description: 'Components for managing and documenting cross-border data transfers in compliance with NDPA requirements',
+            href: '/docs/components/cross-border-transfer',
+            components: ['CrossBorderTransferAssessment', 'TransferMechanismSelector']
+          },
+          {
+            title: 'Records of Processing Activities (ROPA)',
+            description: 'Maintain comprehensive records of all data processing activities as required by the NDPA 2023',
+            href: '/docs/components/ropa',
+            components: ['ROPAManager', 'ProcessingActivityForm', 'ROPAReport']
           },
         ].map((component) => (
           <Card key={component.title}>

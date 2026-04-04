@@ -8,8 +8,8 @@ export default function ImplementationTools() {
     <section id="implementation-tools" className="mb-8">
       <h2 className="text-2xl font-bold mb-4">Implementation Tools in the NDPR Toolkit</h2>
       <p className="mb-4">
-        The NDPR Toolkit provides a comprehensive set of components and utilities to help you implement 
-        NDPR-compliant features in your web applications. Here&apos;s how the toolkit can help you address 
+        The NDPR Toolkit provides a comprehensive set of components and utilities to help you implement
+        NDPA 2023-compliant features in your web applications. Here&apos;s how the toolkit can help you address
         key compliance requirements:
       </p>
       
@@ -80,7 +80,7 @@ export default function ImplementationTools() {
             <ul className="list-disc pl-6 text-gray-600 dark:text-gray-300 text-sm">
               <li>BreachReportForm for internal breach reporting</li>
               <li>BreachRiskAssessment for evaluating breach severity</li>
-              <li>RegulatoryReportGenerator for creating NITDA notifications</li>
+              <li>RegulatoryReportGenerator for creating NDPC notifications</li>
               <li>BreachNotificationManager for tracking the notification process</li>
             </ul>
             <div className="mt-4">
@@ -95,7 +95,7 @@ export default function ImplementationTools() {
           <CardContent className="p-6">
             <h3 className="font-bold text-lg mb-2">Privacy Policy Generator</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-              The Privacy Policy Generator helps you create a comprehensive, NDPR-compliant privacy policy.
+              The Privacy Policy Generator helps you create a comprehensive, NDPA 2023-compliant privacy policy.
             </p>
             <ul className="list-disc pl-6 text-gray-600 dark:text-gray-300 text-sm">
               <li>PolicyGenerator for creating customized privacy policies</li>
@@ -134,9 +134,9 @@ export default function ImplementationTools() {
       <div className="mt-8 bg-green-50 dark:bg-green-900/20 p-4 rounded-md">
         <h4 className="text-green-800 dark:text-green-200 font-medium mb-2">Integrated Compliance Approach</h4>
         <p className="text-green-700 dark:text-green-300 text-sm">
-          The NDPR Toolkit is designed to provide an integrated approach to NDPR compliance. The components work together 
-          to create a comprehensive compliance system, with shared utilities and data structures that ensure consistency 
-          across different compliance areas. This integrated approach helps you implement NDPR-compliant features more 
+          The NDPR Toolkit is designed to provide an integrated approach to NDPA 2023 compliance. The components work together
+          to create a comprehensive compliance system, with shared utilities and data structures that ensure consistency
+          across different compliance areas. This integrated approach helps you implement NDPA-compliant features more
           efficiently and maintain compliance over time.
         </p>
       </div>

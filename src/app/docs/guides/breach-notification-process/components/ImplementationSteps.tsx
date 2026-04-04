@@ -126,7 +126,7 @@ function RiskAssessmentPage({ breachData }) {
         <>
           <p>
             Complete this assessment to determine the risk level of the breach and whether
-            notification to NITDA and/or data subjects is required.
+            notification to NDPC and/or data subjects is required.
           </p>
           
           <BreachRiskAssessment 
@@ -139,12 +139,12 @@ function RiskAssessmentPage({ breachData }) {
           <h2>Assessment Complete</h2>
           {requiresNotification ? (
             <p>
-              This breach requires notification to NITDA within 72 hours. Please proceed
+              This breach requires notification to NDPC within 72 hours. Please proceed
               to the notification preparation step.
             </p>
           ) : (
             <p>
-              Based on the assessment, this breach does not require notification to NITDA.
+              Based on the assessment, this breach does not require notification to NDPC.
               However, you should still document the breach and the actions taken.
             </p>
           )}
@@ -232,8 +232,8 @@ function NotificationManagementPage() {
         <div>
           <h3 className="text-xl font-bold mb-3">4. Regulatory Report Generation</h3>
           <p className="mb-3">
-            For breaches that require notification to NITDA, you need to prepare a formal report. 
-            The RegulatoryReportGenerator component helps create NDPR-compliant breach notification reports.
+            For breaches that require notification to NDPC, you need to prepare a formal report. 
+            The RegulatoryReportGenerator component helps create NDPA 2023-compliant breach notification reports.
           </p>
           <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
             <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
@@ -270,13 +270,13 @@ function ReportGenerationPage({ breachData }) {
 
   return (
     <div>
-      <h1>Generate NITDA Notification Report</h1>
+      <h1>Generate NDPC Notification Report</h1>
       <p>Breach ID: {breachData.id}</p>
       
       {!reportGenerated ? (
         <>
           <p>
-            Generate a NITDA breach notification report for submission. This report must be
+            Generate a NDPC breach notification report for submission. This report must be
             submitted within 72 hours of becoming aware of the breach.
           </p>
           
@@ -290,11 +290,11 @@ function ReportGenerationPage({ breachData }) {
         <div>
           <h2>Report Generated</h2>
           <p>
-            The NITDA notification report has been generated successfully. Please review
-            the report and submit it to NITDA as soon as possible.
+            The NDPC notification report has been generated successfully. Please review
+            the report and submit it to NDPC as soon as possible.
           </p>
           <button>Download Report</button>
-          <button>Submit to NITDA</button>
+          <button>Submit to NDPC</button>
         </div>
       )}
     </div>

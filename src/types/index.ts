@@ -19,7 +19,9 @@ export type DSRType =
   | "erasure"
   | "portability"
   | "objection"
-  | "restriction";
+  | "restriction"
+  | "information"
+  | "automated_decision_making";
 
 // Legacy type aliases
 export type RequestStatus = DSRStatus;

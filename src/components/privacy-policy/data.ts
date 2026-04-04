@@ -75,7 +75,7 @@ export const transferSafeguards = [
   'Necessary for important reasons of public interest',
   'Necessary to protect vital interests',
   'Transfer is from a register intended to provide information to the public',
-  'Compliance with NDPR Section 2.11 and 2.12 on international transfers',
+  'Compliance with NDPA Section 44 on international transfers',
 ];
 
 export const defaultCookieTypes = [

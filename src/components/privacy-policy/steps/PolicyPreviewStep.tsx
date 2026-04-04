@@ -68,7 +68,7 @@ export default function PolicyPreviewStep({
               This Privacy Policy describes how {formData.organizationName}{" "}
               collects, uses, and discloses your personal information.
               {formData.includeNDPRCompliance &&
-                " This policy is compliant with the Nigeria Data Protection Regulation (NDPR) and the Data Protection Act (DPA)."}
+                " This policy is compliant with the Nigeria Data Protection Act (NDPA)."}
             </p>
 
             <h2>About Us</h2>
@@ -173,7 +173,7 @@ export default function PolicyPreviewStep({
             <h2>Your Rights</h2>
             <p>
               {formData.includeNDPRCompliance
-                ? "Under the NDPR and DPA, you have the following rights:"
+                ? "Under the NDPA, you have the following rights:"
                 : "You have the following rights regarding your personal data:"}
             </p>
             <ul>

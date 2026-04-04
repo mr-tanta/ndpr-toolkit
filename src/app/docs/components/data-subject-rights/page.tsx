@@ -9,7 +9,7 @@ export default function DataSubjectRightsDocs() {
   return (
     <DocLayout
       title="Data Subject Rights Portal"
-      description="NDPR-compliant portal for managing data subject rights requests"
+      description="NDPA 2023-compliant portal for managing data subject rights requests"
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
@@ -27,15 +27,15 @@ export default function DataSubjectRightsDocs() {
       <section id="overview" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
         <p className="mb-4">
-          The Data Subject Rights Portal provides a complete solution for handling data subject access requests (DSARs) 
-          and other rights requests in compliance with the Nigeria Data Protection Regulation (NDPR). It includes a request 
+          The Data Subject Rights Portal provides a complete solution for handling data subject access requests (DSARs)
+          and other rights requests in compliance with the Nigeria Data Protection Act 2023 (NDPA). It includes a request
           submission form, admin dashboard for managing requests, and a tracking system for data subjects.
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Data Subject Rights</h4>
+          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA Data Subject Rights</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
-            Under the NDPR, data subjects have several rights, including the right to access their personal data, 
-            right to rectification, right to erasure, right to restrict processing, right to data portability, and 
+            Under the NDPA 2023, data subjects have several rights, including the right to access their personal data,
+            right to rectification, right to erasure, right to restrict processing, right to data portability, and
             right to object to processing. Organizations must respond to these requests within 30 days.
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function DataSubjectRightsDocs() {
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <h3 className="text-xl font-bold mb-2">BreachReportForm</h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              A form for reporting data breaches, which is a requirement under the NDPR.
+              A form for reporting data breaches, which is a requirement under the NDPA.
             </p>
             <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
               <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit';
@@ -444,7 +444,7 @@ const accessRequests = filterRequestsByType('access');`}</code></pre>
             <strong>Verification Process:</strong> Implement a verification process to confirm the identity of the data subject making the request.
           </li>
           <li>
-            <strong>Response Timeframe:</strong> The NDPR requires organizations to respond to DSARs within 30 days. Ensure your process allows for timely responses.
+            <strong>Response Timeframe:</strong> The NDPA requires organizations to respond to DSARs within 30 days. Ensure your process allows for timely responses.
           </li>
           <li>
             <strong>Complete Responses:</strong> Provide complete information in response to access requests, including what data you hold, howit&apos;s used, whoit&apos;s shared with, and its source.
@@ -453,7 +453,7 @@ const accessRequests = filterRequestsByType('access');`}</code></pre>
             <strong>Record Keeping:</strong> Maintain records of all DSARs and your responses to them. The DSRDashboard component helps with this.
           </li>
           <li>
-            <strong>Staff Training:</strong> Ensure staff handling DSARs are trained on the requirements of the NDPR and your internal processes.
+            <strong>Staff Training:</strong> Ensure staff handling DSARs are trained on the requirements of the NDPA and your internal processes.
           </li>
         </ul>
       </section>
@@ -475,7 +475,7 @@ const accessRequests = filterRequestsByType('access');`}</code></pre>
       <section id="help-resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Need Help?</h2>
         <p className="mb-4">
-          If you have questions about implementing the Data Subject Rights system or need assistance with NDPR compliance, check out these resources:
+          If you have questions about implementing the Data Subject Rights system or need assistance with NDPA compliance, check out these resources:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
@@ -493,13 +493,13 @@ const accessRequests = filterRequestsByType('access');`}</code></pre>
           </Card>
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Resources</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA Resources</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Learn more about NDPR compliance requirements.
+                Learn more about NDPA 2023 compliance requirements.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                  NDPR Framework
+                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                  NDPA Framework
                 </a>
               </Button>
             </CardContent>

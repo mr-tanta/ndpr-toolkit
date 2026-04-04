@@ -9,7 +9,7 @@ export default function DataSubjectRequestsGuide() {
   return (
     <DocLayout
       title="Handling Data Subject Requests"
-      description="Best practices for handling data subject rights requests with the NDPR Toolkit"
+      description="Best practices for handling data subject rights requests with the NDPA 2023 Toolkit"
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
@@ -27,15 +27,15 @@ export default function DataSubjectRequestsGuide() {
       <section id="introduction" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Introduction</h2>
         <p className="mb-4">
-          The Nigeria Data Protection Regulation (NDPR) grants individuals (data subjects) specific rights regarding their personal data. 
-          Organizations must have processes in place to receive, verify, and respond to these requests within the timeframes 
-          specified by the regulation. This guide will help you implement a comprehensive system for handling data subject 
+          The Nigeria Data Protection Act (NDPA) 2023 grants individuals (data subjects) specific rights regarding their personal data.
+          Organizations must have processes in place to receive, verify, and respond to these requests within the timeframes
+          specified by the Act. This guide will help you implement a comprehensive system for handling data subject
           requests using the NDPR Toolkit.
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Data Subject Rights</h4>
+          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA 2023 Data Subject Rights</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
-            Under the NDPR, data subjects have the following rights:
+            Under the NDPA 2023, data subjects have the following rights:
           </p>
           <ul className="list-disc pl-6 mt-2 text-blue-700 dark:text-blue-300 text-sm">
             <li><strong>Right of Access:</strong> To obtain confirmation of whether their data is being processed and access to that data</li>
@@ -110,7 +110,7 @@ function DSRSubmissionPage() {
       {!submitted ? (
         <>
           <p>
-            Use this form to exercise your rights under the Nigeria Data Protection Regulation (NDPR).
+            Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA) 2023.
             We will respond to your request within 30 days.
           </p>
           
@@ -295,7 +295,7 @@ function GenerateResponse({ request, assessment, fulfillment }) {
               <p className="text-sm">
                 Your record-keeping system should include the date of the request, the type of request, the actions taken, 
                 the date of the response, and any supporting documentation. This information may be needed to demonstrate 
-                compliance with the NDPR.
+                compliance with the NDPA 2023.
               </p>
             </div>
           </div>
@@ -520,7 +520,7 @@ function RequestTrackingPage() {
             <CardContent className="p-6">
               <h3 className="font-bold text-lg mb-2">Timely Responses</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                The NDPR requires organizations to respond to data subject requests within 30 days. 
+                The NDPA 2023 requires organizations to respond to data subject requests within 30 days.
                 Implement processes and systems that enable you to meet this deadline.
               </p>
             </CardContent>
@@ -540,8 +540,8 @@ function RequestTrackingPage() {
             <CardContent className="p-6">
               <h3 className="font-bold text-lg mb-2">Staff Training</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Ensure that staff who handle data subject requests are trained on the NDPR requirements 
-                and your organization&apos;s processes. This includes understanding the different types of requests 
+                Ensure that staff who handle data subject requests are trained on the NDPA 2023 requirements
+                and your organization&apos;s processes. This includes understanding the different types of requests
                 and how to respond to them.
               </p>
             </CardContent>
@@ -552,7 +552,7 @@ function RequestTrackingPage() {
               <h3 className="font-bold text-lg mb-2">Detailed Record Keeping</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Maintain detailed records of all data subject requests and your responses to them. 
-                This is essential for demonstrating compliance with the NDPR.
+                This is essential for demonstrating compliance with the NDPA 2023.
               </p>
             </CardContent>
           </Card>
@@ -626,7 +626,7 @@ function RequestTrackingPage() {
         <ul className="list-disc pl-6 mb-6">
           <li>Verify the identity of the data subject</li>
           <li>Stop processing the data unless you can demonstrate compelling legitimate grounds that override the interests of the data subject</li>
-          <li>Inform the data subject of your decision and their right to complain to the supervisory authority</li>
+          <li>Inform the data subject of your decision and their right to complain to the NDPC</li>
         </ul>
       </section>
 
@@ -635,13 +635,13 @@ function RequestTrackingPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Implementation Framework</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA 2023 Official Text</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Official guidance on implementing the NDPR, including data subject rights requirements.
+                Official text of the Nigeria Data Protection Act 2023, including data subject rights requirements.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                  View Framework
+                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                  View Act
                 </a>
               </Button>
             </CardContent>

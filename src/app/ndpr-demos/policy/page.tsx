@@ -115,7 +115,7 @@ export default function PolicyDemoPage() {
       // Create a professional header with proper spacing and formatting
       const policyTitle = `# ${policyData?.organizationName || "Your Organization"} Privacy Policy\n\n`;
       const lastUpdated = `*Last Updated: ${formattedDate}*\n\n`;
-      const complianceNotice = `*This privacy policy is designed to comply with the Nigeria Data Protection Regulation (NDPR) and has been prepared by ${policyData?.organizationName || "Your Organization"}.*\n\n`;
+      const complianceNotice = `*This privacy policy is designed to comply with the Nigeria Data Protection Act (NDPA) and has been prepared by ${policyData?.organizationName || "Your Organization"}.*\n\n`;
 
       // Add a professional table of contents
       let tableOfContents = "## Table of Contents\n\n";
@@ -267,11 +267,11 @@ export default function PolicyDemoPage() {
     setActiveTab("generator");
   };
 
-  // Your NDPR template definition
+  // Your NDPA template definition
   const policyTemplate: PolicyTemplate = {
-    id: "ndpr-policy",
-    name: "NDPR Compliant Privacy Policy",
-    description: "A comprehensive privacy policy template compliant with NDPR",
+    id: "ndpa-policy",
+    name: "NDPA Compliant Privacy Policy",
+    description: "A comprehensive privacy policy template compliant with NDPA",
     version: "1.0",
     variables: [
       {
@@ -349,7 +349,7 @@ export default function PolicyDemoPage() {
 
 {{organizationName}} ("we", "us", or "our") is committed to protecting your personal data and respecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you interact with our services, website, and applications.
 
-This policy is compliant with the Nigeria Data Protection Regulation (NDPR) 2019 and applies to all personal data processed by us. By using our services, you consent to the data practices described in this Privacy Policy.
+This policy is compliant with the Nigeria Data Protection Act (NDPA) 2023 and applies to all personal data processed by us. By using our services, you consent to the data practices described in this Privacy Policy.
 
 ### About Us
 
@@ -405,9 +405,9 @@ To help you understand this Privacy Policy, here are definitions of key terms us
 
 - **Data Breach**: A breach of security leading to the accidental or unlawful destruction, loss, alteration, unauthorized disclosure of, or access to, Personal Data transmitted, stored or otherwise processed.
 
-- **NDPR**: The Nigeria Data Protection Regulation 2019, issued by the National Information Technology Development Agency (NITDA).
+- **NDPA**: The Nigeria Data Protection Act 2023, enforced by the Nigeria Data Protection Commission (NDPC).
 
-- **NITDA**: The National Information Technology Development Agency, the regulatory body responsible for enforcing the NDPR in Nigeria.
+- **NDPC**: The Nigeria Data Protection Commission, the regulatory body responsible for enforcing the NDPA in Nigeria.
 
 - **Special Categories of Personal Data**: Personal Data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, data concerning health, or data concerning a natural person's sex life or sexual orientation.`,
         variables: ["organizationName"],
@@ -515,7 +515,7 @@ Please note that we may process your personal data without your knowledge or con
         included: true,
         content: `## Legal Basis for Processing Personal Data
 
-Under the Nigeria Data Protection Regulation (NDPR), we must have a valid legal basis for processing your personal data. We rely on the following legal bases for processing your personal data:
+Under the Nigeria Data Protection Act (NDPA), we must have a valid legal basis for processing your personal data. We rely on the following legal bases for processing your personal data:
 
 {{#if legalBases}}
 {{{legalBases}}}
@@ -541,7 +541,7 @@ We process personal data when it is necessary for the purposes of the legitimate
 
 ### Special Categories of Personal Data
 
-For special categories of personal data (such as data revealing racial or ethnic origin, political opinions, religious beliefs, health data, or biometric data), we will generally process such data only with your explicit consent, unless the processing is necessary for one of the other legal bases specifically permitted under the NDPR.
+For special categories of personal data (such as data revealing racial or ethnic origin, political opinions, religious beliefs, health data, or biometric data), we will generally process such data only with your explicit consent, unless the processing is necessary for one of the other legal bases specifically permitted under the NDPA.
 - For the establishment, exercise, or defense of legal claims
 - For reasons of substantial public interest, on the basis of Nigerian law
 - For preventive or occupational medicine, medical diagnosis, or the provision of health or social care`,
@@ -632,7 +632,7 @@ We practice data minimization, which means we only collect and process the perso
             <CardHeader>
               <CardTitle>Privacy Policy Generator</CardTitle>
               <CardDescription>
-                Configure your organization and generate an NDPR‐compliant
+                Configure your organization and generate an NDPA‐compliant
                 policy.
               </CardDescription>
             </CardHeader>

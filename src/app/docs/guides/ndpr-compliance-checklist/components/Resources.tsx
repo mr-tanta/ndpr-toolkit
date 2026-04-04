@@ -8,19 +8,19 @@ export default function Resources() {
     <section id="resources" className="mb-8">
       <h2 className="text-2xl font-bold mb-4">Additional Resources</h2>
       <p className="mb-4">
-        To help you achieve and maintain NDPR compliance, here are some additional resources:
+        To help you achieve and maintain NDPA 2023 compliance, here are some additional resources:
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4">
-            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Full Text</h3>
+            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA 2023 Full Text</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-              The complete text of the Nigeria Data Protection Regulation.
+              The complete text of the Nigeria Data Protection Act 2023.
             </p>
             <Button asChild variant="outline" size="sm">
-              <a href="https://nitda.gov.ng/wp-content/uploads/2019/01/Nigeria-Data-Protection-Regulation.pdf" target="_blank" rel="noopener noreferrer">
-                View Regulation
+              <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                View Act
               </a>
             </Button>
           </CardContent>
@@ -28,13 +28,13 @@ export default function Resources() {
         
         <Card>
           <CardContent className="p-4">
-            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Implementation Framework</h3>
+            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPC Implementation Guidelines</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-              Official guidance on implementing the NDPR.
+              Official guidance from the NDPC on implementing the NDPA 2023.
             </p>
             <Button asChild variant="outline" size="sm">
-              <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                View Framework
+              <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                View Guidelines
               </a>
             </Button>
           </CardContent>
@@ -42,12 +42,12 @@ export default function Resources() {
         
         <Card>
           <CardContent className="p-4">
-            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NITDA Website</h3>
+            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPC Website</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-              The official website of the National Information Technology Development Agency.
+              The official website of the Nigeria Data Protection Commission.
             </p>
             <Button asChild variant="outline" size="sm">
-              <a href="https://nitda.gov.ng/" target="_blank" rel="noopener noreferrer">
+              <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
                 Visit Website
               </a>
             </Button>
@@ -72,7 +72,7 @@ export default function Resources() {
       <div className="mt-8">
         <h3 className="text-xl font-bold mb-3">Compliance Roadmap</h3>
         <p className="mb-3">
-          Achieving NDPR compliance can seem daunting, but breaking it down into manageable steps can make the process more approachable. 
+          Achieving NDPA 2023 compliance can seem daunting, but breaking it down into manageable steps can make the process more approachable. 
           Here&apos;s a suggested roadmap for your compliance journey:
         </p>
         
@@ -83,7 +83,7 @@ export default function Resources() {
             </div>
             <h4 className="text-lg font-bold">Assessment</h4>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Begin by assessing your current data protection practices against the NDPR requirements. Use the compliance 
+              Begin by assessing your current data protection practices against the NDPA 2023 requirements. Use the compliance 
               checklist provided above to identify gaps and areas for improvement.
             </p>
           </div>
@@ -128,7 +128,7 @@ export default function Resources() {
             </div>
             <h4 className="text-lg font-bold">Training</h4>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Train staff on data protection principles, the NDPR requirements, and your organization&apos;s specific 
+              Train staff on data protection principles, the NDPA 2023 requirements, and your organization&apos;s specific 
               policies and procedures. Ensure that everyone understands their role in maintaining compliance.
             </p>
           </div>
@@ -149,8 +149,8 @@ export default function Resources() {
       <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
         <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">Need Additional Help?</h4>
         <p className="text-blue-700 dark:text-blue-300 text-sm">
-          If you need additional help with NDPR compliance, consider consulting with a data protection professional or legal expert 
-          who specializes in Nigerian data protection law. While the NDPR Toolkit provides valuable tools and guidance, 
+          If you need additional help with NDPA 2023 compliance, consider consulting with a data protection professional or legal expert
+          who specializes in Nigerian data protection law. While the NDPR Toolkit provides valuable tools and guidance,
           professional advice can help ensure that your compliance program addresses your organization&apos;s specific needs and risks.
         </p>
       </div>

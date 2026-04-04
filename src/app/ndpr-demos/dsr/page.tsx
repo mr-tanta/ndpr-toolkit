@@ -13,34 +13,48 @@ export default function DSRDemoPage() {
   const [activeTab, setActiveTab] = useState('request-form');
   const [isClient, setIsClient] = useState(false);
   
-  // Define request types
+  // Define request types per NDPA Part IV (Sections 29-36)
   const requestTypes: DSRRequestType[] = [
     {
-      id: 'access',
-      name: 'Access Request',
-      description: 'Request to access your personal data',
+      id: 'information',
+      name: 'Information Request',
+      description: 'Right to be informed about processing of your personal data (NDPA Section 29)',
       estimatedCompletionTime: 30,
       requiresAdditionalInfo: false
     },
     {
-      id: 'erasure',
-      name: 'Erasure Request',
-      description: 'Request to delete your personal data',
-      estimatedCompletionTime: 45,
+      id: 'access',
+      name: 'Access Request',
+      description: 'Request to access your personal data (NDPA Section 30)',
+      estimatedCompletionTime: 30,
       requiresAdditionalInfo: false
     },
     {
       id: 'rectification',
       name: 'Rectification Request',
-      description: 'Request to correct your personal data',
+      description: 'Request to correct your personal data (NDPA Section 31)',
       estimatedCompletionTime: 15,
       requiresAdditionalInfo: true
     },
     {
+      id: 'erasure',
+      name: 'Erasure Request',
+      description: 'Request to delete your personal data (NDPA Section 32)',
+      estimatedCompletionTime: 45,
+      requiresAdditionalInfo: false
+    },
+    {
       id: 'restriction',
       name: 'Restriction Request',
-      description: 'Request to restrict processing of your personal data',
+      description: 'Request to restrict processing of your personal data (NDPA Section 33)',
       estimatedCompletionTime: 20,
+      requiresAdditionalInfo: true
+    },
+    {
+      id: 'automated_decision_making',
+      name: 'Automated Decision-Making Request',
+      description: 'Right not to be subject to solely automated decision-making (NDPA Section 36)',
+      estimatedCompletionTime: 30,
       requiresAdditionalInfo: true
     }
   ];
@@ -105,6 +119,33 @@ export default function DSRDemoPage() {
           phone: '9876543210'
         },
         description: 'I want to restrict processing of my personal data for marketing purposes.'
+      },
+      {
+        id: uuidv4(),
+        type: 'information' as DSRType,
+        status: 'pending' as DSRStatus,
+        createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000, // 2 days ago
+        updatedAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
+        dueDate: Date.now() + 28 * 24 * 60 * 60 * 1000, // Due in 28 days
+        subject: {
+          name: 'David Okafor',
+          email: 'david@example.com'
+        },
+        description: 'I would like to be informed about how my personal data is being processed, per NDPA Section 29.'
+      },
+      {
+        id: uuidv4(),
+        type: 'automated_decision_making' as DSRType,
+        status: 'in-progress' as DSRStatus,
+        createdAt: Date.now() - 7 * 24 * 60 * 60 * 1000, // 7 days ago
+        updatedAt: Date.now() - 1 * 24 * 60 * 60 * 1000, // 1 day ago
+        dueDate: Date.now() + 23 * 24 * 60 * 60 * 1000, // Due in 23 days
+        subject: {
+          name: 'Grace Adeyemi',
+          email: 'grace@example.com',
+          phone: '0801234567'
+        },
+        description: 'I request information about automated decisions made about my loan application, per NDPA Section 36.'
       }
     ];
     
@@ -127,11 +168,13 @@ export default function DSRDemoPage() {
     const req = data as unknown as SubmitData;
     console.log('Received form data:', data);
     
-    // Calculate due date based on request type (30 days for access, 15 days for erasure, etc.)
-    let dueDays = 30; // Default to 30 days
+    // Calculate due date based on request type (30 days default per NDPA)
+    let dueDays = 30; // Default to 30 days per NDPA
     if (req.requestType === 'erasure') dueDays = 15;
     if (req.requestType === 'rectification') dueDays = 10;
     if (req.requestType === 'restriction') dueDays = 20;
+    if (req.requestType === 'information') dueDays = 30;
+    if (req.requestType === 'automated_decision_making') dueDays = 30;
     
     const newRequest: DSRRequest = {
       id: uuidv4(),
@@ -182,7 +225,7 @@ export default function DSRDemoPage() {
     <div className="container mx-auto py-10">
       <div className="mb-6">
         <Link href="/ndpr-demos" className="text-blue-600 hover:underline">
-          ← Back to NDPR Demos
+          ← Back to NDPA Demos
         </Link>
       </div>
       
@@ -200,7 +243,7 @@ export default function DSRDemoPage() {
             <CardHeader>
               <CardTitle>Data Subject Request Form</CardTitle>
               <CardDescription>
-                This form allows data subjects to submit requests to exercise their rights under NDPR.
+                This form allows data subjects to submit requests to exercise their rights under the Nigeria Data Protection Act (NDPA), Part IV (Sections 29-36).
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -230,7 +273,7 @@ export default function DSRDemoPage() {
             <CardHeader>
               <CardTitle>Data Subject Request Dashboard</CardTitle>
               <CardDescription>
-                This dashboard allows administrators to manage and respond to data subject requests.
+                This dashboard allows administrators to manage and respond to data subject requests under the NDPA.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -298,7 +341,7 @@ export default function DSRDemoPage() {
             <CardHeader>
               <CardTitle>Data Subject Request Tracker</CardTitle>
               <CardDescription>
-                This component provides a simplified view for tracking DSR requests.
+                This component provides a simplified view for tracking DSR requests per NDPA compliance timelines.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -362,7 +405,7 @@ export default function DSRDemoPage() {
       <div className="mt-10 p-4 bg-gray-100 rounded-lg">
         <h2 className="text-xl font-semibold mb-2">Implementation Notes</h2>
         <p className="mb-4">
-          This demo showcases the DSR components from the NDPR Toolkit:
+          This demo showcases the DSR components from the NDPA Toolkit:
         </p>
         <ul className="list-disc pl-5 space-y-2">
           <li><code>DSRRequestForm</code>: For collecting and validating data subject requests</li>

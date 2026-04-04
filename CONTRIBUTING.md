@@ -1,6 +1,6 @@
-# Contributing to NDPR-Toolkit
+# Contributing to NDPA-Toolkit
 
-Thank you for considering contributing to the Nigerian Data Protection Compliance Toolkit! This document outlines the process for contributing to this project.
+Thank you for considering contributing to the Nigeria Data Protection Act (NDPA) Compliance Toolkit! This document outlines the process for contributing to this project.
 
 ## Code of Conduct
 
@@ -84,4 +84,4 @@ Releases are managed by the maintainers using semantic versioning. The process i
 
 If you have any questions about contributing, please open an issue with your question.
 
-Thank you for contributing to the NDPR-Toolkit!
+Thank you for contributing to the NDPA-Toolkit!

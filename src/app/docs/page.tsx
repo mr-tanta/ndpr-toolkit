@@ -10,14 +10,14 @@ export default function DocsPage() {
   return (
     <DocLayout 
       title="NDPR Toolkit Documentation" 
-      description="Comprehensive guides and API reference for implementing NDPR-compliant features"
+      description="Comprehensive guides and API reference for implementing NDPA 2023-compliant features"
     >
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Getting Started</h2>
         <div className="prose prose-blue dark:prose-invert max-w-none">
           <p>
-            The NDPR Toolkit is a comprehensive set of components and utilities designed to help Nigerian businesses 
-            implement NDPR-compliant features in their web applications with minimal development effort.
+            The NDPR Toolkit is a comprehensive set of components and utilities designed to help Nigerian businesses
+            implement NDPA 2023-compliant features in their web applications with minimal development effort.
           </p>
           
           <p>
@@ -28,7 +28,7 @@ export default function DocsPage() {
           
           <p>
             <strong>Version 2.0</strong> includes significant enhancements to all components, improved type definitions, 
-            and comprehensive documentation to ensure developers can quickly implement NDPR-compliant features.
+            and comprehensive documentation to ensure developers can quickly implement NDPA 2023-compliant features.
           </p>
 
           <h3>Installation</h3>
@@ -143,7 +143,7 @@ function AppContent() {
             },
             {
               title: 'Consent Management',
-              description: 'NDPR-compliant cookie consent banner with storage and preference management',
+              description: 'NDPA 2023-compliant cookie consent banner with storage and preference management',
               href: '/docs/components/consent-management',
               category: 'Consent Management',
               isNew: false,
@@ -164,14 +164,14 @@ function AppContent() {
             },
             {
               title: 'Privacy Policy Generator',
-              description: 'Customizable NDPR-compliant privacy policy generator with variable support',
+              description: 'Customizable NDPA 2023-compliant privacy policy generator with variable support',
               href: '/docs/components/privacy-policy-generator',
               category: 'Documentation',
               isNew: false,
             },
             {
               title: 'React Hooks',
-              description: 'Custom hooks for managing state and logic in NDPR-compliant applications',
+              description: 'Custom hooks for managing state and logic in NDPA 2023-compliant applications',
               href: '/docs/components/hooks',
               category: 'State Management',
               isNew: true,
@@ -232,6 +232,21 @@ function AppContent() {
               title: 'Breach Notification Process',
               description: 'How to implement a 72-hour breach notification process',
               href: '/docs/guides/breach-notification-process',
+            },
+            {
+              title: 'NDPA 2023 Compliance Checklist',
+              description: 'A comprehensive checklist for NDPA 2023 compliance',
+              href: '/docs/guides/ndpr-compliance-checklist',
+            },
+            {
+              title: 'Lawful Basis for Processing',
+              description: 'Understanding lawful basis under NDPA 2023 Section 25',
+              href: '/docs/guides/lawful-basis',
+            },
+            {
+              title: 'Cross-Border Data Transfers',
+              description: 'Guide to NDPA 2023 Section 41 cross-border transfer compliance',
+              href: '/docs/guides/cross-border-transfers',
             },
           ].map((guide) => (
             <Card key={guide.title}>
@@ -325,7 +340,7 @@ function AppContent() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Implement NDPR-compliant cookie consent banners and preference centers with flexible storage options.
+                Implement NDPA 2023-compliant cookie consent banners and preference centers with flexible storage options.
               </p>
               <ul className="list-disc pl-5 mb-4 text-sm">
                 <li>ConsentBanner & ConsentManager components</li>
@@ -391,7 +406,7 @@ function AppContent() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Manage data breach reporting, risk assessment, and notification within NDPR&apos;s 72-hour requirement.
+                Manage data breach reporting, risk assessment, and notification within the NDPA 2023&apos;s 72-hour requirement.
               </p>
               <ul className="list-disc pl-5 mb-4 text-sm">
                 <li>Breach reporting forms</li>
@@ -413,7 +428,7 @@ function AppContent() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Create NDPR-compliant privacy policies with customizable templates and variable support.
+                Create NDPA 2023-compliant privacy policies with customizable templates and variable support.
               </p>
               <ul className="list-disc pl-5 mb-4 text-sm">
                 <li>Customizable policy sections</li>
@@ -515,12 +530,12 @@ function AppContent() {
       </section>
       
       <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">NDPR Compliance</h2>
+        <h2 className="text-2xl font-bold mb-6">NDPA 2023 Compliance</h2>
         <div className="prose prose-blue max-w-none dark:prose-invert">
           <p>
-            The Nigeria Data Protection Regulation (NDPR) is Nigeria&apos;s principal data protection legislation, issued by the 
-            National Information Technology Development Agency (NITDA) in January 2019. The NDPR aims to safeguard the rights 
-            of natural persons to data privacy.
+            The Nigeria Data Protection Act (NDPA) 2023 is Nigeria&apos;s principal data protection legislation, signed into law
+            in June 2023. The NDPA establishes the Nigeria Data Protection Commission (NDPC) as the regulatory body and
+            aims to safeguard the rights of natural persons to data privacy.
           </p>
 
           <h3>Key Requirements</h3>
@@ -538,7 +553,7 @@ function AppContent() {
               <strong>Data Protection Impact Assessment:</strong> Organizations must conduct DPIAs for high-risk processing activities.
             </li>
             <li>
-              <strong>Breach Notification:</strong> Organizations must report data breaches to NITDA within 72 hours.
+              <strong>Breach Notification:</strong> Organizations must report data breaches to the NDPC within 72 hours.
             </li>
             <li>
               <strong>Privacy Policy:</strong> Organizations must maintain a clear and accessible privacy policy.
@@ -554,14 +569,14 @@ function AppContent() {
             <li><strong>Data Subject Rights Portal:</strong> Handle DSR requests efficiently and in compliance with regulations</li>
             <li><strong>DPIA Questionnaire:</strong> Conduct and document Data Protection Impact Assessments</li>
             <li><strong>Breach Notification System:</strong> Report and manage breaches within the required timeframes</li>
-            <li><strong>Privacy Policy Generator:</strong> Create and maintain NDPR-compliant privacy policies</li>
+            <li><strong>Privacy Policy Generator:</strong> Create and maintain NDPA 2023-compliant privacy policies</li>
           </ul>
 
           <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md mt-6">
             <h4 className="text-blue-800 dark:text-blue-200">Disclaimer</h4>
             <p className="text-blue-700 dark:text-blue-300 text-sm">
-              While the NDPR Toolkit is designed to help organizations implement NDPR-compliant features, using this toolkit does not guarantee 
-              full compliance with the NDPR. Organizations should consult with legal professionals to ensure their specific implementation 
+              While the NDPR Toolkit is designed to help organizations implement NDPA 2023-compliant features, using this toolkit does not guarantee
+              full compliance with the NDPA 2023. Organizations should consult with legal professionals to ensure their specific implementation
               meets all regulatory requirements.
             </p>
           </div>

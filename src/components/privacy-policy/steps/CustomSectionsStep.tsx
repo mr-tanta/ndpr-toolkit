@@ -50,7 +50,7 @@ export default function CustomSectionsStep({
       title: "GDPR Compliance",
       description:
         "Information about compliance with the EU General Data Protection Regulation",
-      content: `In addition to complying with the Nigeria Data Protection Regulation (NDPR) and Data Protection Act (DPA), we also adhere to the European Union's General Data Protection Regulation (GDPR) for users from the European Economic Area (EEA).
+      content: `In addition to complying with the Nigeria Data Protection Act (NDPA) and its subsidiary regulations, we also adhere to the European Union's General Data Protection Regulation (GDPR) for users from the European Economic Area (EEA).
 
 When processing personal data of individuals in the EEA, we ensure that:
 - We have a lawful basis for processing
@@ -145,26 +145,26 @@ We do not use student information for targeted advertising purposes or sell stud
     },
     {
       id: "ndpr-dpa-details",
-      title: "NDPR and DPA Compliance Details",
+      title: "NDPA Compliance Details",
       description:
         "Detailed information about compliance with Nigerian data protection laws",
-      content: `We are committed to full compliance with the Nigeria Data Protection Regulation (NDPR) of 2019 and the Data Protection Act (DPA) of 2023. Our compliance measures include:
+      content: `We are committed to full compliance with the Nigeria Data Protection Act (NDPA) of 2023. Our compliance measures include:
 
 1. **Data Protection Officer**: We have appointed a Data Protection Officer responsible for overseeing our data protection strategy and implementation.
 
-2. **Data Protection Impact Assessments**: We conduct DPIAs for high-risk processing activities as required by Section 2.4 of the NDPR and Section 38 of the DPA.
+2. **Data Protection Impact Assessments**: We conduct DPIAs for high-risk processing activities as required by NDPA Section 38.
 
-3. **Data Protection Audit**: We conduct annual data protection audits and file audit reports with the Nigeria Data Protection Commission as required by Section 4.1 of the NDPR.
+3. **Registration and Compliance Audit**: We maintain our registration with the Nigeria Data Protection Commission (NDPC) and conduct annual compliance audits as required by NDPA Section 46.
 
-4. **Data Subject Access Request Procedure**: We have implemented a clear procedure for handling data subject access requests within the 30-day timeframe specified in Section 3.1(7) of the NDPR.
+4. **Data Subject Access Request Procedure**: We have implemented a clear procedure for handling data subject access requests in accordance with NDPA Section 30.
 
-5. **Data Breach Notification**: We have established procedures to notify the Nigeria Data Protection Commission and affected data subjects of any data breaches within 72 hours, as required by Section 2.10 of the NDPR and Section 40 of the DPA.
+5. **Data Breach Notification**: We have established procedures to notify the Nigeria Data Protection Commission (NDPC) and affected data subjects of any data breaches within 72 hours, as required by NDPA Section 40.
 
 6. **Training and Awareness**: We provide regular training to our staff on data protection principles and practices.
 
-7. **Data Processing Agreements**: We enter into written agreements with all data processors as required by Section 2.7 of the NDPR and Section 37 of the DPA.
+7. **Data Processing Agreements**: We enter into written agreements with all data processors as required by NDPA Section 37.
 
-For more information about our NDPR and DPA compliance program, please contact our Data Protection Officer.`,
+For more information about our NDPA compliance program, please contact our Data Protection Officer.`,
       categories: ["All"],
     },
   ];

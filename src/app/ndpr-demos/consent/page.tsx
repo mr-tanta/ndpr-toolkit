@@ -221,9 +221,11 @@ export default function ConsentDemoPage() {
               <div className="mt-6">
                 <h3 className="text-lg font-semibold mb-2">Usage</h3>
                 <p>
-                  The ConsentBanner component is typically displayed when a user first visits your website 
-                  or when they need to update their consent preferences. It provides options to accept all, 
-                  reject all, or customize consent settings.
+                  The ConsentBanner component is typically displayed when a user first visits your website
+                  or when they need to update their consent preferences. It provides options to accept all,
+                  reject all, or customize consent settings in compliance with the Nigeria Data Protection
+                  Act (NDPA) Sections 25&ndash;26 consent requirements, as enforced by the Nigeria Data
+                  Protection Commission (NDPC).
                 </p>
               </div>
             </CardContent>
@@ -403,6 +405,16 @@ export default function ConsentDemoPage() {
           <li><code>ConsentManager</code>: For allowing users to customize their consent preferences</li>
           <li><code>ConsentStorage</code>: For persisting consent settings</li>
         </ul>
+        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+          <h3 className="text-sm font-semibold text-blue-800 mb-1">NDPA Compliance Reference</h3>
+          <p className="text-sm text-blue-700">
+            Consent collection in this toolkit is designed in accordance with the{' '}
+            <strong>Nigeria Data Protection Act (NDPA)</strong>, Sections 25&ndash;26, which outline the
+            requirements for obtaining, recording, and managing lawful consent for personal data
+            processing. The <strong>Nigeria Data Protection Commission (NDPC)</strong> is the
+            supervisory authority responsible for enforcing these provisions.
+          </p>
+        </div>
         <p className="mt-4">
           For detailed documentation, see the{' '}
           <Link href="/docs/components/consent-management" className="text-blue-600 hover:underline">

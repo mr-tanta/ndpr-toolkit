@@ -9,10 +9,10 @@ export default function GuidesPage() {
   return (
     <DocLayout
       title="Implementation Guides"
-      description="Step-by-step guides for implementing NDPR-compliant features"
+      description="Step-by-step guides for implementing NDPA 2023-compliant features"
     >
       <p className="mb-6">
-        These comprehensive guides will help you implement NDPR-compliant features in your applications. 
+        These comprehensive guides will help you implement NDPA 2023-compliant features in your applications.
         Each guide provides step-by-step instructions, code examples, and best practices.
       </p>
       
@@ -39,9 +39,19 @@ export default function GuidesPage() {
             href: '/docs/guides/breach-notification-process',
           },
           {
-            title: 'NDPR Compliance Checklist',
-            description: 'A comprehensive checklist to help organizations achieve and maintain NDPR compliance',
+            title: 'NDPA 2023 Compliance Checklist',
+            description: 'A comprehensive checklist to help organizations achieve and maintain NDPA 2023 compliance',
             href: '/docs/guides/ndpr-compliance-checklist',
+          },
+          {
+            title: 'Lawful Basis for Processing',
+            description: 'Understanding and documenting lawful basis for processing under NDPA 2023 Section 25',
+            href: '/docs/guides/lawful-basis',
+          },
+          {
+            title: 'Cross-Border Data Transfers',
+            description: 'Guide to managing cross-border data transfers in compliance with NDPA 2023 Section 41',
+            href: '/docs/guides/cross-border-transfers',
           },
         ].map((guide) => (
           <Card key={guide.title}>

@@ -3,9 +3,9 @@
 export default function ComplianceChecklist() {
   return (
     <section id="compliance-checklist" className="mb-8">
-      <h2 className="text-2xl font-bold mb-4">NDPR Compliance Checklist</h2>
+      <h2 className="text-2xl font-bold mb-4">NDPA 2023 Compliance Checklist</h2>
       <p className="mb-4">
-        Use this comprehensive checklist to assess your organization&apos;s compliance with the NDPR and identify areas that need attention.
+        Use this comprehensive checklist to assess your organization&apos;s compliance with the NDPA 2023 and identify areas that need attention.
         The checklist is organized by key compliance areas, with specific action items for each area.
       </p>
       
@@ -13,13 +13,13 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">1</span>
-            Data Governance and Accountability
+            Data Governance and Accountability (NDPA Part III)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
-                <span>Appoint a Data Protection Officer (DPO) or designate someone responsible for data protection</span>
+                <span>Appoint a Data Protection Officer (DPO) as required under NDPA Section 31 or designate someone responsible for data protection</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
@@ -48,13 +48,13 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">2</span>
-            Lawful Basis for Processing
+            Lawful Basis for Processing (NDPA Section 25)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
-                <span>Identify and document the lawful basis for each processing activity</span>
+                <span>Identify and document the lawful basis for each processing activity per NDPA Section 25</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
@@ -79,7 +79,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">3</span>
-            Privacy Notices and Transparency
+            Privacy Notices and Transparency (NDPA Section 29)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
@@ -114,7 +114,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">4</span>
-            Data Subject Rights
+            Data Subject Rights (NDPA Part IV)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
@@ -153,7 +153,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">5</span>
-            Data Security
+            Data Security (NDPA Section 39)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
@@ -184,7 +184,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">6</span>
-            Breach Notification
+            Breach Notification (NDPA Section 40)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
@@ -198,11 +198,11 @@ export default function ComplianceChecklist() {
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
-                <span>Establish a process for notifying NITDA within 72 hours of becoming aware of a breach</span>
+                <span>Establish a process for notifying the NDPC within 72 hours of becoming aware of a breach per NDPA Section 40</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
-                <span>Develop templates for breach notifications to NITDA and affected data subjects</span>
+                <span>Develop templates for breach notifications to the NDPC and affected data subjects</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
@@ -219,7 +219,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">7</span>
-            International Transfers
+            Cross-Border Transfers (NDPA Section 41)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
@@ -237,7 +237,7 @@ export default function ComplianceChecklist() {
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
-                <span>Obtain NITDA approval for international transfers where required</span>
+                <span>Obtain NDPC approval for cross-border transfers where required under NDPA Section 41</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-gray-300 dark:border-gray-600 mr-2 flex-shrink-0 mt-0.5">□</span>
@@ -250,7 +250,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2">8</span>
-            Data Protection Impact Assessment
+            Data Protection Impact Assessment (NDPA Section 36)
           </h3>
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <ul className="space-y-2">
@@ -286,8 +286,8 @@ export default function ComplianceChecklist() {
       <div className="mt-8 bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-md">
         <h4 className="text-yellow-800 dark:text-yellow-200 font-medium mb-2">Compliance is an Ongoing Process</h4>
         <p className="text-yellow-700 dark:text-yellow-300 text-sm">
-          Remember that compliance with the NDPR is not a one-time exercise but an ongoing process. Regularly review and update 
-          your data protection practices to ensure continued compliance, especially when introducing new processing activities 
+          Remember that compliance with the NDPA 2023 is not a one-time exercise but an ongoing process. Regularly review and update
+          your data protection practices to ensure continued compliance, especially when introducing new processing activities
           or technologies. The NDPR Toolkit provides components and utilities to help you maintain compliance over time.
         </p>
       </div>

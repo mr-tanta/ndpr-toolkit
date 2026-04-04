@@ -42,6 +42,9 @@ const navigation: NavItem[] = [
       { title: 'Data Subject Rights', href: '/docs/components/data-subject-rights' },
       { title: 'Breach Notification', href: '/docs/components/breach-notification' },
       { title: 'Privacy Policy Generator', href: '/docs/components/privacy-policy-generator' },
+      { title: 'Lawful Basis Tracker', href: '/docs/components/lawful-basis-tracker' },
+      { title: 'Cross-Border Transfers', href: '/docs/components/cross-border-transfers' },
+      { title: 'ROPA', href: '/docs/components/ropa' },
     ],
   },
   {
@@ -53,7 +56,7 @@ const navigation: NavItem[] = [
       </svg>
     ),
     children: [
-      { title: 'NDPR Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
+      { title: 'NDPA Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
       { title: 'Conducting a DPIA', href: '/docs/guides/conducting-dpia' },
       { title: 'Managing Consent', href: '/docs/guides/managing-consent' },
       { title: 'Handling Data Subject Requests', href: '/docs/guides/data-subject-requests' },
@@ -116,7 +119,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
         <div className="flex flex-col flex-grow bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
           <div className="flex items-center flex-shrink-0 px-4 py-5 border-b border-gray-200 dark:border-gray-700">
             <Link href="/" className="flex items-center">
-              <span className="text-xl font-semibold text-gray-900 dark:text-white">NDPR Toolkit</span>
+              <span className="text-xl font-semibold text-gray-900 dark:text-white">NDPA Toolkit</span>
             </Link>
           </div>
           <div className="mt-5 flex-1 flex flex-col">
@@ -188,7 +191,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
         <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
           <div className="flex items-center justify-between px-4 py-5 border-b border-gray-200 dark:border-gray-700">
             <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
-              <span className="text-xl font-semibold text-gray-900 dark:text-white">NDPR Toolkit</span>
+              <span className="text-xl font-semibold text-gray-900 dark:text-white">NDPA Toolkit</span>
             </Link>
             <button
               type="button"

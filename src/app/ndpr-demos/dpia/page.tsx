@@ -55,7 +55,7 @@ export default function DPIADemoPage() {
     {
       id: 'legalBasis',
       text: 'What is the legal basis for processing?',
-      guidance: 'Select the legal basis under which you are processing data',
+      guidance: 'Select the legal basis under NDPA for processing data',
       type: 'select',
       options: [
         { value: 'consent', label: 'Consent of the data subject' },
@@ -173,9 +173,10 @@ export default function DPIADemoPage() {
       canProceed: true,
       conclusion: 'The processing can proceed with the implementation of the recommended mitigation measures.',
       recommendations: [
-        'Document all security measures implemented',
-        'Conduct regular reviews of the DPIA',
-        'Ensure all staff are trained on data protection'
+        'Document all security measures implemented as required under the NDPA',
+        'Conduct regular reviews of the DPIA in line with NDPA Section 38',
+        'Ensure all staff are trained on data protection obligations under the NDPA',
+        'Consult with the NDPC prior to processing if high residual risk remains, per NDPA Section 39'
       ],
       reviewDate: Date.now() + 31536000000, // 1 year from now
       version: '1.0'
@@ -205,6 +206,18 @@ export default function DPIADemoPage() {
       </div>
       
       <h1 className="text-3xl font-bold mb-8">Data Protection Impact Assessment Demo</h1>
+
+      <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <h2 className="text-lg font-semibold mb-2">NDPA Legal Basis</h2>
+        <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+          Under the Nigeria Data Protection Act (NDPA), a Data Protection Impact Assessment is required for processing
+          activities that are likely to result in high risk to the rights and freedoms of data subjects.
+        </p>
+        <ul className="list-disc pl-5 text-sm text-gray-700 dark:text-gray-300 space-y-1">
+          <li><strong>Section 38</strong> — Requires data controllers to carry out a DPIA before processing where the type of processing, in particular using new technologies and taking into account the nature, scope, context, and purposes of processing, is likely to result in high risk to the rights and freedoms of data subjects.</li>
+          <li><strong>Section 39</strong> — Mandates prior consultation with the Nigeria Data Protection Commission (NDPC) where a DPIA indicates that the processing would result in a high risk in the absence of measures taken by the controller to mitigate the risk.</li>
+        </ul>
+      </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="mb-6">
@@ -218,7 +231,8 @@ export default function DPIADemoPage() {
             <CardHeader>
               <CardTitle>DPIA Form</CardTitle>
               <CardDescription>
-                This form helps you conduct a Data Protection Impact Assessment for high-risk processing activities.
+                This form helps you conduct a Data Protection Impact Assessment (DPIA) for high-risk processing
+                activities as required under NDPA Section 38.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -238,7 +252,8 @@ export default function DPIADemoPage() {
             <CardHeader>
               <CardTitle>DPIA Assessment</CardTitle>
               <CardDescription>
-                This component displays the assessment results and risk analysis.
+                This component displays the assessment results and risk analysis. Where high risk is identified,
+                prior consultation with the NDPC is required under NDPA Section 39.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -326,7 +341,8 @@ export default function DPIADemoPage() {
             <CardHeader>
               <CardTitle>DPIA Report</CardTitle>
               <CardDescription>
-                This component generates a comprehensive DPIA report for documentation and compliance.
+                This component generates a comprehensive DPIA report for documentation and NDPA compliance,
+                suitable for submission to the NDPC when prior consultation is required under Section 39.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -463,12 +479,14 @@ export default function DPIADemoPage() {
       <div className="mt-10 p-4 bg-gray-100 rounded-lg">
         <h2 className="text-xl font-semibold mb-2">Implementation Notes</h2>
         <p className="mb-4">
-          This demo showcases the DPIA components from the NDPR Toolkit:
+          This demo showcases the DPIA components from the NDPA Toolkit, helping organisations comply with the
+          Nigeria Data Protection Act (NDPA), including Section 38 (DPIA requirements) and Section 39 (prior
+          consultation with the NDPC):
         </p>
         <ul className="list-disc pl-5 space-y-2">
-          <li><code>DPIAForm</code>: For collecting information about data processing activities</li>
-          <li><code>DPIAAssessment</code>: For analyzing risks and providing recommendations</li>
-          <li><code>DPIAReport</code>: For generating comprehensive DPIA reports</li>
+          <li><code>DPIAForm</code>: For collecting information about data processing activities as required under NDPA Section 38</li>
+          <li><code>DPIAAssessment</code>: For analyzing risks and providing recommendations to determine whether prior consultation with the NDPC is needed under Section 39</li>
+          <li><code>DPIAReport</code>: For generating comprehensive DPIA reports for documentation and NDPC submission</li>
         </ul>
         <p className="mt-4">
           For detailed documentation, see the{' '}

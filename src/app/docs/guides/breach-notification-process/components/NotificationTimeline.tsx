@@ -5,7 +5,7 @@ export default function NotificationTimeline() {
     <section id="notification-timeline" className="mb-8">
       <h2 className="text-2xl font-bold mb-4">72-Hour Notification Timeline</h2>
       <p className="mb-4">
-        The 72-hour deadline for notifying NITDA about a data breach begins from the moment you become aware of the breach. 
+        The 72-hour deadline for notifying the NDPC about a data breach begins from the moment you become aware of the breach. 
         This timeline is tight, so having a well-defined process in place is essential. Here&apos;s a recommended timeline for 
         handling breaches using the NDPR Toolkit components:
       </p>
@@ -38,7 +38,7 @@ export default function NotificationTimeline() {
           </p>
           <ul className="list-disc pl-6 mt-2 text-gray-600 dark:text-gray-300">
             <li>Use the BreachRiskAssessment component to evaluate the risk to individuals</li>
-            <li>Determine if the breach is notifiable to NITDA and affected data subjects</li>
+            <li>Determine if the breach is notifiable to the NDPC and affected data subjects</li>
             <li>Continue containment and investigation efforts</li>
             <li>Begin preparing notification drafts if required</li>
           </ul>
@@ -53,7 +53,7 @@ export default function NotificationTimeline() {
             If the breach requires notification, prepare the necessary documents and communications:
           </p>
           <ul className="list-disc pl-6 mt-2 text-gray-600 dark:text-gray-300">
-            <li>Use the RegulatoryReportGenerator to prepare the NITDA notification</li>
+            <li>Use the RegulatoryReportGenerator to prepare the NDPC notification</li>
             <li>Draft data subject notifications if required</li>
             <li>Have notifications reviewed by legal and management</li>
             <li>Continue investigation and remediation efforts</li>
@@ -69,7 +69,7 @@ export default function NotificationTimeline() {
             In the final phase before the deadline, submit notifications and document the process:
           </p>
           <ul className="list-disc pl-6 mt-2 text-gray-600 dark:text-gray-300">
-            <li>Submit the notification to NITDA</li>
+            <li>Submit the notification to the NDPC</li>
             <li>Begin notifying affected data subjects if required</li>
             <li>Document all notification activities using the BreachNotificationManager</li>
             <li>Continue remediation and post-breach activities</li>

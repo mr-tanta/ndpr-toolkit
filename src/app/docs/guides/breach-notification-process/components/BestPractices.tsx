@@ -8,7 +8,7 @@ export default function BestPractices() {
       <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
       <p className="mb-4">
         Implementing an effective breach notification process requires more than just the right tools. 
-        Here are some best practices to ensure your process is robust and compliant with the NDPR:
+        Here are some best practices to ensure your process is robust and compliant with the NDPA 2023:
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -37,7 +37,7 @@ export default function BestPractices() {
             <h3 className="font-bold text-lg mb-2">Document Everything</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
               Maintain detailed records of all breaches, including those that don&apos;t require notification. 
-              Document the facts of the breach, its effects, and the remedial actions taken. This is a requirement under the NDPR.
+              Document the facts of the breach, its effects, and the remedial actions taken. This is a requirement under the NDPA 2023.
             </p>
           </CardContent>
         </Card>
@@ -46,8 +46,8 @@ export default function BestPractices() {
           <CardContent className="p-6">
             <h3 className="font-bold text-lg mb-2">Establish Clear Criteria</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
-              Develop clear criteria for determining when a breach requires notification to NITDA and/or data subjects. 
-              This helps ensure consistent decision-making and compliance with the NDPR.
+              Develop clear criteria for determining when a breach requires notification to the NDPC and/or data subjects. 
+              This helps ensure consistent decision-making and compliance with the NDPA 2023.
             </p>
           </CardContent>
         </Card>
@@ -86,7 +86,7 @@ export default function BestPractices() {
           <CardContent className="p-6">
             <h3 className="font-bold text-lg mb-2">Maintain Contact Information</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm">
-              Keep up-to-date contact information for NITDA, your Data Protection Officer, legal counsel, 
+              Keep up-to-date contact information for the NDPC, your Data Protection Officer, legal counsel, 
               IT security team, and other key stakeholders who need to be involved in the breach response process.
             </p>
           </CardContent>
@@ -106,7 +106,7 @@ export default function BestPractices() {
           </li>
           <li>
             <strong>Inadequate Documentation:</strong> Failing to maintain detailed records of the breach and your response, 
-            which are required under the NDPR.
+            which are required under the NDPA 2023.
           </li>
           <li>
             <strong>Poor Communication:</strong> Not communicating clearly with affected data subjects about the breach and 
@@ -114,7 +114,7 @@ export default function BestPractices() {
           </li>
           <li>
             <strong>Neglecting Follow-up:</strong> Failing to follow up on remedial actions or to provide additional information 
-            to NITDA as it becomes available.
+            to the NDPC as it becomes available.
           </li>
         </ul>
       </div>

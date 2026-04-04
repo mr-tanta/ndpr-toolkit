@@ -294,7 +294,7 @@ export default function DataSubjectRequestForm({
           Submit a Data Subject Request
         </h2>
         <p className="text-blue-100 text-sm mb-4">
-          Exercise your rights under the Nigeria Data Protection Regulation
+          Exercise your rights under the Nigeria Data Protection Act
         </p>
 
         {/* Progress bar */}
@@ -437,7 +437,7 @@ export default function DataSubjectRequestForm({
           label="Request Details"
           required
           error={errors.details}
-          description="Your request will be processed in accordance with the Nigeria Data Protection Regulation (NDPR) and Data Protection Act (DPA)."
+          description="Your request will be processed in accordance with the Nigeria Data Protection Act (NDPA)."
         >
           <div className="relative">
             <TextArea

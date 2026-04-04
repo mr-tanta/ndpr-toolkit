@@ -9,7 +9,7 @@ export default function ManagingConsentGuide() {
   return (
     <DocLayout
       title="Managing Consent"
-      description="Learn how to implement a complete consent management system with the NDPR Toolkit"
+      description="Learn how to implement a complete consent management system with the NDPA 2023 Toolkit"
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
@@ -27,14 +27,14 @@ export default function ManagingConsentGuide() {
       <section id="introduction" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Introduction</h2>
         <p className="mb-4">
-          Consent is a cornerstone of data protection under the Nigeria Data Protection Regulation (NDPR). 
-          Organizations must obtain valid consent before collecting, processing, or sharing personal data. 
+          Consent is a cornerstone of data protection under the Nigeria Data Protection Act (NDPA) 2023.
+          Organizations must obtain valid consent before collecting, processing, or sharing personal data.
           This guide will help you implement a comprehensive consent management system using the NDPR Toolkit.
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPR Consent Requirements</h4>
+          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA 2023 Consent Requirements</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
-            Under the NDPR, valid consent must be:
+            Under the NDPA 2023, valid consent must be:
           </p>
           <ul className="list-disc pl-6 mt-2 text-blue-700 dark:text-blue-300 text-sm">
             <li><strong>Freely given:</strong> Data subjects must have a genuine choice and control</li>
@@ -498,7 +498,7 @@ function App() {
     <ConsentContext.Provider value={{ consents, openConsentManager }}>
       <div className="app">
         <header>
-          <h1>My NDPR-Compliant Website</h1>
+          <h1>My NDPA-Compliant Website</h1>
           <nav>
             <ul>
               <li><a href="/">Home</a></li>
@@ -614,7 +614,7 @@ function HomePage() {
             <CardContent className="p-6">
               <h3 className="font-bold text-lg mb-2">No Pre-checked Boxes</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Never use pre-checked boxes for optional consent options. The NDPR requires that consent be given through 
+                Never use pre-checked boxes for optional consent options. The NDPA 2023 requires that consent be given through
                 a clear affirmative action, and pre-checked boxes do not meet this requirement.
               </p>
             </CardContent>
@@ -655,7 +655,7 @@ function HomePage() {
               <h3 className="font-bold text-lg mb-2">Record Keeping</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Maintain detailed records of consent, including when and how consent was given or withdrawn. This is essential 
-                for demonstrating compliance with the NDPR.
+                for demonstrating compliance with the NDPA 2023.
               </p>
             </CardContent>
           </Card>
@@ -664,7 +664,7 @@ function HomePage() {
             <CardContent className="p-6">
               <h3 className="font-bold text-lg mb-2">Regular Review</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Regularly review and update your consent mechanisms to ensure they remain compliant with the NDPR and 
+                Regularly review and update your consent mechanisms to ensure they remain compliant with the NDPA 2023 and
                 effective for your users. Consider conducting user testing to ensure your consent mechanisms are clear and usable.
               </p>
             </CardContent>
@@ -677,15 +677,15 @@ function HomePage() {
         <ul className="list-disc pl-6 space-y-2">
           <li>
             <strong>Cookie Walls:</strong> Blocking access to your website unless users accept all cookies is generally not 
-            considered valid consent under the NDPR, as it doesn&apos;t give users a genuine choice.
+            considered valid consent under the NDPA 2023, as it doesn&apos;t give users a genuine choice.
           </li>
           <li>
             <strong>Bundling Consent:</strong> Requiring users to consent to multiple unrelated purposes as a package deal 
-            is not compliant with the NDPR&apos;s requirement for specific consent.
+            is not compliant with the NDPA 2023&apos;s requirement for specific consent.
           </li>
           <li>
             <strong>Ignoring Consent:</strong> Loading tracking scripts or cookies before obtaining consent is a common 
-            mistake that violates the NDPR&apos;s requirement for valid consent.
+            mistake that violates the NDPA 2023&apos;s requirement for valid consent.
           </li>
           <li>
             <strong>Unclear Language:</strong> Using vague or technical language that users may not understand undermines 
@@ -693,11 +693,11 @@ function HomePage() {
           </li>
           <li>
             <strong>Difficult Withdrawal:</strong> Making it difficult for users to withdraw consent, such as by hiding 
-            the option in a complex settings menu, is not compliant with the NDPR&apos;s requirement for withdrawable consent.
+            the option in a complex settings menu, is not compliant with the NDPA 2023&apos;s requirement for withdrawable consent.
           </li>
           <li>
             <strong>Inadequate Records:</strong> Failing to maintain adequate records of consent can make it difficult to 
-            demonstrate compliance with the NDPR&apos;s requirement for record-keeping.
+            demonstrate compliance with the NDPA 2023&apos;s requirement for record-keeping.
           </li>
         </ul>
       </section>
@@ -707,13 +707,13 @@ function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Implementation Framework</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA 2023 Official Text</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Official guidance on implementing the NDPR, including consent requirements.
+                Official text of the Nigeria Data Protection Act 2023, including consent requirements.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                  View Framework
+                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                  View Act
                 </a>
               </Button>
             </CardContent>

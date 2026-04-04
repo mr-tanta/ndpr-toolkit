@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NDPR Toolkit - Nigerian Data Protection Compliance",
-  description: "Open-source toolkit for implementing NDPR and DPA compliant features in Nigerian applications",
+  title: "Nigeria Data Protection Toolkit — NDPA 2023",
+  description: "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features in Nigerian applications",
 };
 
 export default function RootLayout({

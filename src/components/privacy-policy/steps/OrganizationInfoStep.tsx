@@ -176,7 +176,7 @@ export default function OrganizationInfoStep({
         <Checkbox
           id="includeNDPRCompliance"
           name="includeNDPRCompliance"
-          label="Include NDPR and DPA compliance statements"
+          label="Include NDPA compliance statements"
           checked={formData.includeNDPRCompliance}
           onChange={onChange}
         />

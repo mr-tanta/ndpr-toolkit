@@ -53,11 +53,13 @@ const navigation: NavItem[] = [
       </svg>
     ),
     children: [
-      { title: 'NDPR Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
+      { title: 'NDPA 2023 Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
       { title: 'Conducting a DPIA', href: '/docs/guides/conducting-dpia' },
       { title: 'Managing Consent', href: '/docs/guides/managing-consent' },
       { title: 'Handling Data Subject Requests', href: '/docs/guides/data-subject-requests' },
       { title: 'Breach Notification Process', href: '/docs/guides/breach-notification-process' },
+      { title: 'Lawful Basis for Processing', href: '/docs/guides/lawful-basis' },
+      { title: 'Cross-Border Transfers', href: '/docs/guides/cross-border-transfers' },
     ],
   },
 ];

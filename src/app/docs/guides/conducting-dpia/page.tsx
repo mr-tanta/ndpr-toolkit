@@ -27,15 +27,15 @@ export default function ConductingDPIAGuide() {
       <section id="introduction" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Introduction</h2>
         <p className="mb-4">
-          A Data Protection Impact Assessment (DPIA) is a process designed to help organizations identify and minimize 
-          the data protection risks of a project. Under the Nigeria Data Protection Regulation (NDPR), organizations 
-          are required to conduct DPIAs for processing activities that are likely to result in a high risk to the 
+          A Data Protection Impact Assessment (DPIA) is a process designed to help organizations identify and minimize
+          the data protection risks of a project. Under the Nigeria Data Protection Act (NDPA) 2023, organizations
+          are required to conduct DPIAs for processing activities that are likely to result in a high risk to the
           rights and freedoms of individuals.
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
           <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">When is a DPIA Required?</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
-            Under the NDPR, a DPIA is mandatory when processing is likely to result in a high risk to individuals, 
+            Under the NDPA 2023, a DPIA is mandatory when processing is likely to result in a high risk to individuals,
             particularly when using new technologies. This includes:
           </p>
           <ul className="list-disc pl-6 mt-2 text-blue-700 dark:text-blue-300 text-sm">
@@ -506,7 +506,7 @@ function DPIAProcess() {
               <h3 className="font-bold text-lg mb-2">Document Everything</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Maintain detailed documentation of the DPIA process, including all decisions made and the rationale behind them. 
-                This is essential for demonstrating compliance with the NDPR.
+                This is essential for demonstrating compliance with the NDPA 2023.
               </p>
             </CardContent>
           </Card>
@@ -533,20 +533,20 @@ function DPIAProcess() {
         </div>
       </section>
 
-      <section id="ndpr-compliance" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">NDPR Compliance Considerations</h2>
+      <section id="ndpa-compliance" className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">NDPA 2023 Compliance Considerations</h2>
         <p className="mb-4">
-          When conducting a DPIA to comply with the NDPR, keep the following considerations in mind:
+          When conducting a DPIA to comply with the NDPA 2023, keep the following considerations in mind:
         </p>
         <ul className="list-disc pl-6 space-y-2">
           <li>
-            <strong>Documentation:</strong> The NDPR requires organizations to document their DPIAs as part of their accountability obligations.
+            <strong>Documentation:</strong> The NDPA 2023 requires organizations to document their DPIAs as part of their accountability obligations.
           </li>
           <li>
             <strong>DPO Involvement:</strong> If your organization has a Data Protection Officer (DPO), they should be involved in the DPIA process.
           </li>
           <li>
-            <strong>Consultation:</strong> In some cases, you may need to consult with NITDA before proceeding with high-risk processing.
+            <strong>Consultation:</strong> In some cases, you may need to consult with the NDPC before proceeding with high-risk processing.
           </li>
           <li>
             <strong>Transparency:</strong> Consider publishing a summary of your DPIA to demonstrate transparency to data subjects.
@@ -562,13 +562,13 @@ function DPIAProcess() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Implementation Framework</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA 2023 Official Text</h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Official guidance on implementing the NDPR, including DPIA requirements.
+                Official text of the Nigeria Data Protection Act 2023, including DPIA requirements.
               </p>
               <Button asChild variant="outline" size="sm">
-                <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                  View Framework
+                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                  View Act
                 </a>
               </Button>
             </CardContent>

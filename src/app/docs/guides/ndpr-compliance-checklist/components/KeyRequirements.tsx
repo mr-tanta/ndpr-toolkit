@@ -3,9 +3,9 @@
 export default function KeyRequirements() {
   return (
     <section id="key-requirements" className="mb-8">
-      <h2 className="text-2xl font-bold mb-4">Key NDPR Requirements</h2>
+      <h2 className="text-2xl font-bold mb-4">Key NDPA 2023 Requirements</h2>
       <p className="mb-4">
-        The NDPR establishes several key requirements that organizations must meet to ensure compliance. 
+        The NDPA 2023 establishes several key requirements that organizations must meet to ensure compliance.
         Understanding these requirements is the first step toward developing a comprehensive compliance program.
       </p>
       
@@ -56,7 +56,7 @@ export default function KeyRequirements() {
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
           <h3 className="text-xl font-bold mb-2">Breach Notification</h3>
           <p className="text-gray-600 dark:text-gray-300">
-            Organizations must report data breaches to NITDA within 72 hours of becoming aware of the breach and must notify 
+            Organizations must report data breaches to the NDPC within 72 hours of becoming aware of the breach and must notify 
             affected data subjects without undue delay. Organizations must also maintain a record of all data breaches.
           </p>
         </div>

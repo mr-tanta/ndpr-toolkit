@@ -183,7 +183,7 @@ interface RegulatoryNotification {
     <div className="container mx-auto py-10">
       <div className="mb-6">
         <Link href="/ndpr-demos" className="text-blue-600 hover:underline">
-          ← Back to NDPR Demos
+          ← Back to NDPA Demos
         </Link>
       </div>
       
@@ -202,6 +202,8 @@ interface RegulatoryNotification {
               <CardTitle>Breach Notification Form</CardTitle>
               <CardDescription>
                 This form is used to report and document data breaches within your organization.
+                Under NDPA Section 40, data controllers must notify the NDPC (Nigeria Data Protection Commission)
+                within 72 hours of becoming aware of a personal data breach.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -234,7 +236,8 @@ interface RegulatoryNotification {
             <CardHeader>
               <CardTitle>Breach Register</CardTitle>
               <CardDescription>
-                This component maintains a register of all data breaches and their current status.
+                This component maintains a register of all data breaches and their current status,
+                as required by the Nigeria Data Protection Act (NDPA).
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -280,7 +283,8 @@ interface RegulatoryNotification {
             <CardHeader>
               <CardTitle>Breach Assessment</CardTitle>
               <CardDescription>
-                This component helps assess the severity and impact of a data breach.
+                This component helps assess the severity and impact of a data breach,
+                and determines whether NDPC notification is required under NDPA Section 40.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -305,7 +309,7 @@ interface RegulatoryNotification {
                   
                   {/* Add Regulatory Report Generator component */}
                   <div className="mt-8 pt-8 border-t border-gray-200">
-                    <h3 className="text-lg font-medium mb-4">Generate Regulatory Report</h3>
+                    <h3 className="text-lg font-medium mb-4">Generate NDPC Regulatory Report</h3>
                     <RegulatoryReportGenerator
                       onSubmit={(data: any) => {
                         console.log('Regulatory report data:', data);
@@ -327,12 +331,13 @@ interface RegulatoryNotification {
       <div className="mt-10 p-4 bg-gray-100 rounded-lg">
         <h2 className="text-xl font-semibold mb-2">Implementation Notes</h2>
         <p className="mb-4">
-          This demo showcases the breach management components from the NDPR Toolkit:
+          This demo showcases the breach management components from the NDPA Toolkit:
         </p>
         <ul className="list-disc pl-5 space-y-2">
           <li><code>BreachReportForm</code>: For reporting and documenting data breaches</li>
           <li><code>BreachRegister</code>: For maintaining a record of all data breaches</li>
           <li><code>BreachAssessment</code>: For assessing the severity and impact of breaches</li>
+          <li><code>RegulatoryReportGenerator</code>: For generating NDPC notification reports per NDPA Section 40 (72-hour notification requirement)</li>
         </ul>
         <p className="mt-4">
           For detailed documentation, see the{' '}

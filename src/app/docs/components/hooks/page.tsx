@@ -9,7 +9,7 @@ export default function HooksDocs() {
   return (
     <DocLayout
       title="React Hooks"
-      description="Custom React hooks for managing state and logic in NDPR-compliant applications"
+      description="Custom React hooks for managing state and logic in NDPA-compliant applications"
     >
       <div className="flex mb-6 space-x-2">
         <Button asChild variant="outline" size="sm">
@@ -22,7 +22,7 @@ export default function HooksDocs() {
       <section id="overview" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
         <p className="mb-4">
-          The NDPR Toolkit provides a set of custom React hooks to help manage state and logic in your NDPR-compliant applications.
+          The NDPR Toolkit provides a set of custom React hooks to help manage state and logic in your NDPA-compliant applications.
           These hooks encapsulate common functionality and make it easier to implement complex features.
         </p>
       </section>

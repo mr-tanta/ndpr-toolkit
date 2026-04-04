@@ -15,13 +15,13 @@ export default function Resources() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardContent className="p-4">
-            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPR Implementation Framework</h3>
+            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA 2023 Official Text</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-              Official guidance on implementing the NDPR, including breach notification requirements.
+              Official text of the Nigeria Data Protection Act 2023, including breach notification requirements.
             </p>
             <Button asChild variant="outline" size="sm">
-              <a href="https://nitda.gov.ng/wp-content/uploads/2020/01/NDPR-Implementation-Framework.pdf" target="_blank" rel="noopener noreferrer">
-                View Framework
+              <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
+                View Act
               </a>
             </Button>
           </CardContent>
@@ -57,12 +57,12 @@ export default function Resources() {
         
         <Card>
           <CardContent className="p-4">
-            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NITDA Contact Information</h3>
+            <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPC Contact Information</h3>
             <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-              Contact details for reporting breaches to the National Information Technology Development Agency.
+              Contact details for reporting breaches to the Nigeria Data Protection Commission.
             </p>
             <Button asChild variant="outline" size="sm">
-              <a href="https://nitda.gov.ng/contact/" target="_blank" rel="noopener noreferrer">
+              <a href="https://ndpc.gov.ng/contact/" target="_blank" rel="noopener noreferrer">
                 View Contact Info
               </a>
             </Button>
@@ -92,7 +92,7 @@ export default function Resources() {
             </li>
             <li className="flex items-start">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2 flex-shrink-0 mt-0.5">✓</span>
-              <span>Create templates for NITDA and data subject notifications</span>
+              <span>Create templates for NDPC and data subject notifications</span>
             </li>
             <li className="flex items-start">
               <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-2 flex-shrink-0 mt-0.5">✓</span>

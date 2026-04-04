@@ -4,20 +4,20 @@ import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 
 export const metadata = {
-  title: 'NDPR Toolkit | Nigerian Data Protection Compliance Made Easy',
-  description: 'Open-source toolkit for Nigerian developers to implement NDPR and DPA compliant features in web applications with minimal effort.',
-  keywords: 'NDPR, DPA, Nigerian Data Protection, Compliance, Toolkit, React, Next.js, Open Source',
+  title: 'NDPA Toolkit | NDPA 2023 Compliance Made Easy',
+  description: 'Open-source toolkit for Nigerian developers to implement NDPA 2023 (Nigeria Data Protection Act) compliant features in web applications with minimal effort.',
+  keywords: 'NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, Compliance, Toolkit, React, Next.js, Open Source',
   openGraph: {
-    title: 'NDPR Toolkit | Nigerian Data Protection Compliance Made Easy',
-    description: 'Open-source toolkit for Nigerian developers to implement NDPR and DPA compliant features in web applications with minimal effort.',
+    title: 'NDPA Toolkit | NDPA 2023 Compliance Made Easy',
+    description: 'Open-source toolkit for Nigerian developers to implement NDPA 2023 (Nigeria Data Protection Act) compliant features in web applications with minimal effort.',
     url: 'https://ndprtoolkit.com.ng',
-    siteName: 'NDPR Toolkit',
+    siteName: 'NDPA Toolkit',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'NDPR Toolkit by Tanta Innovative',
+        alt: 'NDPA Toolkit by Tanta Innovative',
       },
     ],
     locale: 'en_US',
@@ -25,14 +25,14 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NDPR Toolkit | Nigerian Data Protection Compliance Made Easy',
-    description: 'Open-source toolkit for Nigerian developers to implement NDPR and DPA compliant features in web applications with minimal effort.',
+    title: 'NDPA Toolkit | NDPA 2023 Compliance Made Easy',
+    description: 'Open-source toolkit for Nigerian developers to implement NDPA 2023 (Nigeria Data Protection Act) compliant features in web applications with minimal effort.',
     images: ['/og-image.png'],
   },
 };
 
 export default function Home() {
-  // Features of the NDPR-Toolkit
+  // Features of the NDPA Toolkit
   const features = [
     {
       title: "Consent Management System",
@@ -44,7 +44,7 @@ export default function Home() {
     },
     {
       title: "Data Subject Rights Portal",
-      description: "Pre-built UI components for handling access, rectification, erasure, and other data subject rights requests.",
+      description: "Pre-built UI components for handling access, rectification, erasure, portability, and other data subject rights requests.",
       icon: "/icons/rights.svg",
       href: "/ndpr-demos/dsr",
       color: "purple",
@@ -52,7 +52,7 @@ export default function Home() {
     },
     {
       title: "Privacy Policy Generator",
-      description: "Interactive wizard to create NDPR-compliant privacy policies with customizable sections and templates.",
+      description: "Interactive wizard to create NDPA-compliant privacy policies with customizable sections and templates.",
       icon: "/icons/policy.svg",
       href: "/ndpr-demos/policy",
       color: "green",
@@ -68,11 +68,35 @@ export default function Home() {
     },
     {
       title: "Breach Notification Module",
-      description: "Templates for mandatory breach notifications with timeline tracking to ensure 72-hour notification compliance.",
+      description: "Templates for mandatory breach notifications with timeline tracking to ensure 72-hour NDPC notification compliance.",
       icon: "/icons/breach.svg",
       href: "/ndpr-demos/breach",
       color: "red",
       iconPath: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+    },
+    {
+      title: "Lawful Basis Tracker",
+      description: "Track and document the lawful basis for each data processing activity, ensuring NDPA Article 25 compliance.",
+      icon: "/icons/lawful-basis.svg",
+      href: "/ndpr-demos/lawful-basis",
+      color: "teal",
+      iconPath: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+    },
+    {
+      title: "Cross-Border Transfer Assessment",
+      description: "Evaluate and document the adequacy of safeguards for international data transfers under the NDPA framework.",
+      icon: "/icons/cross-border.svg",
+      href: "/ndpr-demos/cross-border",
+      color: "indigo",
+      iconPath: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    },
+    {
+      title: "Records of Processing Activities",
+      description: "Maintain a comprehensive register of all data processing activities as required by the NDPA for accountability.",
+      icon: "/icons/ropa.svg",
+      href: "/ndpr-demos/ropa",
+      color: "orange",
+      iconPath: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"
     }
   ];
 
@@ -83,8 +107,8 @@ export default function Home() {
       description: "Deploy compliance features in days, not months, with our pre-built components."
     },
     {
-      title: "NDPR & DPA Compliant",
-      description: "All components are designed to meet the requirements of the Nigerian Data Protection Regulation and Data Protection Act."
+      title: "NDPA 2023 Compliant",
+      description: "All components are designed to meet the requirements of the Nigeria Data Protection Act 2023, enforced by the NDPC."
     },
     {
       title: "Customizable UI",
@@ -105,14 +129,14 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
               <Badge variant="primary" className="mb-4 px-3 py-1 text-sm">
-                NDPR & DPA Compliant
+                NDPA 2023 Compliant
               </Badge>
               <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
-                <span className="block">Nigerian Data Protection</span>
+                <span className="block">Nigeria Data Protection Act</span>
                 <span className="block mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Compliance Toolkit</span>
               </h1>
               <p className="mt-6 text-xl text-gray-500 dark:text-gray-300 leading-relaxed">
-                An open-source toolkit that helps Nigerian developers implement NDPR and DPA compliant features in their web applications with minimal effort.
+                An open-source toolkit that helps Nigerian developers implement NDPA 2023 compliant features in their web applications with minimal effort.
               </p>
               
               <div className="mt-8 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
@@ -171,7 +195,7 @@ export default function Home() {
               <div className="mt-8 flex items-center justify-center lg:justify-start text-sm text-gray-500 dark:text-gray-400">
                 <div className="flex -space-x-2 mr-3">
                   <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">NG</div>
-                  <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">DPA</div>
+                  <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">NDPA</div>
                   <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">UI</div>
                 </div>
                 <span>Built for Nigerian businesses with enterprise-ready components</span>
@@ -199,7 +223,7 @@ export default function Home() {
                       <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                       <div className="w-3 h-3 rounded-full bg-green-500"></div>
                     </div>
-                    <div className="mx-auto text-sm font-medium text-gray-500 dark:text-gray-400">NDPR Toolkit Demo</div>
+                    <div className="mx-auto text-sm font-medium text-gray-500 dark:text-gray-400">NDPA Toolkit Demo</div>
                   </div>
                   <div className="p-6 space-y-6">
                     {features.map((feature, index) => (
@@ -231,14 +255,14 @@ export default function Home() {
               Enterprise-Ready Components
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
-              Comprehensive NDPR Compliance
+              Comprehensive NDPA 2023 Compliance
             </h2>
             <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-300">
-              Our toolkit provides professional, customizable components to help Nigerian businesses implement NDPR compliance features with minimal development effort.
+              Our toolkit provides 8 professional, customizable modules to help Nigerian businesses implement NDPA compliance features with minimal development effort.
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature) => (
               <Card key={feature.title} className="overflow-hidden transition-all duration-300 hover:shadow-lg">
                 <Link href={feature.href} className="block h-full">
@@ -317,11 +341,11 @@ export default function Home() {
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
             <div>
                 <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-                  <span className="block">Ready to implement NDPR compliance?</span>
+                  <span className="block">Ready to implement NDPA 2023 compliance?</span>
                   <span className="block text-blue-200">Start using the toolkit today.</span>
                 </h2>
                 <p className="mt-4 text-lg text-blue-100 max-w-md">
-                  Join the growing community of Nigerian businesses using our enterprise-ready toolkit to implement NDPR compliance features in their applications.
+                  Join the growing community of Nigerian businesses using our enterprise-ready toolkit to implement NDPA compliance features in their applications.
                 </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 
@@ -374,7 +398,7 @@ export default function Home() {
                       <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                       <div className="w-3 h-3 rounded-full bg-green-500"></div>
                     </div>
-                    <div className="mx-auto text-sm font-medium text-gray-500 dark:text-gray-400">NDPR Toolkit</div>
+                    <div className="mx-auto text-sm font-medium text-gray-500 dark:text-gray-400">NDPA Toolkit</div>
                   </div>
                   <div className="relative bg-white dark:bg-gray-800 p-6">
                     <div className="h-64 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg flex items-center justify-center">
@@ -384,7 +408,7 @@ export default function Home() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                           </svg>
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">NDPR Compliant</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">NDPA 2023 Compliant</p>
                         <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-white">Ready for Production</h3>
                       </div>
                     </div>
@@ -404,7 +428,7 @@ export default function Home() {
               <div className="flex items-center">
                 <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold mr-3">NT</div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">NDPR Toolkit</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">NDPA Toolkit</h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     <a href="https://ndprtoolkit.com.ng" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tanta Innovative</a>
                   </p>
