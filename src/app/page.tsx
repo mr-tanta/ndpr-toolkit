@@ -131,11 +131,11 @@ export default function Home() {
               <Badge variant="primary" className="mb-4 px-3 py-1 text-sm">
                 NDPA 2023 Compliant
               </Badge>
-              <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
+              <h1 className="text-3xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-4xl md:text-5xl lg:text-6xl">
                 <span className="block">Nigeria Data Protection Act</span>
                 <span className="block mt-2 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Compliance Toolkit</span>
               </h1>
-              <p className="mt-6 text-xl text-gray-500 dark:text-gray-300 leading-relaxed">
+              <p className="mt-6 text-base sm:text-lg md:text-xl text-gray-500 dark:text-gray-300 leading-relaxed">
                 An open-source toolkit that helps Nigerian developers implement NDPA 2023 compliant features in their web applications with minimal effort.
               </p>
               
@@ -254,15 +254,15 @@ export default function Home() {
             <Badge variant="secondary" className="mb-4 px-3 py-1 text-sm">
               Enterprise-Ready Components
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white">
               Comprehensive NDPA 2023 Compliance
             </h2>
-            <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-300">
+            <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg lg:text-xl text-gray-500 dark:text-gray-300">
               Our toolkit provides 8 professional, customizable modules to help Nigerian businesses implement NDPA compliance features with minimal development effort.
             </p>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="mt-10 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {features.map((feature) => (
               <Card key={feature.title} className="overflow-hidden transition-all duration-300 hover:shadow-lg">
                 <Link href={feature.href} className="block h-full">
@@ -301,17 +301,17 @@ export default function Home() {
             <Badge variant="primary" className="mb-4 px-3 py-1 text-sm">
               Why Choose Us
             </Badge>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white">
               Benefits of Our Toolkit
             </h2>
-            <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-500 dark:text-gray-300">
+            <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg lg:text-xl text-gray-500 dark:text-gray-300">
               Designed to make compliance easy, efficient, and developer-friendly.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex items-start border border-gray-200 dark:border-gray-700">
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 flex items-start border border-gray-200 dark:border-gray-700">
                 <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 mr-4">
                   <span className="text-xl font-bold">{index + 1}</span>
                 </div>
@@ -337,10 +337,10 @@ export default function Home() {
             </defs>
           </svg>
         </div>
-        <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 relative">
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:py-16 md:py-24 sm:px-6 lg:px-8 relative">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 items-center">
             <div>
-                <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
+                <h2 className="text-2xl font-extrabold text-white sm:text-3xl lg:text-4xl">
                   <span className="block">Ready to implement NDPA 2023 compliance?</span>
                   <span className="block text-blue-200">Start using the toolkit today.</span>
                 </h2>

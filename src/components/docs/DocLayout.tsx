@@ -116,9 +116,11 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
 
   return (
     <nav aria-label="Breadcrumb" className="mb-4">
-      <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+      <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 overflow-x-auto">
         {crumbs.map((crumb, index) => (
-          <li key={crumb.href} className="flex items-center">
+          <li key={crumb.href} className={`flex items-center flex-shrink-0 ${
+            index > 0 && index < crumbs.length - 1 ? 'hidden sm:flex' : 'flex'
+          }`}>
             {index > 0 && (
               <svg
                 className="w-4 h-4 mx-1 text-gray-400 dark:text-gray-500"
@@ -135,13 +137,13 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
               </svg>
             )}
             {index === crumbs.length - 1 ? (
-              <span className="font-medium text-gray-900 dark:text-white">
+              <span className="font-medium text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-none">
                 {crumb.label}
               </span>
             ) : (
               <Link
                 href={crumb.href}
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap"
               >
                 {crumb.label}
               </Link>
@@ -275,10 +277,10 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+      <div className="lg:hidden fixed top-3 left-3 z-50">
         <button
           type="button"
-          className="p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-800"
+          className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md bg-white dark:bg-gray-800 shadow-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-expanded={mobileMenuOpen}
           aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -367,15 +369,15 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
 
       {/* Main content */}
       <div className="lg:pl-64">
-        <main className="py-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <main className="py-6 sm:py-10">
+          <div className="max-w-7xl mx-auto px-4 pt-10 lg:pt-0 sm:px-6 lg:px-8">
             {/* Breadcrumbs */}
             <Breadcrumbs pathname={pathname} />
 
             <div className="pb-5 border-b border-gray-200 dark:border-gray-700 mb-6">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{title}</h1>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{title}</h1>
                   {description && <p className="mt-2 text-lg text-gray-500 dark:text-gray-400">{description}</p>}
                 </div>
                 <div className="mt-4 md:mt-0 flex space-x-3">

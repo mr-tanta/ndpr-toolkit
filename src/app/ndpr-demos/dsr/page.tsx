@@ -418,7 +418,7 @@ export default function DSRDemoPage() {
           >
             <span aria-hidden="true">&larr;</span> Back to NDPA Demos
           </Link>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">Data Subject Rights</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">Data Subject Rights</h1>
           <p className="mt-3 text-emerald-100 text-lg md:text-xl max-w-2xl">
             NDPA Part IV &mdash; Sections 29&ndash;36
           </p>
@@ -666,8 +666,8 @@ export default function DSRDemoPage() {
                 {filteredRequests.length} request{filteredRequests.length !== 1 ? 's' : ''} found
               </p>
             </div>
-            <div className="flex gap-3">
-              <div className="w-40">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <div className="w-full sm:w-40">
                 <Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
                   <option value="all">All Statuses</option>
                   <option value="pending">Pending</option>
@@ -676,7 +676,7 @@ export default function DSRDemoPage() {
                   <option value="rejected">Rejected</option>
                 </Select>
               </div>
-              <div className="w-48">
+              <div className="w-full sm:w-48">
                 <Select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
                   <option value="all">All Types</option>
                   {RIGHTS.map((r) => (

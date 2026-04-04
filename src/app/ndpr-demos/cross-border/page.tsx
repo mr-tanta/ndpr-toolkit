@@ -387,7 +387,7 @@ export default function CrossBorderDemoPage() {
         </div>
 
         {/* Hero Section */}
-        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-700 to-cyan-800 p-8 md:p-12 text-white shadow-xl">
+        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-700 to-cyan-800 p-5 sm:p-8 md:p-12 text-white shadow-xl">
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full text-sm font-medium mb-4">
@@ -396,7 +396,7 @@ export default function CrossBorderDemoPage() {
               </svg>
               NDPA Part VI (Sections 41-45)
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-3">Cross-Border Transfer Assessment</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Cross-Border Transfer Assessment</h1>
             <p className="text-emerald-100 text-lg max-w-2xl">
               Assess, document, and manage international transfers of personal data outside Nigeria. Ensure compliance with NDPA cross-border transfer requirements.
             </p>

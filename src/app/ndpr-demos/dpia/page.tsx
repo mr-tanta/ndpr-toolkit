@@ -345,7 +345,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
                 )}
               </div>
               <span
-                className={`mt-2 text-xs font-medium whitespace-nowrap ${
+                className={`mt-2 text-xs font-medium whitespace-nowrap hidden sm:block ${
                   isActive
                     ? 'text-blue-600 dark:text-blue-400'
                     : isCompleted
@@ -358,7 +358,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
             </div>
             {idx < STEP_LABELS.length - 1 && (
               <div
-                className={`flex-1 h-0.5 mx-3 mt-[-1rem] transition-colors duration-300 ${
+                className={`flex-1 h-0.5 mx-1 sm:mx-3 mt-[-1rem] transition-colors duration-300 ${
                   stepNum < currentStep
                     ? 'bg-emerald-400 dark:bg-emerald-600'
                     : 'bg-gray-200 dark:bg-gray-700'
@@ -623,7 +623,7 @@ export default function DPIADemoPage() {
           </Link>
 
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
               Data Protection Impact Assessment
             </h1>
             <p className="mt-3 text-lg text-gray-600 dark:text-gray-400">

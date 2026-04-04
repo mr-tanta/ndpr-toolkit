@@ -161,7 +161,7 @@ function MockWebsite({
               <div className="pt-1">
                 <button
                   onClick={onSavePreferences}
-                  className={`text-xs font-medium px-3 py-1.5 rounded ${bannerAcceptBtn}`}
+                  className={`text-xs font-medium px-4 py-2 min-h-[44px] rounded ${bannerAcceptBtn}`}
                 >
                   Save Preferences
                 </button>
@@ -237,7 +237,7 @@ function MockWebsite({
           </div>
 
           {/* Fake cards */}
-          <div className="grid grid-cols-3 gap-3 pt-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 pt-2">
             {[1, 2, 3].map((i) => (
               <div key={i} className="border rounded-lg p-3 space-y-2 border-gray-200 dark:border-gray-700">
                 <div className="h-3 w-2/3 bg-gray-200 dark:bg-gray-700 rounded" />
@@ -481,7 +481,7 @@ export default function ConsentDemoPage() {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Consent Management</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">Consent Management</h1>
             <Badge variant="info">NDPA Sections 25-26</Badge>
           </div>
           <p className="text-muted-foreground max-w-2xl text-base leading-relaxed">

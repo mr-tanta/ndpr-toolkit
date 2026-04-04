@@ -398,7 +398,7 @@ export default function PolicyDemoPage() {
             </svg>
             Back to NDPR Demos
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
             Privacy Policy Generator
           </h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400 max-w-2xl">
@@ -452,7 +452,7 @@ export default function PolicyDemoPage() {
                 {sections.map((s, idx) => (
                   <li
                     key={s.id}
-                    className="flex items-center gap-2 px-4 py-3 group"
+                    className="flex items-center gap-2 px-4 py-3 min-h-[44px] group"
                   >
                     {/* checkbox */}
                     <label className="flex items-center cursor-pointer flex-1 min-w-0">
@@ -562,8 +562,8 @@ export default function PolicyDemoPage() {
           {/* ============================================================= */}
           <div className="lg:col-span-6">
             {/* Export view tabs */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+              <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 w-full sm:w-auto overflow-x-auto">
                 {(
                   [
                     { value: "styled", label: "Full Preview" },
