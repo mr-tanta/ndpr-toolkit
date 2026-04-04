@@ -1,0 +1,126 @@
+---
+title: "NDPA-Compliant Consent Management — Best Practices for Nigerian Developers"
+description: "How to implement legally compliant consent collection in your web applications using the NDPA Toolkit's consent module."
+date: "2026-04-02"
+author: "Abraham Esandayinze Tanta"
+tags: ["consent", "best-practices", "tutorial"]
+image: "/blog/consent-best-practices.png"
+---
+
+# NDPA-Compliant Consent Management
+
+Consent is the lawful basis most developers encounter first. It sounds simple — ask the user, get their permission, proceed. But the NDPA 2023 sets a much higher bar than a simple checkbox. Get it wrong, and your consent is legally invalid, which means every piece of data you collected under that consent is unlawfully processed.
+
+Here is how to get it right.
+
+## What the NDPA Requires (Sections 25-26)
+
+Under Section 25(1)(a), consent must be the data subject's "freely given, specific, informed, and unambiguous indication of agreement." Section 26 adds further conditions: the request for consent must be clearly distinguishable from other matters, presented in clear and plain language, and the data subject must be informed of the right to withdraw consent at any time.
+
+Let us break down the four conditions.
+
+## The Four Conditions of Valid Consent
+
+**Freely Given** — The user must have a genuine choice. You cannot make consent a precondition for a service that does not require the data. Pre-ticked checkboxes are not freely given. Bundling consent for analytics with consent for service delivery is not freely given.
+
+**Specific** — Each purpose must be consented to separately. "We use your data for service delivery, marketing, analytics, and sharing with partners" as a single consent is not specific. You need granular options.
+
+**Informed** — Before consenting, the user must know who is collecting the data, what data is being collected, why it is being collected, who it will be shared with, and how long it will be retained.
+
+**Unambiguous** — The consent must be given through a clear affirmative action. Silence, pre-ticked boxes, or inactivity do not constitute consent.
+
+## Implementation with ConsentBanner
+
+The toolkit's `ConsentBanner` component handles all four conditions out of the box:
+
+```tsx
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+
+function App() {
+  return (
+    <ConsentBanner
+      companyName="Paystack Limited"
+      policyUrl="/privacy-policy"
+      consentTypes={[
+        {
+          id: 'essential',
+          label: 'Essential Cookies',
+          description: 'Required for the website to function properly',
+          required: true,
+        },
+        {
+          id: 'analytics',
+          label: 'Analytics',
+          description: 'Help us understand how visitors interact with the website',
+          required: false,
+        },
+        {
+          id: 'marketing',
+          label: 'Marketing',
+          description: 'Used to deliver relevant advertisements',
+          required: false,
+        },
+      ]}
+      onConsent={(consent) => {
+        // consent.analytics, consent.marketing etc.
+        saveConsentRecord(consent);
+      }}
+    />
+  );
+}
+```
+
+Each consent type is presented separately (specific), non-essential types are not pre-selected (freely given), the description explains the purpose (informed), and the user must actively click to accept (unambiguous).
+
+## Validating Consent Programmatically
+
+Beyond the UI, you should validate consent records before processing data:
+
+```typescript
+import { validateConsent } from '@tantainnovative/ndpr-toolkit/core';
+
+const result = validateConsent({
+  dataSubjectId: 'user-123',
+  purposes: ['analytics'],
+  consentDate: '2026-01-15',
+  expiryDate: '2027-02-15',
+});
+
+if (!result.isValid) {
+  console.log('Invalid consent:', result.errors);
+  // Do not process the data
+}
+```
+
+The `validateConsent` function checks that the consent record includes all required fields, that it has not expired, and that the purposes are properly documented.
+
+## Common Mistakes Developers Make
+
+**Bundling consent with terms of service.** Your terms of service acceptance is a contract. Consent for data processing is a separate legal basis. Do not combine them.
+
+**No withdrawal mechanism.** Section 26(5) says withdrawal must be as easy as giving consent. If consent is one click, withdrawal must also be one click. Many developers add a consent banner but forget the settings page where users can revoke.
+
+**Not recording consent metadata.** You need to record when consent was given, what version of the privacy policy was in effect, what specific purposes were consented to, and through what mechanism. A boolean `hasConsented: true` in your database is not sufficient.
+
+**Ignoring the 13-month refresh.** Consent does not last forever. Best practice under the NDPA, aligned with international standards, is to refresh consent every 13 months. The toolkit's `validateConsent` function flags expired consent automatically, but you need to set appropriate expiry dates when recording consent.
+
+**Pre-ticking non-essential options.** This is the most common violation. Every non-essential consent option must default to off. The user must actively opt in.
+
+## The 13-Month Consent Refresh
+
+The NDPA does not specify an exact expiry period for consent, but the NDPC's guidance aligns with international best practice of refreshing consent at least every 13 months. When you collect consent, set an expiry:
+
+```typescript
+const consentRecord = {
+  dataSubjectId: userId,
+  purposes: selectedPurposes,
+  consentDate: new Date().toISOString(),
+  expiryDate: new Date(Date.now() + 13 * 30 * 24 * 60 * 60 * 1000).toISOString(),
+};
+```
+
+When the consent approaches expiry, prompt the user to re-confirm. Do not silently continue processing — that invalidates the consent.
+
+---
+
+*For a working implementation, explore the [consent demo](/ndpr-demos/consent) or read the [full documentation](/docs/components/consent-management).*

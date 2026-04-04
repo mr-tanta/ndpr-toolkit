@@ -1,0 +1,73 @@
+---
+title: "Introducing NDPA Toolkit v2.0 — Full Nigeria Data Protection Act 2023 Compliance"
+description: "The NDPA Toolkit has been completely rebuilt for the Nigeria Data Protection Act 2023, with 3 new modules, modular imports, and enterprise-grade compliance components."
+date: "2026-04-04"
+author: "Abraham Esandayinze Tanta"
+tags: ["release", "ndpa", "v2"]
+image: "/blog/v2-release.png"
+---
+
+# Introducing NDPA Toolkit v2.0
+
+After months of careful development and testing, I am proud to announce the release of NDPA Toolkit v2.0 — a ground-up rebuild designed specifically for the Nigeria Data Protection Act (NDPA) 2023. This is not just a version bump. It is a complete reimagining of how Nigerian developers can implement data protection compliance in their applications.
+
+## Why We Rebuilt Everything
+
+When the original toolkit launched in 2020, it was built around the Nigeria Data Protection Regulation (NDPR) of 2019. That regulation served its purpose, but the signing of the NDPA into law on 12 June 2023 changed the landscape entirely. The NDPA introduced a new regulatory body (the Nigeria Data Protection Commission, or NDPC), new legal bases for processing, and a more structured framework for cross-border transfers and accountability.
+
+Patching the old codebase was not an option. The NDPA is fundamentally different from the NDPR in structure and scope. Section references changed, the regulatory authority changed from NITDA to NDPC, and entirely new obligations were introduced. We needed a fresh start.
+
+## What Changed: NITDA to NDPC
+
+The most visible change is the shift from NITDA (National Information Technology Development Agency) to the NDPC (Nigeria Data Protection Commission) as the primary regulator. Every notification template, every compliance checklist, and every reference in the toolkit has been updated. When your application generates a breach notification, it now correctly addresses the NDPC with the proper Section 40 references, not the old NITDA guidelines.
+
+## Three New Modules
+
+Version 2.0 ships with three entirely new modules that address requirements that simply did not exist under the old NDPR:
+
+**Lawful Basis Tracker** — The NDPA Section 25 establishes six lawful bases for processing personal data: consent, contract, legal obligation, vital interest, public interest, and legitimate interest. The new `LawfulBasisTracker` component lets you document and manage the legal basis for each processing activity in your application, with validation logic that ensures you have selected appropriate bases and documented your reasoning.
+
+**Cross-Border Transfer Assessment** — Section 43 of the NDPA sets out strict requirements for transferring personal data outside Nigeria. The `CrossBorderTransfer` module provides a structured assessment workflow that evaluates whether your target country has adequate data protection, whether you have appropriate safeguards in place, and whether any exceptions under Section 44 apply.
+
+**Records of Processing Activities (ROPA)** — The accountability principle under Section 24 requires organisations to maintain comprehensive records of their data processing activities. The `ROPAManager` component provides a full CRUD interface for maintaining these records, with fields aligned to the NDPA's specific requirements.
+
+## Modular Imports: Use Only What You Need
+
+One of the biggest complaints about v1 was bundle size. If you only needed the consent banner, you still imported the entire toolkit. Version 2.0 introduces three import styles:
+
+```typescript
+// Core utilities only — ~848 bytes gzipped
+import { validateConsent } from '@tantainnovative/ndpr-toolkit/core';
+
+// React hooks only
+import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+
+// Per-module imports
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+import { LawfulBasisTracker } from '@tantainnovative/ndpr-toolkit/lawful-basis';
+import { CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/cross-border';
+```
+
+This means a fintech app that only needs consent management can import just that module, keeping the bundle lean.
+
+## Migrating from v1.x
+
+If you are using v1.x, here is the short version of the migration path:
+
+1. Update the package: `pnpm add @tantainnovative/ndpr-toolkit@latest`
+2. Replace NITDA references with NDPC in your configuration
+3. Update section references (the old `regulation` prop values map to new `section` values)
+4. Switch to modular imports for better tree-shaking
+5. Add the new modules where applicable (lawful basis, cross-border, ROPA)
+
+The full migration guide is available in [our documentation](/docs).
+
+## What Comes Next
+
+Version 2.0 is the foundation. Over the coming months, we will be adding automated compliance reports, integration with the NDPC's filing portal, and server-side rendering optimisations. If you have specific needs, open an issue on [GitHub](https://github.com/mr-tanta/ndpr-toolkit) or reach out directly.
+
+Building for compliance should not be painful. With the NDPA Toolkit, it does not have to be.
+
+---
+
+*Install it today: `pnpm add @tantainnovative/ndpr-toolkit`*

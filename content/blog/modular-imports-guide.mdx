@@ -1,0 +1,138 @@
+---
+title: "Modular Imports — How to Keep Your Bundle Lean with NDPA Toolkit"
+description: "Learn how to use the toolkit's modular import paths to import only what you need and keep your bundle size minimal."
+date: "2026-04-01"
+author: "Abraham Esandayinze Tanta"
+tags: ["performance", "guide", "imports"]
+image: "/blog/modular-imports.png"
+---
+
+# Modular Imports — Keep Your Bundle Lean
+
+One of the first questions developers ask when evaluating a third-party library is: "How much will this add to my bundle?" It is a fair question. Nobody wants a compliance toolkit inflating their production bundle by hundreds of kilobytes when they only need a consent banner.
+
+With NDPA Toolkit v2, we solved this with modular import paths. Here is how to use them effectively.
+
+## The Three Import Styles
+
+The toolkit exposes three levels of imports, each designed for a different use case:
+
+### 1. Core Utilities (~848 bytes gzipped)
+
+If you only need validation functions, consent logic, or utility helpers — without any React components — import from `/core`:
+
+```typescript
+import { validateConsent, generatePolicyText } from '@tantainnovative/ndpr-toolkit/core';
+
+const result = validateConsent({
+  dataSubjectId: 'user-456',
+  purposes: ['essential', 'analytics'],
+  consentDate: '2026-03-01',
+  expiryDate: '2027-04-01',
+});
+```
+
+This path contains zero React dependencies. It works in Node.js scripts, edge functions, API routes, or anywhere JavaScript runs. At roughly 848 bytes gzipped, you will not even notice it in your bundle analysis.
+
+### 2. React Hooks (~2.1 KB gzipped)
+
+If you are building custom UI but want the toolkit's state management and logic, import from `/hooks`:
+
+```typescript
+import { useConsent, useBreachTimer } from '@tantainnovative/ndpr-toolkit/hooks';
+
+function CustomConsentUI() {
+  const { consentState, updateConsent, withdrawConsent } = useConsent({
+    purposes: ['essential', 'analytics', 'marketing'],
+    storageKey: 'app-consent',
+  });
+
+  return (
+    <div>
+      {/* Your completely custom UI here */}
+    </div>
+  );
+}
+```
+
+Hooks give you full control over the presentation layer while the toolkit handles the compliance logic underneath.
+
+### 3. Full Import (~135 KB gzipped)
+
+The default import brings in everything — all components, hooks, utilities, and styles:
+
+```typescript
+import {
+  ConsentBanner,
+  DataSubjectRightsForm,
+  DPIAQuestionnaire,
+  BreachNotificationForm,
+  LawfulBasisTracker,
+  CrossBorderAssessment,
+  ROPAManager,
+} from '@tantainnovative/ndpr-toolkit';
+```
+
+Use this only if you genuinely need most of the toolkit's features, such as in a dedicated compliance dashboard or admin panel.
+
+## Per-Module Imports
+
+Beyond the three main paths, every module has its own import path. This is the sweet spot for most applications — you get full components but only for the features you actually use:
+
+```typescript
+// Only consent components (~12 KB)
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+
+// Only breach notification (~15 KB)
+import { BreachNotificationForm } from '@tantainnovative/ndpr-toolkit/breach';
+
+// Only lawful basis tracking (~10 KB)
+import { LawfulBasisTracker } from '@tantainnovative/ndpr-toolkit/lawful-basis';
+
+// Only cross-border assessment (~11 KB)
+import { CrossBorderAssessment } from '@tantainnovative/ndpr-toolkit/cross-border';
+
+// Only ROPA management (~14 KB)
+import { ROPAManager } from '@tantainnovative/ndpr-toolkit/ropa';
+```
+
+Each module path is independently tree-shakeable, so even within a module, unused exports are eliminated by your bundler.
+
+## Bundle Size Comparison
+
+Here is what the numbers look like in a real-world Next.js application:
+
+| Import Style | Gzipped Size | Use Case |
+|-------------|-------------|----------|
+| `/core` | ~848 B | Server-side validation, API routes |
+| `/hooks` | ~2.1 KB | Custom UI with toolkit logic |
+| `/consent` | ~12 KB | Just the consent banner |
+| `/breach` | ~15 KB | Just breach notification |
+| Full import | ~135 KB | Complete compliance dashboard |
+
+The difference between 848 bytes and 135 KB is significant, especially for mobile users on Nigerian networks where every kilobyte counts.
+
+## When to Use Each Style
+
+**Use `/core`** when you are validating consent server-side, generating policy text in an API route, or running compliance checks in a background job.
+
+**Use `/hooks`** when you want to build your own UI components but need the compliance logic — state management, validation, timer tracking — handled for you.
+
+**Use per-module imports** (the recommended default) when you need specific features in your application. Most apps need consent management and perhaps one or two other modules.
+
+**Use the full import** only in admin dashboards, compliance management tools, or applications where bundle size is not a primary concern.
+
+## Tree-Shaking
+
+The toolkit is built with `tsup` and ships both ESM and CommonJS formats. If you are using a modern bundler (webpack 5, Rollup, Vite, or Turbopack), tree-shaking works automatically with ESM imports. Named imports from any path will only include the code you actually reference.
+
+```typescript
+// Only the validateConsent function is included in your bundle
+import { validateConsent } from '@tantainnovative/ndpr-toolkit/core';
+```
+
+Make sure your bundler is configured for ESM resolution to get the best results.
+
+---
+
+*Check your bundle impact with `npx @next/bundle-analyzer` and see the difference modular imports make. Full documentation is available in the [import guide](/docs).*

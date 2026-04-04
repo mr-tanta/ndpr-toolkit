@@ -1,0 +1,141 @@
+---
+title: "The Developer's NDPA 2023 Compliance Checklist"
+description: "A practical, code-first checklist for Nigerian developers implementing NDPA 2023 compliance. Covers consent, DSR, breach notification, DPIA, and cross-border transfers."
+date: "2026-04-03"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpa", "compliance", "guide", "checklist"]
+---
+
+# The Developer's NDPA 2023 Compliance Checklist
+
+If you are building a web application that processes personal data of Nigerian users, the Nigeria Data Protection Act (NDPA) 2023 applies to you. This is not optional. The NDPC (Nigeria Data Protection Commission) has enforcement powers, and penalties can reach 2% of annual gross revenue.
+
+This guide cuts through the legal jargon and gives you a practical, code-first checklist.
+
+## 1. Consent Collection (NDPA Section 25-26)
+
+Before processing personal data based on consent, you need:
+
+- Freely given consent (no pre-ticked boxes)
+- Specific purpose for each consent category
+- Clear, plain language explanation
+- Easy withdrawal mechanism
+- Consent records with timestamps
+
+```typescript
+import { ConsentBanner, validateConsent } from '@tantainnovative/ndpr-toolkit/consent';
+
+// Each consent option must have a specific purpose
+const options = [
+  {
+    id: 'analytics',
+    label: 'Analytics',
+    description: 'Help us understand how you use our site',
+    purpose: 'Usage analytics and site improvement',
+    required: false,
+  },
+];
+```
+
+**Key rule:** Consent must be refreshed every 13 months. The toolkit handles this automatically.
+
+## 2. Data Subject Rights (NDPA Sections 29-36)
+
+Nigerian users have 8 rights under the NDPA. Your application must support all of them:
+
+- Right to be informed (Section 29)
+- Right of access (Section 30)
+- Right to rectification (Section 31)
+- Right to erasure (Section 32)
+- Right to restrict processing (Section 33)
+- Right to data portability (Section 34)
+- Right to object (Section 35)
+- Rights related to automated decision-making (Section 36)
+
+**Response deadline:** 30 days from receipt, with one possible 30-day extension.
+
+```typescript
+import { useDSR, formatDSRRequest } from '@tantainnovative/ndpr-toolkit/dsr';
+```
+
+## 3. Breach Notification (NDPA Section 40)
+
+If you discover a data breach:
+
+- Notify the NDPC within **72 hours** of becoming aware
+- Notify affected data subjects **without undue delay** if high risk
+- Document the breach, its effects, and remedial actions
+
+```typescript
+import { calculateBreachSeverity } from '@tantainnovative/ndpr-toolkit/core';
+
+const result = calculateBreachSeverity(breachReport, riskAssessment);
+// result.notificationRequired — whether NDPC must be notified
+// result.timeframeHours — 72 hours
+```
+
+## 4. Data Protection Impact Assessment (NDPA Section 38)
+
+A DPIA is required when processing is likely to result in **high risk** to data subjects. This includes:
+
+- Large-scale processing of sensitive data
+- Systematic monitoring of public areas
+- Automated decision-making with legal effects
+- Processing children's data
+- Cross-border transfers to inadequate jurisdictions
+
+If the DPIA indicates high residual risk, you must consult the NDPC **before** processing (Section 39).
+
+## 5. Cross-Border Transfers (NDPA Sections 41-45)
+
+Transferring personal data outside Nigeria requires one of these mechanisms:
+
+- Adequacy decision by the NDPC (Section 41)
+- Standard contractual clauses approved by the NDPC (Section 42)
+- Binding corporate rules (Section 43)
+- Specific NDPC authorization (Section 44)
+- Derogations: explicit consent, contract performance, legal claims, vital interests (Section 45)
+
+```typescript
+import { isNDPCApprovalRequired } from '@tantainnovative/ndpr-toolkit/core';
+
+// Standard clauses, BCRs, and NDPC authorization require approval
+isNDPCApprovalRequired('standard_clauses'); // true
+isNDPCApprovalRequired('explicit_consent'); // false
+```
+
+## 6. Lawful Basis Documentation (NDPA Section 25)
+
+Every processing activity must have a documented lawful basis. The NDPA recognises six:
+
+1. **Consent** — data subject has given consent
+2. **Contract** — necessary for contract performance
+3. **Legal obligation** — required by law
+4. **Vital interests** — protecting someone's life
+5. **Public interest** — necessary for public interest
+6. **Legitimate interests** — requires a balancing test
+
+If you rely on legitimate interests, you must conduct a **Legitimate Interest Assessment (LIA)**.
+
+## 7. Record of Processing Activities
+
+Maintain a comprehensive register of all processing activities, including:
+
+- Purposes of processing
+- Categories of data subjects and personal data
+- Recipients of personal data
+- Cross-border transfers and safeguards
+- Retention periods
+- Security measures
+
+The NDPC can request these records at any time.
+
+## Getting Started
+
+```bash
+pnpm add @tantainnovative/ndpr-toolkit
+```
+
+Start with the `/core` import for types and utilities (zero UI dependencies), then add components as needed.
+
+For the full API reference, visit [ndprtoolkit.com.ng/docs](https://ndprtoolkit.com.ng/docs).

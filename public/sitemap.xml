@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://ndprtoolkit.com.ng</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://ndprtoolkit.com.ng/blog</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos/consent</loc><priority>0.6</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos/dsr</loc><priority>0.6</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos/dpia</loc><priority>0.6</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos/breach</loc><priority>0.6</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos/policy</loc><priority>0.6</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos/lawful-basis</loc><priority>0.6</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos/cross-border</loc><priority>0.6</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/ndpr-demos/ropa</loc><priority>0.6</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/consent-management</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/data-subject-rights</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/dpia-questionnaire</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/breach-notification</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/privacy-policy-generator</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/hooks</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/lawful-basis-tracker</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/cross-border-transfers</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/components/ropa</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/guides/managing-consent</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/guides/data-subject-requests</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/guides/conducting-dpia</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/guides/breach-notification-process</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/guides/ndpr-compliance-checklist</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/guides/lawful-basis</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/docs/guides/cross-border-transfers</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/blog/introducing-ndpa-toolkit-v2</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/blog/understanding-ndpa-2023</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/blog/modular-imports-guide</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/blog/consent-management-best-practices</loc><priority>0.7</priority></url>
+  <url><loc>https://ndprtoolkit.com.ng/blog/ndpa-compliance-checklist-for-developers</loc><priority>0.7</priority></url>
+</urlset>
