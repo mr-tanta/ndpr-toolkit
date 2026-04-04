@@ -37,17 +37,17 @@
   ],
   "author": {
     "name": "Abraham Esandayinze Tanta",
-    "url": "https://github.com/mr-tanta"
+    "url": "https://linkedin.com/in/mr-tanta"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tantainnovative/ndpr-toolkit.git"
+    "url": "git+https://github.com/mr-tanta/ndpr-toolkit.git"
   },
   "bugs": {
-    "url": "https://github.com/tantainnovative/ndpr-toolkit/issues"
+    "url": "https://github.com/mr-tanta/ndpr-toolkit/issues"
   },
-  "homepage": "https://github.com/tantainnovative/ndpr-toolkit#readme",
+  "homepage": "https://github.com/mr-tanta/ndpr-toolkit#readme",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",

@@ -655,6 +655,14 @@ Detailed API documentation is available for all components:
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Author
+
+**Abraham Esandayinze Tanta** — Software Engineer & Data Protection Compliance Specialist
+
+- GitHub: [@mr-tanta](https://github.com/mr-tanta)
+- LinkedIn: [mr-tanta](https://linkedin.com/in/mr-tanta)
+- Organization: [Tanta Innovative](https://github.com/tantainnovative)
+
 ## License
 
-MIT (c) Tanta Innovative
+MIT (c) Abraham Esandayinze Tanta

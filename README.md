@@ -342,7 +342,8 @@ MIT
 
 ## Author
 
-**Abraham Esandayinze Tanta**
+**Abraham Esandayinze Tanta** — Software Engineer & Data Protection Compliance Specialist
 
 - GitHub: [@mr-tanta](https://github.com/mr-tanta)
+- LinkedIn: [mr-tanta](https://linkedin.com/in/mr-tanta)
 - Organization: [Tanta Innovative](https://github.com/tantainnovative)
