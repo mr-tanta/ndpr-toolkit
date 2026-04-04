@@ -38,12 +38,35 @@ export default function DocsPage() {
 npm install @tantainnovative/ndpr-toolkit --legacy-peer-deps</code></pre>
           </div>
 
+          <h3>Import Paths</h3>
+          <p>
+            The toolkit supports multiple import styles so you can pick exactly what you need and keep your bundles lean:
+          </p>
+          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
+            <pre><code>{`// Core — types + utilities, zero UI dependencies
+import { validateConsent, ConsentOption } from '@tantainnovative/ndpr-toolkit/core';
+
+// Hooks only — React hooks with no component overhead
+import { useConsent, useDSR, useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
+
+// Per-module — import only the module you need
+import { ConsentBanner, useConsent } from '@tantainnovative/ndpr-toolkit/consent';
+import { DSRRequestForm, DSRDashboard } from '@tantainnovative/ndpr-toolkit/dsr';
+import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
+import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/breach';
+import { PolicyGenerator } from '@tantainnovative/ndpr-toolkit/policy';
+// Also available: /lawful-basis, /cross-border, /ropa
+
+// Full — everything in one import (larger bundle)
+import { ConsentBanner, DSRRequestForm, useBreach } from '@tantainnovative/ndpr-toolkit';`}</code></pre>
+          </div>
+
           <h3>Basic Setup</h3>
           <p>
             Import and use the components and hooks in your React or Next.js application:
           </p>
           <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { ConsentBanner, ConsentManager, ConsentStorage, useConsent } from '@tantainnovative/ndpr-toolkit';
+            <pre><code>{`import { ConsentBanner, ConsentManager, ConsentStorage, useConsent } from '@tantainnovative/ndpr-toolkit/consent';
 
 function MyApp() {
   return (
