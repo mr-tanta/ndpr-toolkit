@@ -3,6 +3,18 @@
   "version": "2.1.2",
   "private": false,
   "description": "Nigeria Data Protection Toolkit — enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023",
+  "pnpm": {
+    "overrides": {
+      "handlebars": ">=4.7.9",
+      "lodash": ">=4.17.21",
+      "glob": ">=7.2.3",
+      "tar": ">=7.5.10",
+      "brace-expansion": ">=2.0.1",
+      "js-yaml": "~3.14.2",
+      "yaml": ">=2.8.3",
+      "picomatch": ">=4.0.2"
+    }
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build && node scripts/post-build.js",
