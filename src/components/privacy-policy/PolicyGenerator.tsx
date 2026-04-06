@@ -2,7 +2,8 @@
 
 import React, { useState, useRef } from "react";
 import { PolicySection } from "@/types";
-import { jsPDF } from "jspdf";
+// jspdf loaded dynamically to avoid bundling in the demo site
+const loadJsPDF = () => import("jspdf").then(m => m.jsPDF).catch(() => null);
 import { escapeHtml } from "@/lib/sanitize";
 
 // Import step components
@@ -498,8 +499,13 @@ export default function PolicyGenerator({
       try {
         switch (format) {
           case "pdf":
-            // Create PDF using jsPDF
-            const pdf = new jsPDF({
+            // Create PDF using dynamically loaded jsPDF
+            const JsPDFClass = await loadJsPDF();
+            if (!JsPDFClass) {
+              alert("PDF export requires the jspdf package. Install it with: pnpm add jspdf");
+              return;
+            }
+            const pdf = new JsPDFClass({
               orientation: "portrait",
               unit: "mm",
               format: "a4",

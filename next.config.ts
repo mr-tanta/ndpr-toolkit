@@ -18,29 +18,8 @@ const nextConfig: NextConfig = {
   },
   // Use custom build directory to bypass some type checking
   distDir: '.next',
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  
   // These settings apply to all environments
   poweredByHeader: false,
-  
-  // Fix for hydration errors
-  // This ensures consistent rendering between server and client
-  experimental: {
-    // Reduce hydration mismatches by making SSR output match client rendering
-    scrollRestoration: true,
-  },
-  
-  // Optimize fonts to reduce hydration mismatches
-  optimizeFonts: true,
-  
-  // Suppress hydration warnings in development
-  onDemandEntries: {
-    // Keep pages in memory for longer to avoid reloading
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 5,
-  },
   
   // Only use static export, basePath and assetPrefix in production
   ...(isDevelopment 
