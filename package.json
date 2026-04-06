@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": false,
   "description": "Nigeria Data Protection Toolkit — enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "scripts": {
@@ -152,7 +152,11 @@
     }
   },
   "files": [
-    "dist",
+    "dist/**/*.js",
+    "dist/**/*.mjs",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.mts",
+    "dist/**/*.css",
     "README.md",
     "LICENSE"
   ],

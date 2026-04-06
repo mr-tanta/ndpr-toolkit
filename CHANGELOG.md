@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.2] — 2026-04-06
+
+### Changed
+- Exclude source maps from published package (512 KB → 168 KB, 67% reduction)
+- Use granular `files` globs instead of blanket `dist/` include
+
 ## [2.1.1] — 2026-04-04
 
 ### Fixed
