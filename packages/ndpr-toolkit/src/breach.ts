@@ -6,7 +6,7 @@ export { BreachReportForm } from './components/breach/BreachReportForm';
 export { BreachRiskAssessment } from './components/breach/BreachRiskAssessment';
 export { BreachNotificationManager } from './components/breach/BreachNotificationManager';
 export { RegulatoryReportGenerator } from './components/breach/RegulatoryReportGenerator';
-export type { BreachReportFormClassNames } from './components/breach/BreachReportForm';
+export type { BreachReportFormClassNames, BreachFormSubmission } from './components/breach/BreachReportForm';
 export type { BreachRiskAssessmentClassNames } from './components/breach/BreachRiskAssessment';
 export type { BreachNotificationManagerClassNames } from './components/breach/BreachNotificationManager';
 export type { RegulatoryReportGeneratorClassNames } from './components/breach/RegulatoryReportGenerator';
