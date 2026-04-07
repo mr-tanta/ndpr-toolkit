@@ -5,6 +5,7 @@ import { DocLayout } from '@/components/docs/DocLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { siteConfig } from '@/lib/site-config';
 
 export default function DocsPage() {
   return (
@@ -37,7 +38,7 @@ export default function DocsPage() {
       {/* What's New in v2.1 */}
       <section className="mb-12">
         <div className="flex items-center gap-3 mb-6">
-          <h2 className="text-2xl font-bold">What&apos;s New in v2.1</h2>
+          <h2 className="text-2xl font-bold">What&apos;s New in v{siteConfig.version}</h2>
           <Badge variant="success">Latest</Badge>
         </div>
         <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-6">

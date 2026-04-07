@@ -64,11 +64,13 @@ const demos = [
   },
 ];
 
+import { siteConfig } from '@/lib/site-config';
+
 const stats = [
-  { label: 'Modules', value: '8' },
+  { label: 'Modules', value: String(siteConfig.moduleCount) },
   { label: 'NDPA 2023 Aligned', value: null },
   { label: 'TypeScript Native', value: null },
-  { label: '190+ Tests', value: null },
+  { label: `${siteConfig.testCount}+ Tests`, value: null },
 ];
 
 export default function NDPRDemosPage() {

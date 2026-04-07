@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata = {
   title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
@@ -228,15 +229,15 @@ export default function Home() {
               
               <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-gray-500 dark:text-gray-400">
                 <span className="inline-flex items-center bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full text-blue-700 dark:text-blue-300 font-medium">
-                  v2.1.1
+                  v{siteConfig.version}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                  8 compliance modules
+                  {siteConfig.moduleCount} compliance modules
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                  194 tests passing
+                  {siteConfig.testCount} tests passing
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
