@@ -53,6 +53,11 @@ export default function GuidesPage() {
             description: 'Guide to managing cross-border data transfers in compliance with NDPA 2023 Section 41',
             href: '/docs/guides/cross-border-transfers',
           },
+          {
+            title: 'Styling & Customization',
+            description: 'Customize component styles using classNames overrides, unstyled mode, Bootstrap, CSS Modules, or vanilla CSS',
+            href: '/docs/guides/styling-customization',
+          },
         ].map((guide) => (
           <Card key={guide.title}>
             <CardHeader>

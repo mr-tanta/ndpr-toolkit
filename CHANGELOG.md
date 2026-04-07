@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0] — 2026-04-07
+
+### Added
+- `classNames` prop on all 19 components for granular CSS class overrides
+- `unstyled` prop to strip all default Tailwind classes (BYO CSS)
+- `resolveClass` utility exported from `/core` and all module paths
+- 194 customizable class sections across all components
+- Styling & Customization guide in documentation
+- Blog post: "Fully Customizable Styling"
+
+### Changed
+- Components now work with any CSS framework (Bootstrap, CSS Modules, vanilla CSS)
+- Default Tailwind styling preserved — zero breaking changes
+- All ClassNames type interfaces exported from barrel files
+
+### Fixed
+- Eliminated all npm audit vulnerabilities (52 → 0)
+- Reduced package size 67% (512 KB → 170 KB) by excluding source maps
+- Upgraded jspdf 3.x → 4.x, replaced abandoned standard-version
+
 ## [2.1.2] — 2026-04-06
 
 ### Changed

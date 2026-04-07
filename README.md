@@ -97,6 +97,62 @@ function App() {
 
 ---
 
+## Styling & Customization
+
+Every component supports three styling modes:
+
+**Default (Tailwind CSS built-in):**
+
+```tsx
+<ConsentBanner options={options} onSave={handleSave} />
+```
+
+**Override specific sections:**
+
+```tsx
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+
+<ConsentBanner
+  options={options}
+  onSave={handleSave}
+  classNames={{
+    root: "fixed bottom-0 inset-x-0 bg-white shadow-xl p-6 z-50",
+    title: "text-xl font-serif text-gray-900",
+    acceptButton: "bg-green-600 text-white px-6 py-2 rounded-full",
+    rejectButton: "border border-gray-300 px-6 py-2 rounded-full",
+  }}
+/>
+```
+
+**Fully unstyled (BYO CSS -- works with Bootstrap, CSS Modules, vanilla CSS):**
+
+```tsx
+<ConsentBanner
+  options={options}
+  onSave={handleSave}
+  unstyled
+  classNames={{
+    root: "my-consent-banner",
+    acceptButton: "btn btn-primary",
+    rejectButton: "btn btn-outline-secondary",
+  }}
+/>
+```
+
+### classNames Reference
+
+| Component | Key classNames | Total keys |
+|-----------|---------------|------------|
+| ConsentBanner | root, title, acceptButton, rejectButton, optionsList | 14 |
+| DSRRequestForm | root, form, input, select, submitButton | 11 |
+| BreachReportForm | root, form, input, submitButton, notice | 10 |
+| LawfulBasisTracker | root, table, form, statusBadge, complianceScore | 15 |
+| All 19 components | -- | 194 total |
+
+Every component follows the same pattern. Pass `classNames` to override specific sections, or set `unstyled` to strip all default styles.
+
+---
+
 ## Modules
 
 ### 1. Consent Management

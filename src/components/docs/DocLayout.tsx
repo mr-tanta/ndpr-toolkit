@@ -68,6 +68,7 @@ const navigation: NavItem[] = [
       { title: 'Breach Notification Process', href: '/docs/guides/breach-notification-process' },
       { title: 'Lawful Basis for Processing', href: '/docs/guides/lawful-basis', isNew: true },
       { title: 'Cross-Border Transfers', href: '/docs/guides/cross-border-transfers', isNew: true },
+      { title: 'Styling & Customization', href: '/docs/guides/styling-customization', isNew: true },
     ],
   },
 ];

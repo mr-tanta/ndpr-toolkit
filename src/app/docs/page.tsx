@@ -87,7 +87,7 @@ export default function DocsPage() {
           </div>
           <div className="mt-6 pt-4 border-t border-green-200 dark:border-green-800">
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              <strong>Also in v2.1:</strong> Modular imports for tree-shaking, per-module entry points, and improved TypeScript definitions across all components.
+              <strong>Also in v2.1:</strong> Modular imports for tree-shaking, per-module entry points, improved TypeScript definitions, and full <Link href="/docs/guides/styling-customization" className="underline font-medium hover:text-green-900 dark:hover:text-green-100">styling customization</Link> with classNames overrides and unstyled mode across all components.
             </p>
           </div>
         </div>
@@ -402,6 +402,11 @@ function AppContent() {
               title: 'Cross-Border Data Transfers',
               description: 'Guide to NDPA 2023 Section 41 cross-border transfer compliance',
               href: '/docs/guides/cross-border-transfers',
+            },
+            {
+              title: 'Styling & Customization',
+              description: 'Customize component styles with classNames, unstyled mode, and CSS frameworks',
+              href: '/docs/guides/styling-customization',
             },
           ].map((guide) => (
             <Card key={guide.title}>

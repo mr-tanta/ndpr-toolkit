@@ -1,0 +1,206 @@
+---
+title: "Fully Customizable Styling: Use Any CSS Framework with NDPA Toolkit"
+description: "Every component now supports classNames overrides and an unstyled mode. Use Tailwind, Bootstrap, CSS Modules, or vanilla CSS — your choice."
+date: "2026-04-07"
+author: "Abraham Esandayinze Tanta"
+tags: ["release", "styling", "customization", "developer-experience"]
+---
+
+# Fully Customizable Styling: Use Any CSS Framework with NDPA Toolkit
+
+If you have ever integrated a component library only to find it fighting your existing CSS framework, you know the frustration. You want a consent banner, not a Tailwind dependency. You want a breach report form, not an argument with your design system.
+
+The previous version of NDPA Toolkit required Tailwind CSS. Every component shipped with hardcoded Tailwind utility classes, and overriding them ranged from tedious to impossible. If your project used Bootstrap, CSS Modules, or plain CSS, you were stuck shimming around framework opinions that had nothing to do with data protection compliance.
+
+That changes today. Every component in the toolkit now supports a `classNames` prop for surgical overrides and an `unstyled` prop that strips all default styling entirely. Tailwind is still the default — but it is no longer a requirement.
+
+## Three Styling Modes
+
+The toolkit now supports three distinct ways to style components. Pick the one that fits your stack.
+
+### Mode 1: Default (Tailwind)
+
+If you are already using Tailwind, everything works exactly as before. No changes needed. The default classes ship with sensible spacing, colors, and responsive behavior out of the box:
+
+```tsx
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+
+<ConsentBanner
+  options={consentOptions}
+  onSave={handleSave}
+/>
+```
+
+This renders a fully styled banner with Tailwind utility classes. If Tailwind is in your project, you are done.
+
+### Mode 2: Override (classNames)
+
+Need to tweak a few things without replacing everything? The `classNames` prop lets you override specific sections of any component. Your custom classes replace the defaults for that section — everything else stays intact:
+
+```tsx
+<ConsentBanner
+  options={consentOptions}
+  onSave={handleSave}
+  classNames={{
+    root: "fixed bottom-0 inset-x-0 bg-gray-900 text-white p-6 shadow-2xl",
+    title: "text-xl font-semibold tracking-tight",
+    acceptButton: "bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full",
+    rejectButton: "border border-gray-400 text-gray-300 px-6 py-2 rounded-full",
+  }}
+/>
+```
+
+You only specify the keys you care about. The `description`, `buttonGroup`, `optionsList`, and every other section you did not mention keeps its default Tailwind styling. This is the sweet spot for teams that use Tailwind but want to match a specific design system.
+
+### Mode 3: Unstyled (Blank Canvas)
+
+If you do not use Tailwind at all, pass `unstyled` to strip every default class from the component. What you get back is raw, semantic HTML — a clean div structure with zero styling opinions:
+
+```tsx
+<ConsentBanner
+  unstyled
+  options={consentOptions}
+  onSave={handleSave}
+  classNames={{
+    root: "my-banner",
+    title: "my-banner__title",
+    acceptButton: "my-banner__btn my-banner__btn--accept",
+    rejectButton: "my-banner__btn my-banner__btn--reject",
+  }}
+/>
+```
+
+Now you can style `my-banner` however you want — BEM, utility classes, inline styles, whatever your project uses. The toolkit handles the compliance logic, state management, and accessibility attributes. You handle the pixels.
+
+## Bootstrap Example
+
+Here is a consent banner built entirely with Bootstrap classes. No Tailwind installed, no Tailwind needed:
+
+```tsx
+<ConsentBanner
+  unstyled
+  options={consentOptions}
+  onSave={handleSave}
+  classNames={{
+    root: "fixed-bottom bg-dark text-light p-4 shadow-lg",
+    container: "container",
+    title: "h5 mb-2",
+    description: "mb-3 text-secondary",
+    buttonGroup: "d-flex gap-2",
+    acceptButton: "btn btn-success",
+    rejectButton: "btn btn-outline-secondary",
+    customizeButton: "btn btn-link text-light",
+  }}
+/>
+```
+
+That renders a dark-themed banner pinned to the bottom of the viewport, using nothing but Bootstrap 5 utility and component classes. The NDPA-compliant consent logic — localStorage persistence, version tracking, granular opt-in — all works identically.
+
+## CSS Modules Example
+
+If your project uses CSS Modules (common in Next.js and Vite setups), you can pass your module classes directly:
+
+```tsx
+import styles from './ConsentBanner.module.css';
+
+<ConsentBanner
+  unstyled
+  options={consentOptions}
+  onSave={handleSave}
+  classNames={{
+    root: styles.banner,
+    title: styles.title,
+    description: styles.description,
+    buttonGroup: styles.actions,
+    acceptButton: styles.acceptBtn,
+    rejectButton: styles.rejectBtn,
+    customizeButton: styles.customizeBtn,
+  }}
+/>
+```
+
+Your CSS Module handles scoping and naming. The toolkit handles compliance. Clean separation.
+
+## The classNames Pattern
+
+Every component exposes a `classNames` prop typed as an interface with semantic keys. Here is what `ConsentBannerClassNames` looks like:
+
+```typescript
+interface ConsentBannerClassNames {
+  root?: string;           // Outermost wrapper
+  container?: string;      // Inner container
+  title?: string;          // Banner heading
+  description?: string;    // Banner body text
+  optionsList?: string;    // Customize view: option list wrapper
+  optionItem?: string;     // Individual option row
+  optionCheckbox?: string; // Checkbox input
+  optionLabel?: string;    // Option label text
+  optionDescription?: string; // Option description text
+  buttonGroup?: string;    // Button container
+  acceptButton?: string;   // Accept all button
+  rejectButton?: string;   // Reject all button
+  customizeButton?: string; // Customize preferences button
+  saveButton?: string;     // Save preferences button
+}
+```
+
+Every key maps to a specific DOM element in the component tree. You override exactly the sections you need and leave the rest alone. No guessing which `div > div > button:nth-child(2)` you need to target. No `!important` wars.
+
+This same pattern is consistent across every component in the toolkit. `BreachReportForm` has keys like `form`, `fieldGroup`, `label`, `input`, `submitButton`. `DPIAQuestionnaire` has `section`, `question`, `guidance`, `radioGroup`, `progressBar`. The keys are always descriptive and always match the component's visual structure.
+
+## 194 Customizable Sections Across 19 Components
+
+We did not cut corners. Every rendered element in every component has a corresponding `classNames` key. Here is the full count:
+
+- **Consent**: ConsentBanner (14), ConsentManager (9), ConsentStorage (1)
+- **Breach**: BreachReportForm (10), BreachNotificationManager (9), BreachRiskAssessment (8), RegulatoryReportGenerator (9)
+- **DSR**: DSRRequestForm (11), DSRDashboard (8), DSRTracker (9)
+- **DPIA**: DPIAQuestionnaire (15), DPIAReport (10), StepIndicator (7)
+- **Policy**: PolicyGenerator (10), PolicyPreview (9), PolicyExporter (9)
+- **Lawful Basis**: LawfulBasisTracker (15)
+- **ROPA**: ROPAManager (16)
+- **Cross-Border**: CrossBorderTransferManager (15)
+
+That is 194 individually targetable sections. Every heading, every button, every form field, every status badge — all overridable.
+
+## How `unstyled` Works Under the Hood
+
+The implementation is straightforward. Every component uses a `resolveClass` utility:
+
+```typescript
+function resolveClass(
+  defaultClass: string,
+  override?: string,
+  unstyled?: boolean
+): string {
+  if (unstyled) return override || '';
+  if (override) return override;
+  return defaultClass;
+}
+```
+
+When `unstyled` is `false` (the default), your `classNames` overrides replace individual defaults while the rest keep their Tailwind classes. When `unstyled` is `true`, the default classes are dropped entirely — if you do not provide an override for a section, it renders with an empty class string. The HTML structure and behavior remain identical either way.
+
+## Backward Compatible
+
+This is an additive change. If you are using the toolkit today and your code looks like this:
+
+```tsx
+<ConsentBanner options={consentOptions} onSave={handleSave} />
+```
+
+It still works exactly the same. The `classNames` and `unstyled` props are optional. The old `className`, `buttonClassName`, `primaryButtonClassName`, and `secondaryButtonClassName` props still work too. Nothing breaks.
+
+You can adopt the new `classNames` pattern incrementally — one component at a time, one section at a time.
+
+## Get Started
+
+The full API reference for every component's `classNames` interface is in the [documentation](/docs). If you want to see the components in action and experiment with different styling approaches, check out the [interactive demos](/ndpr-demos).
+
+Install or upgrade:
+
+```bash
+pnpm add @tantainnovative/ndpr-toolkit@latest
+```
+
+Your CSS framework, your design system, your rules. The toolkit handles compliance. You handle everything else.
