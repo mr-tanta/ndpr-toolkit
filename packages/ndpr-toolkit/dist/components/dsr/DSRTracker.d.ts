@@ -1,5 +1,16 @@
 import React from 'react';
 import { DSRRequest } from '../../types/dsr';
+export interface DSRTrackerClassNames {
+    root?: string;
+    header?: string;
+    title?: string;
+    stats?: string;
+    statCard?: string;
+    table?: string;
+    tableHeader?: string;
+    tableRow?: string;
+    statusBadge?: string;
+}
 export interface DSRTrackerProps {
     /**
      * List of DSR requests to track
@@ -52,5 +63,14 @@ export interface DSRTrackerProps {
      * @default true
      */
     showOverdueRequests?: boolean;
+    /**
+     * Object of CSS class overrides keyed by semantic section name.
+     */
+    classNames?: DSRTrackerClassNames;
+    /**
+     * When true, all default Tailwind classes are removed so consumers
+     * can style from scratch using classNames.
+     */
+    unstyled?: boolean;
 }
 export declare const DSRTracker: React.FC<DSRTrackerProps>;

@@ -1,5 +1,17 @@
 import React from 'react';
 import { BreachCategory } from '../../types/breach';
+export interface BreachReportFormClassNames {
+    root?: string;
+    title?: string;
+    form?: string;
+    fieldGroup?: string;
+    label?: string;
+    input?: string;
+    select?: string;
+    textarea?: string;
+    submitButton?: string;
+    notice?: string;
+}
 export interface BreachReportFormProps {
     /**
      * Available breach categories
@@ -32,6 +44,14 @@ export interface BreachReportFormProps {
      * Custom CSS class for the submit button
      */
     buttonClassName?: string;
+    /**
+     * Override class names for individual elements
+     */
+    classNames?: BreachReportFormClassNames;
+    /**
+     * Remove all default styles, only applying classNames overrides
+     */
+    unstyled?: boolean;
     /**
      * Whether to show a confirmation message after submission
      * @default true

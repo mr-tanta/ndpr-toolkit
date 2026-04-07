@@ -1,35 +1,53 @@
 import React from 'react';
+import { resolveClass } from '../../utils/styling';
 
 export interface Step {
   /**
    * Unique identifier for the step
    */
   id: string;
-  
+
   /**
    * Display label for the step
    */
   label: string;
-  
+
   /**
    * Optional description for the step
    */
   description?: string;
-  
+
   /**
    * Whether the step is completed
    */
   completed: boolean;
-  
+
   /**
    * Whether the step is the current active step
    */
   active: boolean;
-  
+
   /**
    * Optional icon for the step
    */
   icon?: React.ReactNode;
+}
+
+export interface StepIndicatorClassNames {
+  /** Outermost wrapper */
+  root?: string;
+  /** Individual step wrapper */
+  step?: string;
+  /** Active step circle / indicator */
+  stepActive?: string;
+  /** Completed step circle / indicator */
+  stepCompleted?: string;
+  /** Pending (incomplete, inactive) step circle / indicator */
+  stepPending?: string;
+  /** Connector line between steps */
+  connector?: string;
+  /** Step label text */
+  label?: string;
 }
 
 export interface StepIndicatorProps {
@@ -37,43 +55,55 @@ export interface StepIndicatorProps {
    * Array of steps to display
    */
   steps: Step[];
-  
+
   /**
    * Callback function called when a step is clicked
    */
   onStepClick?: (stepId: string) => void;
-  
+
   /**
    * Whether the steps are clickable
    * @default true
    */
   clickable?: boolean;
-  
+
   /**
    * Orientation of the step indicator
    * @default "horizontal"
    */
   orientation?: 'horizontal' | 'vertical';
-  
+
   /**
    * Custom CSS class for the container
    */
   className?: string;
-  
+
   /**
    * Custom CSS class for the active step
    */
   activeStepClassName?: string;
-  
+
   /**
    * Custom CSS class for completed steps
    */
   completedStepClassName?: string;
-  
+
   /**
    * Custom CSS class for incomplete steps
    */
   incompleteStepClassName?: string;
+
+  /**
+   * Per-section class name overrides
+   */
+  classNames?: StepIndicatorClassNames;
+
+  /**
+   * When true, all default classes are stripped.
+   * Only explicit overrides from `classNames` are applied.
+   * @default false
+   */
+  unstyled?: boolean;
 }
 
 export const StepIndicator: React.FC<StepIndicatorProps> = ({
@@ -84,55 +114,80 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
   className = '',
   activeStepClassName = '',
   completedStepClassName = '',
-  incompleteStepClassName = ''
+  incompleteStepClassName = '',
+  classNames = {},
+  unstyled = false,
 }) => {
+  const cx = (defaultClass: string, key?: keyof StepIndicatorClassNames) =>
+    resolveClass(defaultClass, key ? classNames[key] : undefined, unstyled);
+
   const handleStepClick = (stepId: string) => {
     if (clickable && onStepClick) {
       onStepClick(stepId);
     }
   };
-  
+
   const isVertical = orientation === 'vertical';
-  
+
   return (
-    <div 
-      className={`${className} ${
-        isVertical 
-          ? 'flex flex-col space-y-4' 
-          : 'flex items-center justify-between'
-      }`}
+    <div
+      className={`${cx(
+        isVertical
+          ? 'flex flex-col space-y-4'
+          : 'flex items-center justify-between',
+        'root',
+      )} ${className}`}
     >
       {steps.map((step, index) => {
         const isLast = index === steps.length - 1;
-        const stepClassName = step.active 
-          ? `font-medium ${activeStepClassName || 'text-blue-600 dark:text-blue-400'}` 
-          : step.completed 
-            ? `${completedStepClassName || 'text-green-600 dark:text-green-400'}` 
-            : `${incompleteStepClassName || 'text-gray-500 dark:text-gray-400'}`;
-        
+
+        // Resolve the text-level class using legacy props as first fallback,
+        // then the new classNames keys, and finally the built-in defaults.
+        const labelClass = step.active
+          ? cx(
+              `font-medium ${activeStepClassName || 'text-blue-600 dark:text-blue-400'}`,
+              'label',
+            )
+          : step.completed
+            ? cx(
+                completedStepClassName || 'text-green-600 dark:text-green-400',
+                'label',
+              )
+            : cx(
+                incompleteStepClassName || 'text-gray-500 dark:text-gray-400',
+                'label',
+              );
+
+        // Circle indicator class
+        const circleClass = step.active
+          ? cx(
+              'flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 border-2 border-blue-600 dark:border-blue-400',
+              'stepActive',
+            )
+          : step.completed
+            ? cx(
+                'flex items-center justify-center w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400',
+                'stepCompleted',
+              )
+            : cx(
+                'flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-2 border-gray-300 dark:border-gray-600',
+                'stepPending',
+              );
+
         return (
           <React.Fragment key={step.id}>
-            <div 
-              className={`
-                ${isVertical ? 'flex items-start' : 'flex flex-col items-center'}
-                ${clickable ? 'cursor-pointer' : ''}
-              `}
+            <div
+              className={cx(
+                `${isVertical ? 'flex items-start' : 'flex flex-col items-center'} ${clickable ? 'cursor-pointer' : ''}`,
+                'step',
+              )}
               onClick={() => handleStepClick(step.id)}
             >
               <div className={`
                 flex items-center justify-center
                 ${isVertical ? 'mr-4' : ''}
               `}>
-                <div className={`
-                  flex items-center justify-center
-                  w-8 h-8 rounded-full
-                  ${step.active 
-                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 border-2 border-blue-600 dark:border-blue-400' 
-                    : step.completed 
-                      ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400' 
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-2 border-gray-300 dark:border-gray-600'
-                  }
-                `}>
+                <div className={circleClass}>
                   {step.icon ? (
                     step.icon
                   ) : step.completed ? (
@@ -144,11 +199,11 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                   )}
                 </div>
               </div>
-              
+
               <div className={`
                 ${isVertical ? 'flex-1' : 'mt-2 text-center'}
               `}>
-                <div className={`text-sm font-medium ${stepClassName}`}>
+                <div className={`text-sm font-medium ${labelClass}`}>
                   {step.label}
                 </div>
                 {step.description && (
@@ -158,13 +213,14 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 )}
               </div>
             </div>
-            
+
             {!isLast && (
-              <div className={`
-                ${isVertical 
-                  ? 'ml-4 h-8 border-l-2 border-gray-300 dark:border-gray-600' 
-                  : 'w-full border-t-2 border-gray-300 dark:border-gray-600 hidden sm:block'}
-              `} />
+              <div className={cx(
+                isVertical
+                  ? 'ml-4 h-8 border-l-2 border-gray-300 dark:border-gray-600'
+                  : 'w-full border-t-2 border-gray-300 dark:border-gray-600 hidden sm:block',
+                'connector',
+              )} />
             )}
           </React.Fragment>
         );

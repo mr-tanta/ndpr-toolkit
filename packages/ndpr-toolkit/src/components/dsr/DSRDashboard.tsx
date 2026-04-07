@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { DSRRequest, DSRStatus, DSRType } from '../../types/dsr';
 import { formatDSRRequest } from '../../utils/dsr';
+import { resolveClass } from '../../utils/styling';
+
+export interface DSRDashboardClassNames {
+  root?: string;
+  header?: string;
+  title?: string;
+  filters?: string;
+  requestList?: string;
+  requestItem?: string;
+  statusBadge?: string;
+  detailPanel?: string;
+}
 
 export interface DSRDashboardProps {
   /**
@@ -67,6 +79,17 @@ export interface DSRDashboardProps {
    * List of possible assignees
    */
   assignees?: string[];
+
+  /**
+   * Object of CSS class overrides keyed by semantic section name.
+   */
+  classNames?: DSRDashboardClassNames;
+
+  /**
+   * When true, all default Tailwind classes are removed so consumers
+   * can style from scratch using classNames.
+   */
+  unstyled?: boolean;
 }
 
 export const DSRDashboard: React.FC<DSRDashboardProps> = ({
@@ -81,7 +104,9 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   showRequestDetails = true,
   showRequestTimeline = true,
   showDeadlineAlerts = true,
-  assignees = []
+  assignees = [],
+  classNames,
+  unstyled = false
 }) => {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [filteredRequests, setFilteredRequests] = useState<DSRRequest[]>(requests);
@@ -230,16 +255,16 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
       rejected: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
       awaitingVerification: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
     };
-    
+
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`}>
-        {status === 'inProgress' ? 'In Progress' : 
-         status === 'awaitingVerification' ? 'Awaiting Verification' : 
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`, classNames?.statusBadge, unstyled)}>
+        {status === 'inProgress' ? 'In Progress' :
+         status === 'awaitingVerification' ? 'Awaiting Verification' :
          status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
   };
-  
+
   // Render deadline alert
   const renderDeadlineAlert = (request: DSRRequest) => {
     if (!request.dueDate) return null;
@@ -442,12 +467,14 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   };
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
-      
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
+      <div className={resolveClass("", classNames?.header, unstyled)}>
+        <h2 className={resolveClass("text-xl font-bold mb-2", classNames?.title, unstyled)}>{title}</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+      </div>
+
       {/* Filters and Search */}
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className={resolveClass("mb-6 grid grid-cols-1 md:grid-cols-4 gap-4", classNames?.filters, unstyled)}>
         <div>
           <label htmlFor="statusFilter" className="block text-sm font-medium mb-1">
             Status Filter
@@ -519,7 +546,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
               No data subject requests found.
             </p>
           ) : (
-            <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+            <div className={resolveClass("space-y-2 max-h-96 overflow-y-auto pr-2", classNames?.requestList, unstyled)}>
               {filteredRequests.map(request => {
                 // Calculate days remaining for the list item
                 const daysRemaining = request.dueDate ? calculateDaysRemaining(request.dueDate) : null;
@@ -551,11 +578,11 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                 return (
                   <div
                     key={request.id}
-                    className={`p-3 rounded-md cursor-pointer ${
-                      selectedRequestId === request.id 
-                        ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800' 
+                    className={resolveClass(`p-3 rounded-md cursor-pointer ${
+                      selectedRequestId === request.id
+                        ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
                         : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
-                    }`}
+                    }`, classNames?.requestItem, unstyled)}
                     onClick={() => handleSelectRequest(request.id)}
                   >
                     <div className="flex justify-between items-start mb-1">
@@ -584,7 +611,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
         </div>
         
         {/* Request Details */}
-        <div className="md:col-span-2">
+        <div className={resolveClass("md:col-span-2", classNames?.detailPanel, unstyled)}>
           {selectedRequest ? (
             <div>
               <div className="flex justify-between items-start mb-4">

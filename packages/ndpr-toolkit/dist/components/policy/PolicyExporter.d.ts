@@ -1,4 +1,24 @@
 import React from 'react';
+export interface PolicyExporterClassNames {
+    /** Root container */
+    root?: string;
+    /** Header area containing title and description */
+    header?: string;
+    /** Title element */
+    title?: string;
+    /** Description element */
+    description?: string;
+    /** Format selector container */
+    formatSelector?: string;
+    /** Individual format option */
+    formatOption?: string;
+    /** Export button */
+    exportButton?: string;
+    /** NDPA compliance / export tips notice */
+    complianceNotice?: string;
+    /** Preview / export history area */
+    preview?: string;
+}
 export interface PolicyExporterProps {
     /**
      * The policy content to export
@@ -61,5 +81,14 @@ export interface PolicyExporterProps {
      * Custom CSS styles for the exported policy
      */
     customStyles?: string;
+    /**
+     * Override class names for internal elements
+     */
+    classNames?: PolicyExporterClassNames;
+    /**
+     * If true, removes all default styles. Use with classNames to apply your own.
+     * @default false
+     */
+    unstyled?: boolean;
 }
 export declare const PolicyExporter: React.FC<PolicyExporterProps>;

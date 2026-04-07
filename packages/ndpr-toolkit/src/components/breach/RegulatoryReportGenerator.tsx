@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { BreachReport, RiskAssessment, RegulatoryNotification } from '../../types/breach';
+import { resolveClass } from '../../utils/styling';
+
+export interface RegulatoryReportGeneratorClassNames {
+  root?: string;
+  header?: string;
+  title?: string;
+  reportPreview?: string;
+  field?: string;
+  fieldLabel?: string;
+  fieldValue?: string;
+  generateButton?: string;
+  downloadButton?: string;
+}
 
 export interface OrganizationInfo {
   /**
@@ -81,11 +94,21 @@ export interface RegulatoryReportGeneratorProps {
    * Custom CSS class for the form
    */
   className?: string;
-  
+
   /**
    * Custom CSS class for the buttons
    */
   buttonClassName?: string;
+
+  /**
+   * Override class names for individual elements
+   */
+  classNames?: RegulatoryReportGeneratorClassNames;
+
+  /**
+   * Remove all default styles, only applying classNames overrides
+   */
+  unstyled?: boolean;
   
   /**
    * Whether to show a preview of the generated report
@@ -122,6 +145,8 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
   generateButtonText = "Generate Report",
   className = "",
   buttonClassName = "",
+  classNames: cn = {},
+  unstyled = false,
   showPreview = true,
   allowEditing = true,
   allowDownload = true,
@@ -292,9 +317,11 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
   };
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
+      <div className={resolveClass("", cn.header, unstyled)}>
+        <h2 className={resolveClass("text-xl font-bold mb-2", cn.title, unstyled)}>{title}</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+      </div>
       
       {isSubmitted ? (
         <div>
@@ -310,15 +337,15 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             <h3 className="text-lg font-semibold mb-3">Submission Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <p className="text-sm"><span className="font-medium">Method:</span> {method.charAt(0).toUpperCase() + method.slice(1)}</p>
-                {contactName && <p className="text-sm"><span className="font-medium">Contact Name:</span> {contactName}</p>}
-                {contactEmail && <p className="text-sm"><span className="font-medium">Contact Email:</span> {contactEmail}</p>}
-                {contactPhone && <p className="text-sm"><span className="font-medium">Contact Phone:</span> {contactPhone}</p>}
+                <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Method:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{method.charAt(0).toUpperCase() + method.slice(1)}</span></p>
+                {contactName && <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Name:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactName}</span></p>}
+                {contactEmail && <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Email:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactEmail}</span></p>}
+                {contactPhone && <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Phone:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactPhone}</span></p>}
               </div>
               <div>
-                <p className="text-sm"><span className="font-medium">Date Generated:</span> {formatDate(Date.now())}</p>
-                <p className="text-sm"><span className="font-medium">Breach ID:</span> {breachData.id}</p>
-                {referenceNumber && <p className="text-sm"><span className="font-medium">Reference Number:</span> {referenceNumber}</p>}
+                <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Date Generated:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{formatDate(Date.now())}</span></p>
+                <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Breach ID:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{breachData.id}</span></p>
+                {referenceNumber && <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Reference Number:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{referenceNumber}</span></p>}
               </div>
             </div>
           </div>
@@ -326,7 +353,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
           {showPreview && (
             <div className="mb-6">
               <h3 className="text-lg font-semibold mb-3">Report Preview</h3>
-              <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
+              <div className={resolveClass("bg-gray-50 dark:bg-gray-700 p-4 rounded-md", cn.reportPreview, unstyled)}>
                 <pre className="whitespace-pre-wrap text-sm font-mono text-gray-800 dark:text-gray-200">
                   {reportContent}
                 </pre>
@@ -338,7 +365,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             {allowDownload && (
               <button
                 onClick={handleDownload}
-                className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`}
+                className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, cn.downloadButton, unstyled)}
               >
                 Download Report ({downloadFormat.toUpperCase()})
               </button>
@@ -485,7 +512,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             <div className="mt-6">
               <button
                 type="submit"
-                className={`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`}
+                className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`, cn.generateButton, unstyled)}
               >
                 {generateButtonText}
               </button>

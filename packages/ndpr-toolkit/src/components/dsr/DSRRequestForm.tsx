@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
 import { RequestType } from '../../types/dsr';
+import { resolveClass } from '../../utils/styling';
+
+export interface DSRRequestFormClassNames {
+  root?: string;
+  title?: string;
+  description?: string;
+  form?: string;
+  fieldGroup?: string;
+  label?: string;
+  input?: string;
+  select?: string;
+  textarea?: string;
+  submitButton?: string;
+  successMessage?: string;
+}
 
 export interface DSRRequestFormProps {
   /**
@@ -83,6 +98,17 @@ export interface DSRRequestFormProps {
     description?: string;
     submit?: string;
   };
+
+  /**
+   * Object of CSS class overrides keyed by semantic section name.
+   */
+  classNames?: DSRRequestFormClassNames;
+
+  /**
+   * When true, all default Tailwind classes are removed so consumers
+   * can style from scratch using classNames.
+   */
+  unstyled?: boolean;
 }
 
 export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
@@ -102,7 +128,9 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
     { id: "customer_id", label: "Customer ID" }
   ],
   collectAdditionalContact = true,
-  labels = {}
+  labels = {},
+  classNames,
+  unstyled = false
 }) => {
   const [selectedRequestType, setSelectedRequestType] = useState<string>("");
   const [fullName, setFullName] = useState<string>("");
@@ -191,12 +219,12 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   
   if (isSubmitted) {
     return (
-      <div className={`p-4 bg-green-50 dark:bg-green-900/20 rounded-md ${className}`}>
-        <h2 className="text-lg font-bold text-green-800 dark:text-green-200 mb-2">Request Submitted</h2>
-        <p className="text-green-700 dark:text-green-300">{confirmationMessage}</p>
+      <div className={resolveClass(`p-4 bg-green-50 dark:bg-green-900/20 rounded-md ${className}`, classNames?.successMessage, unstyled)}>
+        <h2 className={resolveClass("text-lg font-bold text-green-800 dark:text-green-200 mb-2", classNames?.title, unstyled)}>Request Submitted</h2>
+        <p className={resolveClass("text-green-700 dark:text-green-300", classNames?.description, unstyled)}>{confirmationMessage}</p>
         <button
           onClick={() => setIsSubmitted(false)}
-          className={`mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ${buttonClassName}`}
+          className={resolveClass(`mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ${buttonClassName}`, classNames?.submitButton, unstyled)}
         >
           Submit Another Request
         </button>
@@ -205,18 +233,18 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   }
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
-      
-      <form onSubmit={handleSubmit}>
-        <div className="space-y-4">
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
+      <h2 className={resolveClass("text-xl font-bold mb-2", classNames?.title, unstyled)}>{title}</h2>
+      <p className={resolveClass("mb-6 text-gray-600 dark:text-gray-300", classNames?.description, unstyled)}>{description}</p>
+
+      <form onSubmit={handleSubmit} className={resolveClass("", classNames?.form, unstyled)}>
+        <div className={resolveClass("space-y-4", classNames?.fieldGroup, unstyled)}>
           {/* Personal Information */}
           <div>
             <h3 className="text-lg font-semibold mb-3">Personal Information</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label htmlFor="fullName" className="block text-sm font-medium mb-1">
+                <label htmlFor="fullName" className={resolveClass("block text-sm font-medium mb-1", classNames?.label, unstyled)}>
                   {labels.name || "Full Name"} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -224,14 +252,14 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                   id="fullName"
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
                   required
                 />
                 {errors.fullName && <p className="mt-1 text-sm text-red-500">{errors.fullName}</p>}
               </div>
               
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
+                <label htmlFor="email" className={resolveClass("block text-sm font-medium mb-1", classNames?.label, unstyled)}>
                   {labels.email || "Email Address"} <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -239,7 +267,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                   id="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
                   required
                 />
                 {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
@@ -247,7 +275,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
               
               {collectAdditionalContact && (
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium mb-1">
+                  <label htmlFor="phone" className={resolveClass("block text-sm font-medium mb-1", classNames?.label, unstyled)}>
                     Phone Number (Optional)
                   </label>
                   <input
@@ -255,7 +283,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                     id="phone"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
                   />
                 </div>
               )}
@@ -266,14 +294,14 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
           <div>
             <h3 className="text-lg font-semibold mb-3">Request Details</h3>
             <div className="mb-4">
-              <label htmlFor="requestType" className="block text-sm font-medium mb-1">
+              <label htmlFor="requestType" className={resolveClass("block text-sm font-medium mb-1", classNames?.label, unstyled)}>
                 {labels.requestType || "Request Type"} <span className="text-red-500">*</span>
               </label>
               <select
                 id="requestType"
                 value={selectedRequestType}
                 onChange={handleRequestTypeChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.select, unstyled)}
                 required
               >
                 <option value="">Select a request type</option>
@@ -296,12 +324,12 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
             )}
             
             <div className="mb-4">
-              <label htmlFor="requestDescription" className="block text-sm font-medium mb-1">
+              <label htmlFor="requestDescription" className={resolveClass("block text-sm font-medium mb-1", classNames?.label, unstyled)}>
                 {labels.description || "Additional Information"}
               </label>
               <textarea
                 id="requestDescription"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.textarea, unstyled)}
                 rows={4}
                 placeholder="Please provide any additional details that might help us process your request"
               />
@@ -318,14 +346,14 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
               
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
-                  <label htmlFor="identifierType" className="block text-sm font-medium mb-1">
+                  <label htmlFor="identifierType" className={resolveClass("block text-sm font-medium mb-1", classNames?.label, unstyled)}>
                     Identifier Type <span className="text-red-500">*</span>
                   </label>
                   <select
                     id="identifierType"
                     value={identifierType}
                     onChange={e => setIdentifierType(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.select, unstyled)}
                     required
                   >
                     {identifierTypes.map(type => (
@@ -337,7 +365,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                 </div>
                 
                 <div>
-                  <label htmlFor="identifierValue" className="block text-sm font-medium mb-1">
+                  <label htmlFor="identifierValue" className={resolveClass("block text-sm font-medium mb-1", classNames?.label, unstyled)}>
                     Identifier Value <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -345,7 +373,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                     id="identifierValue"
                     value={identifierValue}
                     onChange={e => setIdentifierValue(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
                     required
                   />
                   {errors.identifierValue && <p className="mt-1 text-sm text-red-500">{errors.identifierValue}</p>}
@@ -361,7 +389,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
               <div className="space-y-4">
                 {selectedType.additionalFields.map(field => (
                   <div key={field.id}>
-                    <label htmlFor={field.id} className="block text-sm font-medium mb-1">
+                    <label htmlFor={field.id} className={resolveClass("block text-sm font-medium mb-1", classNames?.label, unstyled)}>
                       {field.label} {field.required && <span className="text-red-500">*</span>}
                     </label>
                     
@@ -372,7 +400,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                         value={additionalInfo[field.id] || ''}
                         onChange={e => handleAdditionalInfoChange(field.id, e.target.value)}
                         placeholder={field.placeholder}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
                         required={field.required}
                       />
                     )}
@@ -383,7 +411,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                         value={additionalInfo[field.id] || ''}
                         onChange={e => handleAdditionalInfoChange(field.id, e.target.value)}
                         placeholder={field.placeholder}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.textarea, unstyled)}
                         rows={4}
                         required={field.required}
                       />
@@ -394,7 +422,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                         id={field.id}
                         value={additionalInfo[field.id] || ''}
                         onChange={e => handleAdditionalInfoChange(field.id, e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.select, unstyled)}
                         required={field.required}
                       >
                         <option value="">{field.placeholder || 'Select an option'}</option>
@@ -436,7 +464,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                             handleAdditionalInfoChange(field.id, file);
                           }
                         }}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
                         required={field.required}
                       />
                     )}
@@ -464,7 +492,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
           <div className="mt-6">
             <button
               type="submit"
-              className={`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`}
+              className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`, classNames?.submitButton, unstyled)}
             >
               {labels.submit || submitButtonText}
             </button>

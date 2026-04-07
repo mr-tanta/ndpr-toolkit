@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ConsentSettings, ConsentStorageOptions } from '../../types/consent';
+import { resolveClass } from '../../utils/styling';
+
+export interface ConsentStorageClassNames {
+  root?: string;
+}
 
 export interface ConsentStorageProps {
   /**
@@ -35,6 +40,17 @@ export interface ConsentStorageProps {
   autoLoad?: boolean;
   
   /**
+   * Object of CSS class overrides keyed by semantic section name.
+   */
+  classNames?: ConsentStorageClassNames;
+
+  /**
+   * When true, all default classes are removed so consumers
+   * can style from scratch using classNames.
+   */
+  unstyled?: boolean;
+
+  /**
    * Children to render
    * Can be either React nodes or a render prop function that receives storage methods
    */
@@ -53,6 +69,8 @@ export const ConsentStorage = ({
   onSave,
   autoSave = true,
   autoLoad = true,
+  classNames,
+  unstyled,
   children
 }: ConsentStorageProps): React.ReactElement | null => {
   const {
@@ -191,16 +209,23 @@ export const ConsentStorage = ({
     }
   };
   
+  const rootClass = resolveClass('', classNames?.root, unstyled);
+
   // If children is a function, call it with the storage methods
   if (typeof children === 'function') {
-    return <>{children({
+    const rendered = children({
       loadSettings,
       saveSettings,
       clearSettings,
       loaded
-    })}</>;  
+    });
+    return rootClass
+      ? <div className={rootClass}>{rendered}</div>
+      : <>{rendered}</>;
   }
-  
+
   // Otherwise, just render the children
-  return <>{children}</>;
+  return rootClass
+    ? <div className={rootClass}>{children}</div>
+    : <>{children}</>;
 };

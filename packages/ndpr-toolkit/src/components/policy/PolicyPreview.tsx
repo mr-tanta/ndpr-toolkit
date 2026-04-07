@@ -1,5 +1,27 @@
 import React, { useState } from 'react';
+import { resolveClass } from '../../utils/styling';
 import { PolicySection, PolicyVariable } from '../../types/privacy';
+
+export interface PolicyPreviewClassNames {
+  /** Root container */
+  root?: string;
+  /** Header area containing title and description */
+  header?: string;
+  /** Title element */
+  title?: string;
+  /** Description element */
+  description?: string;
+  /** Content area wrapping the rendered policy */
+  content?: string;
+  /** Individual rendered section container */
+  section?: string;
+  /** Section title within rendered content */
+  sectionTitle?: string;
+  /** Section content within rendered content */
+  sectionContent?: string;
+  /** NDPA compliance notice */
+  complianceNotice?: string;
+}
 
 export interface PolicyPreviewProps {
   /**
@@ -72,16 +94,27 @@ export interface PolicyPreviewProps {
    * @default true
    */
   showMetadata?: boolean;
-  
+
   /**
    * The organization name to display in the policy
    */
   organizationName?: string;
-  
+
   /**
    * The last updated date to display in the policy
    */
   lastUpdated?: Date;
+
+  /**
+   * Override class names for internal elements
+   */
+  classNames?: PolicyPreviewClassNames;
+
+  /**
+   * If true, removes all default styles. Use with classNames to apply your own.
+   * @default false
+   */
+  unstyled?: boolean;
 }
 
 export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
@@ -99,7 +132,9 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   showTableOfContents = true,
   showMetadata = true,
   organizationName,
-  lastUpdated = new Date()
+  lastUpdated = new Date(),
+  classNames,
+  unstyled = false
 }) => {
   const [activeTab, setActiveTab] = useState<'preview' | 'markdown'>('preview');
   
@@ -190,16 +225,16 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   // Render the policy content in HTML format
   const renderHTMLContent = () => {
     return (
-      <div className="prose dark:prose-invert max-w-none">
+      <div className={resolveClass('prose dark:prose-invert max-w-none', classNames?.sectionContent, unstyled)}>
         {content.split('\n').map((line, index) => {
           if (line.startsWith('## ')) {
-            const title = line.substring(3).trim();
-            const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            return <h2 id={id} key={index} className="text-xl font-bold mt-6 mb-3">{title}</h2>;
+            const sectionTitle = line.substring(3).trim();
+            const id = sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            return <h2 id={id} key={index} className={resolveClass('text-xl font-bold mt-6 mb-3', classNames?.sectionTitle, unstyled)}>{sectionTitle}</h2>;
           } else if (line.startsWith('### ')) {
-            const title = line.substring(4).trim();
-            const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            return <h3 id={id} key={index} className="text-lg font-bold mt-4 mb-2">{title}</h3>;
+            const sectionTitle = line.substring(4).trim();
+            const id = sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            return <h3 id={id} key={index} className={resolveClass('text-lg font-bold mt-4 mb-2', classNames?.sectionTitle, unstyled)}>{sectionTitle}</h3>;
           } else if (line === '') {
             return <br key={index} />;
           } else {
@@ -250,11 +285,11 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   };
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <div className="flex justify-between items-start mb-6">
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
+      <div className={resolveClass('flex justify-between items-start mb-6', classNames?.header, unstyled)}>
         <div>
-          <h2 className="text-xl font-bold mb-2">{title}</h2>
-          <p className="text-gray-600 dark:text-gray-300">{description}</p>
+          <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
+          <p className={resolveClass('text-gray-600 dark:text-gray-300', classNames?.description, unstyled)}>{description}</p>
         </div>
         
         {showEditButton && onEdit && (
@@ -268,7 +303,7 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
       </div>
       
       {/* NDPA Notice */}
-      <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+      <div className={resolveClass('mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md', classNames?.complianceNotice, unstyled)}>
         <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Compliance Notice</h3>
         <p className="text-blue-700 dark:text-blue-300 text-sm">
           This privacy policy has been generated to align with the Nigeria Data Protection Act (NDPA) 2023.
@@ -308,12 +343,12 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
       </div>
       
       {/* Content */}
-      <div className="bg-white dark:bg-gray-800 p-4 rounded-md">
+      <div className={resolveClass('bg-white dark:bg-gray-800 p-4 rounded-md', classNames?.content, unstyled)}>
         {activeTab === 'preview' ? (
           <div>
             {renderMetadata()}
             {renderTableOfContents()}
-            <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-md">
+            <div className={resolveClass('bg-gray-50 dark:bg-gray-700 p-6 rounded-md', classNames?.section, unstyled)}>
               {renderHTMLContent()}
             </div>
           </div>

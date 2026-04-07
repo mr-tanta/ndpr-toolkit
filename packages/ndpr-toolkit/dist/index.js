@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
-var _chunkJGFWWTVMjs = require('./chunk-JGFWWTVM.js');
+var _chunkG6RHJ7MHjs = require('./chunk-G6RHJ7MH.js');
 
 
 var _chunkULDCX44Ejs = require('./chunk-ULDCX44E.js');
@@ -38,7 +38,7 @@ var _chunkJJUAWIPBjs = require('./chunk-JJUAWIPB.js');
 
 
 
-var _chunkXWAYCUFWjs = require('./chunk-XWAYCUFW.js');
+var _chunkVBAE6UWHjs = require('./chunk-VBAE6UWH.js');
 
 
 var _chunkDC53Y7AAjs = require('./chunk-DC53Y7AA.js');
@@ -50,7 +50,7 @@ var _chunk55LAKEUIjs = require('./chunk-55LAKEUI.js');
 
 
 
-var _chunkBXE7U4NNjs = require('./chunk-BXE7U4NN.js');
+var _chunkGJI7WOYMjs = require('./chunk-GJI7WOYM.js');
 
 
 var _chunkYDOCAUB5js = require('./chunk-YDOCAUB5.js');
@@ -61,10 +61,10 @@ var _chunkLKOY7F7Qjs = require('./chunk-LKOY7F7Q.js');
 
 
 
-var _chunkS2ZI6P52js = require('./chunk-S2ZI6P52.js');
+var _chunk5LUG3WDNjs = require('./chunk-5LUG3WDN.js');
 
 
-var _chunkOGSRPVHXjs = require('./chunk-OGSRPVHX.js');
+var _chunkLCJW2TKSjs = require('./chunk-LCJW2TKS.js');
 
 
 var _chunk7Z4GU5SBjs = require('./chunk-7Z4GU5SB.js');
@@ -73,7 +73,7 @@ var _chunk7Z4GU5SBjs = require('./chunk-7Z4GU5SB.js');
 
 
 
-var _chunkWCMEV54Ijs = require('./chunk-WCMEV54I.js');
+var _chunkKXY4P5AKjs = require('./chunk-KXY4P5AK.js');
 
 
 var _chunkRCJXQ4HNjs = require('./chunk-RCJXQ4HN.js');
@@ -84,7 +84,7 @@ var _chunk5KZKUAFSjs = require('./chunk-5KZKUAFS.js');
 
 
 
-var _chunkKL6T3ZH4js = require('./chunk-KL6T3ZH4.js');
+var _chunk722UYC5Qjs = require('./chunk-722UYC5Q.js');
 
 
 var _chunk7SIK2K22js = require('./chunk-7SIK2K22.js');
@@ -93,6 +93,7 @@ var _chunk7SIK2K22js = require('./chunk-7SIK2K22.js');
 var _chunkDCQMY5VUjs = require('./chunk-DCQMY5VU.js');
 
 
+var _chunk4Z7AOUEDjs = require('./chunk-4Z7AOUED.js');
 
 
 
@@ -137,5 +138,8 @@ var _chunkDCQMY5VUjs = require('./chunk-DCQMY5VU.js');
 
 
 
-exports.BreachNotificationManager = _chunkWCMEV54Ijs.BreachNotificationManager; exports.BreachReportForm = _chunkWCMEV54Ijs.BreachReportForm; exports.BreachRiskAssessment = _chunkWCMEV54Ijs.BreachRiskAssessment; exports.ConsentBanner = _chunkXWAYCUFWjs.ConsentBanner; exports.ConsentManager = _chunkXWAYCUFWjs.ConsentManager; exports.ConsentStorage = _chunkXWAYCUFWjs.ConsentStorage; exports.CrossBorderTransferManager = _chunkULDCX44Ejs.CrossBorderTransferManager; exports.DPIAQuestionnaire = _chunkS2ZI6P52js.DPIAQuestionnaire; exports.DPIAReport = _chunkS2ZI6P52js.DPIAReport; exports.DSRDashboard = _chunkBXE7U4NNjs.DSRDashboard; exports.DSRRequestForm = _chunkBXE7U4NNjs.DSRRequestForm; exports.DSRTracker = _chunkBXE7U4NNjs.DSRTracker; exports.LawfulBasisTracker = _chunkJGFWWTVMjs.LawfulBasisTracker; exports.PolicyExporter = _chunkKL6T3ZH4js.PolicyExporter; exports.PolicyGenerator = _chunkKL6T3ZH4js.PolicyGenerator; exports.PolicyPreview = _chunkKL6T3ZH4js.PolicyPreview; exports.ROPAManager = _chunkT4E7O2JZjs.ROPAManager; exports.RegulatoryReportGenerator = _chunkWCMEV54Ijs.RegulatoryReportGenerator; exports.StepIndicator = _chunkS2ZI6P52js.StepIndicator; exports.assessComplianceGaps = _chunkHXMYUFNXjs.assessComplianceGaps; exports.assessDPIARisk = _chunk7Z4GU5SBjs.assessDPIARisk; exports.assessTransferRisk = _chunk6XX2VSPGjs.assessTransferRisk; exports.calculateBreachSeverity = _chunk5KZKUAFSjs.calculateBreachSeverity; exports.exportROPAToCSV = _chunkJJUAWIPBjs.exportROPAToCSV; exports.formatDSRRequest = _chunkLKOY7F7Qjs.formatDSRRequest; exports.generateLawfulBasisSummary = _chunkHXMYUFNXjs.generateLawfulBasisSummary; exports.generatePolicyText = _chunkDCQMY5VUjs.generatePolicyText; exports.generateROPASummary = _chunkJJUAWIPBjs.generateROPASummary; exports.getLawfulBasisDescription = _chunkHXMYUFNXjs.getLawfulBasisDescription; exports.getTransferMechanismDescription = _chunk6XX2VSPGjs.getTransferMechanismDescription; exports.identifyComplianceGaps = _chunkJJUAWIPBjs.identifyComplianceGaps; exports.isNDPCApprovalRequired = _chunk6XX2VSPGjs.isNDPCApprovalRequired; exports.useBreach = _chunkRCJXQ4HNjs.useBreach; exports.useConsent = _chunkDC53Y7AAjs.useConsent; exports.useCrossBorderTransfer = _chunkWDBW5JQAjs.useCrossBorderTransfer; exports.useDPIA = _chunkOGSRPVHXjs.useDPIA; exports.useDSR = _chunkYDOCAUB5js.useDSR; exports.useLawfulBasis = _chunkK7WEWMVWjs.useLawfulBasis; exports.usePrivacyPolicy = _chunk7SIK2K22js.usePrivacyPolicy; exports.useROPA = _chunkXN4EXWPRjs.useROPA; exports.validateConsent = _chunk55LAKEUIjs.validateConsent; exports.validateConsentOptions = _chunk55LAKEUIjs.validateConsentOptions; exports.validateProcessingActivity = _chunkHXMYUFNXjs.validateProcessingActivity; exports.validateProcessingRecord = _chunkJJUAWIPBjs.validateProcessingRecord; exports.validateTransfer = _chunk6XX2VSPGjs.validateTransfer;
+
+
+
+exports.BreachNotificationManager = _chunkKXY4P5AKjs.BreachNotificationManager; exports.BreachReportForm = _chunkKXY4P5AKjs.BreachReportForm; exports.BreachRiskAssessment = _chunkKXY4P5AKjs.BreachRiskAssessment; exports.ConsentBanner = _chunkVBAE6UWHjs.ConsentBanner; exports.ConsentManager = _chunkVBAE6UWHjs.ConsentManager; exports.ConsentStorage = _chunkVBAE6UWHjs.ConsentStorage; exports.CrossBorderTransferManager = _chunkULDCX44Ejs.CrossBorderTransferManager; exports.DPIAQuestionnaire = _chunk5LUG3WDNjs.DPIAQuestionnaire; exports.DPIAReport = _chunk5LUG3WDNjs.DPIAReport; exports.DSRDashboard = _chunkGJI7WOYMjs.DSRDashboard; exports.DSRRequestForm = _chunkGJI7WOYMjs.DSRRequestForm; exports.DSRTracker = _chunkGJI7WOYMjs.DSRTracker; exports.LawfulBasisTracker = _chunkG6RHJ7MHjs.LawfulBasisTracker; exports.PolicyExporter = _chunk722UYC5Qjs.PolicyExporter; exports.PolicyGenerator = _chunk722UYC5Qjs.PolicyGenerator; exports.PolicyPreview = _chunk722UYC5Qjs.PolicyPreview; exports.ROPAManager = _chunkT4E7O2JZjs.ROPAManager; exports.RegulatoryReportGenerator = _chunkKXY4P5AKjs.RegulatoryReportGenerator; exports.StepIndicator = _chunk5LUG3WDNjs.StepIndicator; exports.assessComplianceGaps = _chunkHXMYUFNXjs.assessComplianceGaps; exports.assessDPIARisk = _chunk7Z4GU5SBjs.assessDPIARisk; exports.assessTransferRisk = _chunk6XX2VSPGjs.assessTransferRisk; exports.calculateBreachSeverity = _chunk5KZKUAFSjs.calculateBreachSeverity; exports.exportROPAToCSV = _chunkJJUAWIPBjs.exportROPAToCSV; exports.formatDSRRequest = _chunkLKOY7F7Qjs.formatDSRRequest; exports.generateLawfulBasisSummary = _chunkHXMYUFNXjs.generateLawfulBasisSummary; exports.generatePolicyText = _chunkDCQMY5VUjs.generatePolicyText; exports.generateROPASummary = _chunkJJUAWIPBjs.generateROPASummary; exports.getLawfulBasisDescription = _chunkHXMYUFNXjs.getLawfulBasisDescription; exports.getTransferMechanismDescription = _chunk6XX2VSPGjs.getTransferMechanismDescription; exports.identifyComplianceGaps = _chunkJJUAWIPBjs.identifyComplianceGaps; exports.isNDPCApprovalRequired = _chunk6XX2VSPGjs.isNDPCApprovalRequired; exports.resolveClass = _chunk4Z7AOUEDjs.resolveClass; exports.useBreach = _chunkRCJXQ4HNjs.useBreach; exports.useConsent = _chunkDC53Y7AAjs.useConsent; exports.useCrossBorderTransfer = _chunkWDBW5JQAjs.useCrossBorderTransfer; exports.useDPIA = _chunkLCJW2TKSjs.useDPIA; exports.useDSR = _chunkYDOCAUB5js.useDSR; exports.useLawfulBasis = _chunkK7WEWMVWjs.useLawfulBasis; exports.usePrivacyPolicy = _chunk7SIK2K22js.usePrivacyPolicy; exports.useROPA = _chunkXN4EXWPRjs.useROPA; exports.validateConsent = _chunk55LAKEUIjs.validateConsent; exports.validateConsentOptions = _chunk55LAKEUIjs.validateConsentOptions; exports.validateProcessingActivity = _chunkHXMYUFNXjs.validateProcessingActivity; exports.validateProcessingRecord = _chunkJJUAWIPBjs.validateProcessingRecord; exports.validateTransfer = _chunk6XX2VSPGjs.validateTransfer;
 //# sourceMappingURL=index.js.map

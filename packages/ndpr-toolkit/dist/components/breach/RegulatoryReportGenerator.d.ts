@@ -1,5 +1,16 @@
 import React from 'react';
 import { BreachReport, RiskAssessment, RegulatoryNotification } from '../../types/breach';
+export interface RegulatoryReportGeneratorClassNames {
+    root?: string;
+    header?: string;
+    title?: string;
+    reportPreview?: string;
+    field?: string;
+    fieldLabel?: string;
+    fieldValue?: string;
+    generateButton?: string;
+    downloadButton?: string;
+}
 export interface OrganizationInfo {
     /**
      * Name of the organization
@@ -70,6 +81,14 @@ export interface RegulatoryReportGeneratorProps {
      * Custom CSS class for the buttons
      */
     buttonClassName?: string;
+    /**
+     * Override class names for individual elements
+     */
+    classNames?: RegulatoryReportGeneratorClassNames;
+    /**
+     * Remove all default styles, only applying classNames overrides
+     */
+    unstyled?: boolean;
     /**
      * Whether to show a preview of the generated report
      * @default true

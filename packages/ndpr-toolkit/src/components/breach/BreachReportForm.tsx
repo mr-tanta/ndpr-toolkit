@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
 import { BreachCategory } from '../../types/breach';
+import { resolveClass } from '../../utils/styling';
+
+export interface BreachReportFormClassNames {
+  root?: string;
+  title?: string;
+  form?: string;
+  fieldGroup?: string;
+  label?: string;
+  input?: string;
+  select?: string;
+  textarea?: string;
+  submitButton?: string;
+  notice?: string;
+}
 
 export interface BreachReportFormProps {
   /**
@@ -34,11 +48,21 @@ export interface BreachReportFormProps {
    * Custom CSS class for the form
    */
   className?: string;
-  
+
   /**
    * Custom CSS class for the submit button
    */
   buttonClassName?: string;
+
+  /**
+   * Override class names for individual elements
+   */
+  classNames?: BreachReportFormClassNames;
+
+  /**
+   * Remove all default styles, only applying classNames overrides
+   */
+  unstyled?: boolean;
   
   /**
    * Whether to show a confirmation message after submission
@@ -85,6 +109,8 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   submitButtonText = "Submit Report",
   className = "",
   buttonClassName = "",
+  classNames: cn = {},
+  unstyled = false,
   showConfirmation = true,
   confirmationMessage = "Your breach report has been submitted successfully. The data protection team has been notified.",
   allowAttachments = true,
@@ -309,18 +335,18 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   ];
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
+      <h2 className={resolveClass("text-xl font-bold mb-2", cn.title, unstyled)}>{title}</h2>
       <p className="mb-6 text-gray-600 dark:text-gray-300">{formDescription}</p>
-      
-      <form onSubmit={handleSubmit}>
+
+      <form onSubmit={handleSubmit} className={resolveClass("", cn.form, unstyled)}>
         <div className="space-y-6">
           {/* Basic Breach Information */}
-          <div>
+          <div className={resolveClass("", cn.fieldGroup, unstyled)}>
             <h3 className="text-lg font-semibold mb-3">Breach Information</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label htmlFor="breachTitle" className="block text-sm font-medium mb-1">
+                <label htmlFor="breachTitle" className={resolveClass("block text-sm font-medium mb-1", cn.label, unstyled)}>
                   Breach Title/Summary <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -328,21 +354,21 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                   id="breachTitle"
                   value={breachTitle}
                   onChange={e => setBreachTitle(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", cn.input, unstyled)}
                   required
                 />
                 {errors.breachTitle && <p className="mt-1 text-sm text-red-500">{errors.breachTitle}</p>}
               </div>
               
               <div>
-                <label htmlFor="category" className="block text-sm font-medium mb-1">
+                <label htmlFor="category" className={resolveClass("block text-sm font-medium mb-1", cn.label, unstyled)}>
                   Breach Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="category"
                   value={category}
                   onChange={e => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", cn.select, unstyled)}
                   required
                 >
                   <option value="">Select a category</option>
@@ -356,7 +382,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
               </div>
               
               <div className="md:col-span-2">
-                <label htmlFor="description" className="block text-sm font-medium mb-1">
+                <label htmlFor="description" className={resolveClass("block text-sm font-medium mb-1", cn.label, unstyled)}>
                   Detailed Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -364,7 +390,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", cn.textarea, unstyled)}
                   required
                 />
                 {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
@@ -530,7 +556,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                   id="status"
                   value={status}
                   onChange={e => setStatus(e.target.value as 'ongoing' | 'contained' | 'resolved')}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", cn.select, unstyled)}
                   required
                 >
                   <option value="ongoing">Ongoing (breach is still active)</option>
@@ -549,7 +575,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                   onChange={e => setInitialActions(e.target.value)}
                   placeholder="Describe any immediate actions that have been taken to address the breach"
                   rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", cn.textarea, unstyled)}
                 />
               </div>
             </div>
@@ -607,7 +633,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
           )}
           
           {/* NDPA Notice */}
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+          <div className={resolveClass("mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md", cn.notice, unstyled)}>
             <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Breach Notification Requirements</h3>
             <p className="text-blue-700 dark:text-blue-300 text-sm">
               Under the Nigeria Data Protection Act (NDPA), Section 40, data breaches that pose a risk to the rights and freedoms of data subjects must be reported to the NDPC within 72 hours of discovery.
@@ -619,7 +645,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
           <div className="mt-6">
             <button
               type="submit"
-              className={`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`}
+              className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`, cn.submitButton, unstyled)}
             >
               {submitButtonText}
             </button>

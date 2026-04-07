@@ -25,6 +25,22 @@ export interface Step {
      */
     icon?: React.ReactNode;
 }
+export interface StepIndicatorClassNames {
+    /** Outermost wrapper */
+    root?: string;
+    /** Individual step wrapper */
+    step?: string;
+    /** Active step circle / indicator */
+    stepActive?: string;
+    /** Completed step circle / indicator */
+    stepCompleted?: string;
+    /** Pending (incomplete, inactive) step circle / indicator */
+    stepPending?: string;
+    /** Connector line between steps */
+    connector?: string;
+    /** Step label text */
+    label?: string;
+}
 export interface StepIndicatorProps {
     /**
      * Array of steps to display
@@ -60,5 +76,15 @@ export interface StepIndicatorProps {
      * Custom CSS class for incomplete steps
      */
     incompleteStepClassName?: string;
+    /**
+     * Per-section class name overrides
+     */
+    classNames?: StepIndicatorClassNames;
+    /**
+     * When true, all default classes are stripped.
+     * Only explicit overrides from `classNames` are applied.
+     * @default false
+     */
+    unstyled?: boolean;
 }
 export declare const StepIndicator: React.FC<StepIndicatorProps>;

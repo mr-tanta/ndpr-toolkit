@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { DSRRequest, DSRStatus, DSRType } from '../../types/dsr';
+import { resolveClass } from '../../utils/styling';
+
+export interface DSRTrackerClassNames {
+  root?: string;
+  header?: string;
+  title?: string;
+  stats?: string;
+  statCard?: string;
+  table?: string;
+  tableHeader?: string;
+  tableRow?: string;
+  statusBadge?: string;
+}
 
 export interface DSRTrackerProps {
   /**
@@ -63,6 +76,17 @@ export interface DSRTrackerProps {
    * @default true
    */
   showOverdueRequests?: boolean;
+
+  /**
+   * Object of CSS class overrides keyed by semantic section name.
+   */
+  classNames?: DSRTrackerClassNames;
+
+  /**
+   * When true, all default Tailwind classes are removed so consumers
+   * can style from scratch using classNames.
+   */
+  unstyled?: boolean;
 }
 
 export const DSRTracker: React.FC<DSRTrackerProps> = ({
@@ -76,7 +100,9 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
   showTypeBreakdown = true,
   showStatusBreakdown = true,
   showTimelineChart = true,
-  showOverdueRequests = true
+  showOverdueRequests = true,
+  classNames,
+  unstyled = false
 }) => {
   const [selectedTimeframe, setSelectedTimeframe] = useState<'7days' | '30days' | '90days' | 'all'>('30days');
   const [filteredRequests, setFilteredRequests] = useState<DSRRequest[]>(requests);
@@ -257,11 +283,11 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
       rejected: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
       awaitingVerification: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
     };
-    
+
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`}>
-        {status === 'inProgress' ? 'In Progress' : 
-         status === 'awaitingVerification' ? 'Awaiting Verification' : 
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`, classNames?.statusBadge, unstyled)}>
+        {status === 'inProgress' ? 'In Progress' :
+         status === 'awaitingVerification' ? 'Awaiting Verification' :
          status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
@@ -280,23 +306,23 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
     const complianceRate = calculateComplianceRate();
     
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
+      <div className={resolveClass("grid grid-cols-2 md:grid-cols-4 gap-4 mb-6", classNames?.stats, unstyled)}>
+        <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow", classNames?.statCard, unstyled)}>
           <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Requests</h4>
           <p className="text-2xl font-bold">{totalRequests}</p>
         </div>
-        
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
+
+        <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow", classNames?.statCard, unstyled)}>
           <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Pending Requests</h4>
           <p className="text-2xl font-bold">{pendingRequests}</p>
         </div>
-        
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
+
+        <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow", classNames?.statCard, unstyled)}>
           <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Avg. Response Time</h4>
           <p className="text-2xl font-bold">{averageResponseTime !== null ? `${averageResponseTime} days` : 'N/A'}</p>
         </div>
-        
-        <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow">
+
+        <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow", classNames?.statCard, unstyled)}>
           <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Compliance Rate</h4>
           <p className="text-2xl font-bold">{complianceRate !== null ? `${complianceRate}%` : 'N/A'}</p>
         </div>
@@ -315,9 +341,9 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
       .map(([type]) => type as DSRType);
     
     return (
-      <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6">
-        <h3 className="text-lg font-medium mb-4">Request Types</h3>
-        
+      <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6", classNames?.table, unstyled)}>
+        <h3 className={resolveClass("text-lg font-medium mb-4", classNames?.tableHeader, unstyled)}>Request Types</h3>
+
         {totalRequests === 0 ? (
           <p className="text-gray-500 dark:text-gray-400 text-sm">
             No data available for the selected timeframe.
@@ -370,8 +396,8 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
     };
     
     return (
-      <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6">
-        <h3 className="text-lg font-medium mb-4">Request Status</h3>
+      <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6", classNames?.table, unstyled)}>
+        <h3 className={resolveClass("text-lg font-medium mb-4", classNames?.tableHeader, unstyled)}>Request Status</h3>
         
         {totalRequests === 0 ? (
           <p className="text-gray-500 dark:text-gray-400 text-sm">
@@ -501,9 +527,9 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
         ) : (
           <div className="space-y-2 max-h-60 overflow-y-auto">
             {overdueRequests.map(request => (
-              <div 
+              <div
                 key={request.id}
-                className="p-3 bg-red-50 dark:bg-red-900/20 rounded-md cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30"
+                className={resolveClass("p-3 bg-red-50 dark:bg-red-900/20 rounded-md cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30", classNames?.tableRow, unstyled)}
                 onClick={() => handleSelectRequest(request.id)}
               >
                 <div className="flex justify-between items-start mb-1">
@@ -545,9 +571,9 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
               const daysRemaining = calculateDaysRemaining(request.dueDate || 0);
               
               return (
-                <div 
+                <div
                   key={request.id}
-                  className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-md cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
+                  className={resolveClass("p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-md cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-900/30", classNames?.tableRow, unstyled)}
                   onClick={() => handleSelectRequest(request.id)}
                 >
                   <div className="flex justify-between items-start mb-1">
@@ -579,10 +605,10 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
   };
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
+      <div className={resolveClass("flex flex-col md:flex-row md:justify-between md:items-center mb-6", classNames?.header, unstyled)}>
         <div>
-          <h2 className="text-xl font-bold mb-2">{title}</h2>
+          <h2 className={resolveClass("text-xl font-bold mb-2", classNames?.title, unstyled)}>{title}</h2>
           <p className="text-gray-600 dark:text-gray-300">{description}</p>
         </div>
         

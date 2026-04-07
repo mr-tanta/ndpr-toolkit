@@ -1,86 +1,132 @@
 import React, { useState, useEffect } from 'react';
 import { DPIASection, DPIAQuestion } from '../../types/dpia';
+import { resolveClass } from '../../utils/styling';
+
+export interface DPIAQuestionnaireClassNames {
+  /** Outermost wrapper */
+  root?: string;
+  /** Header area containing progress indicator */
+  header?: string;
+  /** Section title */
+  title?: string;
+  /** Section container */
+  section?: string;
+  /** Section title heading */
+  sectionTitle?: string;
+  /** Individual question wrapper */
+  question?: string;
+  /** Question label text */
+  questionText?: string;
+  /** Guidance / help text below a question */
+  guidance?: string;
+  /** Text / textarea / select inputs */
+  input?: string;
+  /** Radio option group container */
+  radioGroup?: string;
+  /** Individual radio option row */
+  radioOption?: string;
+  /** Navigation button container */
+  navigation?: string;
+  /** Next / submit button */
+  nextButton?: string;
+  /** Previous button */
+  prevButton?: string;
+  /** Progress bar wrapper */
+  progressBar?: string;
+}
 
 export interface DPIAQuestionnaireProps {
   /**
    * Sections of the DPIA questionnaire
    */
   sections: DPIASection[];
-  
+
   /**
    * Current answers to the questionnaire
    */
   answers: Record<string, any>;
-  
+
   /**
    * Callback function called when an answer is updated
    */
   onAnswerChange: (questionId: string, value: any) => void;
-  
+
   /**
    * Current section index
    */
   currentSectionIndex: number;
-  
+
   /**
    * Callback function called when user navigates to the next section
    */
   onNextSection?: () => void;
-  
+
   /**
    * Callback function called when user navigates to the previous section
    */
   onPrevSection?: () => void;
-  
+
   /**
    * Validation errors for the current section
    */
   validationErrors?: Record<string, string>;
-  
+
   /**
    * Whether the questionnaire is in read-only mode
    * @default false
    */
   readOnly?: boolean;
-  
+
   /**
    * Custom CSS class for the questionnaire
    */
   className?: string;
-  
+
   /**
    * Custom CSS class for the buttons
    */
   buttonClassName?: string;
-  
+
   /**
    * Text for the next button
    * @default "Next"
    */
   nextButtonText?: string;
-  
+
   /**
    * Text for the previous button
    * @default "Previous"
    */
   prevButtonText?: string;
-  
+
   /**
    * Text for the submit button (shown on the last section)
    * @default "Submit"
    */
   submitButtonText?: string;
-  
+
   /**
    * Whether to show a progress indicator
    * @default true
    */
   showProgress?: boolean;
-  
+
   /**
    * Current progress percentage (0-100)
    */
   progress?: number;
+
+  /**
+   * Per-section class name overrides
+   */
+  classNames?: DPIAQuestionnaireClassNames;
+
+  /**
+   * When true, all default classes are stripped.
+   * Only explicit overrides from `classNames` are applied.
+   * @default false
+   */
+  unstyled?: boolean;
 }
 
 export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
@@ -98,20 +144,25 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
   prevButtonText = "Previous",
   submitButtonText = "Submit",
   showProgress = true,
-  progress
+  progress,
+  classNames = {},
+  unstyled = false,
 }) => {
   const currentSection = sections[currentSectionIndex];
   const isLastSection = currentSectionIndex === sections.length - 1;
-  
+
+  const cx = (defaultClass: string, key?: keyof DPIAQuestionnaireClassNames) =>
+    resolveClass(defaultClass, key ? classNames[key] : undefined, unstyled);
+
   // Check if a question should be shown based on its conditions
   const shouldShowQuestion = (question: DPIAQuestion): boolean => {
     if (!question.showWhen) {
       return true;
     }
-    
+
     return question.showWhen.every(condition => {
       const answer = answers[condition.questionId];
-      
+
       switch (condition.operator) {
         case 'equals':
           return answer === condition.value;
@@ -126,28 +177,37 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
       }
     });
   };
-  
+
+  // Shared input class (text, textarea, select)
+  const inputClass = (error?: string) =>
+    cx(
+      `w-full px-3 py-2 border rounded-md ${
+        error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+      } focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`,
+      'input',
+    );
+
   // Render a question based on its type
   const renderQuestion = (question: DPIAQuestion) => {
     if (!shouldShowQuestion(question)) {
       return null;
     }
-    
+
     const error = validationErrors[question.id];
     const value = answers[question.id];
-    
+
     return (
-      <div key={question.id} className="mb-6">
+      <div key={question.id} className={cx('mb-6', 'question')}>
         <div className="mb-2">
-          <label htmlFor={question.id} className="block text-sm font-medium text-gray-900 dark:text-gray-100">
+          <label htmlFor={question.id} className={cx('block text-sm font-medium text-gray-900 dark:text-gray-100', 'questionText')}>
             {question.text}
             {question.required && <span className="text-red-500 ml-1">*</span>}
           </label>
           {question.guidance && (
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{question.guidance}</p>
+            <p className={cx('mt-1 text-sm text-gray-500 dark:text-gray-400', 'guidance')}>{question.guidance}</p>
           )}
         </div>
-        
+
         {question.type === 'text' && (
           <input
             type="text"
@@ -155,12 +215,10 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             value={value || ''}
             onChange={e => onAnswerChange(question.id, e.target.value)}
             disabled={readOnly}
-            className={`w-full px-3 py-2 border rounded-md ${
-              error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-            } focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+            className={inputClass(error)}
           />
         )}
-        
+
         {question.type === 'textarea' && (
           <textarea
             id={question.id}
@@ -168,21 +226,17 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             onChange={e => onAnswerChange(question.id, e.target.value)}
             disabled={readOnly}
             rows={4}
-            className={`w-full px-3 py-2 border rounded-md ${
-              error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-            } focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+            className={inputClass(error)}
           />
         )}
-        
+
         {question.type === 'select' && question.options && (
           <select
             id={question.id}
             value={value || ''}
             onChange={e => onAnswerChange(question.id, e.target.value)}
             disabled={readOnly}
-            className={`w-full px-3 py-2 border rounded-md ${
-              error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-            } focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`}
+            className={inputClass(error)}
           >
             <option value="">Select an option</option>
             {question.options.map(option => (
@@ -192,11 +246,11 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             ))}
           </select>
         )}
-        
+
         {question.type === 'radio' && question.options && (
-          <div className="space-y-2">
+          <div className={cx('space-y-2', 'radioGroup')}>
             {question.options.map(option => (
-              <div key={option.value} className="flex items-center">
+              <div key={option.value} className={cx('flex items-center', 'radioOption')}>
                 <input
                   type="radio"
                   id={`${question.id}_${option.value}`}
@@ -226,7 +280,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             ))}
           </div>
         )}
-        
+
         {question.type === 'checkbox' && question.options && (
           <div className="space-y-2">
             {question.options.map(option => (
@@ -257,7 +311,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             ))}
           </div>
         )}
-        
+
         {question.type === 'scale' && (
           <div>
             <div className="flex justify-between mb-2">
@@ -282,25 +336,25 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             </div>
           </div>
         )}
-        
+
         {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
     );
   };
-  
+
   if (!currentSection) {
     return <div>No section found.</div>;
   }
-  
+
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 ${className}`}>
+    <div className={`${cx('bg-white dark:bg-gray-800 rounded-lg shadow-md p-6', 'root')} ${className}`}>
       {showProgress && (
-        <div className="mb-6">
+        <div className={cx('mb-6', 'header')}>
           <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
             <span>Section {currentSectionIndex + 1} of {sections.length}</span>
             <span>{progress !== undefined ? `${progress}% Complete` : ''}</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+          <div className={cx('w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700', 'progressBar')}>
             <div
               className="bg-blue-600 h-2.5 rounded-full"
               style={{ width: `${progress !== undefined ? progress : ((currentSectionIndex + 1) / sections.length) * 100}%` }}
@@ -308,31 +362,31 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
           </div>
         </div>
       )}
-      
-      <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{currentSection.title}</h2>
+
+      <h2 className={cx('text-xl font-bold mb-2 text-gray-900 dark:text-white', 'title')}>{currentSection.title}</h2>
       {currentSection.description && (
-        <p className="mb-6 text-gray-600 dark:text-gray-300">{currentSection.description}</p>
+        <p className={cx('mb-6 text-gray-600 dark:text-gray-300', 'sectionTitle')}>{currentSection.description}</p>
       )}
-      
-      <div className="space-y-6">
+
+      <div className={cx('space-y-6', 'section')}>
         {currentSection.questions.map(question => renderQuestion(question))}
       </div>
-      
-      <div className="mt-8 flex justify-between">
+
+      <div className={cx('mt-8 flex justify-between', 'navigation')}>
         <button
           type="button"
           onClick={onPrevSection}
           disabled={currentSectionIndex === 0 || readOnly}
-          className={`px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed ${buttonClassName}`}
+          className={`${cx('px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed', 'prevButton')} ${buttonClassName}`}
         >
           {prevButtonText}
         </button>
-        
+
         <button
           type="button"
           onClick={onNextSection}
           disabled={readOnly}
-          className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed ${buttonClassName}`}
+          className={`${cx('px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed', 'nextButton')} ${buttonClassName}`}
         >
           {isLastSection ? submitButtonText : nextButtonText}
         </button>

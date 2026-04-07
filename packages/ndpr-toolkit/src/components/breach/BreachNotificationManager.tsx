@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BreachReport, RiskAssessment, RegulatoryNotification, NotificationRequirement } from '../../types/breach';
 import { calculateBreachSeverity } from '../../utils/breach';
+import { resolveClass } from '../../utils/styling';
+
+export interface BreachNotificationManagerClassNames {
+  root?: string;
+  header?: string;
+  title?: string;
+  breachList?: string;
+  breachItem?: string;
+  statusBadge?: string;
+  timeline?: string;
+  timelineStep?: string;
+  detailPanel?: string;
+}
 
 export interface BreachNotificationManagerProps {
   /**
@@ -49,11 +62,21 @@ export interface BreachNotificationManagerProps {
    * Custom CSS class for the manager
    */
   className?: string;
-  
+
   /**
    * Custom CSS class for the buttons
    */
   buttonClassName?: string;
+
+  /**
+   * Override class names for individual elements
+   */
+  classNames?: BreachNotificationManagerClassNames;
+
+  /**
+   * Remove all default styles, only applying classNames overrides
+   */
+  unstyled?: boolean;
   
   /**
    * Whether to show the breach details
@@ -85,6 +108,8 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   description = "Manage data breach notifications and track compliance with NDPA requirements.",
   className = "",
   buttonClassName = "",
+  classNames: cn = {},
+  unstyled = false,
   showBreachDetails = true,
   showNotificationTimeline = true,
   showDeadlineAlerts = true
@@ -238,12 +263,12 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
     };
     
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[level]}`}>
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[level]}`, cn.statusBadge, unstyled)}>
         {level.charAt(0).toUpperCase() + level.slice(1)}
       </span>
     );
   };
-  
+
   // Render status badge
   const renderStatusBadge = (status: string) => {
     const colorClasses = {
@@ -251,9 +276,9 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
       contained: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
       resolved: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
     };
-    
+
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[status as keyof typeof colorClasses] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'}`}>
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status as keyof typeof colorClasses] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'}`, cn.statusBadge, unstyled)}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
@@ -371,11 +396,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
     }
     
     return (
-      <div className="mt-6">
+      <div className={resolveClass("mt-6", cn.timeline, unstyled)}>
         <h3 className="text-lg font-medium mb-4">Notification Timeline</h3>
         <ol className="relative border-l border-gray-200 dark:border-gray-700">
           {timeline.map((item, index) => (
-            <li key={index} className="mb-6 ml-4">
+            <li key={index} className={resolveClass("mb-6 ml-4", cn.timelineStep, unstyled)}>
               <div className={`absolute w-3 h-3 rounded-full mt-1.5 -left-1.5 border ${
                 item.completed 
                   ? 'bg-green-500 border-green-500 dark:border-green-500' 
@@ -398,9 +423,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   };
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
+      <div className={resolveClass("", cn.header, unstyled)}>
+        <h2 className={resolveClass("text-xl font-bold mb-2", cn.title, unstyled)}>{title}</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+      </div>
       
       {/* Filters and Search */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -464,7 +491,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
               No breach reports found.
             </p>
           ) : (
-            <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+            <div className={resolveClass("space-y-2 max-h-96 overflow-y-auto pr-2", cn.breachList, unstyled)}>
               {filteredBreaches.map(breach => {
                 const assessment = riskAssessments.find(a => a.breachId === breach.id);
                 const notification = regulatoryNotifications.find(n => n.breachId === breach.id);
@@ -512,11 +539,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                 return (
                   <div
                     key={breach.id}
-                    className={`p-3 rounded-md cursor-pointer ${
-                      selectedBreachId === breach.id 
-                        ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800' 
+                    className={resolveClass(`p-3 rounded-md cursor-pointer ${
+                      selectedBreachId === breach.id
+                        ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
                         : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
-                    }`}
+                    }`, cn.breachItem, unstyled)}
                     onClick={() => handleSelectBreach(breach.id)}
                   >
                     <div className="flex justify-between items-start mb-1">
@@ -542,7 +569,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
         </div>
         
         {/* Breach Details */}
-        <div className="md:col-span-2">
+        <div className={resolveClass("md:col-span-2", cn.detailPanel, unstyled)}>
           {selectedBreach ? (
             <div>
               <div className="flex justify-between items-start mb-4">

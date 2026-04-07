@@ -1,4 +1,26 @@
 import React, { useState } from 'react';
+import { resolveClass } from '../../utils/styling';
+
+export interface PolicyExporterClassNames {
+  /** Root container */
+  root?: string;
+  /** Header area containing title and description */
+  header?: string;
+  /** Title element */
+  title?: string;
+  /** Description element */
+  description?: string;
+  /** Format selector container */
+  formatSelector?: string;
+  /** Individual format option */
+  formatOption?: string;
+  /** Export button */
+  exportButton?: string;
+  /** NDPA compliance / export tips notice */
+  complianceNotice?: string;
+  /** Preview / export history area */
+  preview?: string;
+}
 
 export interface PolicyExporterProps {
   /**
@@ -75,6 +97,17 @@ export interface PolicyExporterProps {
    * Custom CSS styles for the exported policy
    */
   customStyles?: string;
+
+  /**
+   * Override class names for internal elements
+   */
+  classNames?: PolicyExporterClassNames;
+
+  /**
+   * If true, removes all default styles. Use with classNames to apply your own.
+   * @default false
+   */
+  unstyled?: boolean;
 }
 
 interface ExportRecord {
@@ -99,7 +132,9 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   includeComplianceNotice = true,
   includeLogo = false,
   logoUrl,
-  customStyles
+  customStyles,
+  classNames,
+  unstyled = false
 }) => {
   const [exportHistory, setExportHistory] = useState<ExportRecord[]>([]);
   const [selectedFormat, setSelectedFormat] = useState<string>('pdf');
@@ -323,7 +358,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
     ];
     
     return (
-      <div className="mb-6">
+      <div className={resolveClass('mb-6', classNames?.formatSelector, unstyled)}>
         <label htmlFor="export-format" className="block text-sm font-medium mb-1">
           Export Format
         </label>
@@ -331,7 +366,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
           id="export-format"
           value={selectedFormat}
           onChange={e => setSelectedFormat(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.formatOption, unstyled)}
         >
           {formats.map(format => (
             <option key={format.value} value={format.value}>
@@ -445,7 +480,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
     }
     
     return (
-      <div className="mt-6">
+      <div className={resolveClass('mt-6', classNames?.preview, unstyled)}>
         <h3 className="text-lg font-medium mb-3">Export History</h3>
         <div className="bg-gray-50 dark:bg-gray-700 rounded-md overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
@@ -496,9 +531,11 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   };
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{componentTitle}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
+      <div className={resolveClass('mb-6', classNames?.header, unstyled)}>
+        <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{componentTitle}</h2>
+        <p className={resolveClass('text-gray-600 dark:text-gray-300', classNames?.description, unstyled)}>{description}</p>
+      </div>
       
       {/* Format Selection */}
       {renderFormatOptions()}
@@ -511,7 +548,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
         <button
           onClick={handleExport}
           disabled={isExporting}
-          className={`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName} ${isExporting ? 'opacity-70 cursor-not-allowed' : ''}`}
+          className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName} ${isExporting ? 'opacity-70 cursor-not-allowed' : ''}`, classNames?.exportButton, unstyled)}
         >
           {isExporting ? 'Exporting...' : `Export as ${selectedFormat.toUpperCase()}`}
         </button>
@@ -524,7 +561,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
       </div>
       
       {/* Export Tips */}
-      <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+      <div className={resolveClass('mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md', classNames?.complianceNotice, unstyled)}>
         <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">Export Tips</h3>
         <ul className="text-blue-700 dark:text-blue-300 text-sm list-disc list-inside space-y-1">
           <li>PDF format is recommended for printing or sharing with stakeholders.</li>

@@ -1,5 +1,27 @@
 import React from 'react';
 import { PolicySection, PolicyVariable } from '../../types/privacy';
+export interface PolicyGeneratorClassNames {
+    /** Root container */
+    root?: string;
+    /** Header area containing title and description */
+    header?: string;
+    /** Title element */
+    title?: string;
+    /** Description element */
+    description?: string;
+    /** Section list container */
+    sectionList?: string;
+    /** Individual section item */
+    sectionItem?: string;
+    /** Variable form container */
+    form?: string;
+    /** Form input fields */
+    input?: string;
+    /** Generate button */
+    generateButton?: string;
+    /** NDPA compliance notice */
+    complianceNotice?: string;
+}
 export interface PolicyGeneratorProps {
     /**
      * List of policy sections
@@ -50,5 +72,14 @@ export interface PolicyGeneratorProps {
      * @default true
      */
     allowEditing?: boolean;
+    /**
+     * Override class names for internal elements
+     */
+    classNames?: PolicyGeneratorClassNames;
+    /**
+     * If true, removes all default styles. Use with classNames to apply your own.
+     * @default false
+     */
+    unstyled?: boolean;
 }
 export declare const PolicyGenerator: React.FC<PolicyGeneratorProps>;

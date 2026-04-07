@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { BreachReport, RiskAssessment } from '../../types/breach';
 import { calculateBreachSeverity } from '../../utils/breach';
+import { resolveClass } from '../../utils/styling';
+
+export interface BreachRiskAssessmentClassNames {
+  root?: string;
+  header?: string;
+  title?: string;
+  slider?: string;
+  riskBadge?: string;
+  riskScore?: string;
+  notificationStatus?: string;
+  submitButton?: string;
+}
 
 export interface BreachRiskAssessmentProps {
   /**
@@ -40,11 +52,21 @@ export interface BreachRiskAssessmentProps {
    * Custom CSS class for the form
    */
   className?: string;
-  
+
   /**
    * Custom CSS class for the submit button
    */
   buttonClassName?: string;
+
+  /**
+   * Override class names for individual elements
+   */
+  classNames?: BreachRiskAssessmentClassNames;
+
+  /**
+   * Remove all default styles, only applying classNames overrides
+   */
+  unstyled?: boolean;
   
   /**
    * Whether to show the breach summary
@@ -68,6 +90,8 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
   submitButtonText = "Complete Assessment",
   className = "",
   buttonClassName = "",
+  classNames: cn = {},
+  unstyled = false,
   showBreachSummary = true,
   showNotificationRequirements = true
 }) => {
@@ -198,15 +222,15 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
     };
     
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[level]}`}>
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[level]}`, cn.riskBadge, unstyled)}>
         {level.charAt(0).toUpperCase() + level.slice(1)}
       </span>
     );
   };
-  
+
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
+      <h2 className={resolveClass("text-xl font-bold mb-2", cn.title, unstyled)}>{title}</h2>
       <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
       
       {/* Breach Summary */}
@@ -265,13 +289,13 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
           
           {/* Notification Requirements */}
           {showNotificationRequirements && (
-            <div className={`mb-6 p-4 rounded-md ${
-              notificationRequired 
-                ? hoursRemaining > 24 
-                  ? 'bg-yellow-50 dark:bg-yellow-900/20' 
+            <div className={resolveClass(`mb-6 p-4 rounded-md ${
+              notificationRequired
+                ? hoursRemaining > 24
+                  ? 'bg-yellow-50 dark:bg-yellow-900/20'
                   : 'bg-red-50 dark:bg-red-900/20'
                 : 'bg-green-50 dark:bg-green-900/20'
-            }`}>
+            }`, cn.notificationStatus, unstyled)}>
               <h3 className="text-lg font-medium mb-3">Notification Requirements</h3>
               
               {notificationRequired ? (
@@ -338,7 +362,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
           
           <button
             onClick={() => setIsSubmitted(false)}
-            className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`}
+            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, cn.submitButton, unstyled)}
           >
             Edit Assessment
           </button>
@@ -366,7 +390,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={confidentialityImpact}
                     onChange={e => setConfidentialityImpact(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(confidentialityImpact)} ({confidentialityImpact})
@@ -390,7 +414,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={integrityImpact}
                     onChange={e => setIntegrityImpact(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(integrityImpact)} ({integrityImpact})
@@ -414,7 +438,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={availabilityImpact}
                     onChange={e => setAvailabilityImpact(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(availabilityImpact)} ({availabilityImpact})
@@ -443,7 +467,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={harmLikelihood}
                     onChange={e => setHarmLikelihood(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(harmLikelihood)} ({harmLikelihood})
@@ -467,7 +491,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={harmSeverity}
                     onChange={e => setHarmSeverity(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(harmSeverity)} ({harmSeverity})
@@ -519,7 +543,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
               <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium">Overall Risk Score:</span>
-                  <span>{overallRiskScore} / 5</span>
+                  <span className={resolveClass("", cn.riskScore, unstyled)}>{overallRiskScore} / 5</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="font-medium">Risk Level:</span>
@@ -556,7 +580,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
             <div className="mt-6">
               <button
                 type="submit"
-                className={`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`}
+                className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`, cn.submitButton, unstyled)}
               >
                 {submitButtonText}
               </button>

@@ -1,5 +1,8 @@
 import React from 'react';
 import { ConsentSettings, ConsentStorageOptions } from '../../types/consent';
+export interface ConsentStorageClassNames {
+    root?: string;
+}
 export interface ConsentStorageProps {
     /**
      * Current consent settings
@@ -28,6 +31,15 @@ export interface ConsentStorageProps {
      */
     autoLoad?: boolean;
     /**
+     * Object of CSS class overrides keyed by semantic section name.
+     */
+    classNames?: ConsentStorageClassNames;
+    /**
+     * When true, all default classes are removed so consumers
+     * can style from scratch using classNames.
+     */
+    unstyled?: boolean;
+    /**
      * Children to render
      * Can be either React nodes or a render prop function that receives storage methods
      */
@@ -38,4 +50,4 @@ export interface ConsentStorageProps {
         loaded: boolean;
     }) => React.ReactNode);
 }
-export declare const ConsentStorage: ({ settings, storageOptions, onLoad, onSave, autoSave, autoLoad, children }: ConsentStorageProps) => React.ReactElement | null;
+export declare const ConsentStorage: ({ settings, storageOptions, onLoad, onSave, autoSave, autoLoad, classNames, unstyled, children }: ConsentStorageProps) => React.ReactElement | null;

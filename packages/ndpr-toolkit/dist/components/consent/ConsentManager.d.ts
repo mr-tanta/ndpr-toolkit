@@ -1,5 +1,16 @@
 import React from 'react';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
+export interface ConsentManagerClassNames {
+    root?: string;
+    header?: string;
+    title?: string;
+    description?: string;
+    optionsList?: string;
+    optionItem?: string;
+    toggle?: string;
+    saveButton?: string;
+    resetButton?: string;
+}
 export interface ConsentManagerProps {
     /**
      * Array of consent options to display
@@ -54,6 +65,16 @@ export interface ConsentManagerProps {
      * Custom CSS class for the secondary button
      */
     secondaryButtonClassName?: string;
+    /**
+     * Object of CSS class overrides keyed by semantic section name.
+     * Takes priority over buttonClassName / primaryButtonClassName / secondaryButtonClassName.
+     */
+    classNames?: ConsentManagerClassNames;
+    /**
+     * When true, all default Tailwind classes are removed so consumers
+     * can style from scratch using classNames.
+     */
+    unstyled?: boolean;
     /**
      * Whether to show a success message after saving
      * @default true

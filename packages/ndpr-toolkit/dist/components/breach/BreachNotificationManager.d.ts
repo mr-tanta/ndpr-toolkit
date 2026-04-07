@@ -1,5 +1,16 @@
 import React from 'react';
 import { BreachReport, RiskAssessment, RegulatoryNotification } from '../../types/breach';
+export interface BreachNotificationManagerClassNames {
+    root?: string;
+    header?: string;
+    title?: string;
+    breachList?: string;
+    breachItem?: string;
+    statusBadge?: string;
+    timeline?: string;
+    timelineStep?: string;
+    detailPanel?: string;
+}
 export interface BreachNotificationManagerProps {
     /**
      * List of breach reports to manage
@@ -43,6 +54,14 @@ export interface BreachNotificationManagerProps {
      * Custom CSS class for the buttons
      */
     buttonClassName?: string;
+    /**
+     * Override class names for individual elements
+     */
+    classNames?: BreachNotificationManagerClassNames;
+    /**
+     * Remove all default styles, only applying classNames overrides
+     */
+    unstyled?: boolean;
     /**
      * Whether to show the breach details
      * @default true

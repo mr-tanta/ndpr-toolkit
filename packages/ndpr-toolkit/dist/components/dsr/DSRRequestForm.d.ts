@@ -1,5 +1,18 @@
 import React from 'react';
 import { RequestType } from '../../types/dsr';
+export interface DSRRequestFormClassNames {
+    root?: string;
+    title?: string;
+    description?: string;
+    form?: string;
+    fieldGroup?: string;
+    label?: string;
+    input?: string;
+    select?: string;
+    textarea?: string;
+    submitButton?: string;
+    successMessage?: string;
+}
 export interface DSRRequestFormProps {
     /**
      * Array of request types that can be submitted
@@ -70,5 +83,14 @@ export interface DSRRequestFormProps {
         description?: string;
         submit?: string;
     };
+    /**
+     * Object of CSS class overrides keyed by semantic section name.
+     */
+    classNames?: DSRRequestFormClassNames;
+    /**
+     * When true, all default Tailwind classes are removed so consumers
+     * can style from scratch using classNames.
+     */
+    unstyled?: boolean;
 }
 export declare const DSRRequestForm: React.FC<DSRRequestFormProps>;

@@ -12,6 +12,25 @@ import {
   generateLawfulBasisSummary,
   LawfulBasisComplianceGap,
 } from '../../utils/lawful-basis';
+import { resolveClass } from '../../utils/styling';
+
+export interface LawfulBasisTrackerClassNames {
+  root?: string;
+  header?: string;
+  title?: string;
+  summary?: string;
+  summaryCard?: string;
+  table?: string;
+  tableHeader?: string;
+  tableRow?: string;
+  form?: string;
+  input?: string;
+  select?: string;
+  submitButton?: string;
+  statusBadge?: string;
+  complianceScore?: string;
+  gapAlert?: string;
+}
 
 export interface LawfulBasisTrackerProps {
   /**
@@ -67,6 +86,18 @@ export interface LawfulBasisTrackerProps {
    * @default true
    */
   showComplianceGaps?: boolean;
+
+  /**
+   * Override class names for individual sections of the component.
+   * Takes priority over className / buttonClassName.
+   */
+  classNames?: LawfulBasisTrackerClassNames;
+
+  /**
+   * When true, all default styling is removed so consumers
+   * can style from scratch using classNames.
+   */
+  unstyled?: boolean;
 }
 
 type ViewMode = 'list' | 'form' | 'detail';
@@ -149,6 +180,8 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   buttonClassName = '',
   showSummary = true,
   showComplianceGaps = true,
+  classNames,
+  unstyled,
 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [formData, setFormData] = useState<FormData>(EMPTY_FORM);
@@ -320,7 +353,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     };
 
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`}>
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`, classNames?.statusBadge, unstyled)}>
         {labels[status]}
       </span>
     );
@@ -381,26 +414,26 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   // Render compliance summary
   const renderSummary = () => {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+      <div className={resolveClass('grid grid-cols-2 md:grid-cols-4 gap-4 mb-6', classNames?.summary, unstyled)}>
+        <div className={resolveClass('bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
           <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
             {summary.totalActivities}
           </p>
           <p className="text-sm text-blue-600 dark:text-blue-300">Total Activities</p>
         </div>
-        <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
+        <div className={resolveClass('bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
           <p className="text-2xl font-bold text-orange-800 dark:text-orange-200">
             {summary.sensitiveDataActivities}
           </p>
           <p className="text-sm text-orange-600 dark:text-orange-300">Sensitive Data</p>
         </div>
-        <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+        <div className={resolveClass('bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
           <p className="text-2xl font-bold text-purple-800 dark:text-purple-200">
             {summary.crossBorderActivities}
           </p>
           <p className="text-sm text-purple-600 dark:text-purple-300">Cross-Border Transfers</p>
         </div>
-        <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
+        <div className={resolveClass('bg-red-50 dark:bg-red-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
           <p className="text-2xl font-bold text-red-800 dark:text-red-200">
             {summary.activitiesWithoutApproval.length}
           </p>
@@ -431,7 +464,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     return (
       <div className="mb-6">
         {highSeverity.length > 0 && (
-          <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-3">
+          <div className={resolveClass('bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-3', classNames?.gapAlert, unstyled)}>
             <p className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
               High Priority ({highSeverity.length})
             </p>
@@ -445,7 +478,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           </div>
         )}
         {mediumSeverity.length > 0 && (
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
+          <div className={resolveClass('bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg', classNames?.gapAlert, unstyled)}>
             <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">
               Medium Priority ({mediumSeverity.length})
             </p>
@@ -465,8 +498,8 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   // Render form
   const renderForm = () => {
     return (
-      <div>
-        <div className="flex justify-between items-center mb-4">
+      <div className={resolveClass('', classNames?.form, unstyled)}>
+        <div className={resolveClass('flex justify-between items-center mb-4', classNames?.header, unstyled)}>
           <h3 className="text-lg font-medium">
             {editingId ? 'Edit Processing Activity' : 'New Processing Activity'}
           </h3>
@@ -508,7 +541,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={formData.name}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g., Customer Account Management"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
@@ -523,7 +556,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               onChange={e => setFormData({ ...formData, description: e.target.value })}
               placeholder="Describe what processing is performed..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
@@ -538,7 +571,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               onChange={e =>
                 setFormData({ ...formData, lawfulBasis: e.target.value as LawfulBasis })
               }
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
             >
               {LAWFUL_BASIS_OPTIONS.map(option => (
                 <option key={option.value} value={option.value}>
@@ -564,7 +597,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               }
               placeholder="Document why this lawful basis applies to this processing activity..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
@@ -591,7 +624,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     }
                     placeholder="Describe the legitimate interest being pursued..."
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
                   />
                 </div>
 
@@ -607,7 +640,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     }
                     placeholder="Explain why this processing is necessary for the stated purpose..."
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
                   />
                 </div>
 
@@ -623,7 +656,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     }
                     placeholder="Assess the impact on data subjects' rights and interests..."
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
                   />
                 </div>
 
@@ -639,7 +672,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                       setFormData({ ...formData, liaSafeguards: e.target.value })
                     }
                     placeholder="List safeguards (comma-separated)..."
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
                   />
                 </div>
 
@@ -655,7 +688,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     }
                     placeholder="State your overall conclusion..."
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
                   />
                 </div>
               </div>
@@ -673,7 +706,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={formData.dataCategories}
               onChange={e => setFormData({ ...formData, dataCategories: e.target.value })}
               placeholder="e.g., Name, Email, Phone Number (comma-separated)"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
@@ -715,7 +748,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     sensitiveDataCondition: e.target.value as SensitiveDataCondition,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
               >
                 <option value="">Select a condition...</option>
                 {SENSITIVE_DATA_OPTIONS.map(option => (
@@ -740,7 +773,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 setFormData({ ...formData, dataSubjectCategories: e.target.value })
               }
               placeholder="e.g., Customers, Employees, Vendors (comma-separated)"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
@@ -755,7 +788,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={formData.purposes}
               onChange={e => setFormData({ ...formData, purposes: e.target.value })}
               placeholder="e.g., Account management, Service delivery (comma-separated)"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
@@ -771,7 +804,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 value={formData.retentionPeriod}
                 onChange={e => setFormData({ ...formData, retentionPeriod: e.target.value })}
                 placeholder="e.g., 3 years after account closure"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
               />
             </div>
             <div>
@@ -786,7 +819,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                   setFormData({ ...formData, retentionJustification: e.target.value })
                 }
                 placeholder="Reason for the retention period"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
               />
             </div>
           </div>
@@ -802,7 +835,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={formData.recipients}
               onChange={e => setFormData({ ...formData, recipients: e.target.value })}
               placeholder="e.g., Payment processor, Cloud provider (comma-separated)"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
@@ -833,7 +866,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="reviewDate"
               value={formData.reviewDate}
               onChange={e => setFormData({ ...formData, reviewDate: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
@@ -850,7 +883,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
             </button>
             <button
               onClick={handleSubmitForm}
-              className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`}
+              className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, classNames?.submitButton, unstyled)}
             >
               {editingId ? 'Update Activity' : 'Create Activity'}
             </button>
@@ -1056,7 +1089,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="basisFilter"
               value={basisFilter}
               onChange={e => setBasisFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
             >
               <option value="all">All Bases</option>
               {LAWFUL_BASIS_OPTIONS.map(option => (
@@ -1075,7 +1108,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="statusFilterSelect"
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
             >
               <option value="all">All Statuses</option>
               <option value="active">Active</option>
@@ -1095,14 +1128,14 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder="Search activities..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
             />
           </div>
 
           <div className="flex items-end">
             <button
               onClick={handleNewActivity}
-              className={`w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`}
+              className={resolveClass(`w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, classNames?.submitButton, unstyled)}
             >
               Add Activity
             </button>
@@ -1118,8 +1151,8 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="text-xs uppercase bg-gray-50 dark:bg-gray-700">
+            <table className={resolveClass('w-full text-sm text-left', classNames?.table, unstyled)}>
+              <thead className={resolveClass('text-xs uppercase bg-gray-50 dark:bg-gray-700', classNames?.tableHeader, unstyled)}>
                 <tr>
                   <th className="px-4 py-3">Activity</th>
                   <th className="px-4 py-3">Lawful Basis</th>
@@ -1134,7 +1167,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 {filteredActivities.map(activity => (
                   <tr
                     key={activity.id}
-                    className="border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    className={resolveClass('border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700', classNames?.tableRow, unstyled)}
                   >
                     <td className="px-4 py-3">
                       <button
@@ -1193,8 +1226,8 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   };
 
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
+      <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
       <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
 
       {/* Compliance Summary */}

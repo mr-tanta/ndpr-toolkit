@@ -8,3 +8,6 @@ export { DSRTracker } from './components/dsr/DSRTracker';
 export { useDSR } from './hooks/useDSR';
 export { formatDSRRequest } from './utils/dsr';
 export type { DSRRequest, RequestType, DSRStatus, DSRType, RequestStatus } from './types/dsr';
+export type { DSRRequestFormClassNames } from './components/dsr/DSRRequestForm';
+export type { DSRDashboardClassNames } from './components/dsr/DSRDashboard';
+export type { DSRTrackerClassNames } from './components/dsr/DSRTracker';

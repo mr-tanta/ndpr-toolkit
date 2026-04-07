@@ -1,5 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
+import { resolveClass } from '../../utils/styling';
+
+export interface ConsentBannerClassNames {
+  root?: string;
+  container?: string;
+  title?: string;
+  description?: string;
+  optionsList?: string;
+  optionItem?: string;
+  optionCheckbox?: string;
+  optionLabel?: string;
+  optionDescription?: string;
+  buttonGroup?: string;
+  acceptButton?: string;
+  rejectButton?: string;
+  customizeButton?: string;
+  saveButton?: string;
+}
 
 export interface ConsentBannerProps {
   /**
@@ -91,6 +109,18 @@ export interface ConsentBannerProps {
    * Custom CSS class for the secondary button
    */
   secondaryButtonClassName?: string;
+
+  /**
+   * Object of CSS class overrides keyed by semantic section name.
+   * Takes priority over buttonClassName / primaryButtonClassName / secondaryButtonClassName.
+   */
+  classNames?: ConsentBannerClassNames;
+
+  /**
+   * When true, all default Tailwind classes are removed so consumers
+   * can style from scratch using classNames.
+   */
+  unstyled?: boolean;
 }
 
 export const ConsentBanner: React.FC<ConsentBannerProps> = ({
@@ -109,7 +139,9 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   className = "",
   buttonClassName = "",
   primaryButtonClassName = "",
-  secondaryButtonClassName = ""
+  secondaryButtonClassName = "",
+  classNames,
+  unstyled
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showCustomize, setShowCustomize] = useState<boolean>(false);
@@ -188,21 +220,34 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
     position === 'center' ? 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-lg' :
     'bottom-0 left-0 right-0';
   
+  const resolvedAcceptButton = classNames?.acceptButton
+    || `px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName} ${primaryButtonClassName}`;
+  const resolvedRejectButton = classNames?.rejectButton
+    || `px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${buttonClassName} ${secondaryButtonClassName}`;
+  const resolvedCustomizeButton = classNames?.customizeButton
+    || `px-4 py-2 bg-transparent text-gray-800 dark:text-white hover:underline ${buttonClassName}`;
+  const resolvedSaveButton = classNames?.saveButton
+    || `px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName} ${primaryButtonClassName}`;
+
   return (
-    <div 
-      className={`fixed z-50 bg-white dark:bg-gray-800 shadow-lg p-4 border border-gray-200 dark:border-gray-700 ${positionClass} ${className}`}
+    <div
+      className={resolveClass(
+        `fixed z-50 bg-white dark:bg-gray-800 shadow-lg p-4 border border-gray-200 dark:border-gray-700 ${positionClass} ${className}`,
+        classNames?.root,
+        unstyled
+      )}
       role="dialog"
       aria-labelledby="consent-banner-title"
     >
-      <div className="max-w-6xl mx-auto">
-        <h2 id="consent-banner-title" className="text-lg font-bold mb-2">{title}</h2>
-        <p className="mb-4">{description}</p>
-        
+      <div className={resolveClass('max-w-6xl mx-auto', classNames?.container, unstyled)}>
+        <h2 id="consent-banner-title" className={resolveClass('text-lg font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
+        <p className={resolveClass('mb-4', classNames?.description, unstyled)}>{description}</p>
+
         {showCustomize ? (
           <div className="mb-4">
-            <div className="space-y-3">
+            <div className={resolveClass('space-y-3', classNames?.optionsList, unstyled)}>
               {options.map(option => (
-                <div key={option.id} className="flex items-start">
+                <div key={option.id} className={resolveClass('flex items-start', classNames?.optionItem, unstyled)}>
                   <div className="flex items-center h-5">
                     <input
                       id={`consent-${option.id}`}
@@ -210,58 +255,58 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
                       checked={consents[option.id] || false}
                       onChange={e => handleToggleConsent(option.id, e.target.checked)}
                       disabled={option.required}
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className={resolveClass('h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500', classNames?.optionCheckbox, unstyled)}
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor={`consent-${option.id}`} className="font-medium">
+                    <label htmlFor={`consent-${option.id}`} className={resolveClass('font-medium', classNames?.optionLabel, unstyled)}>
                       {option.label} {option.required && <span className="text-red-500">*</span>}
                     </label>
-                    <p className="text-gray-500 dark:text-gray-400">{option.description}</p>
+                    <p className={resolveClass('text-gray-500 dark:text-gray-400', classNames?.optionDescription, unstyled)}>{option.description}</p>
                   </div>
                 </div>
               ))}
             </div>
-            
-            <div className="mt-4 flex flex-wrap gap-2">
+
+            <div className={resolveClass('mt-4 flex flex-wrap gap-2', classNames?.buttonGroup, unstyled)}>
               <button
                 onClick={handleSavePreferences}
-                className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName} ${primaryButtonClassName}`}
+                className={resolveClass(resolvedSaveButton, classNames?.saveButton, unstyled)}
               >
                 {saveButtonText}
               </button>
               <button
                 onClick={() => setShowCustomize(false)}
-                className={`px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${buttonClassName} ${secondaryButtonClassName}`}
+                className={resolveClass(resolvedRejectButton, classNames?.rejectButton, unstyled)}
               >
                 Back
               </button>
             </div>
           </div>
         ) : (
-          <div className="flex flex-wrap gap-2">
+          <div className={resolveClass('flex flex-wrap gap-2', classNames?.buttonGroup, unstyled)}>
             <button
               onClick={handleAcceptAll}
-              className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName} ${primaryButtonClassName}`}
+              className={resolveClass(resolvedAcceptButton, classNames?.acceptButton, unstyled)}
             >
               {acceptAllButtonText}
             </button>
             <button
               onClick={handleRejectAll}
-              className={`px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${buttonClassName} ${secondaryButtonClassName}`}
+              className={resolveClass(resolvedRejectButton, classNames?.rejectButton, unstyled)}
             >
               {rejectAllButtonText}
             </button>
             <button
               onClick={() => setShowCustomize(true)}
-              className={`px-4 py-2 bg-transparent text-gray-800 dark:text-white hover:underline ${buttonClassName}`}
+              className={resolveClass(resolvedCustomizeButton, classNames?.customizeButton, unstyled)}
             >
               {customizeButtonText}
             </button>
           </div>
         )}
-        
-        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+
+        <div className={resolveClass('mt-2 text-xs text-gray-500 dark:text-gray-400', undefined, unstyled)}>
           By clicking "Accept All", you agree to the use of ALL cookies. Visit our Cookie Policy to learn more.
         </div>
       </div>

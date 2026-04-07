@@ -1,25 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { generatePolicyText } from '../../utils/privacy';
+import { resolveClass } from '../../utils/styling';
 import { PolicySection, PolicyVariable } from '../../types/privacy';
 
 // Using PolicySection and PolicyVariable from types/privacy.ts
+
+export interface PolicyGeneratorClassNames {
+  /** Root container */
+  root?: string;
+  /** Header area containing title and description */
+  header?: string;
+  /** Title element */
+  title?: string;
+  /** Description element */
+  description?: string;
+  /** Section list container */
+  sectionList?: string;
+  /** Individual section item */
+  sectionItem?: string;
+  /** Variable form container */
+  form?: string;
+  /** Form input fields */
+  input?: string;
+  /** Generate button */
+  generateButton?: string;
+  /** NDPA compliance notice */
+  complianceNotice?: string;
+}
 
 export interface PolicyGeneratorProps {
   /**
    * List of policy sections
    */
   sections: PolicySection[];
-  
+
   /**
    * List of policy variables
    */
   variables: PolicyVariable[];
-  
+
   /**
    * Callback function called when the policy is generated
    */
   onGenerate: (policy: { sections: PolicySection[], variables: PolicyVariable[], content: string }) => void;
-  
+
   /**
    * Title displayed on the generator
    * @default "NDPA Privacy Policy Generator"
@@ -31,34 +55,45 @@ export interface PolicyGeneratorProps {
    * @default "Generate an NDPA-compliant privacy policy for your organization."
    */
   description?: string;
-  
+
   /**
    * Custom CSS class for the generator
    */
   className?: string;
-  
+
   /**
    * Custom CSS class for the buttons
    */
   buttonClassName?: string;
-  
+
   /**
    * Text for the generate button
    * @default "Generate Policy"
    */
   generateButtonText?: string;
-  
+
   /**
    * Whether to show a preview of the generated policy
    * @default true
    */
   showPreview?: boolean;
-  
+
   /**
    * Whether to allow editing the policy content
    * @default true
    */
   allowEditing?: boolean;
+
+  /**
+   * Override class names for internal elements
+   */
+  classNames?: PolicyGeneratorClassNames;
+
+  /**
+   * If true, removes all default styles. Use with classNames to apply your own.
+   * @default false
+   */
+  unstyled?: boolean;
 }
 
 export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
@@ -71,7 +106,9 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   buttonClassName = "",
   generateButtonText = "Generate Policy",
   showPreview = true,
-  allowEditing = true
+  allowEditing = true,
+  classNames,
+  unstyled = false
 }) => {
   const [sections, setSections] = useState<PolicySection[]>(initialSections);
   const [variables, setVariables] = useState<PolicyVariable[]>(initialVariables);
@@ -178,11 +215,11 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   // Render section list
   const renderSectionList = () => {
     return (
-      <div className="space-y-4">
+      <div className={resolveClass('space-y-4', classNames?.sectionList, unstyled)}>
         <h3 className="text-lg font-medium mb-4">Select Policy Sections</h3>
-        
+
         {sections.map(section => (
-          <div key={section.id} className="border border-gray-200 dark:border-gray-700 rounded-md p-4">
+          <div key={section.id} className={resolveClass('border border-gray-200 dark:border-gray-700 rounded-md p-4', classNames?.sectionItem, unstyled)}>
             <div className="flex items-start">
               <div className="flex items-center h-5">
                 <input
@@ -191,7 +228,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                   checked={section.included}
                   onChange={() => handleSectionToggle(section.id)}
                   disabled={section.required}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  className={resolveClass('w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600', classNames?.input, unstyled)}
                 />
               </div>
               <div className="ml-3 text-sm">
@@ -209,7 +246,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
         <div className="mt-6">
           <button
             onClick={() => setActiveStep('variables')}
-            className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`}
+            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, classNames?.generateButton, unstyled)}
           >
             Next: Fill Variables
           </button>
@@ -222,7 +259,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   const renderVariableForm = () => {
     // Group variables by section
     const variablesBySection: Record<string, PolicyVariable[]> = {};
-    
+
     variables.forEach(variable => {
       const sectionId = variable.id.split('.')[0];
       if (!variablesBySection[sectionId]) {
@@ -230,9 +267,9 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
       }
       variablesBySection[sectionId].push(variable);
     });
-    
+
     return (
-      <div>
+      <div className={resolveClass('', classNames?.form, unstyled)}>
         <h3 className="text-lg font-medium mb-4">Fill Policy Variables</h3>
         
         <div className="space-y-6">
@@ -269,11 +306,11 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                           value={variable.value}
                           onChange={e => handleVariableChange(variable.id, e.target.value)}
                           rows={4}
-                          className={`w-full px-3 py-2 border ${
-                            errors[variable.id] 
-                              ? 'border-red-500 focus:ring-red-500' 
+                          className={resolveClass(`w-full px-3 py-2 border ${
+                            errors[variable.id]
+                              ? 'border-red-500 focus:ring-red-500'
                               : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
-                          } rounded-md focus:outline-none focus:ring-2`}
+                          } rounded-md focus:outline-none focus:ring-2`, classNames?.input, unstyled)}
                           required={variable.required}
                         />
                       ) : variable.inputType === 'select' && variable.options ? (
@@ -281,11 +318,11 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                           id={`var-${variable.id}`}
                           value={variable.value}
                           onChange={e => handleVariableChange(variable.id, e.target.value)}
-                          className={`w-full px-3 py-2 border ${
-                            errors[variable.id] 
-                              ? 'border-red-500 focus:ring-red-500' 
+                          className={resolveClass(`w-full px-3 py-2 border ${
+                            errors[variable.id]
+                              ? 'border-red-500 focus:ring-red-500'
                               : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
-                          } rounded-md focus:outline-none focus:ring-2`}
+                          } rounded-md focus:outline-none focus:ring-2`, classNames?.input, unstyled)}
                           required={variable.required}
                         >
                           <option value="">Select an option</option>
@@ -299,11 +336,11 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                           type={variable.inputType}
                           value={variable.value}
                           onChange={e => handleVariableChange(variable.id, e.target.value)}
-                          className={`w-full px-3 py-2 border ${
-                            errors[variable.id] 
-                              ? 'border-red-500 focus:ring-red-500' 
+                          className={resolveClass(`w-full px-3 py-2 border ${
+                            errors[variable.id]
+                              ? 'border-red-500 focus:ring-red-500'
                               : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
-                          } rounded-md focus:outline-none focus:ring-2`}
+                          } rounded-md focus:outline-none focus:ring-2`, classNames?.input, unstyled)}
                           required={variable.required}
                         />
                       )}
@@ -330,7 +367,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
           </button>
           <button
             onClick={generatePolicy}
-            className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`}
+            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, classNames?.generateButton, unstyled)}
           >
             {generateButtonText}
           </button>
@@ -409,9 +446,11 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   };
   
   return (
-    <div className={`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`}>
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
+      <div className={resolveClass('mb-6', classNames?.header, unstyled)}>
+        <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
+        <p className={resolveClass('text-gray-600 dark:text-gray-300', classNames?.description, unstyled)}>{description}</p>
+      </div>
       
       {/* Steps Indicator */}
       <div className="mb-8">
@@ -438,7 +477,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
       </div>
       
       {/* NDPA Notice */}
-      <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+      <div className={resolveClass('mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md', classNames?.complianceNotice, unstyled)}>
         <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Compliance Notice</h3>
         <p className="text-blue-700 dark:text-blue-300 text-sm">
           This tool helps you generate a privacy policy that aligns with the Nigeria Data Protection Act (NDPA) 2023.

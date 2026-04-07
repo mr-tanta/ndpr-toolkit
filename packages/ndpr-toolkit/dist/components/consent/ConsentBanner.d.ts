@@ -1,5 +1,21 @@
 import React from 'react';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
+export interface ConsentBannerClassNames {
+    root?: string;
+    container?: string;
+    title?: string;
+    description?: string;
+    optionsList?: string;
+    optionItem?: string;
+    optionCheckbox?: string;
+    optionLabel?: string;
+    optionDescription?: string;
+    buttonGroup?: string;
+    acceptButton?: string;
+    rejectButton?: string;
+    customizeButton?: string;
+    saveButton?: string;
+}
 export interface ConsentBannerProps {
     /**
      * Array of consent options to display
@@ -75,5 +91,15 @@ export interface ConsentBannerProps {
      * Custom CSS class for the secondary button
      */
     secondaryButtonClassName?: string;
+    /**
+     * Object of CSS class overrides keyed by semantic section name.
+     * Takes priority over buttonClassName / primaryButtonClassName / secondaryButtonClassName.
+     */
+    classNames?: ConsentBannerClassNames;
+    /**
+     * When true, all default Tailwind classes are removed so consumers
+     * can style from scratch using classNames.
+     */
+    unstyled?: boolean;
 }
 export declare const ConsentBanner: React.FC<ConsentBannerProps>;

@@ -1,5 +1,25 @@
 import React from 'react';
 import { PolicySection, PolicyVariable } from '../../types/privacy';
+export interface PolicyPreviewClassNames {
+    /** Root container */
+    root?: string;
+    /** Header area containing title and description */
+    header?: string;
+    /** Title element */
+    title?: string;
+    /** Description element */
+    description?: string;
+    /** Content area wrapping the rendered policy */
+    content?: string;
+    /** Individual rendered section container */
+    section?: string;
+    /** Section title within rendered content */
+    sectionTitle?: string;
+    /** Section content within rendered content */
+    sectionContent?: string;
+    /** NDPA compliance notice */
+    complianceNotice?: string;
+}
 export interface PolicyPreviewProps {
     /**
      * The policy content to preview
@@ -67,5 +87,14 @@ export interface PolicyPreviewProps {
      * The last updated date to display in the policy
      */
     lastUpdated?: Date;
+    /**
+     * Override class names for internal elements
+     */
+    classNames?: PolicyPreviewClassNames;
+    /**
+     * If true, removes all default styles. Use with classNames to apply your own.
+     * @default false
+     */
+    unstyled?: boolean;
 }
 export declare const PolicyPreview: React.FC<PolicyPreviewProps>;

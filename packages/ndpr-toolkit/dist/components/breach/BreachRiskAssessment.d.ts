@@ -1,5 +1,15 @@
 import React from 'react';
 import { BreachReport, RiskAssessment } from '../../types/breach';
+export interface BreachRiskAssessmentClassNames {
+    root?: string;
+    header?: string;
+    title?: string;
+    slider?: string;
+    riskBadge?: string;
+    riskScore?: string;
+    notificationStatus?: string;
+    submitButton?: string;
+}
 export interface BreachRiskAssessmentProps {
     /**
      * The breach data to assess
@@ -36,6 +46,14 @@ export interface BreachRiskAssessmentProps {
      * Custom CSS class for the submit button
      */
     buttonClassName?: string;
+    /**
+     * Override class names for individual elements
+     */
+    classNames?: BreachRiskAssessmentClassNames;
+    /**
+     * Remove all default styles, only applying classNames overrides
+     */
+    unstyled?: boolean;
     /**
      * Whether to show the breach summary
      * @default true

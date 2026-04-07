@@ -1,5 +1,15 @@
 import React from 'react';
 import { DSRRequest, DSRStatus } from '../../types/dsr';
+export interface DSRDashboardClassNames {
+    root?: string;
+    header?: string;
+    title?: string;
+    filters?: string;
+    requestList?: string;
+    requestItem?: string;
+    statusBadge?: string;
+    detailPanel?: string;
+}
 export interface DSRDashboardProps {
     /**
      * List of DSR requests to display
@@ -54,5 +64,14 @@ export interface DSRDashboardProps {
      * List of possible assignees
      */
     assignees?: string[];
+    /**
+     * Object of CSS class overrides keyed by semantic section name.
+     */
+    classNames?: DSRDashboardClassNames;
+    /**
+     * When true, all default Tailwind classes are removed so consumers
+     * can style from scratch using classNames.
+     */
+    unstyled?: boolean;
 }
 export declare const DSRDashboard: React.FC<DSRDashboardProps>;
