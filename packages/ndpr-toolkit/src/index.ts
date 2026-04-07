@@ -11,7 +11,7 @@ export type { ConsentOption, ConsentSettings, ConsentStorageOptions, LawfulBasis
 export { DSRRequestForm } from './components/dsr/DSRRequestForm';
 export { DSRDashboard } from './components/dsr/DSRDashboard';
 export { DSRTracker } from './components/dsr/DSRTracker';
-export type { DSRRequestFormClassNames } from './components/dsr/DSRRequestForm';
+export type { DSRRequestFormClassNames, DSRFormSubmission } from './components/dsr/DSRRequestForm';
 export type { DSRDashboardClassNames } from './components/dsr/DSRDashboard';
 export type { DSRTrackerClassNames } from './components/dsr/DSRTracker';
 export type { DSRRequest, RequestType, DSRStatus, DSRType, RequestStatus } from './types/dsr';
@@ -30,7 +30,7 @@ export { BreachReportForm } from './components/breach/BreachReportForm';
 export { BreachRiskAssessment } from './components/breach/BreachRiskAssessment';
 export { BreachNotificationManager } from './components/breach/BreachNotificationManager';
 export { RegulatoryReportGenerator } from './components/breach/RegulatoryReportGenerator';
-export type { BreachReportFormClassNames } from './components/breach/BreachReportForm';
+export type { BreachReportFormClassNames, BreachFormSubmission } from './components/breach/BreachReportForm';
 export type { BreachRiskAssessmentClassNames } from './components/breach/BreachRiskAssessment';
 export type { BreachNotificationManagerClassNames } from './components/breach/BreachNotificationManager';
 export type { RegulatoryReportGeneratorClassNames } from './components/breach/RegulatoryReportGenerator';
@@ -45,6 +45,10 @@ export { PolicyExporter } from './components/policy/PolicyExporter';
 export type { PolicyExporterClassNames } from './components/policy/PolicyExporter';
 export type { PolicySection, PolicyTemplate, PolicyVariable, OrganizationInfo, PrivacyPolicy } from './types/privacy';
 
+// NDPRProvider
+export { NDPRProvider, useNDPRConfig } from './components/NDPRProvider';
+export type { NDPRConfig } from './components/NDPRProvider';
+
 // Utility Functions
 export { resolveClass } from './utils/styling';
 export { validateConsent, validateConsentOptions } from './utils/consent';
@@ -52,6 +56,7 @@ export { formatDSRRequest } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
 export { generatePolicyText } from './utils/privacy';
+export { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES, createBusinessPolicyTemplate } from './utils/policy-templates';
 
 // Hooks
 export { useConsent } from './hooks/useConsent';

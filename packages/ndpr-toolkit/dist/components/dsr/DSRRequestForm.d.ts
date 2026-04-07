@@ -1,5 +1,24 @@
 import React from 'react';
 import { RequestType } from '../../types/dsr';
+/**
+ * Represents the data submitted by the DSR request form.
+ */
+export interface DSRFormSubmission {
+    /** The selected request type identifier */
+    requestType: string;
+    /** Data subject personal information */
+    dataSubject: {
+        fullName: string;
+        email: string;
+        phone?: string;
+        identifierType: string;
+        identifierValue: string;
+    };
+    /** Additional information provided for the selected request type */
+    additionalInfo?: Record<string, any>;
+    /** Timestamp (ms) when the form was submitted */
+    submittedAt: number;
+}
 export interface DSRRequestFormClassNames {
     root?: string;
     title?: string;
@@ -21,7 +40,11 @@ export interface DSRRequestFormProps {
     /**
      * Callback function called when form is submitted
      */
-    onSubmit: (formData: any) => void;
+    onSubmit: (data: DSRFormSubmission) => void;
+    /**
+     * Callback function called when form validation fails
+     */
+    onValidationError?: (errors: Record<string, string>) => void;
     /**
      * Title displayed on the form
      * @default "Submit a Data Subject Request"

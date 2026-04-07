@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0] — 2026-04-07
+
+### Added
+- CSS custom properties (design tokens) for framework-agnostic theming
+  - `--ndpr-primary`, `--ndpr-primary-hover`, `--ndpr-background`, etc.
+  - Dark mode tokens via `.dark` and `[data-theme="dark"]` selectors
+  - Consumers can theme all components by overriding CSS variables once
+- `NDPRProvider` context for shared configuration across components
+  - Provides organizationName, dpoEmail, theme, unstyled globally
+  - `useNDPRConfig()` hook to access config from any component
+- Default policy templates — `PolicyGenerator` now works without props
+  - `DEFAULT_POLICY_SECTIONS` (8 NDPA-compliant sections)
+  - `DEFAULT_POLICY_VARIABLES` (8 common variables)
+  - `createBusinessPolicyTemplate()` factory function
+- `onValidationError` callback on DSRRequestForm and BreachReportForm
+- ConsentBanner `inline` position option for embedding without portal
+- ConsentBanner `zIndex` prop (default: 9999)
+- Escape key dismisses ConsentBanner
+
+### Fixed
+- ConsentBanner now renders via `createPortal` to `document.body` — properly overlays page content instead of rendering inline
+- ConsentBanner center position now shows with backdrop overlay
+- `onSubmit` callbacks typed — `DSRFormSubmission` and `BreachFormSubmission` replace `any`
+- Consent components use CSS variables instead of hardcoded `blue-600`
+
+### Changed
+- `PolicyGenerator` sections and variables props are now optional
+- `./styles` CSS export now includes design tokens (was animation-only)
+
 ## [2.2.0] — 2026-04-07
 
 ### Added

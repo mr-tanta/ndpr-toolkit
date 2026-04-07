@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { generatePolicyText } from '../../utils/privacy';
 import { resolveClass } from '../../utils/styling';
 import { PolicySection, PolicyVariable } from '../../types/privacy';
-
-// Using PolicySection and PolicyVariable from types/privacy.ts
+import { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES } from '../../utils/policy-templates';
 
 export interface PolicyGeneratorClassNames {
   /** Root container */
@@ -31,13 +30,15 @@ export interface PolicyGeneratorClassNames {
 export interface PolicyGeneratorProps {
   /**
    * List of policy sections
+   * @default DEFAULT_POLICY_SECTIONS
    */
-  sections: PolicySection[];
+  sections?: PolicySection[];
 
   /**
    * List of policy variables
+   * @default DEFAULT_POLICY_VARIABLES
    */
-  variables: PolicyVariable[];
+  variables?: PolicyVariable[];
 
   /**
    * Callback function called when the policy is generated
@@ -97,8 +98,8 @@ export interface PolicyGeneratorProps {
 }
 
 export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
-  sections: initialSections,
-  variables: initialVariables,
+  sections: initialSections = DEFAULT_POLICY_SECTIONS,
+  variables: initialVariables = DEFAULT_POLICY_VARIABLES,
   onGenerate,
   title = "NDPA Privacy Policy Generator",
   description = "Generate an NDPA-compliant privacy policy for your organization.",

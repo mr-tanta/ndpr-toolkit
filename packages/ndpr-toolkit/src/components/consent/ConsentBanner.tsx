@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
 import { resolveClass } from '../../utils/styling';
 
@@ -67,11 +68,21 @@ export interface ConsentBannerProps {
   saveButtonText?: string;
   
   /**
-   * Position of the banner
+   * Position of the banner.
+   * 'top', 'bottom', and 'center' render via a portal to document.body
+   * with fixed positioning so the banner overlays the page.
+   * 'inline' renders in the normal DOM tree without a portal.
    * @default "bottom"
    */
-  position?: 'top' | 'bottom' | 'center';
-  
+  position?: 'top' | 'bottom' | 'center' | 'inline';
+
+  /**
+   * z-index applied to the fixed-position banner.
+   * Ignored when position is 'inline'.
+   * @default 9999
+   */
+  zIndex?: number;
+
   /**
    * Version of the consent form
    * @default "1.0"
@@ -133,6 +144,7 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   customizeButtonText = "Customize",
   saveButtonText = "Save Preferences",
   position = "bottom",
+  zIndex = 9999,
   version = "1.0",
   show,
   storageKey = "ndpr_consent",
@@ -211,31 +223,63 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
     setShowCustomize(false);
   };
   
+  // Dismiss on Escape key
+  const dismiss = useCallback(() => {
+    setIsOpen(false);
+    setShowCustomize(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        dismiss();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, dismiss]);
+
   if (!isOpen) {
     return null;
   }
-  
-  const positionClass = 
-    position === 'top' ? 'top-0 left-0 right-0' :
-    position === 'center' ? 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-lg' :
-    'bottom-0 left-0 right-0';
-  
+
   const resolvedAcceptButton = classNames?.acceptButton
-    || `px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName} ${primaryButtonClassName}`;
+    || `px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName} ${primaryButtonClassName}`;
   const resolvedRejectButton = classNames?.rejectButton
     || `px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${buttonClassName} ${secondaryButtonClassName}`;
   const resolvedCustomizeButton = classNames?.customizeButton
     || `px-4 py-2 bg-transparent text-gray-800 dark:text-white hover:underline ${buttonClassName}`;
   const resolvedSaveButton = classNames?.saveButton
-    || `px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName} ${primaryButtonClassName}`;
+    || `px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName} ${primaryButtonClassName}`;
 
-  return (
+  // Build position classes for the root element
+  const isInline = position === 'inline';
+  const isCenter = position === 'center';
+
+  let rootPositionClass: string;
+  if (isInline) {
+    rootPositionClass = '';
+  } else if (isCenter) {
+    // Full-screen overlay wrapper is used for center; the inner banner has no extra position class
+    rootPositionClass = '';
+  } else if (position === 'top') {
+    rootPositionClass = 'fixed inset-x-0 top-0';
+  } else {
+    // bottom (default)
+    rootPositionClass = 'fixed inset-x-0 bottom-0';
+  }
+
+  const bannerContent = (
     <div
       className={resolveClass(
-        `fixed z-50 bg-white dark:bg-gray-800 shadow-lg p-4 border border-gray-200 dark:border-gray-700 ${positionClass} ${className}`,
+        `${isInline ? '' : rootPositionClass} bg-white dark:bg-gray-800 shadow-lg p-4 border border-gray-200 dark:border-gray-700 ${isCenter ? 'max-w-lg w-full' : ''} ${className}`,
         classNames?.root,
         unstyled
       )}
+      style={!isInline && !isCenter ? { zIndex } : undefined}
       role="dialog"
       aria-labelledby="consent-banner-title"
     >
@@ -255,7 +299,7 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
                       checked={consents[option.id] || false}
                       onChange={e => handleToggleConsent(option.id, e.target.checked)}
                       disabled={option.required}
-                      className={resolveClass('h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500', classNames?.optionCheckbox, unstyled)}
+                      className={resolveClass('h-4 w-4 rounded border-gray-300 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]', classNames?.optionCheckbox, unstyled)}
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -312,4 +356,38 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
       </div>
     </div>
   );
+
+  // Inline position: render in normal DOM tree, no portal
+  if (isInline) {
+    return bannerContent;
+  }
+
+  // Center position: wrap in a full-screen backdrop overlay
+  if (isCenter) {
+    const centerOverlay = (
+      <div
+        className="fixed inset-0 flex items-center justify-center"
+        style={{ zIndex }}
+      >
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-black/50"
+          aria-hidden="true"
+        />
+        {/* Banner (relative to escape the absolute backdrop) */}
+        <div className="relative">
+          {bannerContent}
+        </div>
+      </div>
+    );
+
+    return typeof document !== 'undefined'
+      ? createPortal(centerOverlay, document.body)
+      : centerOverlay;
+  }
+
+  // Top / Bottom positions: portal to document.body with fixed positioning
+  return typeof document !== 'undefined'
+    ? createPortal(bannerContent, document.body)
+    : bannerContent;
 };

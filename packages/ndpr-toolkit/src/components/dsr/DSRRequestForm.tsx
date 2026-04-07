@@ -2,6 +2,26 @@ import React, { useState } from 'react';
 import { RequestType } from '../../types/dsr';
 import { resolveClass } from '../../utils/styling';
 
+/**
+ * Represents the data submitted by the DSR request form.
+ */
+export interface DSRFormSubmission {
+  /** The selected request type identifier */
+  requestType: string;
+  /** Data subject personal information */
+  dataSubject: {
+    fullName: string;
+    email: string;
+    phone?: string;
+    identifierType: string;
+    identifierValue: string;
+  };
+  /** Additional information provided for the selected request type */
+  additionalInfo?: Record<string, any>;
+  /** Timestamp (ms) when the form was submitted */
+  submittedAt: number;
+}
+
 export interface DSRRequestFormClassNames {
   root?: string;
   title?: string;
@@ -25,7 +45,12 @@ export interface DSRRequestFormProps {
   /**
    * Callback function called when form is submitted
    */
-  onSubmit: (formData: any) => void;
+  onSubmit: (data: DSRFormSubmission) => void;
+
+  /**
+   * Callback function called when form validation fails
+   */
+  onValidationError?: (errors: Record<string, string>) => void;
   
   /**
    * Title displayed on the form
@@ -114,6 +139,7 @@ export interface DSRRequestFormProps {
 export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   requestTypes,
   onSubmit,
+  onValidationError,
   title = "Submit a Data Subject Request",
   description = "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA).",
   submitButtonText = "Submit Request",
@@ -156,27 +182,27 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
     }));
   };
   
-  const validateForm = () => {
+  const validateForm = (): Record<string, string> => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!fullName.trim()) {
       newErrors.fullName = "Full name is required";
     }
-    
+
     if (!email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "Email is invalid";
     }
-    
+
     if (!selectedRequestType) {
       newErrors.requestType = "Please select a request type";
     }
-    
+
     if (requireIdentityVerification && !identifierValue.trim()) {
       newErrors.identifierValue = "Identifier value is required";
     }
-    
+
     // Validate additional fields if required
     if (selectedType?.requiresAdditionalInfo && selectedType.additionalFields) {
       selectedType.additionalFields.forEach(field => {
@@ -185,19 +211,21 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
         }
       });
     }
-    
+
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      onValidationError?.(validationErrors);
       return;
     }
-    
-    const formData = {
+
+    const formData: DSRFormSubmission = {
       requestType: selectedRequestType,
       dataSubject: {
         fullName,
@@ -209,7 +237,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
       additionalInfo: Object.keys(additionalInfo).length > 0 ? additionalInfo : undefined,
       submittedAt: Date.now()
     };
-    
+
     onSubmit(formData);
     
     if (showConfirmation) {

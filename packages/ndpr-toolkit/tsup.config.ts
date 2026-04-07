@@ -26,4 +26,15 @@ export default defineConfig({
       js: format === 'esm' ? '.mjs' : '.js',
     };
   },
+  onSuccess: async () => {
+    const fs = await import('fs');
+    const path = await import('path');
+
+    const animationsSource = path.join('src', 'styles', 'animations.css');
+    const animationsDest = path.join('dist', 'styles.css');
+
+    if (fs.existsSync(animationsSource)) {
+      fs.copyFileSync(animationsSource, animationsDest);
+    }
+  },
 });

@@ -25,12 +25,14 @@ export interface PolicyGeneratorClassNames {
 export interface PolicyGeneratorProps {
     /**
      * List of policy sections
+     * @default DEFAULT_POLICY_SECTIONS
      */
-    sections: PolicySection[];
+    sections?: PolicySection[];
     /**
      * List of policy variables
+     * @default DEFAULT_POLICY_VARIABLES
      */
-    variables: PolicyVariable[];
+    variables?: PolicyVariable[];
     /**
      * Callback function called when the policy is generated
      */

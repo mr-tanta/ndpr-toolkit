@@ -2,6 +2,48 @@ import React, { useState } from 'react';
 import { BreachCategory } from '../../types/breach';
 import { resolveClass } from '../../utils/styling';
 
+/**
+ * Represents the data submitted by the breach report form.
+ */
+export interface BreachFormSubmission {
+  /** Title/summary of the breach */
+  title: string;
+  /** Detailed description of the breach */
+  description: string;
+  /** Breach category identifier */
+  category: string;
+  /** Timestamp (ms) when the breach was discovered */
+  discoveredAt: number;
+  /** Timestamp (ms) when the breach occurred (if known) */
+  occurredAt?: number;
+  /** Timestamp (ms) when the form was submitted */
+  reportedAt: number;
+  /** Person reporting the breach */
+  reporter: {
+    name: string;
+    email: string;
+    department: string;
+    phone?: string;
+  };
+  /** Systems or applications affected by the breach */
+  affectedSystems: string[];
+  /** Types of data involved in the breach */
+  dataTypes: string[];
+  /** Estimated number of affected data subjects */
+  estimatedAffectedSubjects?: number;
+  /** Current status of the breach */
+  status: 'ongoing' | 'contained' | 'resolved';
+  /** Initial actions taken to address the breach */
+  initialActions?: string;
+  /** File attachments included with the report */
+  attachments: Array<{
+    name: string;
+    type: string;
+    size: number;
+    file: File;
+  }>;
+}
+
 export interface BreachReportFormClassNames {
   root?: string;
   title?: string;
@@ -24,7 +66,12 @@ export interface BreachReportFormProps {
   /**
    * Callback function called when form is submitted
    */
-  onSubmit: (formData: any) => void;
+  onSubmit: (data: BreachFormSubmission) => void;
+
+  /**
+   * Callback function called when form validation fails
+   */
+  onValidationError?: (errors: Record<string, string>) => void;
   
   /**
    * Title displayed on the form
@@ -104,6 +151,7 @@ export interface BreachReportFormProps {
 export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   categories,
   onSubmit,
+  onValidationError,
   title = "Report a Data Breach",
   formDescription = "Use this form to report a suspected or confirmed data breach. All fields marked with * are required.",
   submitButtonText = "Submit Report",
@@ -208,64 +256,66 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   };
   
   // Validate the form
-  const validateForm = () => {
+  const validateForm = (): Record<string, string> => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!breachTitle.trim()) {
       newErrors.breachTitle = "Breach title is required";
     }
-    
+
     if (!description.trim()) {
       newErrors.description = "Description is required";
     }
-    
+
     if (!category) {
       newErrors.category = "Category is required";
     }
-    
+
     if (!discoveredAt) {
       newErrors.discoveredAt = "Discovery date is required";
     }
-    
+
     if (!reporterName.trim()) {
       newErrors.reporterName = "Reporter name is required";
     }
-    
+
     if (!reporterEmail.trim()) {
       newErrors.reporterEmail = "Reporter email is required";
     } else if (!/\S+@\S+\.\S+/.test(reporterEmail)) {
       newErrors.reporterEmail = "Reporter email is invalid";
     }
-    
+
     if (!reporterDepartment.trim()) {
       newErrors.reporterDepartment = "Reporter department is required";
     }
-    
+
     if (affectedSystems.length === 0) {
       newErrors.affectedSystems = "At least one affected system is required";
     }
-    
+
     if (dataTypes.length === 0) {
       newErrors.dataTypes = "At least one data type is required";
     }
-    
+
     if (estimatedAffectedSubjects && isNaN(Number(estimatedAffectedSubjects))) {
       newErrors.estimatedAffectedSubjects = "Estimated affected subjects must be a number";
     }
-    
+
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
   };
   
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      onValidationError?.(validationErrors);
       return;
     }
-    
-    const formData = {
+
+    const formData: BreachFormSubmission = {
       title: breachTitle,
       description,
       category,
@@ -290,7 +340,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
         file
       }))
     };
-    
+
     onSubmit(formData);
     
     if (showConfirmation) {

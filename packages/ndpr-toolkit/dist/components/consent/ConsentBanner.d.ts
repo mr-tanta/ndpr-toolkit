@@ -56,10 +56,19 @@ export interface ConsentBannerProps {
      */
     saveButtonText?: string;
     /**
-     * Position of the banner
+     * Position of the banner.
+     * 'top', 'bottom', and 'center' render via a portal to document.body
+     * with fixed positioning so the banner overlays the page.
+     * 'inline' renders in the normal DOM tree without a portal.
      * @default "bottom"
      */
-    position?: 'top' | 'bottom' | 'center';
+    position?: 'top' | 'bottom' | 'center' | 'inline';
+    /**
+     * z-index applied to the fixed-position banner.
+     * Ignored when position is 'inline'.
+     * @default 9999
+     */
+    zIndex?: number;
     /**
      * Version of the consent form
      * @default "1.0"

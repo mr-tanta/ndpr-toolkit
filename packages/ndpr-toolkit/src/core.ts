@@ -18,12 +18,17 @@ export type { LawfulBasisComplianceGap, LawfulBasisValidationResult } from './ut
 export type { TransferValidationResult, TransferRiskResult } from './utils/cross-border';
 export type { ROPAComplianceGap, ROPAValidationResult } from './utils/ropa';
 
+// NDPRProvider
+export { NDPRProvider, useNDPRConfig } from './components/NDPRProvider';
+export type { NDPRConfig } from './components/NDPRProvider';
+
 // All utility functions
 export { validateConsent, validateConsentOptions } from './utils/consent';
 export { formatDSRRequest } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
 export { generatePolicyText } from './utils/privacy';
+export { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES, createBusinessPolicyTemplate } from './utils/policy-templates';
 export { validateProcessingActivity, getLawfulBasisDescription, assessComplianceGaps, generateLawfulBasisSummary } from './utils/lawful-basis';
 export { validateTransfer, getTransferMechanismDescription, assessTransferRisk, isNDPCApprovalRequired } from './utils/cross-border';
 export { validateProcessingRecord, generateROPASummary, exportROPAToCSV, identifyComplianceGaps } from './utils/ropa';
