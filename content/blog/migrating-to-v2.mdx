@@ -1,0 +1,348 @@
+---
+title: "Migrating from NDPR Toolkit v1.x to v2.x"
+description: "A step-by-step migration guide for upgrading from v1.x to v2.x, covering breaking changes, new imports, and NDPA 2023 alignment."
+date: "2026-04-06"
+author: "Abraham Esandayinze Tanta"
+tags: ["migration", "upgrade", "v2", "guide"]
+---
+
+# Migrating from NDPR Toolkit v1.x to v2.x
+
+Version 2.0 of the NDPA Toolkit is a ground-up rewrite aligned with the Nigeria Data Protection Act (NDPA) 2023. This guide walks through every breaking change, new feature, and migration step so you can upgrade with confidence.
+
+## Why v2?
+
+The original toolkit was built around the Nigeria Data Protection Regulation (NDPR) of 2019. When the NDPA was signed into law on 12 June 2023, the regulatory landscape changed fundamentally:
+
+- **NITDA** was replaced by the **NDPC** (Nigeria Data Protection Commission) as the primary regulator
+- New data subject rights were added (right to information, right against automated decision-making)
+- Cross-border transfer requirements became more structured (Part VI, Sections 41-45)
+- DPIA became mandatory for high-risk processing (Sections 38-39)
+- Lawful basis requirements were codified into six distinct categories (Section 25)
+
+Patching v1 was not feasible. v2 is a clean rebuild.
+
+---
+
+## Step 1: Update Your Dependencies
+
+### package.json Changes
+
+In v1, the package included all UI dependencies as direct dependencies. In v2, UI-related packages are **optional peer dependencies** -- you only install what you actually use.
+
+**v1 (old):**
+
+```json
+{
+  "dependencies": {
+    "@tantainnovative/ndpr-toolkit": "^1.0.0"
+  }
+}
+```
+
+**v2 (new):**
+
+```json
+{
+  "dependencies": {
+    "@tantainnovative/ndpr-toolkit": "^2.0.0"
+  }
+}
+```
+
+If you use the full UI components (not just hooks or core utilities), install the peer dependencies:
+
+```bash
+pnpm add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
+```
+
+If you only need hooks or core utilities, no extra dependencies are required:
+
+```bash
+# Hooks only -- requires just react
+import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+
+# Core only -- zero UI dependencies
+import { validateConsent } from '@tantainnovative/ndpr-toolkit/core';
+```
+
+---
+
+## Step 2: Update Import Paths
+
+The biggest breaking change in v2 is the move from a single bare import to modular entry points. This keeps your bundle small by only including the modules you use.
+
+### Before (v1) -- Single Entry Point
+
+```typescript
+import {
+  ConsentBanner,
+  DSRRequestForm,
+  BreachReportForm,
+  useConsent,
+  validateConsent,
+} from '@tantainnovative/ndpr-toolkit';
+```
+
+### After (v2) -- Modular Imports
+
+```typescript
+// Per-module imports (recommended for bundle size)
+import { ConsentBanner, useConsent, validateConsent } from '@tantainnovative/ndpr-toolkit/consent';
+import { DSRRequestForm, useDSR } from '@tantainnovative/ndpr-toolkit/dsr';
+import { BreachReportForm, useBreach } from '@tantainnovative/ndpr-toolkit/breach';
+
+// Or import by layer
+import { validateConsent, getLawfulBasisDescription } from '@tantainnovative/ndpr-toolkit/core';
+import { useConsent, useDSR, useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
+```
+
+### Import Path Reference
+
+| v1 Import | v2 Import Path | What You Get |
+|-----------|---------------|--------------|
+| `'@tantainnovative/ndpr-toolkit'` | `'/consent'` | ConsentBanner, ConsentManager, ConsentStorage, useConsent |
+| `'@tantainnovative/ndpr-toolkit'` | `'/dsr'` | DSRRequestForm, DSRDashboard, DSRTracker, useDSR |
+| `'@tantainnovative/ndpr-toolkit'` | `'/dpia'` | DPIAQuestionnaire, DPIAReport, StepIndicator, useDPIA |
+| `'@tantainnovative/ndpr-toolkit'` | `'/breach'` | BreachReportForm, BreachRiskAssessment, BreachNotificationManager, RegulatoryReportGenerator, useBreach |
+| `'@tantainnovative/ndpr-toolkit'` | `'/policy'` | PolicyGenerator, PolicyPreview, PolicyExporter, usePrivacyPolicy |
+| N/A (new) | `'/lawful-basis'` | LawfulBasisTracker, useLawfulBasis |
+| N/A (new) | `'/cross-border'` | CrossBorderTransferManager, useCrossBorderTransfer |
+| N/A (new) | `'/ropa'` | ROPAManager, useROPA |
+| `'@tantainnovative/ndpr-toolkit'` | `'/core'` | Types, validators, utility functions (no React) |
+| `'@tantainnovative/ndpr-toolkit'` | `'/hooks'` | All React hooks (no UI components) |
+
+> **Note:** The bare import `'@tantainnovative/ndpr-toolkit'` still works in v2 and re-exports everything. However, it pulls in all modules and all peer dependencies into your bundle. Use modular imports for production apps.
+
+---
+
+## Step 3: Rename NITDA Fields to NDPC
+
+All field names, type definitions, and configuration options that referenced NITDA have been renamed to NDPC to reflect the new regulatory body established by the NDPA 2023.
+
+### Field Name Changes
+
+| v1 Field Name | v2 Field Name |
+|--------------|--------------|
+| `nitdaNotificationRequired` | `ndpcNotificationRequired` |
+| `nitdaNotificationDeadline` | `ndpcNotificationDeadline` |
+| `nitdaReferenceNumber` | `ndpcReferenceNumber` |
+| `nitdaComplianceStatus` | `ndpcComplianceStatus` |
+| `notifyNITDA` | `notifyNDPC` |
+| `NITDAReportFormat` | `NDPCReportFormat` |
+
+### Find and Replace
+
+Run this across your codebase to catch all occurrences:
+
+```bash
+# Case-sensitive replacements
+grep -rn "nitda" src/ --include="*.ts" --include="*.tsx"
+grep -rn "NITDA" src/ --include="*.ts" --include="*.tsx"
+```
+
+Common patterns to update:
+
+```typescript
+// v1
+const breach = {
+  nitdaNotificationRequired: true,
+  nitdaNotificationDeadline: new Date(),
+};
+
+// v2
+const breach = {
+  ndpcNotificationRequired: true,
+  ndpcNotificationDeadline: new Date(),
+};
+```
+
+```typescript
+// v1
+if (report.notifyNITDA) {
+  sendNotification('NITDA', report);
+}
+
+// v2
+if (report.notifyNDPC) {
+  sendNotification('NDPC', report);
+}
+```
+
+---
+
+## Step 4: Adopt New Styling Features
+
+v2 introduces three powerful styling features that did not exist in v1.
+
+### classNames Prop
+
+Every component now accepts a `classNames` prop that lets you override individual section classes without touching the rest:
+
+```tsx
+// v1 -- no granular styling control
+<ConsentBanner options={options} onSave={handleSave} />
+
+// v2 -- override specific sections
+<ConsentBanner
+  options={options}
+  onSave={handleSave}
+  classNames={{
+    root: 'fixed bottom-0 inset-x-0 bg-brand-900 text-white p-6',
+    acceptButton: 'bg-green-600 text-white px-6 py-2 rounded-full',
+    rejectButton: 'border border-white px-6 py-2 rounded-full',
+  }}
+/>
+```
+
+Each component exports a TypeScript interface for its classNames keys (e.g. `ConsentBannerClassNames`), giving you full autocomplete. See the [Styling & Customization guide](https://ndprtoolkit.com.ng/docs/guides/styling-customization) for the complete reference of all 169 keys across 19 components.
+
+### unstyled Prop
+
+Set `unstyled={true}` to strip all default Tailwind classes. This gives you a blank canvas for your own CSS framework:
+
+```tsx
+<ConsentBanner
+  options={options}
+  onSave={handleSave}
+  unstyled
+  classNames={{
+    root: 'my-consent-banner',
+    acceptButton: 'btn btn-primary',
+    rejectButton: 'btn btn-outline-secondary',
+  }}
+/>
+```
+
+### NDPRProvider (CSS Custom Properties)
+
+Wrap your app in `NDPRProvider` to set theme-level CSS custom properties that all toolkit components inherit:
+
+```tsx
+import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
+
+<NDPRProvider
+  theme={{
+    primaryColor: '#2563eb',
+    borderRadius: '8px',
+    fontFamily: 'Inter, system-ui, sans-serif',
+  }}
+>
+  <App />
+</NDPRProvider>
+```
+
+---
+
+## Step 5: Explore the Three New Modules
+
+v2 ships with three entirely new modules that address NDPA requirements not covered by v1.
+
+### Lawful Basis Tracker (NDPA Section 25)
+
+Document and manage the lawful basis for every processing activity. Covers all six NDPA bases: consent, contract, legal obligation, vital interest, public interest, and legitimate interest.
+
+```typescript
+import { LawfulBasisTracker, useLawfulBasis, validateProcessingActivity } from '@tantainnovative/ndpr-toolkit/lawful-basis';
+
+const { activities, addActivity, getSummary } = useLawfulBasis();
+
+addActivity({
+  name: 'Email marketing',
+  lawfulBasis: 'consent',
+  lawfulBasisJustification: 'Explicit opt-in at signup',
+  dataCategories: ['email', 'name'],
+  status: 'active',
+});
+```
+
+### Cross-Border Transfer Assessment (NDPA Sections 41-45)
+
+Evaluate adequacy decisions, standard contractual clauses, binding corporate rules, and derogations for international data transfers.
+
+```typescript
+import { CrossBorderTransferManager, useCrossBorderTransfer, assessTransferRisk } from '@tantainnovative/ndpr-toolkit/cross-border';
+
+const { transfers, addTransfer, getSummary } = useCrossBorderTransfer({
+  onAdd: (transfer) => logTransfer(transfer),
+});
+```
+
+### Record of Processing Activities -- ROPA (NDPA Section 28(2))
+
+Maintain comprehensive records of all processing activities for audit readiness and NDPC accountability.
+
+```typescript
+import { ROPAManager, useROPA, generateROPASummary, exportROPAToCSV } from '@tantainnovative/ndpr-toolkit/ropa';
+
+const { ropa, addRecord, getSummary } = useROPA({
+  initialData: {
+    id: 'ropa-1',
+    organizationName: 'Acme Ltd',
+    organizationContact: 'dpo@acme.ng',
+    records: [],
+  },
+});
+```
+
+---
+
+## Migration Checklist
+
+Use this checklist to track your migration progress:
+
+- [ ] Update `@tantainnovative/ndpr-toolkit` to `^2.0.0` in `package.json`
+- [ ] Install required peer dependencies (Radix, Tailwind utilities) if using UI components
+- [ ] Replace bare imports with modular import paths (`/consent`, `/dsr`, `/breach`, etc.)
+- [ ] Rename all `nitda*` fields to `ndpc*` (e.g. `nitdaNotificationRequired` to `ndpcNotificationRequired`)
+- [ ] Rename all `NITDA` string references to `NDPC` in templates and UI text
+- [ ] Test all consent flows -- the `ConsentBanner` and `ConsentManager` APIs are unchanged
+- [ ] Test all DSR flows -- `DSRRequestForm` and `DSRDashboard` APIs are unchanged
+- [ ] Test breach notification flows -- field names changed but component APIs are the same
+- [ ] Optionally adopt `classNames` and `unstyled` props for styling customization
+- [ ] Optionally wrap your app in `NDPRProvider` for theme-level CSS custom properties
+- [ ] Evaluate the three new modules (lawful-basis, cross-border, ropa) for your compliance needs
+- [ ] Run your test suite and verify all components render correctly
+- [ ] Update any NITDA references in your own documentation or user-facing text
+
+---
+
+## Troubleshooting
+
+### "Cannot find module '@tantainnovative/ndpr-toolkit/consent'"
+
+Make sure you are on v2.0.0 or later. The modular entry points do not exist in v1.
+
+```bash
+pnpm list @tantainnovative/ndpr-toolkit
+```
+
+### Missing Peer Dependencies
+
+If you see warnings about missing `@radix-ui/*` or `tailwind-merge`, install the UI peer dependencies:
+
+```bash
+pnpm add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
+```
+
+If you only use hooks (`/hooks`) or core utilities (`/core`), these are not needed.
+
+### TypeScript Errors After Rename
+
+If TypeScript reports errors for the old `nitda*` field names, the types have been updated in v2. Update your code to use the `ndpc*` equivalents. The TypeScript compiler will guide you to every location that needs updating.
+
+---
+
+## Summary of Breaking Changes
+
+| Area | v1 | v2 |
+|------|----|----|
+| Import paths | Single bare import | Modular `/consent`, `/dsr`, `/breach`, `/dpia`, `/policy`, `/lawful-basis`, `/cross-border`, `/ropa`, `/core`, `/hooks` |
+| Regulatory body references | NITDA | NDPC |
+| Field names | `nitdaNotificationRequired`, etc. | `ndpcNotificationRequired`, etc. |
+| UI dependencies | Bundled as direct deps | Optional peer dependencies |
+| Styling control | None | `classNames`, `unstyled`, `NDPRProvider` |
+| New modules | N/A | Lawful Basis Tracker, Cross-Border Transfer, ROPA |
+| NDPA section alignment | NDPR 2019 | NDPA 2023 (Sections 25-45) |
+
+If you run into issues during migration, check the [full documentation](https://ndprtoolkit.com.ng) or [open an issue on GitHub](https://github.com/tantainnovative/ndpr-toolkit/issues).

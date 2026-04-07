@@ -59,5 +59,8 @@ export default defineConfig({
     if (fs.existsSync(animationsSource)) {
       fs.copyFileSync(animationsSource, animationsDest);
     }
+
+    // Note: styles.d.ts is copied in the build:lib script after tsup completes,
+    // because the DTS build step runs after onSuccess and would overwrite .d.ts files.
   },
 });

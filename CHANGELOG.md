@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0] — 2026-04-07
+
+### Added
+- CSS custom properties applied to ALL 19 components (was only consent)
+- Consent analytics callback (`onAnalytics` prop with ConsentAnalyticsEvent)
+- Consent version enforcement — auto-shows banner when policy version changes
+- Consent audit trail utility (createAuditEntry, getAuditLog, appendAuditEntry)
+- `manageStorage` prop on ConsentBanner to prevent storage race conditions
+- `isSubmitting` prop on DSRRequestForm and BreachReportForm with loading state
+- `defaultValues` and `onReset` props on DSRRequestForm and BreachReportForm
+- `useDefaultPrivacyPolicy` convenience hook (zero-config privacy policy)
+- `primaryButton`/`secondaryButton` classNames aliases across 13 components
+- Select All / Deselect All toggle on ConsentBanner customize panel
+- Smooth transition animation on ConsentBanner customize panel
+- `sanitizeInput` utility for XSS prevention on form submissions
+- `data-ndpr-component` attribute with baseline focus-visible styles
+- Migration guide blog post (v1.x → v2.x)
+- Full classNames reference table in styling documentation (169 keys)
+
+### Fixed
+- `show` prop changes after mount now properly sync ConsentBanner visibility
+- Email validation regex strengthened (was accepting "a@b.c")
+- Color contrast: text-gray-500 → text-gray-600 across 14 components (WCAG AA)
+- ARIA: aria-invalid, aria-describedby, role="alert" on form validation errors
+- ARIA: focus management on ConsentBanner open
+- Responsive: buttons stack vertically on mobile
+- Input sanitization prevents XSS in form submissions
+
+### Changed
+- Zero runtime dependencies (uuid replaced with crypto.randomUUID)
+- lucide-react peer dep widened from ^0.507.0 to >=0.400.0
+- TypeScript module declaration added for ./styles import
+- All 15 components have NDPA section reference JSDoc comments
+- NDPA section references added to default component descriptions
+
 ## [2.3.0] — 2026-04-07
 
 ### Added

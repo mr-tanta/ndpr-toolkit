@@ -12,6 +12,10 @@ export interface ConsentManagerClassNames {
   toggle?: string;
   saveButton?: string;
   resetButton?: string;
+  /** Alias for saveButton */
+  primaryButton?: string;
+  /** Alias for resetButton */
+  secondaryButton?: string;
 }
 
 export interface ConsentManagerProps {
@@ -38,7 +42,7 @@ export interface ConsentManagerProps {
   
   /**
    * Description text displayed in the manager
-   * @default "Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function."
+   * @default "Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function. Consent management is provided in accordance with NDPA Sections 25-26."
    */
   description?: string;
   
@@ -111,12 +115,16 @@ export interface ConsentManagerProps {
   successMessageDuration?: number;
 }
 
+/**
+ * Consent management component. Implements NDPA Sections 25-26 consent requirements,
+ * allowing data subjects to review and update their consent preferences.
+ */
 export const ConsentManager: React.FC<ConsentManagerProps> = ({
   options,
   settings,
   onSave,
   title = "Manage Your Privacy Settings",
-  description = "Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function.",
+  description = "Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function. Consent management is provided in accordance with NDPA Sections 25-26.",
   saveButtonText = "Save Preferences",
   resetButtonText = "Reset to Defaults",
   version = "1.0",
@@ -180,9 +188,9 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
     setConsents(defaultConsents);
   };
   
-  const resolvedSaveButton = classNames?.saveButton
+  const resolvedSaveButton = classNames?.primaryButton || classNames?.saveButton
     || `px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName} ${primaryButtonClassName}`;
-  const resolvedResetButton = classNames?.resetButton
+  const resolvedResetButton = classNames?.secondaryButton || classNames?.resetButton
     || `px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${buttonClassName} ${secondaryButtonClassName}`;
 
   return (
@@ -196,7 +204,7 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-medium text-gray-900 dark:text-white">{option.label}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{option.description}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{option.description}</p>
               </div>
               <div className="ml-4 flex-shrink-0">
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -244,7 +252,7 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
         </button>
       </div>
 
-      <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
+      <div className="mt-4 text-xs text-gray-600 dark:text-gray-400">
         <p>Last updated: {settings ? new Date(settings.timestamp).toLocaleString() : 'Never'}</p>
         <p>Version: {version}</p>
       </div>

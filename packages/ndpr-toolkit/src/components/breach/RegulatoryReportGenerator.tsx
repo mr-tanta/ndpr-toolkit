@@ -11,7 +11,11 @@ export interface RegulatoryReportGeneratorClassNames {
   fieldLabel?: string;
   fieldValue?: string;
   generateButton?: string;
+  /** Alias for generateButton */
+  primaryButton?: string;
   downloadButton?: string;
+  /** Alias for downloadButton */
+  secondaryButton?: string;
 }
 
 export interface OrganizationInfo {
@@ -80,7 +84,7 @@ export interface RegulatoryReportGeneratorProps {
 
   /**
    * Description text displayed on the generator form
-   * @default "Generate a report for submission to the NDPC in compliance with the NDPA breach notification requirements."
+   * @default "Generate a report for submission to the NDPC in compliance with NDPA Section 40 breach notification requirements."
    */
   description?: string;
   
@@ -135,13 +139,17 @@ export interface RegulatoryReportGeneratorProps {
   downloadFormat?: 'pdf' | 'docx' | 'html';
 }
 
+/**
+ * Regulatory report generator component. Implements NDPA Section 40 requirements for
+ * generating formal breach notification reports for submission to the NDPC.
+ */
 export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps> = ({
   breachData,
   assessmentData,
   organizationInfo,
   onGenerate,
   title = "Generate NDPC Notification Report",
-  description = "Generate a report for submission to the NDPC in compliance with the NDPA breach notification requirements.",
+  description = "Generate a report for submission to the NDPC in compliance with NDPA Section 40 breach notification requirements.",
   generateButtonText = "Generate Report",
   className = "",
   buttonClassName = "",
@@ -365,7 +373,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             {allowDownload && (
               <button
                 onClick={handleDownload}
-                className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, cn.downloadButton, unstyled)}
+                className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`, cn.secondaryButton || cn.downloadButton, unstyled)}
               >
                 Download Report ({downloadFormat.toUpperCase()})
               </button>
@@ -393,7 +401,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     id="method"
                     value={method}
                     onChange={e => setMethod(e.target.value as 'email' | 'portal' | 'letter' | 'other')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                     required
                   >
                     {renderMethodOptions()}
@@ -410,7 +418,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     value={referenceNumber}
                     onChange={e => setReferenceNumber(e.target.value)}
                     placeholder="e.g. NDPC/BR/2024/001"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                   />
                 </div>
               </div>
@@ -429,7 +437,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     id="contactName"
                     value={contactName}
                     onChange={e => setContactName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                   />
                 </div>
                 
@@ -442,7 +450,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     id="contactEmail"
                     value={contactEmail}
                     onChange={e => setContactEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                   />
                 </div>
                 
@@ -455,7 +463,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     id="contactPhone"
                     value={contactPhone}
                     onChange={e => setContactPhone(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                   />
                 </div>
               </div>
@@ -474,7 +482,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                   onChange={e => setAdditionalInfo(e.target.value)}
                   rows={3}
                   placeholder="Any additional information you want to include in the report"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                 />
               </div>
             </div>
@@ -492,7 +500,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     value={reportContent}
                     onChange={e => setReportContent(e.target.value)}
                     rows={20}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] font-mono text-sm"
                     required
                   />
                 </div>
@@ -512,7 +520,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             <div className="mt-6">
               <button
                 type="submit"
-                className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`, cn.generateButton, unstyled)}
+                className={resolveClass(`px-6 py-3 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] focus:ring-offset-2 ${buttonClassName}`, cn.primaryButton || cn.generateButton, unstyled)}
               >
                 {generateButtonText}
               </button>

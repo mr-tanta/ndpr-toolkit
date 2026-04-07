@@ -12,6 +12,8 @@ export interface BreachRiskAssessmentClassNames {
   riskScore?: string;
   notificationStatus?: string;
   submitButton?: string;
+  /** Alias for submitButton */
+  primaryButton?: string;
 }
 
 export interface BreachRiskAssessmentProps {
@@ -38,7 +40,7 @@ export interface BreachRiskAssessmentProps {
   
   /**
    * Description text displayed on the assessment form
-   * @default "Assess the risk level of this data breach to determine notification requirements."
+   * @default "Assess the risk level of this data breach to determine notification requirements under NDPA Section 40."
    */
   description?: string;
   
@@ -81,12 +83,16 @@ export interface BreachRiskAssessmentProps {
   showNotificationRequirements?: boolean;
 }
 
+/**
+ * Breach risk assessment component. Implements NDPA Section 40 requirements for assessing
+ * breach severity and determining whether NDPC notification is required within 72 hours.
+ */
 export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
   breachData,
   initialAssessment = {},
   onComplete,
   title = "Breach Risk Assessment",
-  description = "Assess the risk level of this data breach to determine notification requirements.",
+  description = "Assess the risk level of this data breach to determine notification requirements under NDPA Section 40.",
   submitButtonText = "Complete Assessment",
   className = "",
   buttonClassName = "",
@@ -362,7 +368,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
           
           <button
             onClick={() => setIsSubmitted(false)}
-            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, cn.submitButton, unstyled)}
+            className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`, cn.primaryButton || cn.submitButton, unstyled)}
           >
             Edit Assessment
           </button>
@@ -377,7 +383,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
               <div className="mb-4">
                 <label htmlFor="confidentialityImpact" className="block text-sm font-medium mb-1">
                   Confidentiality Impact (1-5)
-                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                     How much has the confidentiality of data been compromised?
                   </span>
                 </label>
@@ -401,7 +407,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
               <div className="mb-4">
                 <label htmlFor="integrityImpact" className="block text-sm font-medium mb-1">
                   Integrity Impact (1-5)
-                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                     How much has the integrity of data been compromised?
                   </span>
                 </label>
@@ -425,7 +431,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
               <div className="mb-4">
                 <label htmlFor="availabilityImpact" className="block text-sm font-medium mb-1">
                   Availability Impact (1-5)
-                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                     How much has the availability of data or systems been compromised?
                   </span>
                 </label>
@@ -454,7 +460,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
               <div className="mb-4">
                 <label htmlFor="harmLikelihood" className="block text-sm font-medium mb-1">
                   Likelihood of Harm (1-5)
-                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                     How likely is it that data subjects will experience harm?
                   </span>
                 </label>
@@ -478,7 +484,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
               <div className="mb-4">
                 <label htmlFor="harmSeverity" className="block text-sm font-medium mb-1">
                   Severity of Harm (1-5)
-                  <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
                     How severe would the harm be to affected data subjects?
                   </span>
                 </label>
@@ -506,13 +512,13 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     id="risksToRightsAndFreedoms"
                     checked={risksToRightsAndFreedoms}
                     onChange={e => setRisksToRightsAndFreedoms(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 rounded border-gray-300 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
                   />
                   <label htmlFor="risksToRightsAndFreedoms" className="ml-2 text-sm font-medium">
                     This breach poses a risk to the rights and freedoms of data subjects
                   </label>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 ml-6">
+                <p className="text-xs text-gray-600 dark:text-gray-400 ml-6">
                   Under the NDPA (Section 40), breaches that pose a risk to rights and freedoms must be reported to the NDPC within 72 hours.
                 </p>
               </div>
@@ -524,13 +530,13 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     id="highRisksToRightsAndFreedoms"
                     checked={highRisksToRightsAndFreedoms}
                     onChange={e => setHighRisksToRightsAndFreedoms(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 rounded border-gray-300 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
                   />
                   <label htmlFor="highRisksToRightsAndFreedoms" className="ml-2 text-sm font-medium">
                     This breach poses a high risk to the rights and freedoms of data subjects
                   </label>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 ml-6">
+                <p className="text-xs text-gray-600 dark:text-gray-400 ml-6">
                   Under the NDPA (Section 40(4)), breaches that pose a high risk to rights and freedoms also require notification to affected data subjects without undue delay.
                 </p>
               </div>
@@ -561,7 +567,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                   onChange={e => setJustification(e.target.value)}
                   rows={4}
                   placeholder="Explain the reasoning behind your assessment, including any factors that influenced your decision."
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                   required
                 />
               </div>
@@ -580,7 +586,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
             <div className="mt-6">
               <button
                 type="submit"
-                className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`, cn.submitButton, unstyled)}
+                className={resolveClass(`px-6 py-3 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] focus:ring-offset-2 ${buttonClassName}`, cn.primaryButton || cn.submitButton, unstyled)}
               >
                 {submitButtonText}
               </button>

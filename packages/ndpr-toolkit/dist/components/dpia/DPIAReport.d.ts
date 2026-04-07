@@ -21,6 +21,8 @@ export interface DPIAReportClassNames {
     conclusion?: string;
     /** Print button */
     printButton?: string;
+    /** Alias for printButton */
+    primaryButton?: string;
 }
 export interface DPIAReportProps {
     /**
@@ -69,4 +71,8 @@ export interface DPIAReportProps {
      */
     unstyled?: boolean;
 }
+/**
+ * DPIA report component. Implements NDPA Sections 38-39 requirements for documenting
+ * and presenting Data Protection Impact Assessment findings, risks, and recommendations.
+ */
 export declare const DPIAReport: React.FC<DPIAReportProps>;

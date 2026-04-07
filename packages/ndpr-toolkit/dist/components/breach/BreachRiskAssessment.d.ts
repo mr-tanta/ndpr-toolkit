@@ -9,6 +9,8 @@ export interface BreachRiskAssessmentClassNames {
     riskScore?: string;
     notificationStatus?: string;
     submitButton?: string;
+    /** Alias for submitButton */
+    primaryButton?: string;
 }
 export interface BreachRiskAssessmentProps {
     /**
@@ -30,7 +32,7 @@ export interface BreachRiskAssessmentProps {
     title?: string;
     /**
      * Description text displayed on the assessment form
-     * @default "Assess the risk level of this data breach to determine notification requirements."
+     * @default "Assess the risk level of this data breach to determine notification requirements under NDPA Section 40."
      */
     description?: string;
     /**
@@ -65,4 +67,8 @@ export interface BreachRiskAssessmentProps {
      */
     showNotificationRequirements?: boolean;
 }
+/**
+ * Breach risk assessment component. Implements NDPA Section 40 requirements for assessing
+ * breach severity and determining whether NDPC notification is required within 72 hours.
+ */
 export declare const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps>;

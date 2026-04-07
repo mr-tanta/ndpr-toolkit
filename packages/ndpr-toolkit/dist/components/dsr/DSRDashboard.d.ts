@@ -34,7 +34,7 @@ export interface DSRDashboardProps {
     title?: string;
     /**
      * Description text displayed on the dashboard
-     * @default "Track and manage data subject requests in compliance with NDPA requirements."
+     * @default "Track and manage data subject requests in compliance with NDPA Part IV requirements."
      */
     description?: string;
     /**
@@ -74,4 +74,8 @@ export interface DSRDashboardProps {
      */
     unstyled?: boolean;
 }
+/**
+ * Data Subject Request dashboard component. Supports compliance with NDPA Part IV,
+ * providing tools to track, manage, and respond to data subject requests within required timeframes.
+ */
 export declare const DSRDashboard: React.FC<DSRDashboardProps>;

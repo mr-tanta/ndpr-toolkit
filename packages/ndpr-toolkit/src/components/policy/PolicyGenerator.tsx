@@ -23,6 +23,8 @@ export interface PolicyGeneratorClassNames {
   input?: string;
   /** Generate button */
   generateButton?: string;
+  /** Alias for generateButton */
+  primaryButton?: string;
   /** NDPA compliance notice */
   complianceNotice?: string;
 }
@@ -53,7 +55,7 @@ export interface PolicyGeneratorProps {
 
   /**
    * Description text displayed on the generator
-   * @default "Generate an NDPA-compliant privacy policy for your organization."
+   * @default "Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24."
    */
   description?: string;
 
@@ -97,12 +99,16 @@ export interface PolicyGeneratorProps {
   unstyled?: boolean;
 }
 
+/**
+ * Privacy policy generator component. Implements NDPA Section 24 transparency requirements,
+ * helping organizations generate compliant privacy policies that disclose required information.
+ */
 export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   sections: initialSections = DEFAULT_POLICY_SECTIONS,
   variables: initialVariables = DEFAULT_POLICY_VARIABLES,
   onGenerate,
   title = "NDPA Privacy Policy Generator",
-  description = "Generate an NDPA-compliant privacy policy for your organization.",
+  description = "Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24.",
   className = "",
   buttonClassName = "",
   generateButtonText = "Generate Policy",
@@ -229,7 +235,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                   checked={section.included}
                   onChange={() => handleSectionToggle(section.id)}
                   disabled={section.required}
-                  className={resolveClass('w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600', classNames?.input, unstyled)}
+                  className={resolveClass('w-4 h-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))] dark:focus:ring-[rgb(var(--ndpr-ring))] dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600', classNames?.input, unstyled)}
                 />
               </div>
               <div className="ml-3 text-sm">
@@ -237,7 +243,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                   {section.title} {section.required && <span className="text-red-500">*</span>}
                 </label>
                 {section.description && (
-                  <p className="text-gray-500 dark:text-gray-400 mt-1">{section.description}</p>
+                  <p className="text-gray-600 dark:text-gray-400 mt-1">{section.description}</p>
                 )}
               </div>
             </div>
@@ -247,7 +253,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
         <div className="mt-6">
           <button
             onClick={() => setActiveStep('variables')}
-            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, classNames?.generateButton, unstyled)}
+            className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`, classNames?.primaryButton || classNames?.generateButton, unstyled)}
           >
             Next: Fill Variables
           </button>
@@ -296,7 +302,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                       </label>
                       
                       {variable.description && (
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                           {variable.description}
                         </p>
                       )}
@@ -310,7 +316,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                           className={resolveClass(`w-full px-3 py-2 border ${
                             errors[variable.id]
                               ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                              : 'border-gray-300 dark:border-gray-600 focus:ring-[rgb(var(--ndpr-ring))]'
                           } rounded-md focus:outline-none focus:ring-2`, classNames?.input, unstyled)}
                           required={variable.required}
                         />
@@ -322,7 +328,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                           className={resolveClass(`w-full px-3 py-2 border ${
                             errors[variable.id]
                               ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                              : 'border-gray-300 dark:border-gray-600 focus:ring-[rgb(var(--ndpr-ring))]'
                           } rounded-md focus:outline-none focus:ring-2`, classNames?.input, unstyled)}
                           required={variable.required}
                         >
@@ -340,7 +346,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                           className={resolveClass(`w-full px-3 py-2 border ${
                             errors[variable.id]
                               ? 'border-red-500 focus:ring-red-500'
-                              : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                              : 'border-gray-300 dark:border-gray-600 focus:ring-[rgb(var(--ndpr-ring))]'
                           } rounded-md focus:outline-none focus:ring-2`, classNames?.input, unstyled)}
                           required={variable.required}
                         />
@@ -368,7 +374,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
           </button>
           <button
             onClick={generatePolicy}
-            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`, classNames?.generateButton, unstyled)}
+            className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`, classNames?.primaryButton || classNames?.generateButton, unstyled)}
           >
             {generateButtonText}
           </button>
@@ -393,7 +399,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
               value={editedPolicy}
               onChange={e => setEditedPolicy(e.target.value)}
               rows={20}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] font-mono text-sm"
             />
           </div>
         ) : (
@@ -456,20 +462,20 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
       {/* Steps Indicator */}
       <div className="mb-8">
         <ol className="flex items-center w-full">
-          <li className={`flex w-full items-center ${activeStep === 'sections' ? 'text-blue-600 dark:text-blue-500' : 'text-gray-500 dark:text-gray-400'} after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}>
-            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'sections' ? 'bg-blue-100 dark:bg-blue-800' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`}>
+          <li className={`flex w-full items-center ${activeStep === 'sections' ? 'text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]' : 'text-gray-600 dark:text-gray-400'} after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}>
+            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'sections' ? 'bg-[rgb(var(--ndpr-primary)/0.1)] dark:bg-[rgb(var(--ndpr-primary)/0.2)]' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`}>
               1
             </span>
             <span className="hidden sm:inline-flex sm:ml-2">Sections</span>
           </li>
-          <li className={`flex w-full items-center ${activeStep === 'variables' ? 'text-blue-600 dark:text-blue-500' : 'text-gray-500 dark:text-gray-400'} after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}>
-            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'variables' ? 'bg-blue-100 dark:bg-blue-800' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`}>
+          <li className={`flex w-full items-center ${activeStep === 'variables' ? 'text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]' : 'text-gray-600 dark:text-gray-400'} after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}>
+            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'variables' ? 'bg-[rgb(var(--ndpr-primary)/0.1)] dark:bg-[rgb(var(--ndpr-primary)/0.2)]' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`}>
               2
             </span>
             <span className="hidden sm:inline-flex sm:ml-2">Variables</span>
           </li>
-          <li className={`flex items-center ${activeStep === 'preview' ? 'text-blue-600 dark:text-blue-500' : 'text-gray-500 dark:text-gray-400'}`}>
-            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'preview' ? 'bg-blue-100 dark:bg-blue-800' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`}>
+          <li className={`flex items-center ${activeStep === 'preview' ? 'text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]' : 'text-gray-600 dark:text-gray-400'}`}>
+            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'preview' ? 'bg-[rgb(var(--ndpr-primary)/0.1)] dark:bg-[rgb(var(--ndpr-primary)/0.2)]' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`}>
               3
             </span>
             <span className="hidden sm:inline-flex sm:ml-2">Preview</span>

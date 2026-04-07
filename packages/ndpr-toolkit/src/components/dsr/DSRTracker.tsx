@@ -33,7 +33,7 @@ export interface DSRTrackerProps {
   
   /**
    * Description text displayed on the tracker
-   * @default "Track the status and progress of data subject requests."
+   * @default "Track the status and progress of data subject requests as required by NDPA Part IV."
    */
   description?: string;
   
@@ -89,11 +89,15 @@ export interface DSRTrackerProps {
   unstyled?: boolean;
 }
 
+/**
+ * DSR tracking and analytics component. Supports compliance with NDPA Part IV,
+ * providing summary statistics, deadline tracking, and compliance metrics for data subject requests.
+ */
 export const DSRTracker: React.FC<DSRTrackerProps> = ({
   requests,
   onSelectRequest,
   title = "DSR Request Tracker",
-  description = "Track the status and progress of data subject requests.",
+  description = "Track the status and progress of data subject requests as required by NDPA Part IV.",
   className = "",
   buttonClassName = "",
   showSummaryStats = true,
@@ -308,22 +312,22 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
     return (
       <div className={resolveClass("grid grid-cols-2 md:grid-cols-4 gap-4 mb-6", classNames?.stats, unstyled)}>
         <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow", classNames?.statCard, unstyled)}>
-          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Requests</h4>
+          <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Total Requests</h4>
           <p className="text-2xl font-bold">{totalRequests}</p>
         </div>
 
         <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow", classNames?.statCard, unstyled)}>
-          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Pending Requests</h4>
+          <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Pending Requests</h4>
           <p className="text-2xl font-bold">{pendingRequests}</p>
         </div>
 
         <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow", classNames?.statCard, unstyled)}>
-          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Avg. Response Time</h4>
+          <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Avg. Response Time</h4>
           <p className="text-2xl font-bold">{averageResponseTime !== null ? `${averageResponseTime} days` : 'N/A'}</p>
         </div>
 
         <div className={resolveClass("bg-white dark:bg-gray-700 p-4 rounded-lg shadow", classNames?.statCard, unstyled)}>
-          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Compliance Rate</h4>
+          <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">Compliance Rate</h4>
           <p className="text-2xl font-bold">{complianceRate !== null ? `${complianceRate}%` : 'N/A'}</p>
         </div>
       </div>
@@ -345,7 +349,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
         <h3 className={resolveClass("text-lg font-medium mb-4", classNames?.tableHeader, unstyled)}>Request Types</h3>
 
         {totalRequests === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             No data available for the selected timeframe.
           </p>
         ) : (
@@ -365,7 +369,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
                     <div 
-                      className="bg-blue-600 h-2.5 rounded-full" 
+                      className="bg-[rgb(var(--ndpr-primary))] h-2.5 rounded-full" 
                       style={{ width: `${percentage}%` }}
                     ></div>
                   </div>
@@ -400,7 +404,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
         <h3 className={resolveClass("text-lg font-medium mb-4", classNames?.tableHeader, unstyled)}>Request Status</h3>
         
         {totalRequests === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             No data available for the selected timeframe.
           </p>
         ) : (
@@ -435,7 +439,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
                          status === 'awaitingVerification' ? 'Awaiting Verification' : 
                          status.charAt(0).toUpperCase() + status.slice(1)}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{count} ({percentage}%)</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{count} ({percentage}%)</p>
                     </div>
                   </div>
                 );
@@ -479,7 +483,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
         <h3 className="text-lg font-medium mb-4">Request Timeline</h3>
         
         {displayMonths.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             No data available for the selected timeframe.
           </p>
         ) : (
@@ -492,7 +496,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
                 return (
                   <div key={month} className="flex flex-col items-center flex-1">
                     <div 
-                      className="w-full bg-blue-500 rounded-t"
+                      className="w-full bg-[rgb(var(--ndpr-primary))] rounded-t"
                       style={{ height }}
                       title={`${formatMonth(month)}: ${count} requests`}
                     ></div>
@@ -521,7 +525,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
         <h3 className="text-lg font-medium mb-4">Overdue Requests</h3>
         
         {overdueRequests.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             No overdue requests.
           </p>
         ) : (
@@ -536,11 +540,11 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
                   <h4 className="font-medium text-sm">{request.subject.name}</h4>
                   {renderTypeBadge(request.type)}
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                   {request.subject.email}
                 </p>
                 <div className="flex justify-between items-center">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
                     Due: {formatDate(request.dueDate || 0)}
                   </p>
                   <p className="text-xs font-bold text-red-600 dark:text-red-400">
@@ -562,7 +566,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
         <h3 className="text-lg font-medium mb-4">Upcoming Deadlines</h3>
         
         {upcomingDeadlines.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             No upcoming deadlines in the next 7 days.
           </p>
         ) : (
@@ -580,11 +584,11 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
                     <h4 className="font-medium text-sm">{request.subject.name}</h4>
                     {renderTypeBadge(request.type)}
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                     {request.subject.email}
                   </p>
                   <div className="flex justify-between items-center">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
                       Due: {formatDate(request.dueDate || 0)}
                     </p>
                     <p className={`text-xs font-bold ${
@@ -620,7 +624,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
             id="timeframe"
             value={selectedTimeframe}
             onChange={e => setSelectedTimeframe(e.target.value as '7days' | '30days' | '90days' | 'all')}
-            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           >
             <option value="7days">Last 7 Days</option>
             <option value="30days">Last 30 Days</option>

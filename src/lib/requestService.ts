@@ -1,7 +1,7 @@
 "use client";
 
 import { DataSubjectRequest, RequestStatus } from "@/types";
-import { v4 as uuidv4 } from "uuid";
+import { generateId } from "./id";
 import { storage } from "./storage";
 
 const REQUEST_STORAGE_KEY = "ndpr_requests";
@@ -18,7 +18,7 @@ export const requestService = {
     details: string,
   ): DataSubjectRequest => {
     const request: DataSubjectRequest = {
-      id: uuidv4(),
+      id: generateId(),
       type: requestType,
       status: "pending",
       createdAt: Date.now(),

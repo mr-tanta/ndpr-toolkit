@@ -10,6 +10,10 @@ export interface ConsentManagerClassNames {
     toggle?: string;
     saveButton?: string;
     resetButton?: string;
+    /** Alias for saveButton */
+    primaryButton?: string;
+    /** Alias for resetButton */
+    secondaryButton?: string;
 }
 export interface ConsentManagerProps {
     /**
@@ -31,7 +35,7 @@ export interface ConsentManagerProps {
     title?: string;
     /**
      * Description text displayed in the manager
-     * @default "Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function."
+     * @default "Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function. Consent management is provided in accordance with NDPA Sections 25-26."
      */
     description?: string;
     /**
@@ -91,4 +95,8 @@ export interface ConsentManagerProps {
      */
     successMessageDuration?: number;
 }
+/**
+ * Consent management component. Implements NDPA Sections 25-26 consent requirements,
+ * allowing data subjects to review and update their consent preferences.
+ */
 export declare const ConsentManager: React.FC<ConsentManagerProps>;

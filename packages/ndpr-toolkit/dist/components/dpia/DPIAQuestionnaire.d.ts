@@ -29,6 +29,10 @@ export interface DPIAQuestionnaireClassNames {
     nextButton?: string;
     /** Previous button */
     prevButton?: string;
+    /** Alias for nextButton */
+    primaryButton?: string;
+    /** Alias for prevButton */
+    secondaryButton?: string;
     /** Progress bar wrapper */
     progressBar?: string;
 }
@@ -109,4 +113,8 @@ export interface DPIAQuestionnaireProps {
      */
     unstyled?: boolean;
 }
+/**
+ * DPIA questionnaire component. Implements NDPA Section 38 requirements
+ * for conducting Data Protection Impact Assessments on high-risk processing activities.
+ */
 export declare const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps>;

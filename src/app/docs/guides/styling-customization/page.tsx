@@ -360,135 +360,229 @@ import './styles/consent.css';
         <p className="mb-4">
           The table below lists every component that supports the{' '}
           <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-sm">classNames</code> and{' '}
-          <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-sm">unstyled</code> props, along with the
-          available classNames keys for each.
+          <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-sm">unstyled</code> props, along with
+          every available key from its <code className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-sm">ClassNames</code> interface.
+          These keys map directly to the exported TypeScript interfaces in the component source files.
         </p>
 
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm border border-gray-200 dark:border-gray-700">
             <thead>
               <tr className="bg-gray-100 dark:bg-gray-800">
-                <th className="px-4 py-3 text-left font-semibold border-b border-gray-200 dark:border-gray-700">Component</th>
+                <th className="px-4 py-3 text-left font-semibold border-b border-gray-200 dark:border-gray-700 whitespace-nowrap">Component</th>
+                <th className="px-4 py-3 text-left font-semibold border-b border-gray-200 dark:border-gray-700 whitespace-nowrap">Keys</th>
                 <th className="px-4 py-3 text-left font-semibold border-b border-gray-200 dark:border-gray-700">classNames Keys</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {/* ── Consent Management ── */}
+              <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <td colSpan={3} className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Consent Management
+                </td>
+              </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">ConsentBanner</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">ConsentBanner</td>
+                <td className="px-4 py-3 align-top text-center">14</td>
                 <td className="px-4 py-3">
                   <code className="text-xs">root, container, title, description, optionsList, optionItem, optionCheckbox, optionLabel, optionDescription, buttonGroup, acceptButton, rejectButton, customizeButton, saveButton</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">ConsentManager</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">ConsentManager</td>
+                <td className="px-4 py-3 align-top text-center">9</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, description, optionsList, optionItem, optionToggle, optionLabel, optionDescription, footer, saveButton, resetButton</code>
+                  <code className="text-xs">root, header, title, description, optionsList, optionItem, toggle, saveButton, resetButton</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">ConsentStorage</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">ConsentStorage</td>
+                <td className="px-4 py-3 align-top text-center">1</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, statusText, saveButton, clearButton, buttonGroup</code>
+                  <code className="text-xs">root</code>
+                </td>
+              </tr>
+
+              {/* ── Data Subject Rights (DSR) ── */}
+              <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <td colSpan={3} className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Data Subject Rights (DSR)
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">DSRRequestForm</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">DSRRequestForm</td>
+                <td className="px-4 py-3 align-top text-center">11</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, form, fieldGroup, label, input, select, textarea, submitButton, cancelButton, errorMessage</code>
+                  <code className="text-xs">root, title, description, form, fieldGroup, label, input, select, textarea, submitButton, successMessage</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">DSRDashboard</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">DSRDashboard</td>
+                <td className="px-4 py-3 align-top text-center">8</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, filterBar, table, tableHeader, tableRow, tableCell, statusBadge, actionButton, pagination, emptyState</code>
+                  <code className="text-xs">root, header, title, filters, requestList, requestItem, statusBadge, detailPanel</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">DSRTracker</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">DSRTracker</td>
+                <td className="px-4 py-3 align-top text-center">9</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, statusCard, statusLabel, statusValue, timeline, timelineItem, timelineDate, timelineDot, detailSection</code>
+                  <code className="text-xs">root, header, title, stats, statCard, table, tableHeader, tableRow, statusBadge</code>
+                </td>
+              </tr>
+
+              {/* ── DPIA ── */}
+              <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <td colSpan={3} className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Data Protection Impact Assessment (DPIA)
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">DPIAQuestionnaire</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">DPIAQuestionnaire</td>
+                <td className="px-4 py-3 align-top text-center">15</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, stepContainer, question, questionLabel, input, select, textarea, navigationButtons, nextButton, prevButton, submitButton</code>
+                  <code className="text-xs">root, header, title, section, sectionTitle, question, questionText, guidance, input, radioGroup, radioOption, navigation, nextButton, prevButton, progressBar</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">DPIAReport</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">DPIAReport</td>
+                <td className="px-4 py-3 align-top text-center">10</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, section, sectionTitle, riskItem, riskLabel, riskValue, recommendation, summary, exportButton</code>
+                  <code className="text-xs">root, header, title, summary, riskBadge, riskTable, riskRow, recommendation, conclusion, printButton</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">StepIndicator</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">StepIndicator</td>
+                <td className="px-4 py-3 align-top text-center">7</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, step, stepActive, stepCompleted, stepLabel, connector</code>
+                  <code className="text-xs">root, step, stepActive, stepCompleted, stepPending, connector, label</code>
+                </td>
+              </tr>
+
+              {/* ── Breach Notification ── */}
+              <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <td colSpan={3} className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Breach Notification
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">BreachReportForm</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">BreachReportForm</td>
+                <td className="px-4 py-3 align-top text-center">10</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, form, fieldGroup, label, input, select, textarea, submitButton, cancelButton, severityIndicator</code>
+                  <code className="text-xs">root, title, form, fieldGroup, label, input, select, textarea, submitButton, notice</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">BreachRiskAssessment</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">BreachRiskAssessment</td>
+                <td className="px-4 py-3 align-top text-center">8</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, riskMatrix, riskCell, riskLabel, riskScore, recommendation, actionButton</code>
+                  <code className="text-xs">root, header, title, slider, riskBadge, riskScore, notificationStatus, submitButton</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">BreachNotificationManager</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">BreachNotificationManager</td>
+                <td className="px-4 py-3 align-top text-center">9</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, notificationList, notificationItem, statusBadge, timeline, timelineItem, actionButton, detailPanel</code>
+                  <code className="text-xs">root, header, title, breachList, breachItem, statusBadge, timeline, timelineStep, detailPanel</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">RegulatoryReportGenerator</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">RegulatoryReportGenerator</td>
+                <td className="px-4 py-3 align-top text-center">9</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, section, sectionTitle, fieldGroup, label, value, exportButton, previewContainer</code>
+                  <code className="text-xs">root, header, title, reportPreview, field, fieldLabel, fieldValue, generateButton, downloadButton</code>
+                </td>
+              </tr>
+
+              {/* ── Privacy Policy ── */}
+              <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <td colSpan={3} className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Privacy Policy Generator
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">PolicyGenerator</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">PolicyGenerator</td>
+                <td className="px-4 py-3 align-top text-center">10</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, form, fieldGroup, label, input, select, sectionEditor, previewButton, generateButton</code>
+                  <code className="text-xs">root, header, title, description, sectionList, sectionItem, form, input, generateButton, complianceNotice</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">PolicyPreview</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">PolicyPreview</td>
+                <td className="px-4 py-3 align-top text-center">9</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, content, section, sectionTitle, paragraph, list, listItem, footer</code>
+                  <code className="text-xs">root, header, title, description, content, section, sectionTitle, sectionContent, complianceNotice</code>
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">PolicyExporter</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">PolicyExporter</td>
+                <td className="px-4 py-3 align-top text-center">9</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, formatSelector, formatOption, exportButton, downloadLink, previewContainer</code>
+                  <code className="text-xs">root, header, title, description, formatSelector, formatOption, exportButton, complianceNotice, preview</code>
+                </td>
+              </tr>
+
+              {/* ── Lawful Basis ── */}
+              <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <td colSpan={3} className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Lawful Basis Tracker
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">LawfulBasisTracker</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">LawfulBasisTracker</td>
+                <td className="px-4 py-3 align-top text-center">15</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, table, tableHeader, tableRow, tableCell, statusBadge, addButton, editButton, deleteButton, form, modal</code>
+                  <code className="text-xs">root, header, title, summary, summaryCard, table, tableHeader, tableRow, form, input, select, submitButton, statusBadge, complianceScore, gapAlert</code>
+                </td>
+              </tr>
+
+              {/* ── Cross-Border Transfer ── */}
+              <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <td colSpan={3} className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Cross-Border Transfer
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">CrossBorderTransferManager</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">CrossBorderTransferManager</td>
+                <td className="px-4 py-3 align-top text-center">15</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, transferList, transferItem, statusBadge, countryFlag, addButton, editButton, deleteButton, form, modal, validationMessage</code>
+                  <code className="text-xs">root, header, title, summary, summaryCard, transferList, transferItem, form, input, select, submitButton, riskBadge, statusBadge, detailPanel, approvalStatus</code>
+                </td>
+              </tr>
+
+              {/* ── ROPA ── */}
+              <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <td colSpan={3} className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                  Record of Processing Activities (ROPA)
                 </td>
               </tr>
               <tr>
-                <td className="px-4 py-3 font-medium align-top">ROPAManager</td>
+                <td className="px-4 py-3 font-medium align-top whitespace-nowrap">ROPAManager</td>
+                <td className="px-4 py-3 align-top text-center">16</td>
                 <td className="px-4 py-3">
-                  <code className="text-xs">root, header, title, table, tableHeader, tableRow, tableCell, addButton, editButton, deleteButton, exportButton, form, modal, filterBar</code>
+                  <code className="text-xs">root, header, title, orgInfo, summary, summaryCard, table, tableHeader, tableRow, form, input, select, submitButton, statusBadge, exportButton, complianceGap</code>
+                </td>
+              </tr>
+
+              {/* ── Total ── */}
+              <tr className="bg-gray-100 dark:bg-gray-800 font-semibold">
+                <td className="px-4 py-3">Total (19 components)</td>
+                <td className="px-4 py-3 text-center">169</td>
+                <td className="px-4 py-3 text-gray-600 dark:text-gray-400 text-xs">
+                  All keys listed above are the exact keys from each component&apos;s exported ClassNames TypeScript interface
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md mt-4">
+          <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
+            <strong>TypeScript integration:</strong> Each component exports its ClassNames interface
+            (e.g. <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">ConsentBannerClassNames</code>,{' '}
+            <code className="bg-blue-100 dark:bg-blue-800 px-1 rounded">DSRRequestFormClassNames</code>) so your
+            editor provides autocomplete for every key. Import them from the same path as the component.
+          </p>
         </div>
       </section>
 

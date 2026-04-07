@@ -24,6 +24,8 @@ export type { NDPRConfig } from './components/NDPRProvider';
 
 // All utility functions
 export { validateConsent, validateConsentOptions } from './utils/consent';
+export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
+export type { ConsentAuditEntry } from './utils/consent-audit';
 export { formatDSRRequest } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
@@ -32,3 +34,4 @@ export { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES, createBusinessPolicy
 export { validateProcessingActivity, getLawfulBasisDescription, assessComplianceGaps, generateLawfulBasisSummary } from './utils/lawful-basis';
 export { validateTransfer, getTransferMechanismDescription, assessTransferRisk, isNDPCApprovalRequired } from './utils/cross-border';
 export { validateProcessingRecord, generateROPASummary, exportROPAToCSV, identifyComplianceGaps } from './utils/ropa';
+export { sanitizeInput } from './utils/sanitize';

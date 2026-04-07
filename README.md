@@ -141,15 +141,30 @@ import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 
 ### classNames Reference
 
-| Component | Key classNames | Total keys |
-|-----------|---------------|------------|
-| ConsentBanner | root, title, acceptButton, rejectButton, optionsList | 14 |
-| DSRRequestForm | root, form, input, select, submitButton | 11 |
-| BreachReportForm | root, form, input, submitButton, notice | 10 |
-| LawfulBasisTracker | root, table, form, statusBadge, complianceScore | 15 |
-| All 19 components | -- | 194 total |
+| Component | Keys | All classNames |
+|-----------|------|----------------|
+| ConsentBanner | 14 | root, container, title, description, optionsList, optionItem, optionCheckbox, optionLabel, optionDescription, buttonGroup, acceptButton, rejectButton, customizeButton, saveButton |
+| ConsentManager | 9 | root, header, title, description, optionsList, optionItem, toggle, saveButton, resetButton |
+| ConsentStorage | 1 | root |
+| DSRRequestForm | 11 | root, title, description, form, fieldGroup, label, input, select, textarea, submitButton, successMessage |
+| DSRDashboard | 8 | root, header, title, filters, requestList, requestItem, statusBadge, detailPanel |
+| DSRTracker | 9 | root, header, title, stats, statCard, table, tableHeader, tableRow, statusBadge |
+| DPIAQuestionnaire | 15 | root, header, title, section, sectionTitle, question, questionText, guidance, input, radioGroup, radioOption, navigation, nextButton, prevButton, progressBar |
+| DPIAReport | 10 | root, header, title, summary, riskBadge, riskTable, riskRow, recommendation, conclusion, printButton |
+| StepIndicator | 7 | root, step, stepActive, stepCompleted, stepPending, connector, label |
+| BreachReportForm | 10 | root, title, form, fieldGroup, label, input, select, textarea, submitButton, notice |
+| BreachRiskAssessment | 8 | root, header, title, slider, riskBadge, riskScore, notificationStatus, submitButton |
+| BreachNotificationManager | 9 | root, header, title, breachList, breachItem, statusBadge, timeline, timelineStep, detailPanel |
+| RegulatoryReportGenerator | 9 | root, header, title, reportPreview, field, fieldLabel, fieldValue, generateButton, downloadButton |
+| PolicyGenerator | 10 | root, header, title, description, sectionList, sectionItem, form, input, generateButton, complianceNotice |
+| PolicyPreview | 9 | root, header, title, description, content, section, sectionTitle, sectionContent, complianceNotice |
+| PolicyExporter | 9 | root, header, title, description, formatSelector, formatOption, exportButton, complianceNotice, preview |
+| LawfulBasisTracker | 15 | root, header, title, summary, summaryCard, table, tableHeader, tableRow, form, input, select, submitButton, statusBadge, complianceScore, gapAlert |
+| CrossBorderTransferManager | 15 | root, header, title, summary, summaryCard, transferList, transferItem, form, input, select, submitButton, riskBadge, statusBadge, detailPanel, approvalStatus |
+| ROPAManager | 16 | root, header, title, orgInfo, summary, summaryCard, table, tableHeader, tableRow, form, input, select, submitButton, statusBadge, exportButton, complianceGap |
+| **All 19 components** | **169** | |
 
-Every component follows the same pattern. Pass `classNames` to override specific sections, or set `unstyled` to strip all default styles.
+Every component follows the same pattern. Pass `classNames` to override specific sections, or set `unstyled` to strip all default styles. Each component exports its ClassNames TypeScript interface for autocomplete support.
 
 ---
 
@@ -309,7 +324,7 @@ const { transfers, addTransfer, getSummary } = useCrossBorderTransfer({
 
 ### 8. Record of Processing Activities (ROPA)
 
-**NDPC Regulatory Guidance** -- Maintain comprehensive records of all processing activities for audit readiness.
+**NDPA Section 28(2) & NDPC Regulatory Guidance** -- Maintain comprehensive records of all processing activities for audit readiness and regulatory accountability.
 
 ```typescript
 import { ROPAManager, useROPA, generateROPASummary, exportROPAToCSV } from '@tantainnovative/ndpr-toolkit/ropa';
@@ -329,7 +344,7 @@ const { ropa, addRecord, getSummary } = useROPA({
 
 | Path | What you get | Dependencies |
 |------|-------------|--------------|
-| `/core` | Types + utility functions | `tslib`, `uuid` |
+| `/core` | Types + utility functions | `tslib` |
 | `/hooks` | React hooks for all 8 modules | `react` |
 | `/consent` | Consent components + hook + utils | `react`, Radix, Tailwind |
 | `/dsr` | DSR components + hook + utils | `react`, Radix, Tailwind |

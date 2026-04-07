@@ -54,7 +54,7 @@ export interface BreachNotificationManagerProps {
   
   /**
    * Description text displayed on the manager
-   * @default "Manage data breach notifications and track compliance with NDPA requirements."
+   * @default "Manage data breach notifications and track compliance with NDPA Section 40 requirements."
    */
   description?: string;
   
@@ -97,6 +97,11 @@ export interface BreachNotificationManagerProps {
   showDeadlineAlerts?: boolean;
 }
 
+/**
+ * Breach notification management component. Implements NDPA Section 40 requirements for
+ * managing breach notifications, tracking 72-hour NDPC reporting deadlines, and coordinating
+ * data subject notifications.
+ */
 export const BreachNotificationManager: React.FC<BreachNotificationManagerProps> = ({
   breachReports,
   riskAssessments,
@@ -105,7 +110,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   onRequestAssessment,
   onRequestNotification,
   title = "Breach Notification Manager",
-  description = "Manage data breach notifications and track compliance with NDPA requirements.",
+  description = "Manage data breach notifications and track compliance with NDPA Section 40 requirements.",
   className = "",
   buttonClassName = "",
   classNames: cn = {},
@@ -406,13 +411,13 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                   ? 'bg-green-500 border-green-500 dark:border-green-500' 
                   : 'bg-gray-200 border-gray-200 dark:bg-gray-700 dark:border-gray-700'
               }`}></div>
-              <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+              <time className="mb-1 text-sm font-normal leading-none text-gray-600 dark:text-gray-500">
                 {item.date ? formatDate(item.date) : 'Pending'}
               </time>
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
                 {item.title}
               </h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-600 dark:text-gray-400">
                 {item.description}
               </p>
             </li>
@@ -439,7 +444,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
             id="statusFilter"
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           >
             <option value="all">All Statuses</option>
             <option value="ongoing">Ongoing</option>
@@ -456,7 +461,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
             id="sortBy"
             value={sortBy}
             onChange={e => setSortBy(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           >
             <option value="discoveredAt">Discovery Date</option>
             <option value="title">Title</option>
@@ -475,7 +480,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search breaches..."
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           />
         </div>
       </div>
@@ -487,7 +492,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
           <h3 className="text-lg font-medium mb-3">Breach Reports</h3>
           
           {filteredBreaches.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               No breach reports found.
             </p>
           ) : (
@@ -541,7 +546,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                     key={breach.id}
                     className={resolveClass(`p-3 rounded-md cursor-pointer ${
                       selectedBreachId === breach.id
-                        ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+                        ? 'bg-[rgb(var(--ndpr-primary)/0.05)] dark:bg-[rgb(var(--ndpr-primary)/0.1)] border border-[rgb(var(--ndpr-primary)/0.2)] dark:border-[rgb(var(--ndpr-primary)/0.3)]'
                         : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
                     }`, cn.breachItem, unstyled)}
                     onClick={() => handleSelectBreach(breach.id)}
@@ -550,7 +555,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                       <h4 className="font-medium text-sm">{breach.title}</h4>
                       {renderStatusBadge(breach.status)}
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                       Discovered: {new Date(breach.discoveredAt).toLocaleDateString()}
                     </p>
                     <div className="flex justify-between items-center mt-2">
@@ -716,7 +721,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
             </div>
           ) : (
             <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-md">
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="text-gray-600 dark:text-gray-400">
                 Select a breach to view details
               </p>
             </div>

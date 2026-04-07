@@ -43,7 +43,7 @@ export interface DSRDashboardProps {
   
   /**
    * Description text displayed on the dashboard
-   * @default "Track and manage data subject requests in compliance with NDPA requirements."
+   * @default "Track and manage data subject requests in compliance with NDPA Part IV requirements."
    */
   description?: string;
   
@@ -92,13 +92,17 @@ export interface DSRDashboardProps {
   unstyled?: boolean;
 }
 
+/**
+ * Data Subject Request dashboard component. Supports compliance with NDPA Part IV,
+ * providing tools to track, manage, and respond to data subject requests within required timeframes.
+ */
 export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   requests,
   onSelectRequest,
   onUpdateStatus,
   onAssignRequest,
   title = "Data Subject Request Dashboard",
-  description = "Track and manage data subject requests in compliance with NDPA requirements.",
+  description = "Track and manage data subject requests in compliance with NDPA Part IV requirements.",
   className = "",
   buttonClassName = "",
   showRequestDetails = true,
@@ -394,13 +398,13 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                   ? 'bg-green-500 border-green-500 dark:border-green-500' 
                   : 'bg-gray-200 border-gray-200 dark:bg-gray-700 dark:border-gray-700'
               }`}></div>
-              <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+              <time className="mb-1 text-sm font-normal leading-none text-gray-600 dark:text-gray-500">
                 {item.date ? formatDate(item.date) : 'Pending'}
               </time>
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
                 {item.title}
               </h4>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-600 dark:text-gray-400">
                 {item.description}
               </p>
             </li>
@@ -483,7 +487,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
             id="statusFilter"
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           >
             {renderStatusOptions()}
           </select>
@@ -497,7 +501,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
             id="typeFilter"
             value={typeFilter}
             onChange={e => setTypeFilter(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           >
             {renderTypeOptions()}
           </select>
@@ -511,7 +515,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
             id="sortBy"
             value={sortBy}
             onChange={e => setSortBy(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           >
             <option value="createdAt">Date Received</option>
             <option value="dueDate">Due Date</option>
@@ -530,7 +534,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search requests..."
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           />
         </div>
       </div>
@@ -542,7 +546,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
           <h3 className="text-lg font-medium mb-3">DSR Requests</h3>
           
           {filteredRequests.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               No data subject requests found.
             </p>
           ) : (
@@ -580,7 +584,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                     key={request.id}
                     className={resolveClass(`p-3 rounded-md cursor-pointer ${
                       selectedRequestId === request.id
-                        ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+                        ? 'bg-[rgb(var(--ndpr-primary)/0.05)] dark:bg-[rgb(var(--ndpr-primary)/0.1)] border border-[rgb(var(--ndpr-primary)/0.2)] dark:border-[rgb(var(--ndpr-primary)/0.3)]'
                         : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
                     }`, classNames?.requestItem, unstyled)}
                     onClick={() => handleSelectRequest(request.id)}
@@ -589,10 +593,10 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                       <h4 className="font-medium text-sm">{request.subject.name}</h4>
                       {renderTypeBadge(request.type)}
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                       {request.subject.email}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                       Received: {formatDate(request.createdAt)}
                     </p>
                     <div className="flex justify-between items-center mt-2">
@@ -701,13 +705,13 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                     <select
                       value={selectedRequest.status}
                       onChange={e => handleUpdateStatus(e.target.value as DSRStatus)}
-                      className="flex-grow px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-grow px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                     >
                       {renderStatusUpdateOptions()}
                     </select>
                     <button
                       onClick={() => handleUpdateStatus(selectedRequest.status)}
-                      className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${buttonClassName}`}
+                      className={`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`}
                     >
                       Update
                     </button>
@@ -722,7 +726,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                       <select
                         value={assignee}
                         onChange={e => setAssignee(e.target.value)}
-                        className="flex-grow px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-grow px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
                       >
                         <option value="">Select Assignee</option>
                         {assignees.map(name => (
@@ -732,7 +736,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                       <button
                         onClick={handleAssignRequest}
                         disabled={!assignee}
-                        className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 ${buttonClassName}`}
+                        className={`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] disabled:bg-gray-300 disabled:text-gray-500 ${buttonClassName}`}
                       >
                         Assign
                       </button>
@@ -758,7 +762,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
             </div>
           ) : (
             <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-md">
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="text-gray-600 dark:text-gray-400">
                 Select a request to view details
               </p>
             </div>

@@ -27,7 +27,7 @@ export interface DSRTrackerProps {
     title?: string;
     /**
      * Description text displayed on the tracker
-     * @default "Track the status and progress of data subject requests."
+     * @default "Track the status and progress of data subject requests as required by NDPA Part IV."
      */
     description?: string;
     /**
@@ -73,4 +73,8 @@ export interface DSRTrackerProps {
      */
     unstyled?: boolean;
 }
+/**
+ * DSR tracking and analytics component. Supports compliance with NDPA Part IV,
+ * providing summary statistics, deadline tracking, and compliance metrics for data subject requests.
+ */
 export declare const DSRTracker: React.FC<DSRTrackerProps>;

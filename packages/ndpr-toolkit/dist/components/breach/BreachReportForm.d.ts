@@ -51,7 +51,11 @@ export interface BreachReportFormClassNames {
     select?: string;
     textarea?: string;
     submitButton?: string;
+    /** Alias for submitButton */
+    primaryButton?: string;
     notice?: string;
+    /** Custom class applied when isSubmitting is true (e.g. a loading overlay) */
+    loadingOverlay?: string;
 }
 export interface BreachReportFormProps {
     /**
@@ -73,7 +77,7 @@ export interface BreachReportFormProps {
     title?: string;
     /**
      * Description text displayed on the form
-     * @default "Use this form to report a suspected or confirmed data breach. All fields marked with * are required."
+     * @default "Use this form to report a suspected or confirmed data breach in accordance with NDPA Section 40. All fields marked with * are required."
      */
     formDescription?: string;
     /**
@@ -97,6 +101,11 @@ export interface BreachReportFormProps {
      * Remove all default styles, only applying classNames overrides
      */
     unstyled?: boolean;
+    /**
+     * Whether the form is currently submitting.
+     * When true, the submit button is disabled and shows "Submitting..." text.
+     */
+    isSubmitting?: boolean;
     /**
      * Whether to show a confirmation message after submission
      * @default true
@@ -127,5 +136,20 @@ export interface BreachReportFormProps {
      * @default ['.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx', '.xls', '.xlsx', '.txt']
      */
     allowedFileTypes?: string[];
+    /**
+     * Default values to pre-fill form fields.
+     * Useful for editing existing breach reports or pre-populating known data.
+     */
+    defaultValues?: Partial<BreachFormSubmission>;
+    /**
+     * Callback fired when the form is reset via the Reset button.
+     * To fully remount the component (clearing all internal state),
+     * change the `key` prop from the parent.
+     */
+    onReset?: () => void;
 }
+/**
+ * Breach report form component. Implements NDPA Section 40 breach notification requirements,
+ * enabling organizations to document and report data breaches within the mandated 72-hour window.
+ */
 export declare const BreachReportForm: React.FC<BreachReportFormProps>;

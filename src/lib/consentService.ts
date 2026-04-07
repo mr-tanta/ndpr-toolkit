@@ -1,7 +1,7 @@
 "use client";
 
 import { ConsentRecord, ConsentHistoryEntry } from "@/types";
-import { v4 as uuidv4 } from "uuid";
+import { generateId } from "./id";
 import { storage } from "./storage";
 
 // In a real implementation, this would connect to a database
@@ -22,7 +22,7 @@ export const consentService = {
     userId?: string,
   ): ConsentRecord => {
     const consentRecord: ConsentRecord = {
-      id: uuidv4(),
+      id: generateId(),
       userId,
       consents,
       timestamp: new Date(),
@@ -79,7 +79,7 @@ export const consentService = {
 
     // Create the new consent record
     const consentRecord: ConsentRecord = {
-      id: uuidv4(),
+      id: generateId(),
       userId,
       consents,
       timestamp: new Date(),

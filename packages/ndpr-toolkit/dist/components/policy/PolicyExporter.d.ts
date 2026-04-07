@@ -14,6 +14,8 @@ export interface PolicyExporterClassNames {
     formatOption?: string;
     /** Export button */
     exportButton?: string;
+    /** Alias for exportButton */
+    primaryButton?: string;
     /** NDPA compliance / export tips notice */
     complianceNotice?: string;
     /** Preview / export history area */

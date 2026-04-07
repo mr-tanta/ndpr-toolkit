@@ -9,7 +9,11 @@ export interface RegulatoryReportGeneratorClassNames {
     fieldLabel?: string;
     fieldValue?: string;
     generateButton?: string;
+    /** Alias for generateButton */
+    primaryButton?: string;
     downloadButton?: string;
+    /** Alias for downloadButton */
+    secondaryButton?: string;
 }
 export interface OrganizationInfo {
     /**
@@ -65,7 +69,7 @@ export interface RegulatoryReportGeneratorProps {
     title?: string;
     /**
      * Description text displayed on the generator form
-     * @default "Generate a report for submission to the NDPC in compliance with the NDPA breach notification requirements."
+     * @default "Generate a report for submission to the NDPC in compliance with NDPA Section 40 breach notification requirements."
      */
     description?: string;
     /**
@@ -110,4 +114,8 @@ export interface RegulatoryReportGeneratorProps {
      */
     downloadFormat?: 'pdf' | 'docx' | 'html';
 }
+/**
+ * Regulatory report generator component. Implements NDPA Section 40 requirements for
+ * generating formal breach notification reports for submission to the NDPC.
+ */
 export declare const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>;

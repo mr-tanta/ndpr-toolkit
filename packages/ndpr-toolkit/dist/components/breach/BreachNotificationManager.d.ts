@@ -43,7 +43,7 @@ export interface BreachNotificationManagerProps {
     title?: string;
     /**
      * Description text displayed on the manager
-     * @default "Manage data breach notifications and track compliance with NDPA requirements."
+     * @default "Manage data breach notifications and track compliance with NDPA Section 40 requirements."
      */
     description?: string;
     /**
@@ -78,4 +78,9 @@ export interface BreachNotificationManagerProps {
      */
     showDeadlineAlerts?: boolean;
 }
+/**
+ * Breach notification management component. Implements NDPA Section 40 requirements for
+ * managing breach notifications, tracking 72-hour NDPC reporting deadlines, and coordinating
+ * data subject notifications.
+ */
 export declare const BreachNotificationManager: React.FC<BreachNotificationManagerProps>;

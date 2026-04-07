@@ -26,6 +26,8 @@ export interface CrossBorderTransferManagerClassNames {
   input?: string;
   select?: string;
   submitButton?: string;
+  /** Alias for submitButton */
+  primaryButton?: string;
   riskBadge?: string;
   statusBadge?: string;
   detailPanel?: string;
@@ -192,6 +194,11 @@ const INITIAL_FORM_DATA: TransferFormData = {
   ndpcApprovalReference: '',
 };
 
+/**
+ * Cross-border data transfer management component. Implements NDPA Sections 41-45 requirements
+ * for managing international data transfers, including adequacy decisions, standard contractual
+ * clauses, and NDPC authorization.
+ */
 export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProps> = ({
   transfers,
   onAddTransfer,
@@ -510,7 +517,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               resetForm();
               setIsFormOpen(false);
             }}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             Cancel
           </button>
@@ -552,7 +559,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               value={formData.destinationCountry}
               onChange={(e) => handleFieldChange('destinationCountry', e.target.value)}
               placeholder="e.g. United Kingdom"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -565,7 +572,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               onChange={(e) => handleFieldChange('destinationCountryCode', e.target.value)}
               placeholder="e.g. GB"
               maxLength={3}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -579,7 +586,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               value={formData.recipientOrganization}
               onChange={(e) => handleFieldChange('recipientOrganization', e.target.value)}
               placeholder="Organization name"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -593,7 +600,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               onChange={(e) =>
                 handleFieldChange('transferMechanism', e.target.value)
               }
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               {MECHANISM_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -609,7 +616,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             <select
               value={formData.adequacyStatus}
               onChange={(e) => handleFieldChange('adequacyStatus', e.target.value)}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               {ADEQUACY_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -625,7 +632,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             <select
               value={formData.riskLevel}
               onChange={(e) => handleFieldChange('riskLevel', e.target.value)}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -643,7 +650,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               value={formData.dataCategories}
               onChange={(e) => handleFieldChange('dataCategories', e.target.value)}
               placeholder="Comma-separated, e.g. Names, Email addresses, Phone numbers"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -654,7 +661,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               id="includesSensitiveData"
               checked={formData.includesSensitiveData}
               onChange={(e) => handleFieldChange('includesSensitiveData', e.target.checked)}
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="h-4 w-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))]"
             />
             <label htmlFor="includesSensitiveData" className="text-sm font-medium">
               Includes sensitive personal data
@@ -669,7 +676,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               value={formData.estimatedDataSubjects}
               onChange={(e) => handleFieldChange('estimatedDataSubjects', e.target.value)}
               placeholder="Number of data subjects"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -683,7 +690,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               value={formData.recipientContactName}
               onChange={(e) => handleFieldChange('recipientContactName', e.target.value)}
               placeholder="Contact person name"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -697,7 +704,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               value={formData.recipientContactEmail}
               onChange={(e) => handleFieldChange('recipientContactEmail', e.target.value)}
               placeholder="contact@example.com"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -709,7 +716,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               value={formData.recipientContactPhone}
               onChange={(e) => handleFieldChange('recipientContactPhone', e.target.value)}
               placeholder="Phone number"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -721,7 +728,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               value={formData.recipientContactAddress}
               onChange={(e) => handleFieldChange('recipientContactAddress', e.target.value)}
               placeholder="Address"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -735,7 +742,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               onChange={(e) => handleFieldChange('purpose', e.target.value)}
               placeholder="Describe the purpose of this data transfer"
               rows={2}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -749,7 +756,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               onChange={(e) => handleFieldChange('safeguards', e.target.value)}
               placeholder="One safeguard per line, e.g.&#10;End-to-end encryption&#10;Access control policies&#10;Regular security audits"
               rows={3}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -763,7 +770,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               onChange={(e) => handleFieldChange('riskAssessment', e.target.value)}
               placeholder="Summarize the risk assessment for this transfer"
               rows={2}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
@@ -773,7 +780,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             <select
               value={formData.frequency}
               onChange={(e) => handleFieldChange('frequency', e.target.value)}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               {FREQUENCY_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -789,7 +796,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             <select
               value={formData.status}
               onChange={(e) => handleFieldChange('status', e.target.value)}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               {STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -817,7 +824,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                   id="ndpcApprovalApplied"
                   checked={formData.ndpcApprovalApplied}
                   onChange={(e) => handleFieldChange('ndpcApprovalApplied', e.target.checked)}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="h-4 w-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))]"
                 />
                 <label htmlFor="ndpcApprovalApplied" className="text-sm">
                   Application submitted
@@ -829,7 +836,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                   id="ndpcApprovalApproved"
                   checked={formData.ndpcApprovalApproved}
                   onChange={(e) => handleFieldChange('ndpcApprovalApproved', e.target.checked)}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="h-4 w-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))]"
                 />
                 <label htmlFor="ndpcApprovalApproved" className="text-sm">
                   Approval granted
@@ -842,7 +849,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                   value={formData.ndpcApprovalReference}
                   onChange={(e) => handleFieldChange('ndpcApprovalReference', e.target.value)}
                   placeholder="Reference number (if available)"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
             </div>
@@ -860,7 +867,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                   id="tiaCompleted"
                   checked={formData.tiaCompleted}
                   onChange={(e) => handleFieldChange('tiaCompleted', e.target.checked)}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="h-4 w-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))]"
                 />
                 <label htmlFor="tiaCompleted" className="text-sm">
                   TIA completed
@@ -873,7 +880,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                   value={formData.tiaReference}
                   onChange={(e) => handleFieldChange('tiaReference', e.target.value)}
                   placeholder="Document reference"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
             </div>
@@ -893,7 +900,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
           </button>
           <button
             onClick={handleSubmit}
-            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${buttonClassName}`, classNames?.submitButton, unstyled)}
+            className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`, classNames?.primaryButton || classNames?.submitButton, unstyled)}
           >
             {editingTransferId ? 'Update Transfer' : 'Add Transfer'}
           </button>
@@ -1045,11 +1052,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               {transfer.riskAssessment}
             </p>
             <div className="mt-2">
-              <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+              <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                 Automated Assessment (Score: {riskResult.riskScore})
               </p>
               {riskResult.factors.length > 0 && (
-                <ul className="list-disc list-inside text-xs text-gray-500 dark:text-gray-400">
+                <ul className="list-disc list-inside text-xs text-gray-600 dark:text-gray-400">
                   {riskResult.factors.map((factor, i) => (
                     <li key={i}>{factor}</li>
                   ))}
@@ -1057,10 +1064,10 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               )}
               {riskResult.recommendations.length > 0 && (
                 <div className="mt-2">
-                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                     Recommendations:
                   </p>
-                  <ul className="list-disc list-inside text-xs text-gray-500 dark:text-gray-400">
+                  <ul className="list-disc list-inside text-xs text-gray-600 dark:text-gray-400">
                     {riskResult.recommendations.map((rec, i) => (
                       <li key={i}>{rec}</li>
                     ))}
@@ -1140,7 +1147,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         <div className="flex gap-3 mt-6">
           <button
             onClick={() => handleOpenEditForm(transfer)}
-            className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${buttonClassName}`}
+            className={`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`}
           >
             Edit
           </button>
@@ -1168,7 +1175,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         <div className="mb-6">
           <button
             onClick={handleOpenAddForm}
-            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 ${buttonClassName}`, classNames?.submitButton, unstyled)}
+            className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`, classNames?.primaryButton || classNames?.submitButton, unstyled)}
           >
             Add Transfer
           </button>
@@ -1188,7 +1195,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             id="cbStatusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
           >
             <option value="all">All Statuses</option>
             {STATUS_OPTIONS.map((option) => (
@@ -1206,7 +1213,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             id="cbMechanismFilter"
             value={mechanismFilter}
             onChange={(e) => setMechanismFilter(e.target.value)}
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
           >
             <option value="all">All Mechanisms</option>
             {MECHANISM_OPTIONS.map((option) => (
@@ -1225,7 +1232,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
           <h3 className="text-lg font-medium mb-3">Transfers</h3>
 
           {filteredTransfers.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
               No cross-border transfers found.
             </p>
           ) : (
@@ -1235,7 +1242,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                   key={transfer.id}
                   className={resolveClass(`p-3 rounded-md cursor-pointer ${
                     selectedTransferId === transfer.id
-                      ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+                      ? 'bg-[rgb(var(--ndpr-primary)/0.05)] dark:bg-[rgb(var(--ndpr-primary)/0.1)] border border-[rgb(var(--ndpr-primary)/0.2)] dark:border-[rgb(var(--ndpr-primary)/0.3)]'
                       : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
                   }`, classNames?.transferItem, unstyled)}
                   onClick={() => setSelectedTransferId(transfer.id)}
@@ -1244,10 +1251,10 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                     <h4 className="font-medium text-sm">{transfer.destinationCountry}</h4>
                     {renderRiskBadge(transfer.riskLevel)}
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                     {transfer.recipientOrganization}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
                     {renderMechanismBadge(transfer.transferMechanism)}
                   </p>
                   <div className="flex justify-between items-center mt-2">
@@ -1270,7 +1277,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             renderTransferDetail(selectedTransfer)
           ) : (
             <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-md">
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="text-gray-600 dark:text-gray-400">
                 Select a transfer to view details
               </p>
             </div>

@@ -31,7 +31,7 @@ interface UsePrivacyPolicyOptions {
   onGenerate?: (policy: PrivacyPolicy) => void;
 }
 
-interface UsePrivacyPolicyReturn {
+export interface UsePrivacyPolicyReturn {
   /**
    * Current policy data
    */

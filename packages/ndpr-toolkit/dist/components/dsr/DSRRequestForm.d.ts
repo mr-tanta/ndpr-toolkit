@@ -30,7 +30,11 @@ export interface DSRRequestFormClassNames {
     select?: string;
     textarea?: string;
     submitButton?: string;
+    /** Alias for submitButton */
+    primaryButton?: string;
     successMessage?: string;
+    /** Custom class applied when isSubmitting is true (e.g. a loading overlay) */
+    loadingOverlay?: string;
 }
 export interface DSRRequestFormProps {
     /**
@@ -52,7 +56,7 @@ export interface DSRRequestFormProps {
     title?: string;
     /**
      * Description text displayed on the form
-     * @default "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA)."
+     * @default "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part IV, Sections 29-36."
      */
     description?: string;
     /**
@@ -115,5 +119,25 @@ export interface DSRRequestFormProps {
      * can style from scratch using classNames.
      */
     unstyled?: boolean;
+    /**
+     * Whether the form is currently submitting.
+     * When true, the submit button is disabled and shows "Submitting..." text.
+     */
+    isSubmitting?: boolean;
+    /**
+     * Default values to pre-fill form fields.
+     * Useful for editing existing requests or pre-populating known data.
+     */
+    defaultValues?: Partial<DSRFormSubmission>;
+    /**
+     * Callback fired when the form is reset via the Reset button.
+     * To fully remount the component (clearing all internal state),
+     * change the `key` prop from the parent.
+     */
+    onReset?: () => void;
 }
+/**
+ * Data Subject Request form component. Implements NDPA Part IV, Sections 29-36
+ * covering data subject rights including access, rectification, erasure, and portability.
+ */
 export declare const DSRRequestForm: React.FC<DSRRequestFormProps>;

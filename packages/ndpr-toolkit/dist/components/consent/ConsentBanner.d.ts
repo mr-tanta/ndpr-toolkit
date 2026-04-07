@@ -1,5 +1,11 @@
 import React from 'react';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
+export interface ConsentAnalyticsEvent {
+    action: 'shown' | 'accepted_all' | 'rejected_all' | 'customized' | 'dismissed';
+    timestamp: number;
+    version: string;
+    categories?: Record<string, boolean>;
+}
 export interface ConsentBannerClassNames {
     root?: string;
     container?: string;
@@ -15,6 +21,12 @@ export interface ConsentBannerClassNames {
     rejectButton?: string;
     customizeButton?: string;
     saveButton?: string;
+    customizePanel?: string;
+    selectAllButton?: string;
+    /** Alias for acceptButton */
+    primaryButton?: string;
+    /** Alias for rejectButton */
+    secondaryButton?: string;
 }
 export interface ConsentBannerProps {
     /**
@@ -32,7 +44,7 @@ export interface ConsentBannerProps {
     title?: string;
     /**
      * Description text displayed on the banner
-     * @default "We use cookies and similar technologies to provide our services and enhance your experience."
+     * @default "We use cookies and similar technologies to provide our services and enhance your experience. Your consent is collected in accordance with NDPA Sections 25-26."
      */
     description?: string;
     /**
@@ -85,6 +97,14 @@ export interface ConsentBannerProps {
      */
     storageKey?: string;
     /**
+     * Whether the banner manages its own localStorage persistence.
+     * Set to false when an external storage mechanism (e.g., ConsentStorage)
+     * is responsible for persisting consent settings under the same key.
+     * This avoids race conditions where two writers target the same storage key.
+     * @default true
+     */
+    manageStorage?: boolean;
+    /**
      * Custom CSS class for the banner
      */
     className?: string;
@@ -110,5 +130,14 @@ export interface ConsentBannerProps {
      * can style from scratch using classNames.
      */
     unstyled?: boolean;
+    /**
+     * Optional analytics callback fired on each user interaction.
+     * Called when the banner is shown, accepted, rejected, customized, or dismissed.
+     */
+    onAnalytics?: (event: ConsentAnalyticsEvent) => void;
 }
+/**
+ * Consent banner component. Implements NDPA Sections 25-26 consent requirements
+ * for obtaining and managing data subject consent.
+ */
 export declare const ConsentBanner: React.FC<ConsentBannerProps>;

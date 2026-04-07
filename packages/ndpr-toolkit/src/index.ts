@@ -2,7 +2,7 @@
 export { ConsentBanner } from './components/consent/ConsentBanner';
 export { ConsentManager } from './components/consent/ConsentManager';
 export { ConsentStorage } from './components/consent/ConsentStorage';
-export type { ConsentBannerClassNames } from './components/consent/ConsentBanner';
+export type { ConsentBannerClassNames, ConsentAnalyticsEvent } from './components/consent/ConsentBanner';
 export type { ConsentManagerClassNames } from './components/consent/ConsentManager';
 export type { ConsentStorageClassNames } from './components/consent/ConsentStorage';
 export type { ConsentOption, ConsentSettings, ConsentStorageOptions, LawfulBasisType } from './types/consent';
@@ -52,11 +52,14 @@ export type { NDPRConfig } from './components/NDPRProvider';
 // Utility Functions
 export { resolveClass } from './utils/styling';
 export { validateConsent, validateConsentOptions } from './utils/consent';
+export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
+export type { ConsentAuditEntry } from './utils/consent-audit';
 export { formatDSRRequest } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
 export { generatePolicyText } from './utils/privacy';
 export { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES, createBusinessPolicyTemplate } from './utils/policy-templates';
+export { sanitizeInput } from './utils/sanitize';
 
 // Hooks
 export { useConsent } from './hooks/useConsent';
@@ -64,6 +67,7 @@ export { useDSR } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
+export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
 
 // Lawful Basis Tracking Components
 export { LawfulBasisTracker } from './components/lawful-basis/LawfulBasisTracker';

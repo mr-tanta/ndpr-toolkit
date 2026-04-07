@@ -28,8 +28,12 @@ export interface ROPAManagerClassNames {
   input?: string;
   select?: string;
   submitButton?: string;
+  /** Alias for submitButton */
+  primaryButton?: string;
   statusBadge?: string;
   exportButton?: string;
+  /** Alias for exportButton */
+  secondaryButton?: string;
   complianceGap?: string;
 }
 
@@ -62,7 +66,7 @@ export interface ROPAManagerProps {
 
   /**
    * Description text
-   * @default "Maintain a comprehensive record of all data processing activities as required by the NDPA 2023."
+   * @default "Maintain a comprehensive record of all data processing activities as required by the NDPA accountability principle."
    */
   description?: string;
 
@@ -142,13 +146,18 @@ function formatDate(timestamp: number | undefined): string {
   return new Date(timestamp).toLocaleDateString();
 }
 
+/**
+ * Record of Processing Activities (ROPA) management component. Implements the NDPA
+ * accountability principle, requiring organizations to maintain comprehensive records
+ * of all personal data processing activities.
+ */
 export const ROPAManager: React.FC<ROPAManagerProps> = ({
   ropa,
   onAddRecord,
   onUpdateRecord,
   onArchiveRecord,
   title = 'Record of Processing Activities (ROPA)',
-  description = 'Maintain a comprehensive record of all data processing activities as required by the NDPA 2023.',
+  description = 'Maintain a comprehensive record of all data processing activities as required by the NDPA accountability principle.',
   className = '',
   buttonClassName = '',
   classNames,
@@ -376,28 +385,28 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     <div className={resolveClass('mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md', classNames?.orgInfo, unstyled)}>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Organization</p>
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Organization</p>
           <p className="text-sm font-semibold">{ropa.organizationName}</p>
         </div>
         {ropa.dpoDetails && (
           <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
               Data Protection Officer
             </p>
             <p className="text-sm font-semibold">{ropa.dpoDetails.name}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{ropa.dpoDetails.email}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{ropa.dpoDetails.email}</p>
           </div>
         )}
         {ropa.ndpcRegistrationNumber && (
           <div>
-            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
               NDPC Registration No.
             </p>
             <p className="text-sm font-semibold">{ropa.ndpcRegistrationNumber}</p>
           </div>
         )}
       </div>
-      <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+      <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
         Version {ropa.version} | Last Updated: {formatDate(ropa.lastUpdated)}
       </div>
     </div>
@@ -519,7 +528,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search records..."
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
           />
         </div>
         <div>
@@ -530,7 +539,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
             id="ropaStatusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
           >
             <option value="all">All Statuses</option>
             {STATUS_OPTIONS.map((opt) => (
@@ -548,7 +557,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
             id="ropaBasisFilter"
             value={basisFilter}
             onChange={(e) => setBasisFilter(e.target.value)}
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
           >
             <option value="all">All Bases</option>
             {LAWFUL_BASIS_OPTIONS.map((opt) => (
@@ -561,13 +570,13 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
         <div className="flex items-end space-x-2">
           <button
             onClick={handleNewRecord}
-            className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm ${buttonClassName}`, classNames?.submitButton, unstyled)}
+            className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] text-sm ${buttonClassName}`, classNames?.primaryButton || classNames?.submitButton, unstyled)}
           >
             Add Record
           </button>
           <button
             onClick={handleExportCSV}
-            className={resolveClass(`px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm ${buttonClassName}`, classNames?.exportButton, unstyled)}
+            className={resolveClass(`px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm ${buttonClassName}`, classNames?.secondaryButton || classNames?.exportButton, unstyled)}
           >
             Export CSV
           </button>
@@ -576,7 +585,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
 
       {/* Table */}
       {filteredRecords.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400 text-sm text-center py-8">
+        <p className="text-gray-600 dark:text-gray-400 text-sm text-center py-8">
           No processing records found.
         </p>
       ) : (
@@ -612,7 +621,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       <div>
                         <p className="font-medium">{record.name}</p>
                         {record.department && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                          <p className="text-xs text-gray-600 dark:text-gray-400">
                             {record.department}
                           </p>
                         )}
@@ -630,14 +639,14 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       </p>
                     </td>
                     <td className="px-4 py-3">{renderStatusBadge(record.status)}</td>
-                    <td className="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">
+                    <td className="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">
                       {formatDate(record.lastReviewedAt)}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleEditRecord(record)}
-                          className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
+                          className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline text-xs"
                         >
                           Edit
                         </button>
@@ -675,7 +684,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </h3>
           <button
             onClick={handleCancelForm}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-sm"
+            className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-sm"
           >
             Cancel
           </button>
@@ -710,7 +719,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="recordName"
                   value={editingRecord.name}
                   onChange={(e) => updateEditingField('name', e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Customer Account Management"
                 />
               </div>
@@ -723,7 +732,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="recordDepartment"
                   value={editingRecord.department || ''}
                   onChange={(e) => updateEditingField('department', e.target.value || undefined)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Marketing"
                 />
               </div>
@@ -736,7 +745,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={editingRecord.description}
                   onChange={(e) => updateEditingField('description', e.target.value)}
                   rows={3}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="Describe what personal data processing is performed..."
                 />
               </div>
@@ -750,7 +759,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   onChange={(e) =>
                     updateEditingField('status', e.target.value as ProcessingRecord['status'])
                   }
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
                 >
                   {STATUS_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -775,7 +784,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="controllerName"
                   value={editingRecord.controllerDetails.name}
                   onChange={(e) => updateControllerField('name', e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
               <div>
@@ -787,7 +796,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="controllerContact"
                   value={editingRecord.controllerDetails.contact}
                   onChange={(e) => updateControllerField('contact', e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
               <div className="md:col-span-2">
@@ -799,7 +808,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="controllerAddress"
                   value={editingRecord.controllerDetails.address}
                   onChange={(e) => updateControllerField('address', e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
             </div>
@@ -819,7 +828,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   onChange={(e) =>
                     updateEditingField('lawfulBasis', e.target.value as LawfulBasis)
                   }
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
                 >
                   {LAWFUL_BASIS_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -839,7 +848,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     updateEditingField('lawfulBasisJustification', e.target.value)
                   }
                   rows={2}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="Explain why this lawful basis applies..."
                 />
               </div>
@@ -859,7 +868,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="purposes"
                   value={purposesInput}
                   onChange={(e) => setPurposesInput(e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Account management, Service delivery"
                 />
               </div>
@@ -872,7 +881,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="dataCategories"
                   value={dataCategoriesInput}
                   onChange={(e) => setDataCategoriesInput(e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Name, Email, Phone number"
                 />
               </div>
@@ -885,7 +894,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="sensitiveData"
                   value={sensitiveDataInput}
                   onChange={(e) => setSensitiveDataInput(e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Health data, Biometric data"
                 />
               </div>
@@ -898,7 +907,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="subjectCategories"
                   value={subjectCategoriesInput}
                   onChange={(e) => setSubjectCategoriesInput(e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Customers, Employees"
                 />
               </div>
@@ -911,7 +920,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="recipients"
                   value={recipientsInput}
                   onChange={(e) => setRecipientsInput(e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Payment processors, Cloud service providers"
                 />
               </div>
@@ -928,7 +937,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       e.target.value as ProcessingRecord['dataSource']
                     )
                   }
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.select, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
                 >
                   {DATA_SOURCE_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -952,7 +961,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     onChange={(e) =>
                       updateEditingField('thirdPartySourceDetails', e.target.value || undefined)
                     }
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                     placeholder="Describe the third-party data source..."
                   />
                 </div>
@@ -973,7 +982,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="retentionPeriod"
                   value={editingRecord.retentionPeriod}
                   onChange={(e) => updateEditingField('retentionPeriod', e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., 5 years after account closure"
                 />
               </div>
@@ -988,7 +997,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   onChange={(e) =>
                     updateEditingField('retentionJustification', e.target.value || undefined)
                   }
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="Why this retention period is necessary..."
                 />
               </div>
@@ -1001,7 +1010,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="securityMeasures"
                   value={securityMeasuresInput}
                   onChange={(e) => setSecurityMeasuresInput(e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Encryption at rest, Access controls, Audit logging"
                 />
               </div>
@@ -1014,7 +1023,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="systemsUsed"
                   value={systemsUsedInput}
                   onChange={(e) => setSystemsUsedInput(e.target.value)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., CRM, ERP, Cloud Storage"
                 />
               </div>
@@ -1049,7 +1058,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     onChange={(e) =>
                       updateEditingField('dpiaReference', e.target.value || undefined)
                     }
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                     placeholder="Reference to the completed DPIA"
                   />
                 </div>
@@ -1086,7 +1095,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       )
                     }
                     rows={2}
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                     placeholder="Describe the automated decision-making process..."
                   />
                 </div>
@@ -1116,7 +1125,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       e.target.value ? new Date(e.target.value).getTime() : undefined
                     )
                   }
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.input, unstyled)}
+                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
             </div>
@@ -1132,7 +1141,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
             </button>
             <button
               onClick={handleSaveRecord}
-              className={resolveClass(`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm ${buttonClassName}`, classNames?.submitButton, unstyled)}
+              className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] text-sm ${buttonClassName}`, classNames?.primaryButton || classNames?.submitButton, unstyled)}
             >
               {isNew ? 'Add Record' : 'Save Changes'}
             </button>
@@ -1149,8 +1158,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
         onClick={() => setViewMode('list')}
         className={`pb-2 text-sm font-medium ${
           viewMode === 'list'
-            ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            ? 'border-b-2 border-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]'
+            : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
         }`}
       >
         Processing Records
@@ -1159,8 +1168,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
         onClick={() => setViewMode('summary')}
         className={`pb-2 text-sm font-medium ${
           viewMode === 'summary'
-            ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
-            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            ? 'border-b-2 border-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]'
+            : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
         }`}
       >
         Compliance Summary

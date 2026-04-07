@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": false,
   "description": "Nigeria Data Protection Toolkit — enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "pnpm": {
@@ -18,7 +18,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build && node scripts/post-build.js",
-    "build:lib": "tsup",
+    "build:lib": "tsup && cp packages/ndpr-toolkit/src/styles.d.ts dist/styles.d.ts",
     "prepublishOnly": "pnpm build:lib",
     "start": "next start",
     "lint": "next lint",
@@ -124,7 +124,11 @@
       "import": "./dist/unstyled.mjs",
       "require": "./dist/unstyled.js"
     },
-    "./styles": "./dist/styles.css"
+    "./styles": {
+      "types": "./dist/styles.d.ts",
+      "import": "./dist/styles.css",
+      "require": "./dist/styles.css"
+    }
   },
   "typesVersions": {
     "*": {
@@ -178,9 +182,7 @@
   "sideEffects": [
     "*.css"
   ],
-  "dependencies": {
-    "uuid": "^13.0.0"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "@radix-ui/react-label": "^2.1.4",
     "@radix-ui/react-slot": "^1.2.0",
@@ -189,7 +191,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jspdf": "^3.0.3",
-    "lucide-react": "^0.507.0",
+    "lucide-react": ">=0.400.0",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "tailwind-merge": "^2.6.0"

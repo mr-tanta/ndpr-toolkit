@@ -21,6 +21,7 @@ export { useDSR } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
+export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
 export { useLawfulBasis } from './hooks/useLawfulBasis';
 export { useCrossBorderTransfer } from './hooks/useCrossBorderTransfer';
 export { useROPA } from './hooks/useROPA';

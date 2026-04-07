@@ -48,3 +48,9 @@
 .animate-slide-in { animation: slide-in-bottom 0.3s ease-out; }
 .animate-slide-in-top { animation: slide-in-top 0.3s ease-out; }
 .animate-fade-in { animation: fade-in 0.3s ease-out; }
+
+/* Baseline focus styles for unstyled mode */
+[data-ndpr-component] :focus-visible {
+  outline: 2px solid rgb(var(--ndpr-ring, 37 99 235));
+  outline-offset: 2px;
+}

@@ -16,6 +16,8 @@ export interface PolicyExporterClassNames {
   formatOption?: string;
   /** Export button */
   exportButton?: string;
+  /** Alias for exportButton */
+  primaryButton?: string;
   /** NDPA compliance / export tips notice */
   complianceNotice?: string;
   /** Preview / export history area */
@@ -366,7 +368,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
           id="export-format"
           value={selectedFormat}
           onChange={e => setSelectedFormat(e.target.value)}
-          className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500', classNames?.formatOption, unstyled)}
+          className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.formatOption, unstyled)}
         >
           {formats.map(format => (
             <option key={format.value} value={format.value}>
@@ -385,7 +387,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
         <button
           type="button"
           onClick={() => setShowAdvancedOptions(true)}
-          className="text-blue-600 dark:text-blue-400 text-sm mb-6"
+          className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] text-sm mb-6"
         >
           Show Advanced Options
         </button>
@@ -399,7 +401,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
           <button
             type="button"
             onClick={() => setShowAdvancedOptions(false)}
-            className="text-blue-600 dark:text-blue-400 text-sm"
+            className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] text-sm"
           >
             Hide Advanced Options
           </button>
@@ -415,9 +417,9 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             value={customFilename}
             onChange={e => setCustomFilename(e.target.value)}
             placeholder={generateDefaultFilename(selectedFormat)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           />
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
             Leave blank to use the default filename format.
           </p>
         </div>
@@ -432,7 +434,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             onChange={e => setCustomHeader(e.target.value)}
             rows={3}
             placeholder="<div>Custom header content</div>"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           />
         </div>
         
@@ -446,7 +448,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             onChange={e => setCustomFooter(e.target.value)}
             rows={3}
             placeholder="<div>Custom footer content</div>"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           />
         </div>
         
@@ -457,14 +459,14 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
               type="checkbox"
               checked={includeComplianceNotice}
               onChange={e => setShowAdvancedOptions(e.target.checked)}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+              className="w-4 h-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))] dark:focus:ring-[rgb(var(--ndpr-ring))] dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
           <div className="ml-3 text-sm">
             <label htmlFor="include-compliance-notice" className="font-medium text-gray-900 dark:text-white">
               Include NDPA Compliance Notice
             </label>
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className="text-gray-600 dark:text-gray-400">
               Adds a notice explaining that this policy complies with NDPA requirements.
             </p>
           </div>
@@ -486,16 +488,16 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
             <thead className="bg-gray-100 dark:bg-gray-800">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                   Date
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                   Format
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                   Filename
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -503,20 +505,20 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             <tbody className="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-600">
               {exportHistory.map(record => (
                 <tr key={record.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                     {new Date(record.timestamp).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                     {record.format.toUpperCase()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
                     {record.filename}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <a 
                       href={record.url} 
                       download={record.filename}
-                      className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-4"
+                      className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:text-[rgb(var(--ndpr-primary-hover))] dark:hover:text-[rgb(var(--ndpr-primary-hover))] mr-4"
                     >
                       Download
                     </a>
@@ -548,7 +550,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
         <button
           onClick={handleExport}
           disabled={isExporting}
-          className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName} ${isExporting ? 'opacity-70 cursor-not-allowed' : ''}`, classNames?.exportButton, unstyled)}
+          className={resolveClass(`px-6 py-3 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] focus:ring-offset-2 ${buttonClassName} ${isExporting ? 'opacity-70 cursor-not-allowed' : ''}`, classNames?.primaryButton || classNames?.exportButton, unstyled)}
         >
           {isExporting ? 'Exporting...' : `Export as ${selectedFormat.toUpperCase()}`}
         </button>

@@ -10,7 +10,7 @@ import { Select } from '@/components/ui/Select';
 import { TextArea } from '@/components/ui/TextArea';
 import { Label } from '@/components/ui/label';
 import type { DSRRequest, DSRStatus, DSRType } from '@/types';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '@/lib/id';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -200,7 +200,7 @@ function buildTimeline(req: DSRRequest): TimelineStep[] {
 function createSampleRequests(): DSRRequest[] {
   return [
     {
-      id: uuidv4(),
+      id: generateId(),
       type: 'access',
       status: 'pending',
       createdAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
@@ -210,7 +210,7 @@ function createSampleRequests(): DSRRequest[] {
       description: 'I want to access all my personal data stored in your systems.',
     },
     {
-      id: uuidv4(),
+      id: generateId(),
       type: 'erasure',
       status: 'in-progress',
       createdAt: Date.now() - 12 * 24 * 60 * 60 * 1000,
@@ -220,7 +220,7 @@ function createSampleRequests(): DSRRequest[] {
       description: 'Please delete all my personal data from your systems immediately.',
     },
     {
-      id: uuidv4(),
+      id: generateId(),
       type: 'rectification',
       status: 'completed',
       createdAt: Date.now() - 20 * 24 * 60 * 60 * 1000,
@@ -231,7 +231,7 @@ function createSampleRequests(): DSRRequest[] {
       description: 'My phone number and address are outdated. Please update to +234 801 555 1234 and 15 Marina Street, Lagos.',
     },
     {
-      id: uuidv4(),
+      id: generateId(),
       type: 'restriction',
       status: 'pending',
       createdAt: Date.now() - 25 * 24 * 60 * 60 * 1000,
@@ -241,7 +241,7 @@ function createSampleRequests(): DSRRequest[] {
       description: 'I want to restrict processing of my data for marketing purposes while I contest its accuracy.',
     },
     {
-      id: uuidv4(),
+      id: generateId(),
       type: 'information',
       status: 'pending',
       createdAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
@@ -251,7 +251,7 @@ function createSampleRequests(): DSRRequest[] {
       description: 'I would like to know what personal data categories you process about me and the legal basis for processing.',
     },
     {
-      id: uuidv4(),
+      id: generateId(),
       type: 'automated_decision_making',
       status: 'in-progress',
       createdAt: Date.now() - 7 * 24 * 60 * 60 * 1000,
@@ -261,7 +261,7 @@ function createSampleRequests(): DSRRequest[] {
       description: 'I request human review of the automated decision regarding my loan application, per NDPA Section 36.',
     },
     {
-      id: uuidv4(),
+      id: generateId(),
       type: 'portability',
       status: 'completed',
       createdAt: Date.now() - 18 * 24 * 60 * 60 * 1000,
@@ -272,7 +272,7 @@ function createSampleRequests(): DSRRequest[] {
       description: 'I need all my data exported in JSON format so I can transfer to another provider.',
     },
     {
-      id: uuidv4(),
+      id: generateId(),
       type: 'objection',
       status: 'rejected',
       createdAt: Date.now() - 14 * 24 * 60 * 60 * 1000,
@@ -339,7 +339,7 @@ export default function DSRDemoPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const id = uuidv4();
+    const id = generateId();
     const newReq: DSRRequest = {
       id,
       type: formType,

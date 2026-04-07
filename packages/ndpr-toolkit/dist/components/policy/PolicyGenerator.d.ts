@@ -19,6 +19,8 @@ export interface PolicyGeneratorClassNames {
     input?: string;
     /** Generate button */
     generateButton?: string;
+    /** Alias for generateButton */
+    primaryButton?: string;
     /** NDPA compliance notice */
     complianceNotice?: string;
 }
@@ -48,7 +50,7 @@ export interface PolicyGeneratorProps {
     title?: string;
     /**
      * Description text displayed on the generator
-     * @default "Generate an NDPA-compliant privacy policy for your organization."
+     * @default "Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24."
      */
     description?: string;
     /**
@@ -84,4 +86,8 @@ export interface PolicyGeneratorProps {
      */
     unstyled?: boolean;
 }
+/**
+ * Privacy policy generator component. Implements NDPA Section 24 transparency requirements,
+ * helping organizations generate compliant privacy policies that disclose required information.
+ */
 export declare const PolicyGenerator: React.FC<PolicyGeneratorProps>;

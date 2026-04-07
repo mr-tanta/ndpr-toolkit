@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { RequestType } from '../../types/dsr';
 import { resolveClass } from '../../utils/styling';
+import { sanitizeInput } from '../../utils/sanitize';
 
 /**
  * Represents the data submitted by the DSR request form.
@@ -33,7 +34,11 @@ export interface DSRRequestFormClassNames {
   select?: string;
   textarea?: string;
   submitButton?: string;
+  /** Alias for submitButton */
+  primaryButton?: string;
   successMessage?: string;
+  /** Custom class applied when isSubmitting is true (e.g. a loading overlay) */
+  loadingOverlay?: string;
 }
 
 export interface DSRRequestFormProps {
@@ -60,7 +65,7 @@ export interface DSRRequestFormProps {
   
   /**
    * Description text displayed on the form
-   * @default "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA)."
+   * @default "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part IV, Sections 29-36."
    */
   description?: string;
   
@@ -134,14 +139,37 @@ export interface DSRRequestFormProps {
    * can style from scratch using classNames.
    */
   unstyled?: boolean;
+
+  /**
+   * Whether the form is currently submitting.
+   * When true, the submit button is disabled and shows "Submitting..." text.
+   */
+  isSubmitting?: boolean;
+
+  /**
+   * Default values to pre-fill form fields.
+   * Useful for editing existing requests or pre-populating known data.
+   */
+  defaultValues?: Partial<DSRFormSubmission>;
+
+  /**
+   * Callback fired when the form is reset via the Reset button.
+   * To fully remount the component (clearing all internal state),
+   * change the `key` prop from the parent.
+   */
+  onReset?: () => void;
 }
 
+/**
+ * Data Subject Request form component. Implements NDPA Part IV, Sections 29-36
+ * covering data subject rights including access, rectification, erasure, and portability.
+ */
 export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   requestTypes,
   onSubmit,
   onValidationError,
   title = "Submit a Data Subject Request",
-  description = "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA).",
+  description = "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part IV, Sections 29-36.",
   submitButtonText = "Submit Request",
   className = "",
   buttonClassName = "",
@@ -156,18 +184,34 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   collectAdditionalContact = true,
   labels = {},
   classNames,
-  unstyled = false
+  unstyled = false,
+  isSubmitting = false,
+  defaultValues,
+  onReset
 }) => {
-  const [selectedRequestType, setSelectedRequestType] = useState<string>("");
-  const [fullName, setFullName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [identifierType, setIdentifierType] = useState<string>(identifierTypes[0]?.id || "");
-  const [identifierValue, setIdentifierValue] = useState<string>("");
-  const [additionalInfo, setAdditionalInfo] = useState<Record<string, any>>({});
+  const [selectedRequestType, setSelectedRequestType] = useState<string>(defaultValues?.requestType || "");
+  const [fullName, setFullName] = useState<string>(defaultValues?.dataSubject?.fullName || "");
+  const [email, setEmail] = useState<string>(defaultValues?.dataSubject?.email || "");
+  const [phone, setPhone] = useState<string>(defaultValues?.dataSubject?.phone || "");
+  const [identifierType, setIdentifierType] = useState<string>(defaultValues?.dataSubject?.identifierType || identifierTypes[0]?.id || "");
+  const [identifierValue, setIdentifierValue] = useState<string>(defaultValues?.dataSubject?.identifierValue || "");
+  const [additionalInfo, setAdditionalInfo] = useState<Record<string, any>>(defaultValues?.additionalInfo || {});
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
+  const handleReset = () => {
+    setSelectedRequestType("");
+    setFullName("");
+    setEmail("");
+    setPhone("");
+    setIdentifierType(identifierTypes[0]?.id || "");
+    setIdentifierValue("");
+    setAdditionalInfo({});
+    setIsSubmitted(false);
+    setErrors({});
+    onReset?.();
+  };
+
   const selectedType = requestTypes.find(type => type.id === selectedRequestType);
   
   const handleRequestTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -191,7 +235,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       newErrors.email = "Email is invalid";
     }
 
@@ -225,16 +269,26 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
       return;
     }
 
+    // Sanitize all text field values to prevent XSS
+    const sanitizedAdditionalInfo = Object.keys(additionalInfo).length > 0
+      ? Object.fromEntries(
+          Object.entries(additionalInfo).map(([key, value]) => [
+            key,
+            typeof value === 'string' ? sanitizeInput(value) : value,
+          ])
+        )
+      : undefined;
+
     const formData: DSRFormSubmission = {
       requestType: selectedRequestType,
       dataSubject: {
-        fullName,
-        email,
-        phone: phone || undefined,
+        fullName: sanitizeInput(fullName),
+        email: sanitizeInput(email),
+        phone: phone ? sanitizeInput(phone) : undefined,
         identifierType,
-        identifierValue
+        identifierValue: sanitizeInput(identifierValue)
       },
-      additionalInfo: Object.keys(additionalInfo).length > 0 ? additionalInfo : undefined,
+      additionalInfo: sanitizedAdditionalInfo,
       submittedAt: Date.now()
     };
 
@@ -252,7 +306,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
         <p className={resolveClass("text-green-700 dark:text-green-300", classNames?.description, unstyled)}>{confirmationMessage}</p>
         <button
           onClick={() => setIsSubmitted(false)}
-          className={resolveClass(`mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ${buttonClassName}`, classNames?.submitButton, unstyled)}
+          className={resolveClass(`mt-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 ${buttonClassName}`, classNames?.primaryButton || classNames?.submitButton, unstyled)}
         >
           Submit Another Request
         </button>
@@ -280,10 +334,12 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                   id="fullName"
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
-                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.input, unstyled)}
                   required
+                  aria-invalid={!!errors.fullName}
+                  aria-describedby={errors.fullName ? "fullName-error" : undefined}
                 />
-                {errors.fullName && <p className="mt-1 text-sm text-red-500">{errors.fullName}</p>}
+                {errors.fullName && <p id="fullName-error" role="alert" className="mt-1 text-sm text-red-500">{errors.fullName}</p>}
               </div>
               
               <div>
@@ -295,10 +351,12 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                   id="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
+                  className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.input, unstyled)}
                   required
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                 />
-                {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+                {errors.email && <p id="email-error" role="alert" className="mt-1 text-sm text-red-500">{errors.email}</p>}
               </div>
               
               {collectAdditionalContact && (
@@ -311,7 +369,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                     id="phone"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
+                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.input, unstyled)}
                   />
                 </div>
               )}
@@ -329,8 +387,10 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                 id="requestType"
                 value={selectedRequestType}
                 onChange={handleRequestTypeChange}
-                className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.select, unstyled)}
+                className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.select, unstyled)}
                 required
+                aria-invalid={!!errors.requestType}
+                aria-describedby={errors.requestType ? "requestType-error" : undefined}
               >
                 <option value="">Select a request type</option>
                 {requestTypes.map(type => (
@@ -339,13 +399,13 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                   </option>
                 ))}
               </select>
-              {errors.requestType && <p className="mt-1 text-sm text-red-500">{errors.requestType}</p>}
+              {errors.requestType && <p id="requestType-error" role="alert" className="mt-1 text-sm text-red-500">{errors.requestType}</p>}
             </div>
             
             {selectedType && (
               <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
                 <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{selectedType.description}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Estimated completion time: {selectedType.estimatedCompletionTime} {selectedType.estimatedCompletionTime === 1 ? 'day' : 'days'}
                 </p>
               </div>
@@ -357,7 +417,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
               </label>
               <textarea
                 id="requestDescription"
-                className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.textarea, unstyled)}
+                className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.textarea, unstyled)}
                 rows={4}
                 placeholder="Please provide any additional details that might help us process your request"
               />
@@ -381,7 +441,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                     id="identifierType"
                     value={identifierType}
                     onChange={e => setIdentifierType(e.target.value)}
-                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.select, unstyled)}
+                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.select, unstyled)}
                     required
                   >
                     {identifierTypes.map(type => (
@@ -401,10 +461,12 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                     id="identifierValue"
                     value={identifierValue}
                     onChange={e => setIdentifierValue(e.target.value)}
-                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
+                    className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.input, unstyled)}
                     required
+                    aria-invalid={!!errors.identifierValue}
+                    aria-describedby={errors.identifierValue ? "identifierValue-error" : undefined}
                   />
-                  {errors.identifierValue && <p className="mt-1 text-sm text-red-500">{errors.identifierValue}</p>}
+                  {errors.identifierValue && <p id="identifierValue-error" role="alert" className="mt-1 text-sm text-red-500">{errors.identifierValue}</p>}
                 </div>
               </div>
             </div>
@@ -428,8 +490,10 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                         value={additionalInfo[field.id] || ''}
                         onChange={e => handleAdditionalInfoChange(field.id, e.target.value)}
                         placeholder={field.placeholder}
-                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
+                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.input, unstyled)}
                         required={field.required}
+                        aria-invalid={!!errors[`additional_${field.id}`]}
+                        aria-describedby={errors[`additional_${field.id}`] ? `additional-${field.id}-error` : undefined}
                       />
                     )}
                     
@@ -439,9 +503,11 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                         value={additionalInfo[field.id] || ''}
                         onChange={e => handleAdditionalInfoChange(field.id, e.target.value)}
                         placeholder={field.placeholder}
-                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.textarea, unstyled)}
+                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.textarea, unstyled)}
                         rows={4}
                         required={field.required}
+                        aria-invalid={!!errors[`additional_${field.id}`]}
+                        aria-describedby={errors[`additional_${field.id}`] ? `additional-${field.id}-error` : undefined}
                       />
                     )}
                     
@@ -450,8 +516,10 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                         id={field.id}
                         value={additionalInfo[field.id] || ''}
                         onChange={e => handleAdditionalInfoChange(field.id, e.target.value)}
-                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.select, unstyled)}
+                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.select, unstyled)}
                         required={field.required}
+                        aria-invalid={!!errors[`additional_${field.id}`]}
+                        aria-describedby={errors[`additional_${field.id}`] ? `additional-${field.id}-error` : undefined}
                       >
                         <option value="">{field.placeholder || 'Select an option'}</option>
                         {field.options.map(option => (
@@ -470,8 +538,10 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                             id={field.id}
                             checked={!!additionalInfo[field.id]}
                             onChange={e => handleAdditionalInfoChange(field.id, e.target.checked)}
-                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            className="h-4 w-4 rounded border-gray-300 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
                             required={field.required}
+                            aria-invalid={!!errors[`additional_${field.id}`]}
+                            aria-describedby={errors[`additional_${field.id}`] ? `additional-${field.id}-error` : undefined}
                           />
                         </div>
                         <div className="ml-3 text-sm">
@@ -492,13 +562,15 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
                             handleAdditionalInfoChange(field.id, file);
                           }
                         }}
-                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500", classNames?.input, unstyled)}
+                        className={resolveClass("w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]", classNames?.input, unstyled)}
                         required={field.required}
+                        aria-invalid={!!errors[`additional_${field.id}`]}
+                        aria-describedby={errors[`additional_${field.id}`] ? `additional-${field.id}-error` : undefined}
                       />
                     )}
                     
                     {errors[`additional_${field.id}`] && (
-                      <p className="mt-1 text-sm text-red-500">{errors[`additional_${field.id}`]}</p>
+                      <p id={`additional-${field.id}-error`} role="alert" className="mt-1 text-sm text-red-500">{errors[`additional_${field.id}`]}</p>
                     )}
                   </div>
                 ))}
@@ -516,13 +588,24 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
             </p>
           </div>
           
-          {/* Submit Button */}
-          <div className="mt-6">
+          {/* Form Actions */}
+          <div className="mt-6 flex gap-3 relative">
+            {isSubmitting && classNames?.loadingOverlay && (
+              <div className={classNames.loadingOverlay} />
+            )}
             <button
               type="submit"
-              className={resolveClass(`px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${buttonClassName}`, classNames?.submitButton, unstyled)}
+              disabled={isSubmitting}
+              className={resolveClass(`px-6 py-3 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] focus:ring-offset-2 ${buttonClassName} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`, classNames?.primaryButton || classNames?.submitButton, unstyled)}
             >
-              {labels.submit || submitButtonText}
+              {isSubmitting ? 'Submitting...' : (labels.submit || submitButtonText)}
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              className={resolveClass("px-6 py-3 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2", undefined, unstyled)}
+            >
+              Reset
             </button>
           </div>
         </div>

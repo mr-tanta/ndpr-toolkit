@@ -31,6 +31,10 @@ export interface DPIAQuestionnaireClassNames {
   nextButton?: string;
   /** Previous button */
   prevButton?: string;
+  /** Alias for nextButton */
+  primaryButton?: string;
+  /** Alias for prevButton */
+  secondaryButton?: string;
   /** Progress bar wrapper */
   progressBar?: string;
 }
@@ -129,6 +133,10 @@ export interface DPIAQuestionnaireProps {
   unstyled?: boolean;
 }
 
+/**
+ * DPIA questionnaire component. Implements NDPA Section 38 requirements
+ * for conducting Data Protection Impact Assessments on high-risk processing activities.
+ */
 export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
   sections,
   answers,
@@ -151,8 +159,13 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
   const currentSection = sections[currentSectionIndex];
   const isLastSection = currentSectionIndex === sections.length - 1;
 
-  const cx = (defaultClass: string, key?: keyof DPIAQuestionnaireClassNames) =>
-    resolveClass(defaultClass, key ? classNames[key] : undefined, unstyled);
+  const cx = (defaultClass: string, key?: keyof DPIAQuestionnaireClassNames) => {
+    let override = key ? classNames[key] : undefined;
+    // Check aliases: primaryButton -> nextButton, secondaryButton -> prevButton
+    if (!override && key === 'nextButton') override = classNames.primaryButton;
+    if (!override && key === 'prevButton') override = classNames.secondaryButton;
+    return resolveClass(defaultClass, override, unstyled);
+  };
 
   // Check if a question should be shown based on its conditions
   const shouldShowQuestion = (question: DPIAQuestion): boolean => {
@@ -183,7 +196,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
     cx(
       `w-full px-3 py-2 border rounded-md ${
         error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-      } focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`,
+      } focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`,
       'input',
     );
 
@@ -204,7 +217,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             {question.required && <span className="text-red-500 ml-1">*</span>}
           </label>
           {question.guidance && (
-            <p className={cx('mt-1 text-sm text-gray-500 dark:text-gray-400', 'guidance')}>{question.guidance}</p>
+            <p className={cx('mt-1 text-sm text-gray-600 dark:text-gray-400', 'guidance')}>{question.guidance}</p>
           )}
         </div>
 
@@ -259,7 +272,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
                   checked={value === option.value}
                   onChange={() => onAnswerChange(question.id, option.value)}
                   disabled={readOnly}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600"
+                  className="h-4 w-4 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))] border-gray-300 dark:border-gray-600"
                 />
                 <label
                   htmlFor={`${question.id}_${option.value}`}
@@ -299,7 +312,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
                     }
                   }}
                   disabled={readOnly}
-                  className="h-4 w-4 rounded text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600"
+                  className="h-4 w-4 rounded text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))] border-gray-300 dark:border-gray-600"
                 />
                 <label
                   htmlFor={`${question.id}_${option.value}`}
@@ -316,7 +329,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
           <div>
             <div className="flex justify-between mb-2">
               {question.scaleLabels && Object.entries(question.scaleLabels).map(([scaleValue, label]) => (
-                <div key={scaleValue} className="text-xs text-gray-500 dark:text-gray-400 text-center" style={{ width: `${100 / Object.keys(question.scaleLabels || {}).length}%` }}>
+                <div key={scaleValue} className="text-xs text-gray-600 dark:text-gray-400 text-center" style={{ width: `${100 / Object.keys(question.scaleLabels || {}).length}%` }}>
                   {label}
                 </div>
               ))}
@@ -331,7 +344,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
               disabled={readOnly}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
             />
-            <div className="mt-1 text-sm text-gray-500 dark:text-gray-400 text-center">
+            <div className="mt-1 text-sm text-gray-600 dark:text-gray-400 text-center">
               Selected value: {value || (question.minValue || 1)}
             </div>
           </div>
@@ -350,13 +363,13 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
     <div className={`${cx('bg-white dark:bg-gray-800 rounded-lg shadow-md p-6', 'root')} ${className}`}>
       {showProgress && (
         <div className={cx('mb-6', 'header')}>
-          <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
+          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
             <span>Section {currentSectionIndex + 1} of {sections.length}</span>
             <span>{progress !== undefined ? `${progress}% Complete` : ''}</span>
           </div>
           <div className={cx('w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700', 'progressBar')}>
             <div
-              className="bg-blue-600 h-2.5 rounded-full"
+              className="bg-[rgb(var(--ndpr-primary))] h-2.5 rounded-full"
               style={{ width: `${progress !== undefined ? progress : ((currentSectionIndex + 1) / sections.length) * 100}%` }}
             ></div>
           </div>
@@ -386,7 +399,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
           type="button"
           onClick={onNextSection}
           disabled={readOnly}
-          className={`${cx('px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed', 'nextButton')} ${buttonClassName}`}
+          className={`${cx('px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] disabled:opacity-50 disabled:cursor-not-allowed', 'nextButton')} ${buttonClassName}`}
         >
           {isLastSection ? submitButtonText : nextButtonText}
         </button>
