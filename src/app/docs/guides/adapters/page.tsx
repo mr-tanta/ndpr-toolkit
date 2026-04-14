@@ -13,8 +13,8 @@ export default function AdaptersGuide() {
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">What Are Adapters?</h2>
         <p className="mb-4 text-foreground">
           In v3, every hook that reads or writes persistent data accepts an optional <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">adapter</code> prop.
-          An adapter is a small object that implements the <strong>StorageAdapter</strong> interface — four methods that map to
-          read, write, update, and delete operations.
+          An adapter is a small object that implements the <strong>StorageAdapter</strong> interface — three methods that map to
+          load, save, and remove operations.
         </p>
         <p className="mb-4 text-foreground">
           Because the adapter sits between the toolkit and your storage layer, you can swap backends without touching
@@ -40,30 +40,24 @@ export default function AdaptersGuide() {
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`export interface StorageAdapter<T = unknown> {
   /**
-   * Read a value by key. Returns null if not found.
+   * Load the stored value. Returns null if nothing has been saved yet.
    */
-  get(key: string): Promise<T | null>;
+  load(): T | null | Promise<T | null>;
 
   /**
-   * Write or overwrite a value by key.
+   * Persist the value to the underlying storage.
    */
-  set(key: string, value: T): Promise<void>;
+  save(data: T): void | Promise<void>;
 
   /**
-   * Remove a value by key.
+   * Remove the stored value entirely.
    */
-  remove(key: string): Promise<void>;
-
-  /**
-   * Return all key–value pairs that belong to this adapter.
-   * Used by the compliance score engine and audit utilities.
-   */
-  getAll(): Promise<Record<string, T>>;
+  remove(): void | Promise<void>;
 }`}</code></pre>
         </div>
         <p className="mb-4 text-foreground">
-          All methods are <strong>async</strong>. Even the built-in localStorage adapter wraps its synchronous calls in
-          resolved promises so your application code is always consistent regardless of the underlying storage mechanism.
+          Methods may be synchronous or async — the toolkit handles both. Even the built-in localStorage adapter
+          is synchronous under the hood, while the API adapter returns Promises for all operations.
         </p>
       </section>
 
@@ -145,14 +139,14 @@ export default function AdaptersGuide() {
           <pre className="text-foreground"><code>{`import { useConsent, localStorageAdapter } from '@tantainnovative/ndpr-toolkit';
 
 export function ConsentBanner() {
-  const { consents, updateConsent, hasConsented } = useConsent({
-    adapter: localStorageAdapter,
-    storageKey: 'my-app-consents',
+  const { hasConsent, updateConsent } = useConsent({
+    options: consentOptions,
+    adapter: localStorageAdapter('my-app-consents'),
   });
 
   return (
     <div>
-      <p>Analytics enabled: {hasConsented('analytics') ? 'Yes' : 'No'}</p>
+      <p>Analytics enabled: {hasConsent('analytics') ? 'Yes' : 'No'}</p>
       <button onClick={() => updateConsent('analytics', true)}>
         Accept Analytics
       </button>
@@ -167,15 +161,10 @@ export function ConsentBanner() {
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`import { useConsent, apiAdapter } from '@tantainnovative/ndpr-toolkit';
 
-const myApiAdapter = apiAdapter({
-  baseUrl: '/api/consent',
-  headers: { Authorization: 'Bearer ' + token },
-});
-
 export function ConsentBanner() {
-  const { consents, updateConsent, hasConsented } = useConsent({
-    adapter: myApiAdapter,
-    storageKey: 'consent-v1',
+  const { hasConsent, updateConsent } = useConsent({
+    options: consentOptions,
+    adapter: apiAdapter('/api/consent'),
   });
   // ...same component body
 }`}</code></pre>
@@ -197,37 +186,38 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export const supabaseConsentAdapter: StorageAdapter = {
-  async get(key) {
-    const { data } = await supabase
-      .from('consent_records')
-      .select('value')
-      .eq('key', key)
-      .single();
-    return data?.value ?? null;
-  },
+// The key is baked into the adapter factory, not passed per-call
+export function supabaseConsentAdapter(userId: string): StorageAdapter {
+  return {
+    async load() {
+      const { data } = await supabase
+        .from('consent_records')
+        .select('value')
+        .eq('user_id', userId)
+        .single();
+      return data?.value ?? null;
+    },
 
-  async set(key, value) {
-    await supabase
-      .from('consent_records')
-      .upsert({ key, value, updated_at: new Date().toISOString() });
-  },
+    async save(data) {
+      await supabase
+        .from('consent_records')
+        .upsert({ user_id: userId, value: data, updated_at: new Date().toISOString() });
+    },
 
-  async remove(key) {
-    await supabase.from('consent_records').delete().eq('key', key);
-  },
-
-  async getAll() {
-    const { data } = await supabase.from('consent_records').select('key, value');
-    return Object.fromEntries((data ?? []).map((r) => [r.key, r.value]));
-  },
-};`}</code></pre>
+    async remove() {
+      await supabase.from('consent_records').delete().eq('user_id', userId);
+    },
+  };
+}`}</code></pre>
         </div>
         <p className="mb-4 text-foreground">
           Then use it anywhere you would pass a built-in adapter:
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`const { consents } = useConsent({ adapter: supabaseConsentAdapter });`}</code></pre>
+          <pre className="text-foreground"><code>{`const { hasConsent } = useConsent({
+  options: consentOptions,
+  adapter: supabaseConsentAdapter(currentUserId),
+});`}</code></pre>
         </div>
       </section>
 
@@ -246,14 +236,16 @@ export const supabaseConsentAdapter: StorageAdapter = {
   apiAdapter,
 } from '@tantainnovative/ndpr-toolkit';
 
-const myApiAdapter = apiAdapter({ baseUrl: '/api/consent' });
-
 // Reads: localStorage first (returns immediately if found, skips API)
 // Writes: propagated to BOTH localStorage AND the API
-const composedAdapter = composeAdapters([localStorageAdapter, myApiAdapter]);
+const composedAdapter = composeAdapters(
+  localStorageAdapter('consent-cache'),
+  apiAdapter('/api/consent'),
+);
 
 export function ConsentBanner() {
-  const { consents, updateConsent } = useConsent({
+  const { hasConsent, updateConsent } = useConsent({
+    options: consentOptions,
     adapter: composedAdapter,
   });
   // ...
@@ -271,27 +263,26 @@ export function ConsentBanner() {
         <h3 className="text-xl font-bold text-foreground mb-3">Three-layer Setup (local + API + audit log)</h3>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`const auditAdapter: StorageAdapter = {
-  async get() { return null; },  // audit log is write-only
-  async set(key, value) {
+  load() { return null; },  // audit log is write-only
+  async save(data) {
     await fetch('/api/audit', {
       method: 'POST',
-      body: JSON.stringify({ action: 'SET', key, value, ts: Date.now() }),
+      body: JSON.stringify({ action: 'SAVE', data, ts: Date.now() }),
     });
   },
-  async remove(key) {
+  async remove() {
     await fetch('/api/audit', {
       method: 'POST',
-      body: JSON.stringify({ action: 'REMOVE', key, ts: Date.now() }),
+      body: JSON.stringify({ action: 'REMOVE', ts: Date.now() }),
     });
   },
-  async getAll() { return {}; },
 };
 
-const adapter = composeAdapters([
-  localStorageAdapter,  // 1. fast local read
-  myApiAdapter,         // 2. durable server storage
-  auditAdapter,         // 3. immutable audit trail
-]);`}</code></pre>
+const adapter = composeAdapters(
+  localStorageAdapter('consent-cache'),  // 1. fast local read
+  apiAdapter('/api/consent'),            // 2. durable server storage
+  auditAdapter,                          // 3. immutable audit trail
+);`}</code></pre>
         </div>
       </section>
 

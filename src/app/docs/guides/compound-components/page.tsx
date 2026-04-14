@@ -163,6 +163,144 @@ export function CustomConsentToggle({ categoryId }: { categoryId: string }) {
         </div>
       </section>
 
+      <section id="dsr-example" className="mb-8">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Example: DSR Module</h2>
+        <p className="mb-4 text-foreground">
+          The <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">DSR</code> compound component handles Data Subject Request submissions and status tracking.
+          The <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">DSR.Form</code> sub-component orchestrates the multi-step request form while
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">DSR.Tracker</code> lets users follow up on submitted requests.
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`import { DSR } from '@tantainnovative/ndpr-toolkit';
+
+const dsrConfig = {
+  organizationName: 'Acme Ltd',
+  contactEmail: 'privacy@acme.com',
+  requestTypes: ['access', 'deletion', 'rectification', 'portability'],
+  onSubmit: async (request) => {
+    const res = await fetch('/api/dsr', {
+      method: 'POST',
+      body: JSON.stringify(request),
+    });
+    return res.json(); // { requestId: 'DSR-001' }
+  },
+};
+
+export function DSRPage() {
+  return (
+    <DSR.Provider config={dsrConfig}>
+      {/* Submission form — renders request type selector, identity
+          fields, and details textarea automatically */}
+      <DSR.Form
+        onSuccess={(requestId) =>
+          console.log('Request submitted:', requestId)
+        }
+      />
+
+      {/* Optional: let returning users check request status */}
+      <DSR.Dashboard className="mt-8" />
+    </DSR.Provider>
+  );
+}
+
+// --- Or track a single known request ---
+export function DSRStatusPage({ requestId }: { requestId: string }) {
+  return (
+    <DSR.Provider config={dsrConfig}>
+      <DSR.Tracker requestId={requestId} />
+    </DSR.Provider>
+  );
+}`}</code></pre>
+        </div>
+      </section>
+
+      <section id="dpia-example" className="mb-8">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Example: DPIA Module</h2>
+        <p className="mb-4 text-foreground">
+          The <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">DPIA</code> compound component guides privacy teams through a Data Protection Impact Assessment.
+          The <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">DPIA.StepIndicator</code> shows progress, while <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">DPIA.Report</code> renders
+          the generated assessment summary.
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`import { DPIA } from '@tantainnovative/ndpr-toolkit';
+
+const dpiaConfig = {
+  projectName: 'Customer Analytics Pipeline',
+  assessor: 'Data Protection Officer',
+  onComplete: (assessment) => {
+    console.log('DPIA complete, risk level:', assessment.riskLevel);
+  },
+};
+
+export function DPIAWorkflow() {
+  return (
+    <DPIA.Provider config={dpiaConfig}>
+      {/* Step progress bar: "Describe Processing → Assess Necessity →
+          Identify Risks → Mitigations → Sign-off" */}
+      <DPIA.StepIndicator className="mb-6" />
+
+      {/* Renders the active step's questions */}
+      <DPIA.Questionnaire />
+
+      {/* Once all steps complete, show the final risk report */}
+      <DPIA.Report className="mt-8" />
+    </DPIA.Provider>
+  );
+}`}</code></pre>
+        </div>
+      </section>
+
+      <section id="breach-example" className="mb-8">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Example: Breach Module</h2>
+        <p className="mb-4 text-foreground">
+          The <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">Breach</code> compound component covers the full data-breach response workflow —
+          initial report, risk assessment, and regulatory notification drafting — all wired together through a shared Provider context.
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`import { Breach } from '@tantainnovative/ndpr-toolkit';
+
+const breachConfig = {
+  organizationName: 'Acme Ltd',
+  dpoEmail: 'dpo@acme.com',
+  regulatoryBody: 'NDPC',           // Nigeria Data Protection Commission
+  notificationDeadlineHours: 72,    // NDPA 2023 requirement
+  onSubmit: async (report) => {
+    await fetch('/api/breach-reports', {
+      method: 'POST',
+      body: JSON.stringify(report),
+    });
+  },
+};
+
+export function BreachResponsePage() {
+  return (
+    <Breach.Provider config={breachConfig}>
+      {/* Step 1: Capture initial breach details */}
+      <Breach.ReportForm />
+
+      {/* Step 2: Guided risk assessment (severity, affected subjects) */}
+      <Breach.RiskAssessment className="mt-6" />
+
+      {/* Step 3: Manage notifications to affected individuals */}
+      <Breach.NotificationManager className="mt-6" />
+
+      {/* Step 4: Generate the formatted regulatory report */}
+      <Breach.ReportGenerator className="mt-6" />
+    </Breach.Provider>
+  );
+}`}</code></pre>
+        </div>
+
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-xl mb-4">
+          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA 72-hour Requirement</h4>
+          <p className="text-blue-700 dark:text-blue-300 text-sm">
+            The NDPA 2023 requires controllers to notify the Nigeria Data Protection Commission within 72 hours of becoming
+            aware of a qualifying breach. The <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded text-xs">notificationDeadlineHours</code> config value
+            drives the countdown timer surfaced by <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded text-xs">Breach.NotificationManager</code>.
+          </p>
+        </div>
+      </section>
+
       <section id="all-modules" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">All 8 Modules and Their Sub-components</h2>
         <p className="mb-4 text-foreground">
@@ -185,56 +323,56 @@ export function CustomConsentToggle({ categoryId }: { categoryId: string }) {
                 <td className="border border-border px-4 py-2 font-semibold text-foreground">Consent</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">Consent</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
-                  Provider, Banner, Title, Description, CategoryList, AcceptAllButton, RejectAllButton, SaveButton, PreferencesButton
+                  Provider, Banner, Settings, Storage, OptionList, AcceptButton, RejectButton, SaveButton
                 </td>
               </tr>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 font-semibold text-foreground">DSR</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">DSR</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
-                  Provider, Form, RequestTypeSelector, IdentityFields, DetailsField, SubmitButton, SuccessMessage, StatusTracker
+                  Provider, Form, Dashboard, Tracker
                 </td>
               </tr>
               <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 font-semibold text-foreground">DPIA</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">DPIA</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
-                  Provider, Questionnaire, Section, Question, RiskMatrix, Summary, ExportButton
+                  Provider, Questionnaire, Report, StepIndicator
                 </td>
               </tr>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 font-semibold text-foreground">Breach</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">Breach</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
-                  Provider, NotificationForm, SeverityIndicator, TimelineTracker, RegulatoryChecklist, SubmitButton
+                  Provider, ReportForm, RiskAssessment, NotificationManager, ReportGenerator
                 </td>
               </tr>
               <tr className="border-b border-border">
-                <td className="border border-border px-4 py-2 font-semibold text-foreground">Privacy Policy</td>
-                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">PrivacyPolicy</td>
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">Policy</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">Policy</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
-                  Provider, Generator, Section, Preview, ExportButton, LastUpdated
+                  Provider, Generator, Preview, Exporter
                 </td>
               </tr>
               <tr className="border-b border-border bg-muted/30">
-                <td className="border border-border px-4 py-2 font-semibold text-foreground">Lawful Basis</td>
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">LawfulBasis</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">LawfulBasis</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
-                  Provider, Tracker, BasisSelector, ActivityList, ExpiryAlert, AuditLog
+                  Provider, Tracker
                 </td>
               </tr>
               <tr className="border-b border-border">
-                <td className="border border-border px-4 py-2 font-semibold text-foreground">Cross-Border</td>
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">CrossBorder</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">CrossBorder</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
-                  Provider, TransferList, CountrySelector, SafeguardPicker, RiskAssessment, ApprovalStatus
+                  Provider, Manager
                 </td>
               </tr>
               <tr className="bg-muted/30">
                 <td className="border border-border px-4 py-2 font-semibold text-foreground">ROPA</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">ROPA</td>
                 <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
-                  Provider, ActivityRegister, ActivityForm, CategoryBadge, RetentionSchedule, ExportButton
+                  Provider, Manager
                 </td>
               </tr>
             </tbody>
