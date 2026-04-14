@@ -13,6 +13,7 @@ export default defineConfig({
     'lawful-basis-entry': 'src/lawful-basis-entry.ts',
     'cross-border-entry': 'src/cross-border-entry.ts',
     'ropa-entry': 'src/ropa-entry.ts',
+    presets: 'src/presets-entry.ts',
   },
   format: ['cjs', 'esm'],
   target: 'es2018',

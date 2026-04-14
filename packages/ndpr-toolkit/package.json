@@ -71,6 +71,11 @@
       "import": "./dist/unstyled.mjs",
       "require": "./dist/unstyled.js"
     },
+    "./presets": {
+      "types": "./dist/presets-entry.d.ts",
+      "import": "./dist/presets.mjs",
+      "require": "./dist/presets.js"
+    },
     "./styles": {
       "import": "./dist/styles.css",
       "require": "./dist/styles.css"
@@ -88,7 +93,8 @@
       "lawful-basis": ["./dist/lawful-basis-entry.d.ts"],
       "cross-border": ["./dist/cross-border-entry.d.ts"],
       "ropa": ["./dist/ropa-entry.d.ts"],
-      "adapters": ["./dist/adapters.d.ts"]
+      "adapters": ["./dist/adapters.d.ts"],
+      "presets": ["./dist/presets-entry.d.ts"]
     }
   },
   "files": [
