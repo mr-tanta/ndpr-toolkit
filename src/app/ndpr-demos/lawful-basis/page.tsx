@@ -7,28 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-
-type LawfulBasis =
-  | 'consent'
-  | 'contract'
-  | 'legal_obligation'
-  | 'vital_interests'
-  | 'public_interest'
-  | 'legitimate_interests';
-
-interface ProcessingActivity {
-  id: string;
-  name: string;
-  description: string;
-  lawfulBasis: LawfulBasis;
-  dataCategories: string[];
-  dataSubjects: string;
-  retentionPeriod: string;
-  createdAt: number;
-  status: 'active' | 'under_review' | 'archived';
-  justification: string;
-  department: string;
-}
+import type { ProcessingActivity, LawfulBasis, LawfulBasisSummary } from '@tantainnovative/ndpr-toolkit/core';
 
 const LAWFUL_BASES: Record<
   LawfulBasis,

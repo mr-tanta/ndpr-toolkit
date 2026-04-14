@@ -8,35 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-
-type TransferMechanism =
-  | 'adequacy_decision'
-  | 'standard_contractual_clauses'
-  | 'binding_corporate_rules'
-  | 'ndpc_authorization'
-  | 'derogation'
-  | 'other';
+import type { CrossBorderTransfer, TransferMechanism, AdequacyStatus, CrossBorderSummary } from '@tantainnovative/ndpr-toolkit/core';
 
 type TransferStatus = 'pending' | 'approved' | 'rejected' | 'under_review';
 type AdequacyLevel = 'adequate' | 'conditional' | 'inadequate';
-
-interface CrossBorderTransfer {
-  id: string;
-  name: string;
-  description: string;
-  destinationCountry: string;
-  recipientOrganisation: string;
-  transferMechanism: TransferMechanism;
-  dataCategories: string[];
-  dataSubjects: string;
-  purpose: string;
-  safeguards: string[];
-  status: TransferStatus;
-  riskScore: number;
-  createdAt: number;
-  reviewDate?: number;
-  notes: string;
-}
 
 interface CountryInfo {
   name: string;
