@@ -22,7 +22,7 @@ export function Section({
 }: SectionProps) {
   const sectionStyle: React.CSSProperties = {
     position: 'relative',
-    padding: 'var(--space-20) 0',
+    padding: 'var(--space-24) 0',
     ...(gradient
       ? {
           background:
@@ -37,7 +37,7 @@ export function Section({
         <div
           style={{
             textAlign: 'center',
-            marginBottom: 'var(--space-12)',
+            marginBottom: 'var(--space-16)',
             maxWidth: '640px',
             marginLeft: 'auto',
             marginRight: 'auto',
@@ -46,18 +46,18 @@ export function Section({
           }}
         >
           {badge && (
-            <div style={{ marginBottom: 'var(--space-4)' }}>
-              <SiteBadge variant="default">{badge}</SiteBadge>
+            <div style={{ marginBottom: 'var(--space-5)' }}>
+              <SiteBadge variant="default" size="md">{badge}</SiteBadge>
             </div>
           )}
           {title && (
             <h2
               style={{
-                fontSize: 'var(--text-3xl)',
-                fontWeight: 700,
+                fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+                fontWeight: 800,
                 color: 'var(--text-primary)',
                 lineHeight: 'var(--leading-tight)',
-                letterSpacing: '-0.025em',
+                letterSpacing: '-0.03em',
                 margin: 0,
               }}
             >

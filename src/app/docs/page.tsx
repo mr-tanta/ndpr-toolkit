@@ -11,6 +11,7 @@ import {
   GradientText,
   FeatureCard,
   Grid,
+  CTASection,
 } from '@/components/site/ui';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { SiteFooter } from '@/components/site/SiteFooter';
@@ -345,7 +346,7 @@ export default function DocsPage() {
               width: '60rem',
               height: '30rem',
               background:
-                'radial-gradient(ellipse at center, rgba(99, 102, 241, 0.12) 0%, transparent 70%)',
+                'radial-gradient(ellipse at center, rgba(37, 99, 235, 0.12) 0%, transparent 70%)',
               pointerEvents: 'none',
             }}
           />
@@ -478,7 +479,7 @@ export default function DocsPage() {
           gradient
         >
           <Container>
-            <Grid cols={3} gap="md">
+            <div className="docs-v3-grid">
               {v3Features.map((feat, i) => (
                 <FeatureCard
                   key={feat.href}
@@ -489,7 +490,20 @@ export default function DocsPage() {
                   index={i}
                 />
               ))}
-            </Grid>
+            </div>
+            <style>{`
+              .docs-v3-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: var(--space-5);
+              }
+              @media (max-width: 900px) {
+                .docs-v3-grid { grid-template-columns: repeat(2, 1fr); }
+              }
+              @media (max-width: 600px) {
+                .docs-v3-grid { grid-template-columns: 1fr; }
+              }
+            `}</style>
           </Container>
         </Section>
 
@@ -636,7 +650,7 @@ export default function DocsPage() {
                 </SiteButton>
               </div>
 
-              <Grid cols={4} gap="md">
+              <div className="docs-components-grid">
                 {componentGuides.map((guide, i) => (
                   <FeatureCard
                     key={guide.href}
@@ -648,7 +662,23 @@ export default function DocsPage() {
                     index={i}
                   />
                 ))}
-              </Grid>
+              </div>
+              <style>{`
+                .docs-components-grid {
+                  display: grid;
+                  grid-template-columns: repeat(4, 1fr);
+                  gap: var(--space-5);
+                }
+                @media (max-width: 1100px) {
+                  .docs-components-grid { grid-template-columns: repeat(3, 1fr); }
+                }
+                @media (max-width: 800px) {
+                  .docs-components-grid { grid-template-columns: repeat(2, 1fr); }
+                }
+                @media (max-width: 500px) {
+                  .docs-components-grid { grid-template-columns: 1fr; }
+                }
+              `}</style>
             </div>
 
             {/* Implementation Guides */}
@@ -696,7 +726,7 @@ export default function DocsPage() {
                 </SiteButton>
               </div>
 
-              <Grid cols={3} gap="md">
+              <div className="docs-impl-grid">
                 {implGuides.map((guide, i) => (
                   <FeatureCard
                     key={guide.href}
@@ -707,76 +737,45 @@ export default function DocsPage() {
                     index={i}
                   />
                 ))}
-              </Grid>
+              </div>
+              <style>{`
+                .docs-impl-grid {
+                  display: grid;
+                  grid-template-columns: repeat(3, 1fr);
+                  gap: var(--space-5);
+                }
+                @media (max-width: 900px) {
+                  .docs-impl-grid { grid-template-columns: repeat(2, 1fr); }
+                }
+                @media (max-width: 600px) {
+                  .docs-impl-grid { grid-template-columns: 1fr; }
+                }
+              `}</style>
             </div>
           </Container>
         </Section>
 
         {/* ── Bottom CTA ───────────────────────────────────── */}
-        <section
-          style={{
-            padding: 'var(--space-20) 0',
-            textAlign: 'center',
-          }}
-        >
-          <Container size="md">
-            <div style={{ marginBottom: 'var(--space-5)' }}>
-              <SiteBadge variant="default" size="md" dot>
-                Ready to build?
-              </SiteBadge>
-            </div>
-            <h2
-              style={{
-                fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
-                fontWeight: 700,
-                color: 'var(--text-primary)',
-                letterSpacing: '-0.025em',
-                margin: '0 0 var(--space-5)',
-              }}
-            >
-              Start shipping compliant features{' '}
-              <GradientText>today</GradientText>
-            </h2>
-            <p
-              style={{
-                fontSize: 'var(--text-lg)',
-                color: 'var(--text-secondary)',
-                lineHeight: 'var(--leading-relaxed)',
-                margin: '0 0 var(--space-8)',
-              }}
-            >
-              {siteConfig.moduleCount} modules, {siteConfig.testCount}+ tests, zero-config presets — everything you need to be NDPA 2023 compliant from day one.
-            </p>
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 'var(--space-3)',
-                justifyContent: 'center',
-              }}
-            >
-              <SiteButton href="/docs/components" size="lg">
-                Browse Components
-              </SiteButton>
-              <SiteButton
-                href={siteConfig.repoUrl}
-                variant="secondary"
-                size="lg"
-                icon={
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                }
-              >
-                Star on GitHub
-              </SiteButton>
-            </div>
-          </Container>
-        </section>
+        <CTASection
+          badge="Ready to build?"
+          badgeVariant="default"
+          title="Start shipping compliant features"
+          gradientWord="today"
+          subtitle={`${siteConfig.moduleCount} modules, ${siteConfig.testCount}+ tests, zero-config presets — everything you need to be NDPA 2023 compliant from day one.`}
+          actions={[
+            { label: 'Browse Components', href: '/docs/components' },
+            {
+              label: 'Star on GitHub',
+              href: siteConfig.repoUrl,
+              variant: 'secondary',
+              icon: (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                </svg>
+              ),
+            },
+          ]}
+        />
       </main>
 
       <SiteFooter />

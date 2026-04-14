@@ -27,3 +27,6 @@ export type { GridProps } from './Grid';
 
 export { SiteTabs } from './Tabs';
 export type { TabItem, TabsProps } from './Tabs';
+
+export { CTASection } from './CTASection';
+export type { CTASectionProps, CTAAction } from './CTASection';

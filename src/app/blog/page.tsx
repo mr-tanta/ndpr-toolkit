@@ -1,171 +1,473 @@
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/blog';
+import { BookOpen, Clipboard, Package, TrendUp, Tag, ArrowRight } from '@phosphor-icons/react/dist/ssr';
 
 export const metadata = {
   title: 'Blog | NDPA Toolkit',
-  description:
-    'Insights on Nigeria Data Protection compliance, NDPA 2023 updates, NDPC guidance, and developer tooling. Stay current on data protection in Nigeria.',
+  description: 'Insights on Nigeria Data Protection compliance, NDPA 2023 updates, NDPC guidance, and developer tooling.',
 };
 
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-NG', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  return new Date(dateStr).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 export default function BlogPage() {
   const posts = getAllPosts();
+  const featured = posts[0];
+  const feed = posts.slice(1);
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: 'NDPA Toolkit Blog',
-    description: 'Insights on Nigeria data protection compliance and developer tooling',
-    url: 'https://ndprtoolkit.com.ng/blog',
-  };
+  // Extract all unique tags for the sidebar
+  const allTags = Array.from(new Set(posts.flatMap((p) => p.tags))).slice(0, 12);
+
+  // Top 5 posts for "Trending" sidebar
+  const trending = posts.slice(0, 5);
 
   return (
     <div>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* Hero */}
-      <div className="mb-12">
-        <Link
-          href="/"
-          className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mb-6"
-        >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Home
-        </Link>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
-          Blog
-        </h1>
-        <p className="mt-3 text-lg text-gray-500 dark:text-gray-400 max-w-2xl">
-          Insights on Nigeria data protection compliance and developer tooling.
+      {/* Header */}
+      <div className="blog-header">
+        <h1 className="blog-title">Blog</h1>
+        <p className="blog-subtitle">
+          Insights on Nigeria data protection compliance, NDPA 2023 updates, and developer tooling.
         </p>
       </div>
 
-      {/* Post Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-        {posts.map((post) => (
-          <article
-            key={post.slug}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow duration-200"
-          >
-            <Link href={`/blog/${post.slug}`} className="block p-6">
-              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-3">
-                <time dateTime={post.date}>{formatDate(post.date)}</time>
-                <span aria-hidden="true">&middot;</span>
-                <span>{post.readingTime}</span>
-              </div>
-
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                {post.title}
-              </h2>
-
-              <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2 mb-4">
-                {post.description}
-              </p>
-
-              <div className="flex items-center justify-between">
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-block px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded"
-                    >
-                      {tag}
-                    </span>
+      {/* Medium-style 2-column layout */}
+      <div className="blog-layout">
+        {/* ── Main feed (left) ── */}
+        <div className="blog-feed">
+          {/* Featured post */}
+          {featured && (
+            <Link href={`/blog/${featured.slug}`} className="blog-featured">
+              <span className="blog-featured-label">Latest</span>
+              <h2 className="blog-featured-title">{featured.title}</h2>
+              <p className="blog-featured-desc">{featured.description}</p>
+              <div className="blog-post-footer">
+                <div className="blog-post-meta">
+                  <div className="blog-avatar-sm">{featured.author.split(' ').map(n => n[0]).join('')}</div>
+                  <span className="blog-author-name">{featured.author}</span>
+                  <span className="blog-dot">&middot;</span>
+                  <time dateTime={featured.date}>{formatDate(featured.date)}</time>
+                  <span className="blog-dot">&middot;</span>
+                  <span>{featured.readingTime}</span>
+                </div>
+                <div className="blog-tags-inline">
+                  {featured.tags.slice(0, 2).map((tag) => (
+                    <span key={tag} className="blog-tag">{tag}</span>
                   ))}
                 </div>
-                <span className="text-xs text-gray-400 dark:text-gray-500">
-                  {post.author}
-                </span>
               </div>
             </Link>
-          </article>
-        ))}
-      </div>
+          )}
 
-      {posts.length === 0 && (
-        <p className="text-center text-gray-500 dark:text-gray-400 py-16">
-          No posts yet. Check back soon.
-        </p>
-      )}
+          {/* Divider */}
+          {feed.length > 0 && <div className="blog-divider" />}
 
-      {/* Explore the Toolkit */}
-      <div className="mt-16 pt-10 border-t border-gray-200 dark:border-gray-700">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-          Explore the Toolkit
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Link
-            href="/docs"
-            className="group flex items-start gap-3 p-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all duration-200"
-          >
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                Documentation
-              </h3>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                API reference, component guides, and integration tutorials.
-              </p>
-            </div>
-          </Link>
+          {/* Feed posts */}
+          {feed.map((post) => (
+            <article key={post.slug} className="blog-feed-item">
+              <Link href={`/blog/${post.slug}`} className="blog-feed-link">
+                <div className="blog-feed-content">
+                  <div className="blog-post-meta blog-post-meta-sm">
+                    <div className="blog-avatar-xs">{post.author.split(' ').map(n => n[0]).join('')}</div>
+                    <span className="blog-author-name-sm">{post.author}</span>
+                  </div>
+                  <h3 className="blog-feed-title">{post.title}</h3>
+                  <p className="blog-feed-desc">{post.description}</p>
+                  <div className="blog-post-footer">
+                    <div className="blog-post-meta">
+                      <time dateTime={post.date}>{formatDate(post.date)}</time>
+                      <span className="blog-dot">&middot;</span>
+                      <span>{post.readingTime}</span>
+                    </div>
+                    <div className="blog-tags-inline">
+                      {post.tags.slice(0, 2).map((tag) => (
+                        <span key={tag} className="blog-tag">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </article>
+          ))}
 
-          <Link
-            href="/ndpr-demos"
-            className="group flex items-start gap-3 p-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all duration-200"
-          >
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                Interactive Demos
-              </h3>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Try consent, DSR, breach notification, DPIA, and more live.
-              </p>
-            </div>
-          </Link>
-
-          <a
-            href="https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-start gap-3 p-4 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all duration-200"
-          >
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                npm Package
-              </h3>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Install @tantainnovative/ndpr-toolkit and get started in minutes.
-              </p>
-            </div>
-          </a>
+          {posts.length === 0 && (
+            <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 'var(--space-20) 0' }}>
+              No posts yet. Check back soon.
+            </p>
+          )}
         </div>
+
+        {/* ── Sidebar (right) ── */}
+        <aside className="blog-sidebar">
+          <div className="blog-sidebar-inner">
+            {/* Trending */}
+            <div className="blog-sidebar-section">
+              <h3 className="blog-sidebar-heading">
+                <TrendUp size={16} weight="bold" />
+                Trending
+              </h3>
+              <div className="blog-trending-list">
+                {trending.map((post, i) => (
+                  <Link key={post.slug} href={`/blog/${post.slug}`} className="blog-trending-item">
+                    <span className="blog-trending-num">{String(i + 1).padStart(2, '0')}</span>
+                    <div>
+                      <p className="blog-trending-title">{post.title}</p>
+                      <span className="blog-trending-meta">{formatDate(post.date)} &middot; {post.readingTime}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Topics */}
+            <div className="blog-sidebar-section">
+              <h3 className="blog-sidebar-heading">
+                <Tag size={16} weight="bold" />
+                Topics
+              </h3>
+              <div className="blog-topics">
+                {allTags.map((tag) => (
+                  <span key={tag} className="blog-topic-chip">{tag}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Toolkit links */}
+            <div className="blog-sidebar-section">
+              <h3 className="blog-sidebar-heading">Explore</h3>
+              {[
+                { href: '/docs', icon: <BookOpen size={16} weight="duotone" />, label: 'Documentation' },
+                { href: '/ndpr-demos', icon: <Clipboard size={16} weight="duotone" />, label: 'Live Demos' },
+                { href: 'https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit', icon: <Package size={16} weight="duotone" />, label: 'npm Package', external: true },
+              ].map((item) => {
+                const Tag = item.external ? 'a' : Link;
+                const extra = item.external ? { target: '_blank' as const, rel: 'noopener noreferrer' } : {};
+                return (
+                  <Tag key={item.label} href={item.href} className="blog-sidebar-link" {...extra}>
+                    <span className="blog-sidebar-link-icon">{item.icon}</span>
+                    <span>{item.label}</span>
+                    <ArrowRight size={12} weight="bold" className="blog-sidebar-link-arrow" />
+                  </Tag>
+                );
+              })}
+            </div>
+          </div>
+        </aside>
       </div>
+
+      <style>{`
+        /* ── Header ── */
+        .blog-header {
+          margin-bottom: var(--space-10);
+          padding-bottom: var(--space-8);
+          border-bottom: 1px solid var(--border-default);
+        }
+        .blog-title {
+          font-size: clamp(2rem, 5vw, 2.75rem);
+          font-weight: 800;
+          color: var(--text-primary);
+          letter-spacing: -0.03em;
+          margin: 0;
+        }
+        .blog-subtitle {
+          font-size: var(--text-lg);
+          color: var(--text-secondary);
+          margin: var(--space-2) 0 0 0;
+          line-height: var(--leading-relaxed);
+        }
+
+        /* ── 2-column layout ── */
+        .blog-layout {
+          display: grid;
+          grid-template-columns: 1fr 18rem;
+          gap: var(--space-10);
+          align-items: start;
+        }
+        @media (max-width: 900px) {
+          .blog-layout { grid-template-columns: 1fr; }
+          .blog-sidebar { display: none; }
+        }
+
+        /* ── Feed ── */
+        .blog-feed { min-width: 0; }
+        .blog-divider {
+          height: 1px;
+          background: var(--border-default);
+          margin: var(--space-2) 0;
+        }
+
+        /* ── Featured ── */
+        .blog-featured {
+          display: block;
+          padding: var(--space-8);
+          border-radius: var(--radius-2xl);
+          background: linear-gradient(160deg, rgba(37, 99, 235, 0.05) 0%, var(--bg-surface) 40%);
+          border: 1px solid rgba(37, 99, 235, 0.12);
+          text-decoration: none;
+          color: inherit;
+          margin-bottom: var(--space-2);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .blog-featured:hover {
+          border-color: rgba(37, 99, 235, 0.25);
+          box-shadow: 0 0 40px rgba(37, 99, 235, 0.06), 0 12px 32px rgba(0, 0, 0, 0.12);
+          transform: translateY(-2px);
+        }
+        .blog-featured-label {
+          display: inline-block;
+          font-size: 0.6875rem;
+          font-weight: 600;
+          padding: 0.1875rem 0.625rem;
+          border-radius: var(--radius-full);
+          background: rgba(37, 99, 235, 0.1);
+          color: #60a5fa;
+          border: 1px solid rgba(37, 99, 235, 0.12);
+          margin-bottom: var(--space-4);
+        }
+        .blog-featured-title {
+          font-size: var(--text-2xl);
+          font-weight: 800;
+          color: var(--text-primary);
+          margin: 0 0 var(--space-3) 0;
+          letter-spacing: -0.02em;
+          line-height: var(--leading-tight);
+        }
+        .blog-featured:hover .blog-featured-title { color: #93c5fd; }
+        .blog-featured-desc {
+          font-size: var(--text-base);
+          color: var(--text-secondary);
+          margin: 0 0 var(--space-5) 0;
+          line-height: var(--leading-relaxed);
+        }
+
+        /* ── Feed items ── */
+        .blog-feed-item {
+          border-bottom: 1px solid var(--border-default);
+        }
+        .blog-feed-item:last-child { border-bottom: none; }
+        .blog-feed-link {
+          display: block;
+          padding: var(--space-6) 0;
+          text-decoration: none;
+          color: inherit;
+          transition: opacity 0.15s ease;
+        }
+        .blog-feed-link:hover { opacity: 1; }
+        .blog-feed-content { }
+        .blog-feed-title {
+          font-size: var(--text-xl);
+          font-weight: 700;
+          color: var(--text-primary);
+          margin: var(--space-2) 0 var(--space-2) 0;
+          line-height: var(--leading-snug);
+          letter-spacing: -0.01em;
+        }
+        .blog-feed-link:hover .blog-feed-title { color: #60a5fa; }
+        .blog-feed-desc {
+          font-size: var(--text-sm);
+          color: var(--text-muted);
+          margin: 0 0 var(--space-3) 0;
+          line-height: var(--leading-relaxed);
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        /* ── Shared post elements ── */
+        .blog-post-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+        }
+        .blog-post-meta {
+          display: flex;
+          align-items: center;
+          gap: 0.375rem;
+          font-size: var(--text-sm);
+          color: var(--text-muted);
+        }
+        .blog-post-meta-sm { margin-bottom: 0; }
+        .blog-dot { color: var(--text-muted); }
+        .blog-avatar-sm {
+          width: 1.5rem;
+          height: 1.5rem;
+          border-radius: var(--radius-full);
+          background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-weight: 700;
+          font-size: 0.5625rem;
+          flex-shrink: 0;
+        }
+        .blog-avatar-xs {
+          width: 1.25rem;
+          height: 1.25rem;
+          border-radius: var(--radius-full);
+          background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-weight: 700;
+          font-size: 0.5rem;
+          flex-shrink: 0;
+        }
+        .blog-author-name {
+          font-weight: 500;
+          color: var(--text-secondary);
+        }
+        .blog-author-name-sm {
+          font-weight: 500;
+          font-size: var(--text-sm);
+          color: var(--text-secondary);
+        }
+        .blog-tags-inline {
+          display: flex;
+          gap: 0.25rem;
+        }
+        .blog-tag {
+          font-size: 0.6875rem;
+          font-weight: 500;
+          padding: 0.0625rem 0.5rem;
+          border-radius: var(--radius-full);
+          background: rgba(37, 99, 235, 0.06);
+          color: #60a5fa;
+        }
+
+        /* ── Sidebar ── */
+        .blog-sidebar {
+          position: sticky;
+          top: 5rem;
+          align-self: start;
+        }
+        .blog-sidebar-inner {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-8);
+        }
+        .blog-sidebar-section { }
+        .blog-sidebar-heading {
+          display: flex;
+          align-items: center;
+          gap: 0.375rem;
+          font-size: 0.6875rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: var(--text-secondary);
+          margin: 0 0 var(--space-4) 0;
+        }
+
+        /* Trending */
+        .blog-trending-list {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-1);
+        }
+        .blog-trending-item {
+          display: flex;
+          align-items: flex-start;
+          gap: var(--space-3);
+          padding: var(--space-2) 0;
+          text-decoration: none;
+          color: inherit;
+          transition: opacity 0.15s ease;
+        }
+        .blog-trending-item:hover .blog-trending-title { color: #60a5fa; }
+        .blog-trending-num {
+          font-size: var(--text-2xl);
+          font-weight: 800;
+          color: var(--border-hover);
+          line-height: 1;
+          min-width: 1.75rem;
+          font-variant-numeric: tabular-nums;
+        }
+        .blog-trending-title {
+          font-size: var(--text-sm);
+          font-weight: 600;
+          color: var(--text-primary);
+          margin: 0;
+          line-height: var(--leading-snug);
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          transition: color 0.15s ease;
+        }
+        .blog-trending-meta {
+          font-size: var(--text-xs);
+          color: var(--text-muted);
+          margin-top: 0.125rem;
+          display: block;
+        }
+
+        /* Topics */
+        .blog-topics {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.375rem;
+        }
+        .blog-topic-chip {
+          font-size: var(--text-xs);
+          font-weight: 500;
+          padding: 0.25rem 0.75rem;
+          border-radius: var(--radius-full);
+          background: var(--bg-surface);
+          color: var(--text-secondary);
+          border: 1px solid var(--border-default);
+          transition: all 0.15s ease;
+          cursor: default;
+        }
+        .blog-topic-chip:hover {
+          border-color: rgba(37, 99, 235, 0.2);
+          color: #60a5fa;
+          background: rgba(37, 99, 235, 0.04);
+        }
+
+        /* Sidebar links */
+        .blog-sidebar-link {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+          padding: var(--space-2) 0;
+          font-size: var(--text-sm);
+          color: var(--text-muted);
+          text-decoration: none;
+          transition: color 0.15s ease;
+        }
+        .blog-sidebar-link:hover { color: #60a5fa; }
+        .blog-sidebar-link-icon {
+          width: 1.75rem;
+          height: 1.75rem;
+          border-radius: var(--radius-md);
+          background: var(--bg-elevated);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-muted);
+          flex-shrink: 0;
+          transition: all 0.15s ease;
+        }
+        .blog-sidebar-link:hover .blog-sidebar-link-icon {
+          background: rgba(37, 99, 235, 0.08);
+          color: #60a5fa;
+        }
+        .blog-sidebar-link-arrow {
+          margin-left: auto;
+          opacity: 0;
+          transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+        .blog-sidebar-link:hover .blog-sidebar-link-arrow {
+          opacity: 1;
+          transform: translateX(2px);
+        }
+      `}</style>
     </div>
   );
 }

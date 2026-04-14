@@ -10,24 +10,29 @@ export interface SiteBadgeProps {
 
 const variantStyles: Record<NonNullable<SiteBadgeProps['variant']>, React.CSSProperties> = {
   default: {
-    background: 'var(--accent-light)',
-    color: 'var(--accent-hover)',
+    background: 'rgba(37, 99, 235, 0.1)',
+    color: '#60a5fa',
+    border: '1px solid rgba(37, 99, 235, 0.15)',
   },
   success: {
     background: 'var(--success-light)',
     color: 'var(--success)',
+    border: '1px solid rgba(16, 185, 129, 0.15)',
   },
   warning: {
     background: 'var(--warning-light)',
     color: 'var(--warning)',
+    border: '1px solid rgba(245, 158, 11, 0.15)',
   },
   danger: {
     background: 'var(--danger-light)',
     color: 'var(--danger)',
+    border: '1px solid rgba(244, 63, 94, 0.15)',
   },
   info: {
-    background: 'var(--info-light)',
-    color: 'var(--info)',
+    background: 'rgba(56, 189, 248, 0.1)',
+    color: '#38bdf8',
+    border: '1px solid rgba(56, 189, 248, 0.15)',
   },
   outline: {
     background: 'transparent',
@@ -37,22 +42,22 @@ const variantStyles: Record<NonNullable<SiteBadgeProps['variant']>, React.CSSPro
 };
 
 const dotColors: Record<NonNullable<SiteBadgeProps['variant']>, string> = {
-  default: 'var(--accent)',
+  default: '#3b82f6',
   success: 'var(--success)',
   warning: 'var(--warning)',
   danger: 'var(--danger)',
-  info: 'var(--info)',
+  info: '#38bdf8',
   outline: 'var(--text-muted)',
 };
 
 const sizeStyles: Record<NonNullable<SiteBadgeProps['size']>, React.CSSProperties> = {
   sm: {
     fontSize: '0.6875rem',
-    padding: '0.125rem 0.5rem',
+    padding: '0.1875rem 0.625rem',
   },
   md: {
     fontSize: 'var(--text-xs)',
-    padding: '0.1875rem 0.625rem',
+    padding: '0.25rem 0.75rem',
   },
 };
 
@@ -86,6 +91,7 @@ export function SiteBadge({
             borderRadius: '50%',
             backgroundColor: dotColors[variant],
             flexShrink: 0,
+            boxShadow: `0 0 6px ${dotColors[variant]}`,
           }}
         />
       )}

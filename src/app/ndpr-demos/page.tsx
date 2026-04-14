@@ -9,6 +9,7 @@ import {
   GradientText,
   FeatureCard,
   Grid,
+  CTASection,
 } from '@/components/site/ui';
 import { siteConfig } from '@/lib/site-config';
 
@@ -163,7 +164,7 @@ export default function NDPRDemosPage() {
             width: '60rem',
             height: '30rem',
             background:
-              'radial-gradient(ellipse at center, rgba(99, 102, 241, 0.14) 0%, transparent 70%)',
+              'radial-gradient(ellipse at center, rgba(37, 99, 235, 0.12) 0%, transparent 70%)',
             pointerEvents: 'none',
           }}
         />
@@ -287,7 +288,7 @@ export default function NDPRDemosPage() {
         gradient
       >
         <Container>
-          <Grid cols={4} gap="md">
+          <div className="demos-grid">
             {demos.map((demo, i) => (
               <FeatureCard
                 key={demo.href}
@@ -299,120 +300,47 @@ export default function NDPRDemosPage() {
                 index={i}
               />
             ))}
-          </Grid>
+          </div>
+          <style>{`
+            .demos-grid {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: var(--space-5);
+            }
+            @media (max-width: 1100px) {
+              .demos-grid { grid-template-columns: repeat(3, 1fr); }
+            }
+            @media (max-width: 800px) {
+              .demos-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+            @media (max-width: 500px) {
+              .demos-grid { grid-template-columns: 1fr; }
+            }
+          `}</style>
         </Container>
       </Section>
 
       {/* ── Install CTA ──────────────────────────────────── */}
-      <section
-        style={{
-          padding: 'var(--space-20) 0',
-        }}
-      >
-        <Container size="md">
-          <div
-            style={{
-              textAlign: 'center',
-              padding: 'var(--space-12) var(--space-8)',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-default)',
-              borderRadius: 'var(--radius-2xl)',
-              position: 'relative',
-              overflow: 'hidden',
-            }}
-          >
-            {/* Glow */}
-            <div
-              aria-hidden
-              style={{
-                position: 'absolute',
-                inset: 0,
-                background:
-                  'radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%)',
-                pointerEvents: 'none',
-              }}
-            />
-
-            <div style={{ marginBottom: 'var(--space-5)' }}>
-              <SiteBadge variant="default" size="md" dot>
-                Ready to use in production
-              </SiteBadge>
-            </div>
-
-            <h2
-              style={{
-                fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
-                fontWeight: 700,
-                color: 'var(--text-primary)',
-                letterSpacing: '-0.025em',
-                margin: '0 0 var(--space-4)',
-              }}
-            >
-              Add NDPA compliance to your app{' '}
-              <GradientText>today</GradientText>
-            </h2>
-
-            <p
-              style={{
-                fontSize: 'var(--text-lg)',
-                color: 'var(--text-secondary)',
-                lineHeight: 'var(--leading-relaxed)',
-                margin: '0 0 var(--space-8)',
-                maxWidth: '480px',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-            >
-              One package, {siteConfig.moduleCount} modules, zero configuration required. Covers all major NDPA 2023 obligations out of the box.
-            </p>
-
-            {/* Install command */}
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 'var(--space-3)',
-                padding: '0.75rem 1.5rem',
-                background: 'var(--bg-inset)',
-                border: '1px solid var(--border-default)',
-                borderRadius: 'var(--radius-lg)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: 'var(--text-sm)',
-                color: 'var(--text-secondary)',
-                marginBottom: 'var(--space-8)',
-              }}
-            >
-              <span style={{ color: 'var(--success)', userSelect: 'none' }}>$</span>
-              <span>pnpm add @tantainnovative/ndpr-toolkit</span>
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 'var(--space-3)',
-                justifyContent: 'center',
-              }}
-            >
-              <SiteButton href="/docs" size="lg">
-                Read the Docs
-              </SiteButton>
-              <SiteButton
-                href={siteConfig.npmUrl}
-                variant="secondary"
-                size="lg"
-                icon={
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M0 0v24h24V0H0zm6.672 19.334H3.334V8h3.338v11.334zm6.66 0H10V8h3.332v11.334zm6.67 0H16.67V8h3.332v8.002h-3.338v3.332z" />
-                  </svg>
-                }
-              >
-                View on npm
-              </SiteButton>
-            </div>
-          </div>
-        </Container>
-      </section>
+      <CTASection
+        badge="Ready to use in production"
+        badgeVariant="default"
+        title="Add NDPA compliance to your app"
+        gradientWord="today"
+        subtitle={`One package, ${siteConfig.moduleCount} modules, zero configuration required. Covers all major NDPA 2023 obligations out of the box.`}
+        actions={[
+          { label: 'Read the Docs', href: '/docs' },
+          {
+            label: 'View on npm',
+            href: siteConfig.npmUrl,
+            variant: 'secondary',
+            icon: (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M0 0v24h24V0H0zm6.672 19.334H3.334V8h3.338v11.334zm6.66 0H10V8h3.332v11.334zm6.67 0H16.67V8h3.332v8.002h-3.338v3.332z" />
+              </svg>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }

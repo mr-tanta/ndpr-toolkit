@@ -27,10 +27,13 @@ export function SiteTabs({ items, className = '' }: TabsProps) {
       <div
         style={{
           display: 'flex',
-          gap: '0.125rem',
-          borderBottom: '1px solid var(--border-default)',
+          gap: '0.25rem',
+          padding: '0.25rem',
           marginBottom: 'var(--space-6)',
           overflowX: 'auto',
+          background: 'var(--bg-elevated)',
+          borderRadius: 'var(--radius-lg)',
+          border: '1px solid var(--border-default)',
         }}
         role="tablist"
       >
@@ -43,28 +46,29 @@ export function SiteTabs({ items, className = '' }: TabsProps) {
               aria-selected={isActive}
               onClick={() => handleTabClick(index)}
               style={{
-                padding: '0.625rem 1rem',
+                padding: '0.5rem 1rem',
                 fontSize: 'var(--text-sm)',
                 fontWeight: 500,
-                color: isActive ? 'var(--accent)' : 'var(--text-muted)',
-                background: 'none',
+                color: isActive ? '#fff' : 'var(--text-muted)',
+                background: isActive ? 'rgba(37, 99, 235, 0.15)' : 'transparent',
                 border: 'none',
-                borderBottom: isActive
-                  ? '2px solid var(--accent)'
-                  : '2px solid transparent',
+                borderRadius: 'var(--radius-md)',
                 cursor: 'pointer',
                 transition: 'all var(--transition-fast)',
                 whiteSpace: 'nowrap',
-                marginBottom: '-1px',
+                position: 'relative',
+                ...(isActive ? { boxShadow: 'inset 0 0 0 1px rgba(37, 99, 235, 0.25)' } : {}),
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
                   e.currentTarget.style.color = 'var(--text-secondary)';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
                   e.currentTarget.style.color = 'var(--text-muted)';
+                  e.currentTarget.style.background = 'transparent';
                 }
               }}
             >
@@ -77,9 +81,7 @@ export function SiteTabs({ items, className = '' }: TabsProps) {
       {/* Tab content */}
       <div
         role="tabpanel"
-        style={{
-          animation: 'fadeIn 0.2s ease-out',
-        }}
+        style={{ animation: 'fadeIn 0.2s ease-out' }}
       >
         {items[activeIndex]?.content}
       </div>

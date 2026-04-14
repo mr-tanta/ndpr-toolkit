@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { ShieldCheck } from '@phosphor-icons/react';
 import { DemoLayout } from '@/components/site/DemoLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
@@ -855,7 +856,7 @@ export default function CrossBorderDemoPage() {
                     {formMechanism === 'ndpc_authorization' && (
                       <div className="rounded-xl border-2 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 p-4 space-y-4">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-base">🛡</span>
+                          <ShieldCheck size={18} weight="duotone" className="text-blue-500" />
                           <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-200">NDPC Authorization Details</h4>
                         </div>
                         <p className="text-xs text-blue-700 dark:text-blue-400">

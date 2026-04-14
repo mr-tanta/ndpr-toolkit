@@ -31,9 +31,9 @@ export function SiteHeader() {
     <>
       <header className="ndpr-header" data-scrolled={scrolled}>
         <div className="ndpr-header-inner">
-          {/* Logo */}
+          {/* Logo — left */}
           <Link href="/" className="ndpr-logo">
-            <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+            <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
               <rect width="32" height="32" rx="8" fill="url(#logo-grad)" />
               <path d="M10 22V10h3.5l4.5 7.5V10H21v12h-3.5L13 14.5V22H10z" fill="white" />
               <defs>
@@ -47,7 +47,7 @@ export function SiteHeader() {
             <span className="ndpr-version-tag">v3</span>
           </Link>
 
-          {/* Center nav */}
+          {/* Center nav — desktop only */}
           <nav className="ndpr-nav">
             {navLinks.map((link) => (
               <Link
@@ -116,44 +116,48 @@ export function SiteHeader() {
       </header>
 
       <style>{`
+        /* ── Header shell ── */
         .ndpr-header {
           position: sticky;
           top: 0;
           z-index: 100;
           border-bottom: 1px solid transparent;
           background: transparent;
-          transition: border-color 0.2s ease, background 0.2s ease, backdrop-filter 0.2s ease;
+          transition: border-color 0.25s ease, background 0.25s ease, backdrop-filter 0.25s ease;
         }
         .ndpr-header[data-scrolled="true"] {
-          border-bottom-color: rgba(22, 37, 68, 0.6);
-          background: rgba(3, 7, 18, 0.88);
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
+          border-bottom-color: rgba(37, 99, 235, 0.08);
+          background: rgba(3, 7, 18, 0.92);
+          backdrop-filter: blur(24px) saturate(180%);
+          -webkit-backdrop-filter: blur(24px) saturate(180%);
         }
 
+        /* ── Inner layout — 3-column flex ── */
         .ndpr-header-inner {
           max-width: 1200px;
           margin: 0 auto;
           padding: 0 1.5rem;
+          height: 3.75rem;
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          height: 3.75rem;
+          gap: 1rem;
         }
 
-        /* Logo */
+        /* ── Logo — fixed left ── */
         .ndpr-logo {
           display: flex;
           align-items: center;
-          gap: 0.625rem;
+          gap: 0.5rem;
           text-decoration: none;
           color: var(--text-primary);
           flex-shrink: 0;
+          min-width: 0;
         }
         .ndpr-logo-text {
-          font-weight: 600;
+          font-weight: 700;
           font-size: 0.9375rem;
           letter-spacing: -0.02em;
+          white-space: nowrap;
         }
         .ndpr-version-tag {
           font-size: 0.625rem;
@@ -161,33 +165,35 @@ export function SiteHeader() {
           letter-spacing: 0.04em;
           padding: 0.125rem 0.375rem;
           border-radius: 9999px;
-          background: rgba(37, 99, 235, 0.15);
+          background: rgba(37, 99, 235, 0.12);
           color: #60a5fa;
           line-height: 1.4;
+          flex-shrink: 0;
         }
 
-        /* Center nav */
+        /* ── Center nav — takes remaining space, centers links ── */
         .ndpr-nav {
+          flex: 1 1 auto;
           display: flex;
           align-items: center;
-          gap: 0.125rem;
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
+          justify-content: center;
+          gap: 0.25rem;
+          min-width: 0;
         }
         .ndpr-nav-link {
           font-size: 0.875rem;
           font-weight: 500;
           color: var(--text-secondary);
           text-decoration: none;
-          padding: 0.5rem 0.875rem;
+          padding: 0.4375rem 0.875rem;
           border-radius: 0.5rem;
           transition: color 0.15s ease, background 0.15s ease;
           position: relative;
+          white-space: nowrap;
         }
         .ndpr-nav-link:hover {
           color: var(--text-primary);
-          background: rgba(255, 255, 255, 0.06);
+          background: rgba(255, 255, 255, 0.05);
         }
         .ndpr-nav-link.active {
           color: #fff;
@@ -195,21 +201,21 @@ export function SiteHeader() {
         .ndpr-nav-link.active::after {
           content: '';
           position: absolute;
-          bottom: -0.125rem;
+          bottom: 0;
           left: 50%;
           transform: translateX(-50%);
           width: 1.25rem;
           height: 2px;
           border-radius: 1px;
-          background: var(--accent);
-          box-shadow: 0 0 8px var(--accent-glow);
+          background: #2563eb;
+          box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
         }
 
-        /* Right actions */
+        /* ── Right actions — fixed right ── */
         .ndpr-actions {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 0.375rem;
           flex-shrink: 0;
         }
 
@@ -226,7 +232,7 @@ export function SiteHeader() {
         }
         .ndpr-github:hover {
           color: var(--text-primary);
-          background: rgba(255, 255, 255, 0.06);
+          background: rgba(255, 255, 255, 0.05);
         }
 
         .ndpr-cta {
@@ -237,11 +243,12 @@ export function SiteHeader() {
           font-weight: 600;
           color: #fff;
           text-decoration: none;
-          padding: 0.5rem 1rem;
+          padding: 0.4375rem 1rem;
           border-radius: 0.5rem;
           background: linear-gradient(135deg, #1d4ed8, #2563eb);
           transition: all 0.2s ease;
-          box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 0 12px rgba(37, 99, 235, 0.15);
+          white-space: nowrap;
         }
         .ndpr-cta:hover {
           background: linear-gradient(135deg, #2563eb, #3b82f6);
@@ -249,6 +256,7 @@ export function SiteHeader() {
           transform: translateY(-1px);
         }
 
+        /* ── Mobile toggle ── */
         .ndpr-mobile-toggle {
           display: none;
           align-items: center;
@@ -260,33 +268,48 @@ export function SiteHeader() {
           background: transparent;
           color: var(--text-secondary);
           cursor: pointer;
+          transition: color 0.15s ease, border-color 0.15s ease;
+        }
+        .ndpr-mobile-toggle:hover {
+          color: var(--text-primary);
+          border-color: var(--border-hover);
         }
 
-        /* Mobile menu */
+        /* ── Mobile menu ── */
         .ndpr-mobile-menu {
           display: none;
           border-top: 1px solid var(--border-default);
-          padding: 0.75rem 1.5rem 1rem;
+          padding: 0.5rem 1.5rem 1rem;
           background: var(--bg-surface);
         }
         .ndpr-mobile-link {
           display: block;
-          padding: 0.75rem;
-          font-size: 0.875rem;
+          padding: 0.75rem 0.75rem;
+          font-size: 0.9375rem;
           font-weight: 500;
           color: var(--text-secondary);
           text-decoration: none;
           border-radius: 0.5rem;
+          transition: color 0.15s ease, background 0.15s ease;
         }
-        .ndpr-mobile-link.active { color: var(--accent); }
-        .ndpr-mobile-link:hover { background: var(--bg-hover); }
+        .ndpr-mobile-link.active {
+          color: #60a5fa;
+        }
+        .ndpr-mobile-link:hover {
+          background: var(--bg-hover);
+          color: var(--text-primary);
+        }
 
+        /* ── Responsive ── */
         @media (max-width: 768px) {
           .ndpr-nav { display: none; }
           .ndpr-cta { display: none; }
           .ndpr-mobile-toggle { display: flex; }
           .ndpr-mobile-menu { display: block; }
+        }
+        @media (max-width: 480px) {
           .ndpr-logo-text { display: none; }
+          .ndpr-version-tag { display: none; }
         }
       `}</style>
     </>

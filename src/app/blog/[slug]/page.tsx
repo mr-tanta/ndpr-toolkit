@@ -4,15 +4,13 @@ import { getAllPosts, getPostBySlug } from '@/lib/blog';
 import { BlogMDX } from '@/components/blog/blog-mdx';
 
 export async function generateStaticParams() {
-  const posts = getAllPosts();
-  return posts.map((post) => ({ slug: post.slug }));
+  return getAllPosts().map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return { title: 'Post Not Found' };
-
   return {
     title: `${post.title} | NDPA Toolkit Blog`,
     description: post.description,
@@ -26,14 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       authors: [post.author],
       siteName: 'NDPA Toolkit',
       locale: 'en_US',
-      images: [
-        {
-          url: '/og-image.png',
-          width: 1200,
-          height: 630,
-          alt: `${post.title} - NDPA Toolkit Blog`,
-        },
-      ],
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: `${post.title}` }],
     },
     twitter: {
       card: 'summary_large_image' as const,
@@ -45,11 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 }
 
 function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-NG', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  return new Date(dateStr).toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -68,65 +55,38 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     headline: post.title,
     description: post.description,
     datePublished: post.date,
-    author: {
-      '@type': 'Person',
-      name: post.author,
-      url: 'https://linkedin.com/in/mr-tanta',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'NDPA Toolkit',
-      url: 'https://ndprtoolkit.com.ng',
-    },
+    author: { '@type': 'Person', name: post.author, url: 'https://linkedin.com/in/mr-tanta' },
+    publisher: { '@type': 'Organization', name: 'NDPA Toolkit', url: 'https://ndprtoolkit.com.ng' },
   };
 
   return (
     <article>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* Back link */}
-      <Link
-        href="/blog"
-        className="inline-flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mb-8"
-      >
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      {/* Back */}
+      <Link href="/blog" className="blogpost-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
         All Posts
       </Link>
 
       {/* Header */}
-      <header className="mb-10">
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+      <header className="blogpost-header">
+        <div className="blogpost-meta">
           <time dateTime={post.date}>{formatDate(post.date)}</time>
           <span aria-hidden="true">&middot;</span>
           <span>{post.readingTime}</span>
         </div>
-
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4">
-          {post.title}
-        </h1>
-
-        <p className="text-lg text-gray-600 dark:text-gray-300">
-          {post.description}
-        </p>
-
-        <div className="flex items-center gap-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+        <h1 className="blogpost-title">{post.title}</h1>
+        <p className="blogpost-desc">{post.description}</p>
+        <div className="blogpost-author">
+          <div className="blogpost-avatar">
             {post.author.split(' ').map(n => n[0]).join('')}
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-900 dark:text-white">{post.author}</p>
-            <div className="flex flex-wrap gap-2 mt-1">
+            <p className="blogpost-author-name">{post.author}</p>
+            <div className="blogpost-tags">
               {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-block px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded"
-                >
-                  {tag}
-                </span>
+                <span key={tag} className="blogpost-tag">{tag}</span>
               ))}
             </div>
           </div>
@@ -134,43 +94,158 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       </header>
 
       {/* Content */}
-      <div className="prose prose-lg dark:prose-invert max-w-none
-        prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white
-        prose-a:text-blue-600 dark:prose-a:text-blue-400
-        prose-code:text-sm prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-        prose-pre:bg-gray-900 prose-pre:text-gray-300
-        prose-img:rounded-lg
-      ">
+      <div className="blogpost-content">
         <BlogMDX source={post.content} />
       </div>
 
-      {/* Post navigation */}
-      <nav className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {prevPost ? (
-            <Link
-              href={`/blog/${prevPost.slug}`}
-              className="group p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 transition-colors"
-            >
-              <span className="text-xs text-gray-500 dark:text-gray-400">Previous</span>
-              <p className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 mt-1 line-clamp-1">
-                {prevPost.title}
-              </p>
-            </Link>
-          ) : <div />}
-          {nextPost && (
-            <Link
-              href={`/blog/${nextPost.slug}`}
-              className="group p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700 transition-colors text-right"
-            >
-              <span className="text-xs text-gray-500 dark:text-gray-400">Next</span>
-              <p className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 mt-1 line-clamp-1">
-                {nextPost.title}
-              </p>
-            </Link>
-          )}
-        </div>
+      {/* Navigation */}
+      <nav className="blogpost-nav">
+        {prevPost ? (
+          <Link href={`/blog/${prevPost.slug}`} className="blogpost-nav-link">
+            <span className="blogpost-nav-label">Previous</span>
+            <p className="blogpost-nav-title">{prevPost.title}</p>
+          </Link>
+        ) : <div />}
+        {nextPost ? (
+          <Link href={`/blog/${nextPost.slug}`} className="blogpost-nav-link blogpost-nav-next">
+            <span className="blogpost-nav-label">Next</span>
+            <p className="blogpost-nav-title">{nextPost.title}</p>
+          </Link>
+        ) : null}
       </nav>
+
+      <style>{`
+        .blogpost-back {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.375rem;
+          font-size: var(--text-sm);
+          font-weight: 500;
+          color: var(--text-muted);
+          text-decoration: none;
+          margin-bottom: var(--space-8);
+          padding: 0.375rem 0.75rem;
+          border-radius: var(--radius-md);
+          transition: all 0.15s ease;
+        }
+        .blogpost-back:hover { color: #60a5fa; background: rgba(37, 99, 235, 0.06); }
+
+        .blogpost-header {
+          margin-bottom: var(--space-10);
+          padding-bottom: var(--space-8);
+          border-bottom: 1px solid var(--border-default);
+        }
+        .blogpost-meta {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: var(--text-sm);
+          color: var(--text-muted);
+          margin-bottom: var(--space-4);
+        }
+        .blogpost-title {
+          font-size: clamp(1.75rem, 4vw, 2.5rem);
+          font-weight: 800;
+          color: var(--text-primary);
+          line-height: var(--leading-tight);
+          letter-spacing: -0.025em;
+          margin: 0 0 var(--space-4) 0;
+        }
+        .blogpost-desc {
+          font-size: var(--text-lg);
+          color: var(--text-secondary);
+          line-height: var(--leading-relaxed);
+          margin: 0;
+        }
+        .blogpost-author {
+          display: flex;
+          align-items: center;
+          gap: var(--space-3);
+          margin-top: var(--space-6);
+          padding-top: var(--space-6);
+          border-top: 1px solid var(--border-default);
+        }
+        .blogpost-avatar {
+          width: 2.5rem;
+          height: 2.5rem;
+          border-radius: var(--radius-full);
+          background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-weight: 700;
+          font-size: var(--text-sm);
+          flex-shrink: 0;
+        }
+        .blogpost-author-name {
+          font-size: var(--text-sm);
+          font-weight: 600;
+          color: var(--text-primary);
+          margin: 0;
+        }
+        .blogpost-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.375rem;
+          margin-top: 0.25rem;
+        }
+        .blogpost-tag {
+          font-size: 0.6875rem;
+          font-weight: 500;
+          padding: 0.125rem 0.5rem;
+          border-radius: var(--radius-full);
+          background: rgba(37, 99, 235, 0.08);
+          color: #60a5fa;
+          border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        /* Content */
+        .blogpost-content {
+          font-size: var(--text-base);
+          line-height: 1.8;
+          color: var(--text-secondary);
+        }
+
+        /* Navigation */
+        .blogpost-nav {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: var(--space-4);
+          margin-top: var(--space-16);
+          padding-top: var(--space-8);
+          border-top: 1px solid var(--border-default);
+        }
+        @media (max-width: 640px) { .blogpost-nav { grid-template-columns: 1fr; } }
+        .blogpost-nav-link {
+          display: block;
+          padding: var(--space-4);
+          border-radius: var(--radius-lg);
+          border: 1px solid var(--border-default);
+          text-decoration: none;
+          transition: all 0.2s ease;
+        }
+        .blogpost-nav-link:hover {
+          border-color: rgba(37, 99, 235, 0.25);
+          background: rgba(37, 99, 235, 0.03);
+        }
+        .blogpost-nav-next { text-align: right; }
+        .blogpost-nav-label {
+          font-size: var(--text-xs);
+          color: var(--text-muted);
+        }
+        .blogpost-nav-title {
+          font-size: var(--text-sm);
+          font-weight: 600;
+          color: var(--text-primary);
+          margin: var(--space-1) 0 0 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .blogpost-nav-link:hover .blogpost-nav-title { color: #60a5fa; }
+      `}</style>
     </article>
   );
 }

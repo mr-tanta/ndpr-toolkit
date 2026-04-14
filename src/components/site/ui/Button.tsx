@@ -17,22 +17,22 @@ export interface ButtonProps {
 
 const sizeStyles: Record<NonNullable<ButtonProps['size']>, React.CSSProperties> = {
   sm: {
-    padding: '0.375rem 0.875rem',
+    padding: '0.4375rem 1rem',
     fontSize: 'var(--text-sm)',
     gap: '0.375rem',
-    borderRadius: 'var(--radius-md)',
+    borderRadius: 'var(--radius-lg)',
   },
   md: {
-    padding: '0.5rem 1.25rem',
+    padding: '0.5625rem 1.375rem',
     fontSize: 'var(--text-sm)',
     gap: '0.5rem',
-    borderRadius: 'var(--radius-md)',
+    borderRadius: 'var(--radius-lg)',
   },
   lg: {
     padding: '0.75rem 1.75rem',
     fontSize: 'var(--text-base)',
     gap: '0.5rem',
-    borderRadius: 'var(--radius-lg)',
+    borderRadius: 'var(--radius-xl)',
   },
 };
 
@@ -51,25 +51,26 @@ export function SiteButton({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontWeight: 500,
+    fontWeight: 600,
     cursor: disabled ? 'not-allowed' : 'pointer',
-    transition: 'all var(--transition-base)',
+    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
     border: 'none',
     textDecoration: 'none',
     lineHeight: 1.4,
     whiteSpace: 'nowrap',
     opacity: disabled ? 0.5 : 1,
+    letterSpacing: '-0.01em',
     ...sizeStyles[size],
   };
 
   const variantStyles: Record<NonNullable<ButtonProps['variant']>, React.CSSProperties> = {
     primary: {
-      background: 'var(--gradient-primary)',
+      background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #3b82f6 100%)',
       color: '#ffffff',
-      boxShadow: 'var(--shadow-sm), 0 0 20px var(--accent-glow)',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.3), 0 0 20px rgba(37, 99, 235, 0.2)',
     },
     secondary: {
-      background: 'transparent',
+      background: 'rgba(255, 255, 255, 0.03)',
       color: 'var(--text-primary)',
       border: '1px solid var(--border-default)',
     },
@@ -94,28 +95,30 @@ export function SiteButton({
   const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.currentTarget;
     if (variant === 'primary') {
-      target.style.boxShadow = 'var(--shadow-md), 0 0 40px var(--accent-glow)';
-      target.style.transform = 'translateY(-1px)';
+      target.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.3), 0 0 40px rgba(37, 99, 235, 0.25)';
+      target.style.transform = 'translateY(-2px)';
     } else if (variant === 'secondary') {
-      target.style.borderColor = 'var(--border-hover)';
-      target.style.background = 'var(--accent-light)';
+      target.style.borderColor = 'rgba(37, 99, 235, 0.3)';
+      target.style.background = 'rgba(37, 99, 235, 0.06)';
       target.style.color = 'var(--text-primary)';
     } else if (variant === 'ghost') {
       target.style.color = 'var(--text-primary)';
+      target.style.background = 'rgba(255, 255, 255, 0.04)';
     }
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
     const target = e.currentTarget;
     if (variant === 'primary') {
-      target.style.boxShadow = 'var(--shadow-sm), 0 0 20px var(--accent-glow)';
+      target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.3), 0 0 20px rgba(37, 99, 235, 0.2)';
       target.style.transform = 'translateY(0)';
     } else if (variant === 'secondary') {
       target.style.borderColor = 'var(--border-default)';
-      target.style.background = 'transparent';
+      target.style.background = 'rgba(255, 255, 255, 0.03)';
       target.style.color = 'var(--text-primary)';
     } else if (variant === 'ghost') {
       target.style.color = 'var(--text-secondary)';
+      target.style.background = 'transparent';
     }
   };
 
@@ -123,42 +126,20 @@ export function SiteButton({
     const isExternal = href.startsWith('http');
     if (isExternal) {
       return (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={className}
-          style={mergedStyle}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+        <a href={href} target="_blank" rel="noopener noreferrer" className={className} style={mergedStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
           {content}
         </a>
       );
     }
     return (
-      <Link
-        href={href}
-        className={className}
-        style={mergedStyle}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <Link href={href} className={className} style={mergedStyle} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button
-      type={type}
-      className={className}
-      style={mergedStyle}
-      onClick={onClick}
-      disabled={disabled}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <button type={type} className={className} style={mergedStyle} onClick={onClick} disabled={disabled} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       {content}
     </button>
   );

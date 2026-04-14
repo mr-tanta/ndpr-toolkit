@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -183,6 +183,95 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
   );
 }
 
+/* ── Table of Contents ── */
+
+function TableOfContents() {
+  const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
+  const [activeId, setActiveId] = useState('');
+
+  useEffect(() => {
+    const article = document.querySelector('.doc-prose');
+    if (!article) return;
+
+    const elements = article.querySelectorAll('h2, h3');
+    const items: { id: string; text: string; level: number }[] = [];
+
+    elements.forEach((el) => {
+      if (!el.id) {
+        el.id = (el.textContent || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      }
+      items.push({
+        id: el.id,
+        text: el.textContent || '',
+        level: el.tagName === 'H2' ? 2 : 3,
+      });
+    });
+
+    setHeadings(items);
+  }, []);
+
+  useEffect(() => {
+    if (headings.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: '-80px 0px -60% 0px', threshold: 0 }
+    );
+
+    headings.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [headings]);
+
+  if (headings.length === 0) return null;
+
+  return (
+    <aside className="doc-toc" aria-label="On this page">
+      <div className="doc-toc-inner">
+        <p className="doc-toc-title">On this page</p>
+        <nav>
+          <ul className="doc-toc-list">
+            {headings.map((h) => {
+              const isActive = activeId === h.id;
+              return (
+                <li key={h.id} className={h.level === 3 ? 'doc-toc-h3' : ''}>
+                  <a
+                    href={`#${h.id}`}
+                    className={`doc-toc-link${isActive ? ' active' : ''}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById(h.id);
+                      if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        setActiveId(h.id);
+                      }
+                    }}
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
+    </aside>
+  );
+}
+
 /* ── DocLayout ── */
 
 export function DocLayout({ children, title, description }: DocLayoutProps) {
@@ -214,14 +303,14 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
             fontSize: 'var(--text-sm)',
             fontWeight: exactActive || sectionActive ? 600 : 500,
             color: exactActive
-              ? 'var(--accent)'
+              ? '#60a5fa'
               : sectionActive
                 ? 'var(--text-primary)'
                 : 'var(--text-secondary)',
             textDecoration: 'none',
             borderRadius: 'var(--radius-md)',
             transition: 'all var(--transition-fast)',
-            background: exactActive ? 'var(--accent-light)' : 'transparent',
+            background: exactActive ? 'rgba(37, 99, 235, 0.1)' : 'transparent',
           }}
           onMouseEnter={(e) => {
             if (!exactActive) {
@@ -239,7 +328,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
           }}
         >
           {item.icon && (
-            <span style={{ color: exactActive || sectionActive ? 'var(--accent)' : 'var(--text-muted)' }}>
+            <span style={{ color: exactActive || sectionActive ? '#60a5fa' : 'var(--text-muted)' }}>
               {item.icon}
             </span>
           )}
@@ -273,11 +362,11 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
                     padding: '0.3125rem 0.625rem',
                     fontSize: 'var(--text-sm)',
                     fontWeight: childActive ? 500 : 400,
-                    color: childActive ? 'var(--accent)' : 'var(--text-muted)',
+                    color: childActive ? '#60a5fa' : 'var(--text-muted)',
                     textDecoration: 'none',
                     borderRadius: 'var(--radius-sm)',
                     transition: 'all var(--transition-fast)',
-                    background: childActive ? 'var(--accent-light)' : 'transparent',
+                    background: childActive ? 'rgba(37, 99, 235, 0.1)' : 'transparent',
                     position: 'relative',
                   }}
                   onMouseEnter={(e) => {
@@ -629,109 +718,57 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
         </div>
       )}
 
-      {/* Main content */}
+      {/* Main content with TOC */}
       <div className="doc-main-content">
-        <main
-          style={{
-            padding: 'var(--space-8) var(--space-6)',
-            maxWidth: '900px',
-          }}
-        >
-          {/* Breadcrumbs */}
-          <Breadcrumbs pathname={pathname} />
+        <div className="doc-content-grid">
+          <main className="doc-article">
+            {/* Breadcrumbs */}
+            <Breadcrumbs pathname={pathname} />
 
-          {/* Title block */}
-          <div
-            style={{
-              paddingBottom: 'var(--space-6)',
-              marginBottom: 'var(--space-8)',
-              borderBottom: '1px solid var(--border-default)',
-            }}
-          >
+            {/* Title block */}
             <div
               style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
-                gap: 'var(--space-4)',
+                paddingBottom: 'var(--space-6)',
+                marginBottom: 'var(--space-8)',
+                borderBottom: '1px solid var(--border-default)',
               }}
             >
-              <div>
-                <h1
+              <h1
+                style={{
+                  fontSize: 'var(--text-3xl)',
+                  fontWeight: 700,
+                  color: 'var(--text-primary)',
+                  margin: 0,
+                  lineHeight: 'var(--leading-tight)',
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                {title}
+              </h1>
+              {description && (
+                <p
                   style={{
-                    fontSize: 'var(--text-3xl)',
-                    fontWeight: 700,
-                    color: 'var(--text-primary)',
-                    margin: 0,
-                    lineHeight: 'var(--leading-tight)',
-                    letterSpacing: '-0.02em',
-                  }}
-                >
-                  {title}
-                </h1>
-                {description && (
-                  <p
-                    style={{
-                      fontSize: 'var(--text-lg)',
-                      color: 'var(--text-secondary)',
-                      marginTop: 'var(--space-2)',
-                      marginBottom: 0,
-                      lineHeight: 'var(--leading-relaxed)',
-                    }}
-                  >
-                    {description}
-                  </p>
-                )}
-              </div>
-              <div style={{ display: 'flex', gap: 'var(--space-3)', flexShrink: 0 }}>
-                <Link
-                  href="/ndpr-demos"
-                  style={{
-                    fontSize: 'var(--text-sm)',
-                    fontWeight: 500,
+                    fontSize: 'var(--text-lg)',
                     color: 'var(--text-secondary)',
-                    textDecoration: 'none',
-                    padding: '0.375rem 0.875rem',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border-default)',
-                    transition: 'all var(--transition-fast)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-hover)';
-                    e.currentTarget.style.color = 'var(--text-primary)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-default)';
-                    e.currentTarget.style.color = 'var(--text-secondary)';
+                    marginTop: 'var(--space-2)',
+                    marginBottom: 0,
+                    lineHeight: 'var(--leading-relaxed)',
                   }}
                 >
-                  View Demos
-                </Link>
-                <Link
-                  href="/"
-                  style={{
-                    fontSize: 'var(--text-sm)',
-                    fontWeight: 500,
-                    color: '#fff',
-                    textDecoration: 'none',
-                    padding: '0.375rem 0.875rem',
-                    borderRadius: 'var(--radius-md)',
-                    background: 'var(--gradient-primary)',
-                    transition: 'all var(--transition-fast)',
-                  }}
-                >
-                  Home
-                </Link>
-              </div>
+                  {description}
+                </p>
+              )}
             </div>
-          </div>
 
-          {/* Page content */}
-          <div className="doc-prose">
-            {children}
-          </div>
-        </main>
+            {/* Page content */}
+            <div className="doc-prose">
+              {children}
+            </div>
+          </main>
+
+          {/* Right TOC sidebar */}
+          <TableOfContents />
+        </div>
       </div>
 
       {/* Responsive rules */}
@@ -744,7 +781,72 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
         }
         .doc-main-content {
           margin-left: 16rem;
+          min-height: 100vh;
         }
+        .doc-content-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 15rem;
+          max-width: 100%;
+        }
+        .doc-article {
+          padding: var(--space-8) var(--space-10);
+          min-width: 0;
+        }
+
+        /* ── TOC sidebar ── */
+        .doc-toc {
+          position: sticky;
+          top: 0;
+          align-self: start;
+          height: 100vh;
+          overflow-y: auto;
+          border-left: 1px solid var(--border-default);
+          padding: var(--space-8) var(--space-5);
+          flex-shrink: 0;
+        }
+        .doc-toc-inner {
+          width: 100%;
+        }
+        .doc-toc-title {
+          font-size: 0.6875rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: var(--text-secondary);
+          margin: 0 0 var(--space-3) 0;
+          padding-left: 0.625rem;
+        }
+        .doc-toc-list {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          border-left: 1px solid var(--border-default);
+        }
+        .doc-toc-link {
+          display: block;
+          font-size: 0.8125rem;
+          color: var(--text-muted);
+          text-decoration: none;
+          padding: 0.25rem 0 0.25rem 0.625rem;
+          line-height: 1.4;
+          transition: color 0.15s ease, border-color 0.15s ease;
+          border-left: 2px solid transparent;
+          margin-left: -1px;
+          word-break: break-word;
+        }
+        .doc-toc-h3 .doc-toc-link {
+          padding-left: 1.25rem;
+          font-size: 0.75rem;
+        }
+        .doc-toc-link:hover {
+          color: var(--text-primary);
+        }
+        .doc-toc-link.active {
+          color: #60a5fa;
+          border-left-color: #2563eb;
+        }
+
+        /* ── Prose ── */
         .doc-prose {
           font-size: var(--text-base);
           line-height: var(--leading-relaxed);
@@ -754,6 +856,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
           color: var(--text-primary);
           font-weight: 600;
           letter-spacing: -0.01em;
+          scroll-margin-top: 2rem;
         }
         .doc-prose h2 {
           font-size: var(--text-2xl);
@@ -773,7 +876,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
         .doc-prose a {
           color: var(--accent);
           text-decoration: underline;
-          text-decoration-color: rgba(99, 102, 241, 0.3);
+          text-decoration-color: rgba(37, 99, 235, 0.3);
           text-underline-offset: 2px;
           transition: text-decoration-color var(--transition-fast);
         }
@@ -786,7 +889,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
           padding: 0.125em 0.375em;
           border-radius: var(--radius-sm);
           background: var(--bg-elevated);
-          color: var(--accent-hover);
+          color: #60a5fa;
         }
         .doc-prose pre {
           background: var(--bg-inset);
@@ -829,6 +932,85 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
           font-weight: 600;
           color: var(--text-primary);
           font-size: var(--text-sm);
+        }
+
+        /* ── Dark-mode overrides for shadcn/Tailwind components inside docs ── */
+        .doc-prose [data-slot="button"],
+        .doc-prose button,
+        .doc-prose a[class*="inline-flex"] {
+          color: var(--text-secondary) !important;
+          border-color: var(--border-default) !important;
+          background: var(--bg-elevated) !important;
+        }
+        .doc-prose [data-slot="button"]:hover,
+        .doc-prose button:hover {
+          color: var(--text-primary) !important;
+          border-color: var(--border-hover) !important;
+          background: var(--bg-hover) !important;
+        }
+        .doc-prose [data-slot="card"] {
+          background: var(--bg-surface) !important;
+          border-color: var(--border-default) !important;
+          color: var(--text-primary) !important;
+        }
+        .doc-prose .bg-white,
+        .doc-prose .bg-gray-50 {
+          background: var(--bg-elevated) !important;
+        }
+        .doc-prose .bg-blue-50 {
+          background: rgba(37, 99, 235, 0.08) !important;
+        }
+        .doc-prose .text-blue-800,
+        .doc-prose .text-blue-700 {
+          color: #93c5fd !important;
+        }
+        .doc-prose .text-blue-300,
+        .doc-prose .text-blue-200 {
+          color: #93c5fd !important;
+        }
+        .doc-prose .text-gray-900,
+        .doc-prose .font-medium {
+          color: var(--text-primary);
+        }
+        .doc-prose .text-gray-600,
+        .doc-prose .text-gray-500,
+        .doc-prose .text-gray-400,
+        .doc-prose .text-gray-300 {
+          color: var(--text-secondary) !important;
+        }
+        .doc-prose .text-gray-700 {
+          color: var(--text-secondary) !important;
+        }
+        .doc-prose .bg-gray-100 {
+          background: var(--bg-elevated) !important;
+        }
+        .doc-prose .bg-gray-800 {
+          background: var(--bg-inset) !important;
+        }
+        .doc-prose .bg-gray-900 {
+          background: var(--bg-inset) !important;
+        }
+        .doc-prose .border-gray-200,
+        .doc-prose .border-gray-700,
+        .doc-prose .divide-gray-200 > * + *,
+        .doc-prose .divide-gray-700 > * + * {
+          border-color: var(--border-default) !important;
+        }
+        .doc-prose .text-white {
+          color: var(--text-primary) !important;
+        }
+        .doc-prose .shadow-sm {
+          box-shadow: var(--shadow-sm) !important;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 1280px) {
+          .doc-toc {
+            display: none;
+          }
+          .doc-content-grid {
+            grid-template-columns: 1fr;
+          }
         }
         @media (max-width: 1024px) {
           .doc-sidebar-desktop {

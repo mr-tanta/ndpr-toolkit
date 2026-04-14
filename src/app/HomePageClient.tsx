@@ -14,6 +14,7 @@ import {
   FeatureCard,
   Grid,
   SiteTabs,
+  CTASection,
 } from '@/components/site/ui';
 
 // ─── Code samples ──────────────────────────────────────────────────────────────
@@ -261,8 +262,8 @@ function ScoreRing({ score }: { score: number }) {
         />
         <defs>
           <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#6366f1" />
-            <stop offset="100%" stopColor="#a78bfa" />
+            <stop offset="0%" stopColor="#1d4ed8" />
+            <stop offset="100%" stopColor="#60a5fa" />
           </linearGradient>
         </defs>
       </svg>
@@ -389,7 +390,7 @@ export function HomePageClient() {
             transform: 'translateX(-50%)',
             width: '900px',
             height: '600px',
-            background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(37,99,235,0.14) 0%, transparent 70%)',
             pointerEvents: 'none',
           }} />
           <div aria-hidden="true" style={{
@@ -398,7 +399,7 @@ export function HomePageClient() {
             right: '-8rem',
             width: '500px',
             height: '400px',
-            background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.07) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(56,189,248,0.06) 0%, transparent 70%)',
             pointerEvents: 'none',
           }} />
 
@@ -526,8 +527,10 @@ export function HomePageClient() {
           subtitle="Eight purpose-built modules covering every requirement of the Nigeria Data Protection Act 2023."
         >
           <Container>
-            <Grid cols={4} gap="md">
-              {FEATURES.map((feature, index) => (
+            {/* Bento grid: 2 featured cards on top, 3+3 below */}
+            <div className="features-bento">
+              {/* Row 1: Two featured cards */}
+              {FEATURES.filter(f => f.badge).map((feature, i) => (
                 <FeatureCard
                   key={feature.title}
                   icon={<FeatureIcon path={feature.iconPath} />}
@@ -535,11 +538,61 @@ export function HomePageClient() {
                   description={feature.description}
                   href={feature.href}
                   badge={feature.badge}
-                  index={index}
+                  index={i}
+                  featured
                 />
               ))}
-            </Grid>
+              {/* Row 2+3: Remaining cards */}
+              {FEATURES.filter(f => !f.badge).map((feature, i) => (
+                <FeatureCard
+                  key={feature.title}
+                  icon={<FeatureIcon path={feature.iconPath} />}
+                  title={feature.title}
+                  description={feature.description}
+                  href={feature.href}
+                  index={i + 2}
+                />
+              ))}
+            </div>
           </Container>
+
+          <style>{`
+            .features-bento {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: var(--space-5);
+            }
+            .features-bento > :nth-child(n+3) {
+              /* After the 2 featured cards, switch to 3-col */
+            }
+            @media (min-width: 768px) {
+              .features-bento {
+                grid-template-columns: repeat(2, 1fr);
+              }
+              .features-bento > :nth-child(n+3) {
+                /* 3-col for the remaining 6 */
+              }
+            }
+            @media (min-width: 900px) {
+              .features-bento {
+                grid-template-columns: repeat(6, 1fr);
+              }
+              /* First 2 featured cards: span 3 cols each */
+              .features-bento > :nth-child(1),
+              .features-bento > :nth-child(2) {
+                grid-column: span 3;
+              }
+              /* Remaining 6 cards: span 2 cols each (3 per row) */
+              .features-bento > :nth-child(n+3) {
+                grid-column: span 2;
+              }
+            }
+            @media (max-width: 600px) {
+              .features-bento {
+                grid-template-columns: 1fr;
+              }
+            }
+          `}</style>
         </Section>
 
         {/* ── 5. ARCHITECTURE ──────────────────────────────────────────────── */}
@@ -559,10 +612,10 @@ export function HomePageClient() {
               {/* Layer visual */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                 <ArchLayer number={1} name="Presets" description="Drop-in components with zero config. Works out of the box." color="var(--accent)" />
-                <ArchLayer number={2} name="Components" description="Composable, styled building blocks you control." color="rgba(99,102,241,0.7)" />
-                <ArchLayer number={3} name="Hooks" description="Logic-only hooks — bring your own UI." color="rgba(99,102,241,0.5)" />
-                <ArchLayer number={4} name="Core" description="Pure TypeScript utilities, framework agnostic." color="rgba(99,102,241,0.3)" />
-                <ArchLayer number={5} name="Adapters" description="Swap storage backends: localStorage, Postgres, Redis." color="rgba(99,102,241,0.15)" />
+                <ArchLayer number={2} name="Components" description="Composable, styled building blocks you control." color="rgba(37,99,235,0.7)" />
+                <ArchLayer number={3} name="Hooks" description="Logic-only hooks — bring your own UI." color="rgba(37,99,235,0.5)" />
+                <ArchLayer number={4} name="Core" description="Pure TypeScript utilities, framework agnostic." color="rgba(37,99,235,0.3)" />
+                <ArchLayer number={5} name="Adapters" description="Swap storage backends: localStorage, Postgres, Redis." color="rgba(37,99,235,0.15)" />
               </div>
 
               {/* Code tab switcher */}
@@ -674,71 +727,15 @@ export function HomePageClient() {
         </Section>
 
         {/* ── 7. CTA ───────────────────────────────────────────────────────── */}
-        <section style={{
-          padding: 'var(--space-24) 0',
-          background: 'var(--bg-surface)',
-          borderTop: '1px solid var(--border-default)',
-        }}>
-          <Container size="md">
-            <div style={{
-              textAlign: 'center',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 'var(--space-6)',
-            }}>
-              <SiteBadge variant="success" dot>Open Source — MIT License</SiteBadge>
-              <h2 style={{
-                fontSize: 'clamp(1.75rem, 4vw, 3rem)',
-                fontWeight: 800,
-                letterSpacing: '-0.03em',
-                color: 'var(--text-primary)',
-                lineHeight: 1.1,
-                margin: 0,
-              }}>
-                Ready to Ship Compliance?
-              </h2>
-              <p style={{
-                fontSize: 'var(--text-lg)',
-                color: 'var(--text-secondary)',
-                lineHeight: 'var(--leading-relaxed)',
-                maxWidth: '440px',
-                margin: 0,
-              }}>
-                One package, eight modules, zero excuses. Get NDPA-compliant in an afternoon.
-              </p>
-
-              {/* Install command */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--space-3)',
-                padding: 'var(--space-3) var(--space-5)',
-                borderRadius: 'var(--radius-lg)',
-                background: 'var(--bg-inset)',
-                border: '1px solid var(--border-default)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: 'var(--text-sm)',
-                color: 'var(--text-secondary)',
-                maxWidth: '100%',
-                overflowX: 'auto',
-              }}>
-                <span style={{ color: 'var(--text-muted)', userSelect: 'none' }}>$</span>
-                <span>pnpm add </span>
-                <span style={{ color: 'var(--accent)' }}>@tantainnovative/ndpr-toolkit</span>
-              </div>
-
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', justifyContent: 'center' }}>
-                <SiteButton variant="primary" size="lg" href="/docs">
-                  Read the Docs
-                </SiteButton>
-                <SiteButton variant="secondary" size="lg" href="/ndpr-demos">
-                  Browse Demos
-                </SiteButton>
-              </div>
-            </div>
-          </Container>
-        </section>
+        <CTASection
+          title="Ready to Ship"
+          gradientWord="Compliance?"
+          subtitle="One package, eight modules, zero excuses. Get NDPA-compliant in an afternoon."
+          actions={[
+            { label: 'Read the Docs', href: '/docs' },
+            { label: 'Browse Demos', href: '/ndpr-demos', variant: 'secondary' },
+          ]}
+        />
 
       </main>
 
