@@ -119,6 +119,16 @@
       "import": "./dist/ropa.mjs",
       "require": "./dist/ropa.js"
     },
+    "./adapters": {
+      "types": "./dist/adapters.d.ts",
+      "import": "./dist/adapters.mjs",
+      "require": "./dist/adapters.js"
+    },
+    "./presets": {
+      "types": "./dist/presets.d.ts",
+      "import": "./dist/presets.mjs",
+      "require": "./dist/presets.js"
+    },
     "./unstyled": {
       "types": "./dist/unstyled.d.ts",
       "import": "./dist/unstyled.mjs",
@@ -161,6 +171,12 @@
       ],
       "ropa": [
         "./dist/ropa.d.ts"
+      ],
+      "adapters": [
+        "./dist/adapters.d.ts"
+      ],
+      "presets": [
+        "./dist/presets.d.ts"
       ],
       "unstyled": [
         "./dist/unstyled.d.ts"
