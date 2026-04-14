@@ -105,3 +105,20 @@ export type { ROPAComplianceGap, ROPAValidationResult } from './utils/ropa';
 // ROPA Hook
 export { useROPA } from './hooks/useROPA';
 export type { UseROPAOptions, UseROPAReturn } from './hooks/useROPA';
+
+// Compliance Dashboard
+export { NDPRDashboard } from './components/dashboard/NDPRDashboard';
+export type { NDPRDashboardProps, NDPRDashboardClassNames } from './components/dashboard/NDPRDashboard';
+
+// Compliance Score Utility
+export { getComplianceScore } from './utils/compliance-score';
+export type {
+  ComplianceReport,
+  ComplianceInput,
+  ComplianceRating,
+  ModuleScore,
+  Recommendation,
+  RecommendationPriority,
+  EffortLevel,
+  RegulatoryReference,
+} from './utils/compliance-score';

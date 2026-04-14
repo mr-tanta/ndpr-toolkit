@@ -21,3 +21,6 @@ export type { NDPRCrossBorderProps } from './NDPRCrossBorder';
 
 export { NDPRROPA } from './NDPRROPA';
 export type { NDPRROPAProps } from './NDPRROPA';
+
+export { NDPRDashboard as NDPRComplianceDashboard } from './NDPRDashboard';
+export type { NDPRDashboardPresetProps } from './NDPRDashboard';
