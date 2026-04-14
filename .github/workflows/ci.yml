@@ -1,38 +1,52 @@
-name: Continuous Integration
+name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main]
 
 jobs:
-  lint-and-test:
+  test:
     runs-on: ubuntu-latest
-    
     strategy:
       matrix:
-        node-version: [20.x]
-    
+        node-version: [20.x, 22.x]
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
-      
+          version: 10
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-      
+          cache: pnpm
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
-      
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        run: pnpm test
+
       - name: Build library
-        run: pnpm run build:lib
-      
-      - name: Verify library builds
-        run: pnpm run build:lib
+        run: pnpm build:lib
+
+      - name: Verify entry points
+        run: |
+          for entry in index core hooks adapters presets consent dsr dpia breach policy lawful-basis cross-border ropa unstyled; do
+            for ext in js mjs d.ts; do
+              if [ ! -f "dist/$entry.$ext" ]; then
+                echo "MISSING: dist/$entry.$ext"
+                exit 1
+              fi
+            done
+          done
+          echo "All 14 entry points verified (js + mjs + d.ts)"
