@@ -26,3 +26,7 @@ export { useLawfulBasis } from './hooks/useLawfulBasis';
 export { useCrossBorderTransfer } from './hooks/useCrossBorderTransfer';
 export { useROPA } from './hooks/useROPA';
 export type { UseROPAOptions, UseROPAReturn } from './hooks/useROPA';
+
+// Compliance score
+export { useComplianceScore } from './hooks/useComplianceScore';
+export type { ComplianceInput, ComplianceReport } from './utils/compliance-score';

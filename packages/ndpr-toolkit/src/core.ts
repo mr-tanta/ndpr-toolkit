@@ -35,3 +35,11 @@ export { validateProcessingActivity, getLawfulBasisDescription, assessCompliance
 export { validateTransfer, getTransferMechanismDescription, assessTransferRisk, isNDPCApprovalRequired } from './utils/cross-border';
 export { validateProcessingRecord, generateROPASummary, exportROPAToCSV, identifyComplianceGaps } from './utils/ropa';
 export { sanitizeInput } from './utils/sanitize';
+
+// Compliance score engine
+export { getComplianceScore } from './utils/compliance-score';
+export type {
+  ComplianceInput, ComplianceReport, ComplianceRating,
+  ModuleScore, Recommendation, RegulatoryReference,
+  RecommendationPriority, EffortLevel,
+} from './utils/compliance-score';
