@@ -1,37 +1,53 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DPIAQuestion, DPIASection, DPIAResult, DPIARisk } from '../types/dpia';
 import { assessDPIARisk } from '../utils/dpia';
+import type { StorageAdapter } from '../adapters/types';
+import { localStorageAdapter } from '../adapters/local-storage';
 
 interface UseDPIAOptions {
   /**
    * Sections of the DPIA questionnaire
    */
   sections: DPIASection[];
-  
+
   /**
    * Initial answers (if resuming a DPIA)
    */
   initialAnswers?: Record<string, any>;
-  
+
+  /**
+   * Pluggable storage adapter. When provided, takes precedence over storageKey/useLocalStorage.
+   */
+  adapter?: StorageAdapter<Record<string, any>>;
+
   /**
    * Storage key for DPIA data
    * @default "ndpr_dpia_data"
+   * @deprecated Use adapter instead
    */
   storageKey?: string;
-  
+
   /**
    * Whether to use local storage to persist DPIA data
    * @default true
+   * @deprecated Use adapter instead
    */
   useLocalStorage?: boolean;
-  
+
   /**
    * Callback function called when the DPIA is completed
    */
   onComplete?: (result: DPIAResult) => void;
 }
 
-interface UseDPIAReturn {
+function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAdapter<Record<string, any>> {
+  if (!useLocalStorage) {
+    return { load: () => null, save: () => {}, remove: () => {} };
+  }
+  return localStorageAdapter<Record<string, any>>(storageKey);
+}
+
+export interface UseDPIAReturn {
   /**
    * Current section index
    */
@@ -101,6 +117,11 @@ interface UseDPIAReturn {
    * Progress percentage
    */
   progress: number;
+
+  /**
+   * Whether the adapter is still loading data (relevant for async adapters)
+   */
+  isLoading: boolean;
 }
 
 /**
@@ -109,52 +130,69 @@ interface UseDPIAReturn {
 export function useDPIA({
   sections,
   initialAnswers = {},
-  storageKey = "ndpr_dpia_data",
+  adapter,
+  storageKey = 'ndpr_dpia_data',
   useLocalStorage = true,
-  onComplete
+  onComplete,
 }: UseDPIAOptions): UseDPIAReturn {
+  const resolvedAdapter = adapter ?? resolveAdapter(storageKey, useLocalStorage);
+  const adapterRef = useRef(resolvedAdapter);
+  adapterRef.current = resolvedAdapter;
+
   const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<string, any>>(initialAnswers);
-  
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   // Load DPIA data from storage on mount
   useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        const savedData = localStorage.getItem(storageKey);
-        if (savedData) {
-          const { answers: savedAnswers, sectionIndex } = JSON.parse(savedData);
-          setAnswers(savedAnswers || {});
-          setCurrentSectionIndex(sectionIndex || 0);
+    let cancelled = false;
+
+    try {
+      const result = adapterRef.current.load();
+
+      if (result instanceof Promise) {
+        result.then(
+          (loaded) => {
+            if (cancelled) return;
+            if (loaded) {
+              setAnswers(loaded);
+            }
+            setIsLoading(false);
+          },
+          () => {
+            if (!cancelled) setIsLoading(false);
+          }
+        );
+      } else {
+        if (result) {
+          setAnswers(result);
         }
-      } catch (error) {
-        console.error('Error loading DPIA data:', error);
+        setIsLoading(false);
       }
+    } catch {
+      if (!cancelled) setIsLoading(false);
     }
-  }, [storageKey, useLocalStorage]);
-  
-  // Save DPIA data to storage when it changes
-  useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify({
-          answers,
-          sectionIndex: currentSectionIndex
-        }));
-      } catch (error) {
-        console.error('Error saving DPIA data:', error);
-      }
-    }
-  }, [answers, currentSectionIndex, storageKey, useLocalStorage]);
+
+    return () => { cancelled = true; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   
   // Get the current section
   const currentSection = sections[currentSectionIndex] || null;
   
+  // Persist answers whenever they change (fire-and-forget)
+  const persistAnswers = (updated: Record<string, any>) => {
+    Promise.resolve(adapterRef.current.save(updated)).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to save DPIA answers:', err);
+    });
+  };
+
   // Update an answer
   const updateAnswer = (questionId: string, value: any) => {
-    setAnswers(prevAnswers => ({
-      ...prevAnswers,
-      [questionId]: value
-    }));
+    setAnswers(prevAnswers => {
+      const updated = { ...prevAnswers, [questionId]: value };
+      persistAnswers(updated);
+      return updated;
+    });
   };
   
   // Check if a question should be shown based on its conditions
@@ -420,10 +458,9 @@ export function useDPIA({
   const resetDPIA = () => {
     setAnswers({});
     setCurrentSectionIndex(0);
-    
-    if (useLocalStorage && typeof window !== 'undefined') {
-      localStorage.removeItem(storageKey);
-    }
+    Promise.resolve(adapterRef.current.remove()).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to remove DPIA data:', err);
+    });
   };
   
   // Calculate progress percentage
@@ -468,6 +505,7 @@ export function useDPIA({
     completeDPIA,
     getVisibleQuestions,
     resetDPIA,
-    progress
+    progress,
+    isLoading,
   };
 }
