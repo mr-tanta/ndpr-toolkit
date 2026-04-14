@@ -1,6 +1,7 @@
 import { exportHTML } from '../../utils/policy-export/html';
 import { exportMarkdown } from '../../utils/policy-export/markdown';
 import { exportPDF } from '../../utils/policy-export/pdf';
+import { exportDOCX } from '../../utils/policy-export/docx';
 import type { PrivacyPolicy } from '../../types/privacy';
 
 // ── Mock jspdf ─────────────────────────────────────────────────────────────
@@ -37,6 +38,33 @@ jest.mock(
     }));
     return { jsPDF: MockJsPDF, default: MockJsPDF };
   },
+  { virtual: true },
+);
+
+// ── Mock docx ──────────────────────────────────────────────────────────────
+// docx is an optional peer dependency and not installed in the test environment.
+
+const mockDocxBlob = new Blob(['PK mock docx'], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+
+const makeMockDocxClass = (name: string) =>
+  jest.fn().mockImplementation((..._args: any[]) => ({ _type: name }));
+
+jest.mock(
+  'docx',
+  () => ({
+    Document: jest.fn().mockImplementation(() => ({ _type: 'Document' })),
+    Paragraph: makeMockDocxClass('Paragraph'),
+    TextRun: makeMockDocxClass('TextRun'),
+    HeadingLevel: { TITLE: 'Title', HEADING_1: 'Heading1', HEADING_2: 'Heading2' },
+    Packer: { toBlob: jest.fn().mockResolvedValue(mockDocxBlob) },
+    Header: makeMockDocxClass('Header'),
+    Footer: makeMockDocxClass('Footer'),
+    PageNumber: { CURRENT: 'CURRENT', TOTAL_PAGES: 'TOTAL_PAGES' },
+    AlignmentType: { CENTER: 'center', RIGHT: 'right', LEFT: 'left' },
+    BorderStyle: { SINGLE: 'single' },
+    ShadingType: { CLEAR: 'clear' },
+    TableOfContents: undefined, // not available in all versions
+  }),
   { virtual: true },
 );
 
@@ -357,5 +385,50 @@ describe('exportPDF', () => {
     const errorMsg = 'The "jspdf" package is required for PDF export. Install it with: pnpm add jspdf';
     expect(typeof errorMsg).toBe('string');
     expect(errorMsg).toContain('jspdf');
+  });
+});
+
+// ── exportDOCX ─────────────────────────────────────────────────────────────
+
+describe('exportDOCX', () => {
+  it('is a function', () => {
+    expect(typeof exportDOCX).toBe('function');
+  });
+
+  it('returns a Promise', () => {
+    const result = exportDOCX(makePolicy());
+    expect(result).toBeInstanceOf(Promise);
+    return result;
+  });
+
+  it('resolves to a Blob', async () => {
+    const blob = await exportDOCX(makePolicy());
+    expect(blob).toBeInstanceOf(Blob);
+  });
+
+  it('resolves with the correct Word mime type', async () => {
+    const blob = await exportDOCX(makePolicy());
+    expect(blob.type).toBe(
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    );
+  });
+
+  it('resolves successfully with default options', async () => {
+    await expect(exportDOCX(makePolicy())).resolves.toBeDefined();
+  });
+
+  it('resolves successfully with TOC disabled', async () => {
+    await expect(exportDOCX(makePolicy(), { includeTOC: false })).resolves.toBeDefined();
+  });
+
+  it('resolves successfully with an empty sections array', async () => {
+    const policy = makePolicy({ sections: [] });
+    await expect(exportDOCX(policy)).resolves.toBeDefined();
+  });
+
+  it('resolves successfully with bullet-list content', async () => {
+    const policy = makePolicy();
+    policy.sections[1].template = 'We collect:\n- Full name\n- Email address\n- IP address';
+    await expect(exportDOCX(policy)).resolves.toBeDefined();
   });
 });
