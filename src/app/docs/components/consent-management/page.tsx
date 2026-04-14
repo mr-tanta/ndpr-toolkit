@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
 
 export default function ConsentManagementDocs() {
   const jsonLd = {
@@ -25,59 +23,55 @@ export default function ConsentManagementDocs() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="flex mb-6 space-x-2">
-        <Button asChild variant="outline" size="sm">
-          <Link href="/ndpr-demos/consent">
-            View Demo
-          </Link>
-        </Button>
-        <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/components/consent" target="_blank" rel="noopener noreferrer">
-            View Source
-          </a>
-        </Button>
+      <div className="flex mb-6 gap-3">
+        <Link href="/ndpr-demos/consent" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition">
+          View Demo →
+        </Link>
+        <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/components/consent" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-card transition">
+          View Source
+        </a>
       </div>
-      
-      <section id="overview" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Overview</h2>
-        <p className="mb-4">
+
+      <section id="overview" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Overview</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
           The Consent Management component provides a complete solution for collecting, storing, and managing user consent
           in compliance with the Nigeria Data Protection Act 2023 (NDPA). It includes a customizable consent banner,
           preference management interface, and consent storage system.
         </p>
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA Consent Requirements</h4>
-          <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
+        <div className="bg-card border border-border rounded-xl p-6 mb-6">
+          <h4 className="font-semibold text-foreground mb-2">NDPA Consent Requirements</h4>
+          <p className="text-muted-foreground text-sm leading-relaxed">
             Under the NDPA 2023, consent must be freely given, specific, informed, and unambiguous. The data subject must clearly
             indicate acceptance through a statement or clear affirmative action. Pre-ticked boxes or silence do not constitute valid consent.
           </p>
         </div>
       </section>
 
-      <section id="installation" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Installation</h2>
-        <p className="mb-4">
+      <section id="installation" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Installation</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
           Install the NDPR Toolkit package which includes the Consent Management components:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
-        </div>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">pnpm add @tantainnovative/ndpr-toolkit</code>
+        </pre>
       </section>
 
-      <section id="components" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Components</h2>
-        <p className="mb-4">
+      <section id="components" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Components</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
           The Consent Management system includes several components that work together:
         </p>
-        
+
         <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">ConsentBanner</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+          <div className="bg-card border border-border rounded-xl p-6 mb-6">
+            <h3 className="font-semibold text-foreground mb-2">ConsentBanner</h3>
+            <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
               A cookie consent banner that appears at the bottom of the page when a user first visits your site. Fully customizable with support for multiple consent options.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+              <code className="text-sm text-foreground font-mono">{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
 
 <ConsentBanner
   options={[
@@ -104,17 +98,17 @@ export default function ConsentManagementDocs() {
   position="bottom"
   showPreferences={true}
   privacyPolicyUrl="/privacy-policy"
-/>`}</code></pre>
-            </div>
+/>`}</code>
+            </pre>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">ConsentManager</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+          <div className="bg-card border border-border rounded-xl p-6 mb-6">
+            <h3 className="font-semibold text-foreground mb-2">ConsentManager</h3>
+            <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
               A higher-order component that manages the consent state and provides methods for checking and updating consent. Works with the useConsent hook to provide a complete consent management solution.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+              <code className="text-sm text-foreground font-mono">{`import { ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit';
 
 function App() {
   return (
@@ -143,36 +137,34 @@ function App() {
 }
 
 function MyApp() {
-  const { 
-    consents, 
-    hasConsented, 
+  const {
+    consents,
+    hasConsented,
     updateConsent,
     saveConsents,
-    resetConsents 
+    resetConsents
   } = useConsent();
-  
-  // Check if user has given consent for analytics
+
   if (hasConsented('analytics')) {
     // Initialize analytics
   }
-  
+
   return (
     <div>
-      {/* Your app content */}
       <button onClick={() => updateConsent('analytics', true)}>Enable Analytics</button>
     </div>
   );
-}`}</code></pre>
-            </div>
+}`}</code>
+            </pre>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">ConsentStorage</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+          <div className="bg-card border border-border rounded-xl p-6 mb-6">
+            <h3 className="font-semibold text-foreground mb-2">ConsentStorage</h3>
+            <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
               A component for handling the storage and retrieval of consent settings. Supports both local storage and custom storage mechanisms.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+              <code className="text-sm text-foreground font-mono">{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit';
 import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 import { useState } from 'react';
 
@@ -195,15 +187,14 @@ function ConsentStorageExample() {
       settings={settings}
       storageOptions={{
         key: 'my-app-consent',
-        storage: 'localStorage' // or 'sessionStorage' or 'cookie'
+        storage: 'localStorage'
       }}
       onLoad={handleLoad}
       onSave={(savedSettings) => console.log('Saved:', savedSettings)}
       autoLoad={true}
       autoSave={true}
     >
-      {/* Render prop pattern */}
-      {({ loadSettings, saveSettings, clearSettings, loaded }) => (
+      {({ saveSettings, clearSettings, loaded }) => (
         <div>
           <p>Consent settings loaded: {loaded ? 'Yes' : 'No'}</p>
           <button onClick={() => saveSettings(settings)}>Save Settings</button>
@@ -212,19 +203,19 @@ function ConsentStorageExample() {
       )}
     </ConsentStorage>
   );
-}`}</code></pre>
-            </div>
+}`}</code>
+            </pre>
           </div>
         </div>
       </section>
 
-      <section id="usage" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Usage</h2>
-        <p className="mb-4">
+      <section id="usage" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Usage</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
           Here&apos;s a complete example of how to implement the consent management system in your application:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { useState, useEffect } from 'react';
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`import { useState, useEffect } from 'react';
 import {
   ConsentBanner,
   ConsentManager,
@@ -232,7 +223,6 @@ import {
   useConsent
 } from '@tantainnovative/ndpr-toolkit';
 
-// Define your consent options
 const consentOptions = [
   {
     id: 'necessary',
@@ -256,52 +246,27 @@ const consentOptions = [
 
 function App() {
   const [showPreferences, setShowPreferences] = useState(false);
-  
+
   return (
-    <ConsentManager
-      options={consentOptions}
-      storageKey="my-app-consent"
-    >
+    <ConsentManager options={consentOptions} storageKey="my-app-consent">
       <div>
-        {/* Your app content */}
         <header>
           <nav>
-            {/* ... */}
-            <button onClick={() => setShowPreferences(true)}>
-              Cookie Preferences
-            </button>
+            <button onClick={() => setShowPreferences(true)}>Cookie Preferences</button>
           </nav>
         </header>
-        
-        <main>
-          {/* Your main content */}
-        </main>
-        
-        {/* Cookie preferences modal */}
+        <main>{/* Your main content */}</main>
         {showPreferences && (
-          <PreferencesModal 
-            onClose={() => setShowPreferences(false)} 
-          />
+          <PreferencesModal onClose={() => setShowPreferences(false)} />
         )}
-        
-        {/* Consent banner */}
-        <ConsentBanner 
-          options={consentOptions}
-          position="bottom"
-          privacyPolicyUrl="/privacy-policy"
-        />
+        <ConsentBanner options={consentOptions} position="bottom" privacyPolicyUrl="/privacy-policy" />
       </div>
     </ConsentManager>
   );
 }
 
 function PreferencesModal({ onClose }) {
-  const {
-    consents,
-    updateConsent,
-    saveConsents,
-    resetConsents
-  } = useConsent();
+  const { consents, updateConsent, saveConsents, resetConsents } = useConsent();
 
   const handleSave = () => {
     saveConsents();
@@ -331,162 +296,160 @@ function PreferencesModal({ onClose }) {
   );
 }
 
-// Example of using the useConsent hook to check consent
 function AnalyticsComponent() {
   const { hasConsented } = useConsent();
-  
+
   useEffect(() => {
     if (hasConsented('analytics')) {
-      // Initialize analytics
       console.log('Analytics initialized');
     }
   }, [hasConsented]);
-  
+
   return null;
-}`}</code></pre>
-        </div>
+}`}</code>
+        </pre>
       </section>
 
-      <section id="api" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">API Reference</h2>
-        
-        <h3 className="text-xl font-bold mt-8 mb-4">ConsentBanner Props</h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Prop</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Default</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+      <section id="api" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">API Reference</h2>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentBanner Props</h3>
+        <div className="overflow-x-auto mb-8">
+          <table className="w-full border-collapse mb-6">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Prop</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Type</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Default</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Description</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">options</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">ConsentOption[]</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Array of consent options to display</td>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">options</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentOption[]</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Array of consent options to display</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onSave</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{`({ consents: Record<string, boolean> }) => void`}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Callback function called when consent is saved</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">onSave</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`({ consents: Record<string, boolean> }) => void`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Callback function called when consent is saved</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">position</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">&apos;top&apos; | &apos;bottom&apos;</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">&apos;bottom&apos;</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Position of the banner on the page</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">position</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;top&apos; | &apos;bottom&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;bottom&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Position of the banner on the page</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">title</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">string</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">&apos;Cookie Consent&apos;</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Title displayed on the banner</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">title</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Cookie Consent&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Title displayed on the banner</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">description</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">string</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">&apos;We use cookies...&apos;</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Description text explaining the purpose of cookies</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">description</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;We use cookies...&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Description text explaining the purpose of cookies</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">showPreferences</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">boolean</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">true</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether to show the &quot;Preferences&quot; button</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">showPreferences</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">true</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to show the &quot;Preferences&quot; button</td>
               </tr>
-              <tr>  
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">privacyPolicyUrl</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">string</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">URL to the privacy policy page</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">privacyPolicyUrl</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">URL to the privacy policy page</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h3 className="text-xl font-bold mt-8 mb-4">ConsentStorage Props</h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Prop</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Default</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentStorage Props</h3>
+        <div className="overflow-x-auto mb-8">
+          <table className="w-full border-collapse mb-6">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Prop</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Type</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Default</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Description</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">settings</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">ConsentSettings</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Current consent settings to store</td>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">settings</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentSettings</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Current consent settings to store</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">storageOptions</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">ConsentStorageOptions</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{`{ storageKey: 'ndpr_consent', storageType: 'localStorage' }`}</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Options for storage mechanism</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">storageOptions</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentStorageOptions</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`{ storageKey: 'ndpr_consent', storageType: 'localStorage' }`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Options for storage mechanism</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onLoad</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{`(settings: ConsentSettings | null) => void`}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Callback when settings are loaded</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">onLoad</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`(settings: ConsentSettings | null) => void`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Callback when settings are loaded</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onSave</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{`(settings: ConsentSettings) => void`}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Callback when settings are saved</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">onSave</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`(settings: ConsentSettings) => void`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Callback when settings are saved</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">autoLoad</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">boolean</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">true</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether to load settings on mount</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">autoLoad</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">true</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to load settings on mount</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">autoSave</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">boolean</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">true</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether to save settings automatically</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">autoSave</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">true</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to save settings automatically</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">children</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">ReactNode | Function</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">undefined</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">React nodes or render prop function</td>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">children</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">ReactNode | Function</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">React nodes or render prop function</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h3 className="text-xl font-bold mt-8 mb-4">ConsentOption Type</h3>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`type ConsentOption = {
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentOption Type</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`type ConsentOption = {
   id: string;
   label: string;
   description: string;
   required?: boolean;
-};`}</code></pre>
-        </div>
+};`}</code>
+        </pre>
 
-        <h3 className="text-xl font-bold mt-8 mb-4">ConsentSettings Type</h3>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`type ConsentSettings = {
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentSettings Type</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`type ConsentSettings = {
   [key: string]: boolean;
   lastUpdated: number;
-};`}</code></pre>
-        </div>
+};`}</code>
+        </pre>
 
-        <h3 className="text-xl font-bold mt-8 mb-4">ConsentStorageOptions Type</h3>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`type ConsentStorageOptions = {
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentStorageOptions Type</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`type ConsentStorageOptions = {
   key: string;
   storage: 'localStorage' | 'sessionStorage' | 'cookie';
   cookieOptions?: {
@@ -496,37 +459,37 @@ function AnalyticsComponent() {
     sameSite?: 'strict' | 'lax' | 'none';
     maxAge?: number;
   };
-};`}</code></pre>
-        </div>
+};`}</code>
+        </pre>
       </section>
 
-      <section id="best-practices" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
-        <ul className="list-disc pl-6 space-y-2">
+      <section id="best-practices" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Best Practices</h2>
+        <ul className="space-y-3 text-muted-foreground leading-relaxed list-disc pl-6">
           <li>
-            <strong>Clear Language:</strong> Use clear, plain language to explain what each type of cookie does and why you&apos;re collecting the data.
+            <strong className="text-foreground">Clear Language:</strong> Use clear, plain language to explain what each type of cookie does and why you&apos;re collecting the data.
           </li>
           <li>
-            <strong>No Pre-selected Options:</strong> Don&apos;t pre-select non-essential cookies. The NDPA requires that consent is freely given and pre-selected checkboxes don&apos;t constitute valid consent.
+            <strong className="text-foreground">No Pre-selected Options:</strong> Don&apos;t pre-select non-essential cookies. The NDPA requires that consent is freely given and pre-selected checkboxes don&apos;t constitute valid consent.
           </li>
           <li>
-            <strong>Easy Access to Preferences:</strong> Make it easy for users to access and update their consent preferences at any time.
+            <strong className="text-foreground">Easy Access to Preferences:</strong> Make it easy for users to access and update their consent preferences at any time.
           </li>
           <li>
-            <strong>Consent Records:</strong> Keep records of when and how consent was obtained. The ConsentManager component automatically tracks consent history.
+            <strong className="text-foreground">Consent Records:</strong> Keep records of when and how consent was obtained. The ConsentManager component automatically tracks consent history.
           </li>
           <li>
-            <strong>Respect User Choices:</strong> Only activate cookies and tracking technologies when the user has given explicit consent for them.
+            <strong className="text-foreground">Respect User Choices:</strong> Only activate cookies and tracking technologies when the user has given explicit consent for them.
           </li>
         </ul>
       </section>
 
-      <section id="accessibility" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Accessibility</h2>
-        <p className="mb-4">
+      <section id="accessibility" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Accessibility</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
           The Consent Management components are built with accessibility in mind:
         </p>
-        <ul className="list-disc pl-6 space-y-2">
+        <ul className="space-y-2 text-muted-foreground leading-relaxed list-disc pl-6">
           <li>All form elements have proper labels and ARIA attributes</li>
           <li>Focus states are clearly visible</li>
           <li>Color contrast meets WCAG 2.1 AA standards</li>
@@ -535,38 +498,30 @@ function AnalyticsComponent() {
         </ul>
       </section>
 
-      <section id="help-resources" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Need Help?</h2>
-        <p className="mb-4">
+      <section id="help-resources" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Need Help?</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
           If you have questions about implementing the Consent Management system or need assistance with NDPA compliance, check out these resources:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">GitHub Issues</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Report bugs or request features on our GitHub repository.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
-                  View Issues
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA Resources</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Learn more about NDPA 2023 compliance requirements.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
-                  NDPA Framework
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-semibold text-foreground mb-2">GitHub Issues</h3>
+            <p className="text-muted-foreground text-sm mb-4">
+              Report bugs or request features on our GitHub repository.
+            </p>
+            <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-muted transition">
+              View Issues
+            </a>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-semibold text-foreground mb-2">NDPA Resources</h3>
+            <p className="text-muted-foreground text-sm mb-4">
+              Learn more about NDPA 2023 compliance requirements.
+            </p>
+            <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-foreground text-sm font-medium hover:bg-muted transition">
+              NDPA Framework
+            </a>
+          </div>
         </div>
       </section>
     </DocLayout>
