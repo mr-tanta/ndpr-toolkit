@@ -70,6 +70,8 @@ const navigation: NavItem[] = [
       { title: 'Zero-config Presets', href: '/docs/guides/presets', isNew: true },
       { title: 'Compliance Score', href: '/docs/guides/compliance-score', isNew: true },
       { title: 'Backend Integration', href: '/docs/guides/backend-integration', isNew: true },
+      { title: 'Internationalization', href: '/docs/guides/internationalization', isNew: true },
+      { title: 'CLI Scaffolder', href: '/docs/guides/cli-scaffolder', isNew: true },
     ],
   },
 ];
