@@ -5,16 +5,21 @@ import { memoryAdapter } from '../../adapters/memory';
 import type { CrossBorderTransfer } from '../../types/cross-border';
 
 const baseTransferData: Omit<CrossBorderTransfer, 'id' | 'createdAt' | 'updatedAt'> = {
-  name: 'EU Customer Data Transfer',
-  description: 'Transfer of customer data to EU data processor',
   destinationCountry: 'Germany',
   transferMechanism: 'standard_clauses',
   adequacyStatus: 'adequate',
   dataCategories: ['personal'],
-  purposes: ['service_delivery'],
+  includesSensitiveData: false,
+  recipientOrganization: 'EU Data Processor',
+  recipientContact: { name: 'EU Customer Data Transfer', email: 'contact@eu-processor.de' },
+  purpose: 'service_delivery',
+  safeguards: ['encryption'],
+  riskAssessment: 'Low risk transfer with standard clauses in place',
   status: 'active',
   tiaCompleted: true,
   riskLevel: 'low',
+  frequency: 'continuous',
+  startDate: Date.now(),
 };
 
 describe('useCrossBorderTransfer with adapter', () => {
@@ -34,10 +39,10 @@ describe('useCrossBorderTransfer with adapter', () => {
       result.current.addTransfer(baseTransferData);
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as CrossBorderTransfer[] | null;
     expect(saved).not.toBeNull();
     expect(saved).toHaveLength(1);
-    expect(saved![0].name).toBe('EU Customer Data Transfer');
+    expect(saved![0].recipientContact.name).toBe('EU Customer Data Transfer');
   });
 
   it('saves to adapter on updateTransfer', async () => {
@@ -52,12 +57,12 @@ describe('useCrossBorderTransfer with adapter', () => {
     });
 
     act(() => {
-      result.current.updateTransfer(transferId!, { name: 'Updated Transfer' });
+      result.current.updateTransfer(transferId!, { recipientOrganization: 'Updated Transfer' });
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as CrossBorderTransfer[] | null;
     expect(saved).not.toBeNull();
-    expect(saved![0].name).toBe('Updated Transfer');
+    expect(saved![0].recipientOrganization).toBe('Updated Transfer');
   });
 
   it('saves to adapter on removeTransfer', async () => {

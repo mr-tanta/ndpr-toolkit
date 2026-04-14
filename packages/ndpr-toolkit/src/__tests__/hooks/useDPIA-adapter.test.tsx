@@ -9,6 +9,7 @@ const mockSections: DPIASection[] = [
     id: 'section1',
     title: 'Processing Overview',
     description: 'General information',
+    order: 1,
     questions: [
       {
         id: 'q1',
@@ -37,7 +38,7 @@ describe('useDPIA with adapter', () => {
       result.current.updateAnswer('q1', 'Test answer');
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as Record<string, any> | null;
     expect(saved).not.toBeNull();
     expect(saved!['q1']).toBe('Test answer');
   });

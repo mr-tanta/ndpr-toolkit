@@ -8,10 +8,14 @@ const baseActivityData: Omit<ProcessingActivity, 'id' | 'createdAt' | 'updatedAt
   name: 'Customer Data Processing',
   description: 'Processing customer personal data for service delivery',
   lawfulBasis: 'contract',
+  lawfulBasisJustification: 'Necessary for contract performance',
   dataCategories: ['personal'],
+  involvesSensitiveData: false,
+  dataSubjectCategories: ['customers'],
   purposes: ['service_delivery'],
   retentionPeriod: '3 years',
-  dataSubjects: ['customers'],
+  crossBorderTransfer: false,
+  status: 'active',
 };
 
 describe('useLawfulBasis with adapter', () => {
@@ -31,7 +35,7 @@ describe('useLawfulBasis with adapter', () => {
       result.current.addActivity(baseActivityData);
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as ProcessingActivity[] | null;
     expect(saved).not.toBeNull();
     expect(saved).toHaveLength(1);
     expect(saved![0].name).toBe('Customer Data Processing');
@@ -52,7 +56,7 @@ describe('useLawfulBasis with adapter', () => {
       result.current.updateActivity(activityId!, { name: 'Updated Activity' });
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as ProcessingActivity[] | null;
     expect(saved).not.toBeNull();
     expect(saved![0].name).toBe('Updated Activity');
   });

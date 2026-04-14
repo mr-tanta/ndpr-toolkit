@@ -54,7 +54,7 @@ describe('usePrivacyPolicy with adapter', () => {
       result.current.generatePolicy();
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as PrivacyPolicy | null;
     expect(saved).not.toBeNull();
     expect(saved!.templateId).toBe('tpl-basic');
     expect(saved!.organizationInfo.name).toBe('Test Corp');

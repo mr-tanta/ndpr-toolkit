@@ -9,6 +9,7 @@ const mockSections: DPIASection[] = [
     id: 'section1',
     title: 'Processing Overview',
     description: 'General information',
+    order: 1,
     questions: [
       {
         id: 'q1',

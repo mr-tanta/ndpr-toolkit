@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Consent } from '../../../components/consent/compound';
-import type { ConsentOption } from '../../../types/consent';
+import type { ConsentOption, ConsentSettings } from '../../../types/consent';
 import { memoryAdapter } from '../../../adapters/memory';
 
 const options: ConsentOption[] = [
@@ -12,7 +12,7 @@ const options: ConsentOption[] = [
 describe('Consent compound components', () => {
   it('renders OptionList with all options', () => {
     render(
-      <Consent.Provider options={options} adapter={memoryAdapter()}>
+      <Consent.Provider options={options} adapter={memoryAdapter<ConsentSettings>()}>
         <Consent.OptionList />
       </Consent.Provider>
     );
@@ -21,7 +21,7 @@ describe('Consent compound components', () => {
   });
 
   it('AcceptButton calls acceptAll', () => {
-    const adapter = memoryAdapter();
+    const adapter = memoryAdapter<ConsentSettings>();
     render(
       <Consent.Provider options={options} adapter={adapter}>
         <Consent.AcceptButton />
@@ -33,7 +33,7 @@ describe('Consent compound components', () => {
   });
 
   it('RejectButton calls rejectAll', () => {
-    const adapter = memoryAdapter();
+    const adapter = memoryAdapter<ConsentSettings>();
     render(
       <Consent.Provider options={options} adapter={adapter}>
         <Consent.RejectButton />

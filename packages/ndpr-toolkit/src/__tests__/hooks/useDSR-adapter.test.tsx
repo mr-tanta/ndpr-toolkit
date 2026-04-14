@@ -41,7 +41,7 @@ describe('useDSR with adapter', () => {
       result.current.submitRequest(baseRequestData as any);
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as any[] | null;
     expect(saved).not.toBeNull();
     expect(saved!.length).toBe(1);
     expect(saved![0].type).toBe('access');

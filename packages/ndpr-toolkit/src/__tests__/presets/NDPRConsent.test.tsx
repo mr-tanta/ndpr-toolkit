@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { NDPRConsent } from '../../presets/NDPRConsent';
 import { memoryAdapter } from '../../adapters/memory';
+import type { ConsentSettings } from '../../types/consent';
 
 describe('NDPRConsent preset', () => {
   it('renders with zero props', () => {
@@ -16,7 +17,7 @@ describe('NDPRConsent preset', () => {
   });
 
   it('accepts a custom adapter', () => {
-    const adapter = memoryAdapter();
+    const adapter = memoryAdapter<ConsentSettings>();
     render(<NDPRConsent adapter={adapter} />);
     fireEvent.click(screen.getByText('Accept All'));
     expect(adapter.load()).not.toBeNull();

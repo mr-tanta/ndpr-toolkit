@@ -2,7 +2,7 @@ import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useConsent } from '../../hooks/useConsent';
 import { memoryAdapter } from '../../adapters/memory';
-import type { ConsentOption } from '../../types/consent';
+import type { ConsentOption, ConsentSettings } from '../../types/consent';
 
 const options: ConsentOption[] = [
   { id: 'essential', label: 'Essential', description: 'Required', purpose: 'Core functionality', required: true },
@@ -11,7 +11,7 @@ const options: ConsentOption[] = [
 
 describe('useConsent with adapter', () => {
   it('uses the provided adapter instead of localStorage', async () => {
-    const adapter = memoryAdapter();
+    const adapter = memoryAdapter<ConsentSettings>();
     const { result } = renderHook(() => useConsent({ options, adapter }));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(result.current.shouldShowBanner).toBe(true);
@@ -34,7 +34,7 @@ describe('useConsent with adapter', () => {
   });
 
   it('saves to adapter when consent is updated', async () => {
-    const adapter = memoryAdapter();
+    const adapter = memoryAdapter<ConsentSettings>();
     const { result } = renderHook(() => useConsent({ options, adapter }));
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     act(() => { result.current.acceptAll(); });
@@ -61,7 +61,7 @@ describe('useConsent with adapter', () => {
 
   it('exposes isLoading for async adapters', async () => {
     const asyncAdapter = {
-      load: () => new Promise(resolve => setTimeout(() => resolve(null), 50)),
+      load: () => new Promise<ConsentSettings | null>(resolve => setTimeout(() => resolve(null), 50)),
       save: async () => {},
       remove: async () => {},
     };

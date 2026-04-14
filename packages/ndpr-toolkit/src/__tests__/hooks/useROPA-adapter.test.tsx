@@ -18,13 +18,22 @@ const baseRecord: ProcessingRecord = {
   id: 'rec-001',
   name: 'Customer Registration',
   description: 'Processing customer registration data',
-  controller: 'Test Org',
+  controllerDetails: {
+    name: 'Test Org',
+    contact: 'privacy@test.com',
+    address: '1 Test Street',
+  },
   purposes: ['account_management'],
   lawfulBasis: 'contract',
+  lawfulBasisJustification: 'Necessary for contract performance',
   dataCategories: ['personal'],
-  dataSubjects: ['customers'],
+  dataSubjectCategories: ['customers'],
   recipients: [],
   retentionPeriod: '3 years',
+  securityMeasures: ['encryption'],
+  dataSource: 'data_subject',
+  dpiaRequired: false,
+  automatedDecisionMaking: false,
   status: 'active',
   createdAt: Date.now(),
   updatedAt: Date.now(),
@@ -47,7 +56,7 @@ describe('useROPA with adapter', () => {
       result.current.addRecord(baseRecord);
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as RecordOfProcessingActivities | null;
     expect(saved).not.toBeNull();
     expect(saved!.records).toHaveLength(1);
     expect(saved!.records[0].name).toBe('Customer Registration');
@@ -66,7 +75,7 @@ describe('useROPA with adapter', () => {
       result.current.updateRecord('rec-001', { name: 'Updated Registration' });
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as RecordOfProcessingActivities | null;
     expect(saved).not.toBeNull();
     expect(saved!.records[0].name).toBe('Updated Registration');
   });
@@ -84,7 +93,7 @@ describe('useROPA with adapter', () => {
       result.current.archiveRecord('rec-001');
     });
 
-    const saved = adapter.load();
+    const saved = adapter.load() as RecordOfProcessingActivities | null;
     expect(saved).not.toBeNull();
     expect(saved!.records[0].status).toBe('archived');
   });
