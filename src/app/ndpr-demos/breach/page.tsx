@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -10,6 +9,7 @@ import { TextArea } from '@/components/ui/TextArea';
 import { Select } from '@/components/ui/Select';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Label } from '@/components/ui/label';
+import { DemoLayout } from '@/components/site/DemoLayout';
 
 // ---------- Types ----------
 
@@ -250,47 +250,40 @@ export default function BreachDemoPage() {
 
   if (!isClient) {
     return (
-      <div className="container mx-auto py-10">
+      <DemoLayout
+        title="Breach Notification"
+        description="Report, assess, and notify the NDPC of personal data breaches within the statutory 72-hour window."
+        ndpaSection="Section 40"
+      >
         <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64" />
-          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-96" />
-          <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded" />
+          <div className="h-8 bg-muted rounded w-64" />
+          <div className="h-4 bg-muted rounded w-96" />
+          <div className="h-64 bg-muted rounded" />
         </div>
-      </div>
+      </DemoLayout>
     );
   }
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-5xl">
-      {/* Hero Section */}
-      <div className="mb-10">
-        <Link
-          href="/ndpr-demos"
-          className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline mb-6"
-        >
-          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to NDPA Demos
-        </Link>
+    <DemoLayout
+      title="Breach Notification"
+      description="Report, assess, and notify the NDPC of personal data breaches within the statutory 72-hour window. Walk through the complete breach response lifecycle — from incident report to resolution."
+      ndpaSection="Section 40"
+      code={`import { BreachForm } from '@tantainnovative/ndpr-toolkit/breach';
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-              Breach Notification
-            </h1>
-            <p className="mt-2 text-gray-600 dark:text-gray-400 text-lg">
-              NDPA Section 40 &mdash; 72-hour NDPC notification
-            </p>
-          </div>
-          <Badge variant="outline" className="self-start text-sm px-3 py-1">
-            Interactive Demo
-          </Badge>
-        </div>
-      </div>
-
+<BreachForm
+  onSubmit={(report) => {
+    // report.requiresNdpcNotification is true
+    // when risk score exceeds threshold
+    if (report.requiresNdpcNotification) {
+      notifyNDPC(report);
+    }
+  }}
+/>`}
+    >
+      <div className="max-w-4xl mx-auto space-y-8">
       {/* Progress Bar */}
-      <div className="mb-10">
+      <div>
         <div className="flex items-center justify-between">
           {STEPS.map((step, idx) => (
             <React.Fragment key={step.id}>
@@ -1025,7 +1018,8 @@ export default function BreachDemoPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </DemoLayout>
   );
 }
 

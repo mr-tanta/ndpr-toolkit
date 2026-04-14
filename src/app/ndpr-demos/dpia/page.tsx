@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useMemo, useCallback } from 'react';
-import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { TextArea } from '@/components/ui/TextArea';
+import { DemoLayout } from '@/components/site/DemoLayout';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -626,35 +626,21 @@ export default function DPIADemoPage() {
   // ---------------------------------------------------------------------------
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
-      <div className="container mx-auto max-w-5xl py-10 px-4">
-        {/* Hero */}
-        <div className="mb-10">
-          <Link
-            href="/ndpr-demos"
-            className="inline-flex items-center gap-1.5 text-sm text-blue-600 dark:text-blue-400 hover:underline mb-6"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to NDPR Demos
-          </Link>
+    <DemoLayout
+      title="Data Protection Impact Assessment"
+      description="Conduct a structured impact assessment for processing activities likely to result in high risk to data subjects. Where residual risk remains high, prior consultation with the NDPC is mandatory."
+      ndpaSection="Sections 38-39"
+      code={`import { DPIAForm } from '@tantainnovative/ndpr-toolkit/dpia';
 
-          <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white tracking-tight">
-              Data Protection Impact Assessment
-            </h1>
-            <p className="mt-3 text-lg text-gray-600 dark:text-gray-400">
-              NDPA Sections 38 &ndash; 39
-            </p>
-            <p className="mt-4 max-w-2xl mx-auto text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-              Conduct a structured impact assessment for processing activities likely to result in high risk
-              to data subjects, as required by the Nigeria Data Protection Act. Where residual risk remains
-              high, prior consultation with the NDPC is mandatory.
-            </p>
-          </div>
-        </div>
-
+<DPIAForm
+  onComplete={(report) => {
+    console.log('DPIA completed:', report);
+    // report.requiresNdpcConsultation indicates
+    // whether NDPC consultation is mandatory
+  }}
+/>`}
+    >
+      <div className="max-w-4xl mx-auto">
         {/* Step Indicator */}
         <StepIndicator currentStep={currentStep} onStepClick={setCurrentStep} />
 
@@ -1345,6 +1331,6 @@ export default function DPIADemoPage() {
           </div>
         )}
       </div>
-    </div>
+    </DemoLayout>
   );
 }

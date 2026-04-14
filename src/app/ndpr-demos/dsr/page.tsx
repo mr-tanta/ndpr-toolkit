@@ -11,6 +11,7 @@ import { TextArea } from '@/components/ui/TextArea';
 import { Label } from '@/components/ui/label';
 import type { DSRRequest, DSRStatus, DSRType } from '@/types';
 import { generateId } from '@/lib/id';
+import { DemoLayout } from '@/components/site/DemoLayout';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -417,9 +418,17 @@ export default function DSRDemoPage() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-500 dark:text-gray-400">Loading...</div>
-      </div>
+      <DemoLayout
+        title="Data Subject Rights"
+        description="Exercise and manage the eight fundamental rights granted to data subjects under the Nigeria Data Protection Act."
+        ndpaSection="Part IV — Sections 29–36"
+      >
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-muted rounded w-64" />
+          <div className="h-4 bg-muted rounded w-96" />
+          <div className="h-64 bg-muted rounded" />
+        </div>
+      </DemoLayout>
     );
   }
 
@@ -428,48 +437,41 @@ export default function DSRDemoPage() {
   // -----------------------------------------------------------------------
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
-      {/* ================================================================ */}
-      {/* HERO                                                             */}
-      {/* ================================================================ */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 dark:from-blue-800 dark:via-blue-900 dark:to-blue-950 text-white">
-        <div className="container mx-auto px-4 py-12 md:py-16">
-          <Link
-            href="/ndpr-demos"
-            className="inline-flex items-center gap-1.5 text-blue-100 hover:text-white text-sm mb-6 transition-colors"
-          >
-            <span aria-hidden="true">&larr;</span> Back to NDPA Demos
-          </Link>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">Data Subject Rights</h1>
-          <p className="mt-3 text-blue-100 text-lg md:text-xl max-w-2xl">
-            NDPA Part IV &mdash; Sections 29&ndash;36
-          </p>
-          <p className="mt-4 text-blue-200 max-w-3xl text-sm md:text-base leading-relaxed">
-            Exercise and manage the eight fundamental rights granted to data subjects under the Nigeria Data Protection Act.
-            Submit requests, track their progress, and ensure compliance within the statutory 30-day window.
-          </p>
+    <DemoLayout
+      title="Data Subject Rights"
+      description="Exercise and manage the eight fundamental rights granted to data subjects under the Nigeria Data Protection Act. Submit requests, track progress, and ensure compliance within the 30-day window."
+      ndpaSection="Part IV — Sections 29–36"
+      code={`import { DSRForm, DSRTracker } from '@tantainnovative/ndpr-toolkit/dsr';
 
-          {/* Quick stat pills */}
-          <div className="flex flex-wrap gap-3 mt-8">
-            <span className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium">
-              <span className="w-2 h-2 rounded-full bg-amber-400" /> {stats.pending} Pending
+// Submit a DSR request
+<DSRForm
+  onSubmit={(request) => console.log('Request submitted:', request)}
+/>
+
+// Track and manage requests
+<DSRTracker
+  requests={requests}
+  onStatusChange={(id, status) => updateRequest(id, status)}
+/>`}
+    >
+      <div className="space-y-14">
+        {/* Stats bar */}
+        <div className="flex flex-wrap gap-3">
+          <span className="inline-flex items-center gap-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-full px-4 py-1.5 text-sm font-medium text-amber-700 dark:text-amber-300">
+            <span className="w-2 h-2 rounded-full bg-amber-400" /> {stats.pending} Pending
+          </span>
+          <span className="inline-flex items-center gap-2 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-full px-4 py-1.5 text-sm font-medium text-blue-700 dark:text-blue-300">
+            <span className="w-2 h-2 rounded-full bg-blue-400" /> {stats.inProgress} In Progress
+          </span>
+          <span className="inline-flex items-center gap-2 bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-800 rounded-full px-4 py-1.5 text-sm font-medium text-green-700 dark:text-green-300">
+            <span className="w-2 h-2 rounded-full bg-green-400" /> {stats.completed} Completed
+          </span>
+          {stats.overdue > 0 && (
+            <span className="inline-flex items-center gap-2 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-full px-4 py-1.5 text-sm font-medium text-red-700 dark:text-red-300">
+              <span className="w-2 h-2 rounded-full bg-red-400" /> {stats.overdue} Overdue
             </span>
-            <span className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium">
-              <span className="w-2 h-2 rounded-full bg-blue-400" /> {stats.inProgress} In Progress
-            </span>
-            <span className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium">
-              <span className="w-2 h-2 rounded-full bg-green-400" /> {stats.completed} Completed
-            </span>
-            {stats.overdue > 0 && (
-              <span className="inline-flex items-center gap-2 bg-red-500/30 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm font-medium">
-                <span className="w-2 h-2 rounded-full bg-red-400" /> {stats.overdue} Overdue
-              </span>
-            )}
-          </div>
+          )}
         </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-10 space-y-14">
         {/* ================================================================ */}
         {/* RIGHTS OVERVIEW GRID                                            */}
         {/* ================================================================ */}
@@ -1125,6 +1127,6 @@ export default function DSRDemoPage() {
           </div>
         </section>
       </div>
-    </div>
+    </DemoLayout>
   );
 }

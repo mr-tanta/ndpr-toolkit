@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { DemoLayout } from '@/components/site/DemoLayout';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -463,46 +464,42 @@ export default function ConsentDemoPage() {
 
   if (!isClient) {
     return (
-      <div className="container mx-auto py-10">
-        <div className="h-8 w-48 bg-muted rounded animate-pulse mb-4" />
-        <div className="h-4 w-96 bg-muted rounded animate-pulse" />
-      </div>
+      <DemoLayout
+        title="Consent Management"
+        description="Collect, store, and manage user consent for personal data processing — fully aligned with NDPA requirements for lawful consent."
+        ndpaSection="Sections 25-26"
+      >
+        <div className="space-y-4">
+          <div className="h-8 w-48 bg-muted rounded animate-pulse" />
+          <div className="h-4 w-96 bg-muted rounded animate-pulse" />
+          <div className="h-64 bg-muted rounded animate-pulse" />
+        </div>
+      </DemoLayout>
     );
   }
 
   return (
-    <div className="container mx-auto py-10 px-4 max-w-7xl">
-      {/* ================================================================ */}
-      {/* Hero Section                                                      */}
-      {/* ================================================================ */}
-      <section className="mb-12">
-        <Link
-          href="/ndpr-demos"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-          Back to NDPR Demos
-        </Link>
+    <DemoLayout
+      title="Consent Management"
+      description="Collect, store, and manage user consent for personal data processing. Complete consent lifecycle — from banner display to preference management — fully aligned with the Nigeria Data Protection Act."
+      ndpaSection="Sections 25-26"
+      code={`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">Consent Management</h1>
-            <Badge variant="info">NDPA Sections 25-26</Badge>
-          </div>
-          <p className="text-muted-foreground max-w-2xl text-base leading-relaxed">
-            Collect, store, and manage user consent for personal data processing. This module provides
-            a complete consent lifecycle &mdash; from banner display to preference management &mdash;
-            fully aligned with the Nigeria Data Protection Act requirements for lawful consent.
-          </p>
-        </div>
-      </section>
-
+<ConsentBanner
+  position="bottom"
+  options={[
+    { id: 'necessary', label: 'Necessary', required: true },
+    { id: 'analytics', label: 'Analytics', required: false },
+    { id: 'marketing', label: 'Marketing', required: false },
+  ]}
+  onSave={(settings) => console.log('Consent saved:', settings)}
+/>`}
+    >
+      <div>
       {/* ================================================================ */}
       {/* Live Demo                                                         */}
       {/* ================================================================ */}
-      <section className="mb-16">
+      <section className="mb-12">
         <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           Live Demo
@@ -924,6 +921,7 @@ const { valid, errors } = validateConsent(consent);`}</code></pre>
           </p>
         </div>
       </section>
-    </div>
+      </div>
+    </DemoLayout>
   );
 }
