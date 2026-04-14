@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { DemoLayout } from '@/components/site/DemoLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -373,60 +374,55 @@ export default function CrossBorderDemoPage() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading...</div>
-      </div>
+      <DemoLayout
+        title="Cross-Border Transfer Assessment"
+        description="Assess, document, and manage international transfers of personal data outside Nigeria. Ensure compliance with NDPA cross-border transfer requirements."
+        ndpaSection="Sections 41-45"
+        code={`import { CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/cross-border';`}
+      >
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-pulse text-gray-400">Loading...</div>
+        </div>
+      </DemoLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950/20">
-      <div className="container mx-auto py-10 px-4 max-w-7xl">
-        {/* Navigation */}
-        <div className="mb-8">
-          <Link
-            href="/ndpr-demos"
-            className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-            </svg>
-            Back to NDPA Demos
-          </Link>
-        </div>
-
-        {/* Hero Section */}
-        <div className="relative mb-12 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 p-5 sm:p-8 md:p-12 text-white shadow-xl">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAyNHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full text-sm font-medium mb-4">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
-              </svg>
-              NDPA Part VI (Sections 41-45)
-            </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Cross-Border Transfer Assessment</h1>
-            <p className="text-blue-100 text-lg max-w-2xl">
-              Assess, document, and manage international transfers of personal data outside Nigeria. Ensure compliance with NDPA cross-border transfer requirements.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
-                <span className="text-2xl font-bold">{transfers.length}</span>
-                <span className="text-blue-200">Transfers</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
-                <span className="text-2xl font-bold">{new Set(transfers.map((t) => t.destinationCountry)).size}</span>
-                <span className="text-blue-200">Countries</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
-                <span className="text-2xl font-bold text-green-300">{transfers.filter((t) => t.status === 'approved').length}</span>
-                <span className="text-blue-200">Approved</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm">
-                <span className="text-2xl font-bold text-amber-300">{transfers.filter((t) => t.status === 'pending' || t.status === 'under_review').length}</span>
-                <span className="text-blue-200">Pending</span>
-              </div>
-            </div>
+    <DemoLayout
+      title="Cross-Border Transfer Assessment"
+      description="Assess, document, and manage international transfers of personal data outside Nigeria. Ensure compliance with NDPA cross-border transfer requirements."
+      ndpaSection="Sections 41-45"
+      code={`import { CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/cross-border';`}
+    >
+      <div
+        style={{
+          '--ndpr-primary': '99 102 241',
+          '--ndpr-primary-hover': '129 140 248',
+          '--ndpr-primary-foreground': '255 255 255',
+          '--ndpr-background': '17 24 39',
+          '--ndpr-foreground': '241 245 249',
+          '--ndpr-muted': '26 34 53',
+          '--ndpr-muted-foreground': '148 163 184',
+          '--ndpr-border': '30 41 59',
+        } as React.CSSProperties}
+      >
+        {/* Stats Summary */}
+        <div className="flex flex-wrap gap-3 mb-8">
+          <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2 text-sm">
+            <span className="text-2xl font-bold">{transfers.length}</span>
+            <span className="text-gray-500 dark:text-gray-400">Transfers</span>
+          </div>
+          <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2 text-sm">
+            <span className="text-2xl font-bold">{new Set(transfers.map((t) => t.destinationCountry)).size}</span>
+            <span className="text-gray-500 dark:text-gray-400">Countries</span>
+          </div>
+          <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2 text-sm">
+            <span className="text-2xl font-bold text-green-600 dark:text-green-400">{transfers.filter((t) => t.status === 'approved').length}</span>
+            <span className="text-gray-500 dark:text-gray-400">Approved</span>
+          </div>
+          <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2 text-sm">
+            <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">{transfers.filter((t) => t.status === 'pending' || t.status === 'under_review').length}</span>
+            <span className="text-gray-500 dark:text-gray-400">Pending</span>
           </div>
         </div>
 
@@ -1053,6 +1049,6 @@ export default function CrossBorderDemoPage() {
           </div>
         </div>
       </div>
-    </div>
+    </DemoLayout>
   );
 }

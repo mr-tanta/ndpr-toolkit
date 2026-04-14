@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useCallback } from "react";
-import Link from "next/link";
+import { DemoLayout } from "@/components/site/DemoLayout";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -373,46 +373,26 @@ export default function PolicyDemoPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* ----------------------------------------------------------------- */}
-      {/* Hero */}
-      {/* ----------------------------------------------------------------- */}
-      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Link
-            href="/ndpr-demos"
-            className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline mb-4"
-          >
-            <svg
-              className="w-4 h-4 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back to NDPR Demos
-          </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
-            Privacy Policy Generator
-          </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400 max-w-2xl">
-            Build NDPA-compliant privacy policies interactively. Toggle sections,
-            fill in your organization details, and preview the generated document
-            in real time.
-          </p>
-        </div>
-      </div>
-
-      {/* ----------------------------------------------------------------- */}
+    <DemoLayout
+      title="Privacy Policy Generator"
+      description="Build NDPA-compliant privacy policies interactively. Toggle sections, fill in your organization details, and preview the generated document in real time."
+      ndpaSection="Sections 27-28"
+      code={`import { PolicyGenerator } from '@tantainnovative/ndpr-toolkit/policy';`}
+    >
+      <div
+        style={{
+          '--ndpr-primary': '99 102 241',
+          '--ndpr-primary-hover': '129 140 248',
+          '--ndpr-primary-foreground': '255 255 255',
+          '--ndpr-background': '17 24 39',
+          '--ndpr-foreground': '241 245 249',
+          '--ndpr-muted': '26 34 53',
+          '--ndpr-muted-foreground': '148 163 184',
+          '--ndpr-border': '30 41 59',
+        } as React.CSSProperties}
+      >
       {/* Template Selector */}
-      {/* ----------------------------------------------------------------- */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="mb-6">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mr-2">
             Template:
@@ -433,11 +413,8 @@ export default function PolicyDemoPage() {
         </div>
       </div>
 
-      {/* ----------------------------------------------------------------- */}
       {/* 3-panel layout */}
-      {/* ----------------------------------------------------------------- */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* ============================================================= */}
           {/* Left panel: Section selector */}
           {/* ============================================================= */}
@@ -893,6 +870,6 @@ export default function PolicyDemoPage() {
           </div>
         </div>
       </div>
-    </div>
+    </DemoLayout>
   );
 }
