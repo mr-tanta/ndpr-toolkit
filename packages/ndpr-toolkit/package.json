@@ -72,7 +72,7 @@
       "require": "./dist/unstyled.js"
     },
     "./presets": {
-      "types": "./dist/presets-entry.d.ts",
+      "types": "./dist/presets.d.ts",
       "import": "./dist/presets.mjs",
       "require": "./dist/presets.js"
     },
@@ -94,7 +94,7 @@
       "cross-border": ["./dist/cross-border-entry.d.ts"],
       "ropa": ["./dist/ropa-entry.d.ts"],
       "adapters": ["./dist/adapters.d.ts"],
-      "presets": ["./dist/presets-entry.d.ts"]
+      "presets": ["./dist/presets.d.ts"]
     }
   },
   "files": [

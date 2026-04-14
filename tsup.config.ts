@@ -16,6 +16,7 @@ export default defineConfig({
     "cross-border": `${PKG}/cross-border-entry.ts`,
     ropa: `${PKG}/ropa-entry.ts`,
     adapters: `${PKG}/adapters-entry.ts`,
+    presets: `${PKG}/presets-entry.ts`,
     unstyled: "src/unstyled.ts",
   },
   format: ["cjs", "esm"],
