@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0] — 2026-04-14
+
+### Architecture
+
+v3 introduces a layered architecture that separates UI, state, and storage concerns. Every module now supports pluggable persistence, composable sub-components, and zero-config presets.
+
+### Added
+
+- **StorageAdapter pattern** — all 8 hooks accept an optional `adapter` prop for pluggable persistence
+  - Built-in adapters: `localStorageAdapter`, `sessionStorageAdapter`, `cookieAdapter`, `apiAdapter`, `memoryAdapter`, `composeAdapters`
+  - New `./adapters` entry point: `import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters'`
+  - `composeAdapters()` writes to multiple targets simultaneously (e.g. localStorage + API)
+  - `isLoading` state on all hooks for async adapter support
+
+- **Compound components** — all 8 modules decomposed into composable sub-components
+  - `Consent.Provider`, `Consent.Banner`, `Consent.AcceptButton`, `Consent.RejectButton`, `Consent.OptionList`, `Consent.SaveButton`, `Consent.Settings`, `Consent.Storage`
+  - `DSR.Provider`, `DSR.Form`, `DSR.Dashboard`, `DSR.Tracker`
+  - `DPIA.Provider`, `DPIA.Questionnaire`, `DPIA.Report`, `DPIA.StepIndicator`
+  - `Breach.Provider`, `Breach.ReportForm`, `Breach.RiskAssessment`, `Breach.NotificationManager`, `Breach.ReportGenerator`
+  - `Policy.Provider`, `Policy.Generator`, `Policy.Preview`, `Policy.Exporter`
+  - `LawfulBasis.Provider`, `LawfulBasis.Tracker`
+  - `CrossBorder.Provider`, `CrossBorder.Manager`
+  - `ROPA.Provider`, `ROPA.Manager`
+
+- **Zero-config presets** — 8 components that work with zero required props
+  - `NDPRConsent`, `NDPRSubjectRights`, `NDPRBreachReport`, `NDPRPrivacyPolicy`, `NDPRDPIA`, `NDPRLawfulBasis`, `NDPRCrossBorder`, `NDPRROPA`
+  - New `./presets` entry point: `import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets'`
+  - Each preset includes NDPA-compliant defaults and accepts optional overrides
+
+- **Compliance score engine** — `getComplianceScore()` and `useComplianceScore()`
+  - Scores 0–100 across all 8 modules with NDPA section references
+  - Weighted scoring (consent 20%, DSR 15%, breach 15%, policy 12%, DPIA 12%, lawful basis 10%, ROPA 8%, cross-border 8%)
+  - Prioritised recommendations with effort estimates
+  - Available from `/core` (no React) and `/hooks`
+
+- **@tantainnovative/ndpr-recipes** — backend integration package (separate)
+  - Prisma schema (5 NDPA compliance tables)
+  - Drizzle ORM schema
+  - Next.js App Router API routes (consent, DSR, breach, ROPA, compliance)
+  - Express routes and middleware
+  - Prisma and Drizzle ORM adapters implementing `StorageAdapter`
+  - Consent verification middleware
+  - Integration examples
+
+### Changed
+
+- All hooks now use `useCallback` and `useRef` for stable references
+- `storageOptions` prop on `useConsent` deprecated in favor of `adapter` prop
+- `storageKey`/`useLocalStorage` props on other hooks deprecated in favor of `adapter`
+
+### Migration from v2
+
+All v2 APIs continue to work unchanged. The deprecated `storageOptions`/`storageKey`/`useLocalStorage` props are mapped to built-in adapters internally. To adopt v3 features:
+
+1. **Adapters**: Replace `storageOptions` with `adapter` prop on any hook
+2. **Compound components**: Use `<Consent.Provider>` + sub-components for custom layouts
+3. **Presets**: Replace boilerplate with zero-config components like `<NDPRConsent />`
+4. **Compliance score**: Add `getComplianceScore()` calls to assess compliance posture
+
 ## [2.4.0] — 2026-04-07
 
 ### Added

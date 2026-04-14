@@ -1,30 +1,46 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PolicySection, PolicyTemplate, OrganizationInfo, PrivacyPolicy } from '../types/privacy';
 import { generatePolicyText } from '../utils/privacy';
+import type { StorageAdapter } from '../adapters/types';
+import { localStorageAdapter } from '../adapters/local-storage';
+
+function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAdapter<PrivacyPolicy> {
+  if (!useLocalStorage) {
+    return { load: () => null, save: () => {}, remove: () => {} };
+  }
+  return localStorageAdapter<PrivacyPolicy>(storageKey);
+}
 
 interface UsePrivacyPolicyOptions {
   /**
    * Available policy templates
    */
   templates: PolicyTemplate[];
-  
+
   /**
    * Initial policy data (if editing an existing policy)
    */
   initialPolicy?: PrivacyPolicy;
-  
+
+  /**
+   * Pluggable storage adapter. When provided, takes precedence over storageKey/useLocalStorage.
+   */
+  adapter?: StorageAdapter<PrivacyPolicy>;
+
   /**
    * Storage key for policy data
    * @default "ndpr_privacy_policy"
+   * @deprecated Use adapter instead
    */
   storageKey?: string;
-  
+
   /**
    * Whether to use local storage to persist policy data
    * @default true
+   * @deprecated Use adapter instead
    */
   useLocalStorage?: boolean;
-  
+
   /**
    * Callback function called when a policy is generated
    */
@@ -98,6 +114,11 @@ export interface UsePrivacyPolicyReturn {
     valid: boolean;
     errors: string[];
   };
+
+  /**
+   * Whether the adapter is still loading data (relevant for async adapters)
+   */
+  isLoading: boolean;
 }
 
 /**
@@ -106,10 +127,15 @@ export interface UsePrivacyPolicyReturn {
 export function usePrivacyPolicy({
   templates,
   initialPolicy,
-  storageKey = "ndpr_privacy_policy",
+  adapter,
+  storageKey = 'ndpr_privacy_policy',
   useLocalStorage = true,
-  onGenerate
+  onGenerate,
 }: UsePrivacyPolicyOptions): UsePrivacyPolicyReturn {
+  const resolvedAdapter = adapter ?? resolveAdapter(storageKey, useLocalStorage);
+  const adapterRef = useRef(resolvedAdapter);
+  adapterRef.current = resolvedAdapter;
+
   const [policy, setPolicy] = useState<PrivacyPolicy | null>(initialPolicy || null);
   const [selectedTemplate, setSelectedTemplate] = useState<PolicyTemplate | null>(null);
   const [organizationInfo, setOrganizationInfo] = useState<OrganizationInfo>({
@@ -120,52 +146,62 @@ export function usePrivacyPolicy({
     privacyPhone: '',
     dpoName: '',
     dpoEmail: '',
-    industry: ''
+    industry: '',
   });
-  
-  // Load policy data from storage on mount
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Load policy data from storage on mount (skip if initialPolicy provided)
   useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined' && !initialPolicy) {
-      try {
-        const savedData = localStorage.getItem(storageKey);
-        if (savedData) {
-          const { policy, template, organizationInfo } = JSON.parse(savedData);
-          
-          if (policy) {
-            setPolicy(policy);
+    if (initialPolicy) {
+      setIsLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    try {
+      const result = adapterRef.current.load();
+
+      const applyLoaded = (loaded: PrivacyPolicy | null) => {
+        if (loaded) {
+          setPolicy(loaded);
+          // Restore template selection from loaded policy
+          if (loaded.templateId) {
+            const foundTemplate = templates.find(t => t.id === loaded.templateId);
+            if (foundTemplate) setSelectedTemplate(foundTemplate);
           }
-          
-          if (template) {
-            const foundTemplate = templates.find(t => t.id === template.id);
-            if (foundTemplate) {
-              setSelectedTemplate(foundTemplate);
-            }
-          }
-          
-          if (organizationInfo) {
-            setOrganizationInfo(organizationInfo);
+          if (loaded.organizationInfo) {
+            setOrganizationInfo(loaded.organizationInfo);
           }
         }
-      } catch (error) {
-        console.error('Error loading privacy policy data:', error);
+        setIsLoading(false);
+      };
+
+      if (result instanceof Promise) {
+        result.then(
+          (loaded) => {
+            if (!cancelled) applyLoaded(loaded);
+          },
+          () => {
+            if (!cancelled) setIsLoading(false);
+          }
+        );
+      } else {
+        applyLoaded(result);
       }
+    } catch {
+      if (!cancelled) setIsLoading(false);
     }
-  }, [storageKey, useLocalStorage, initialPolicy, templates]);
-  
-  // Save policy data to storage when it changes
-  useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify({
-          policy,
-          template: selectedTemplate,
-          organizationInfo
-        }));
-      } catch (error) {
-        console.error('Error saving privacy policy data:', error);
-      }
-    }
-  }, [policy, selectedTemplate, organizationInfo, storageKey, useLocalStorage]);
+
+    return () => { cancelled = true; };
+  }, [initialPolicy, templates]);
+
+  // Persist policy to adapter (fire-and-forget)
+  const persistPolicy = (nextPolicy: PrivacyPolicy) => {
+    Promise.resolve(adapterRef.current.save(nextPolicy)).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to save policy:', err);
+    });
+  };
   
   // Select a template
   const selectTemplate = (templateId: string): boolean => {
@@ -293,9 +329,9 @@ export function usePrivacyPolicy({
     if (!selectedTemplate) {
       throw new Error('No template selected');
     }
-    
+
     const now = Date.now();
-    
+
     const newPolicy: PrivacyPolicy = {
       id: policy?.id || generateId(),
       title: `Privacy Policy for ${organizationInfo.name}`,
@@ -303,20 +339,21 @@ export function usePrivacyPolicy({
       organizationInfo,
       sections: selectedTemplate.sections.map(section => ({
         ...section,
-        customContent: policy?.sections.find(s => s.id === section.id)?.customContent
+        customContent: policy?.sections.find(s => s.id === section.id)?.customContent,
       })),
       variableValues: policy?.variableValues || {},
       effectiveDate: now,
       lastUpdated: now,
-      version: '1.0'
+      version: '1.0',
     };
-    
+
     setPolicy(newPolicy);
-    
+    persistPolicy(newPolicy);
+
     if (onGenerate) {
       onGenerate(newPolicy);
     }
-    
+
     return newPolicy;
   };
   
@@ -356,12 +393,11 @@ export function usePrivacyPolicy({
       privacyPhone: '',
       dpoName: '',
       dpoEmail: '',
-      industry: ''
+      industry: '',
     });
-    
-    if (useLocalStorage && typeof window !== 'undefined') {
-      localStorage.removeItem(storageKey);
-    }
+    Promise.resolve(adapterRef.current.remove()).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to remove policy:', err);
+    });
   };
   
   // Check if the policy is valid
@@ -423,6 +459,7 @@ export function usePrivacyPolicy({
     generatePolicy,
     getPolicyText,
     resetPolicy,
-    isValid
+    isValid,
+    isLoading,
   };
 }

@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ConsentRecord {
+  id            String   @id @default(cuid())
+  subjectId     String
+  consents      Json
+  version       String
+  method        String
+  lawfulBasis   String?
+  ipAddress     String?
+  userAgent     String?
+  createdAt     DateTime @default(now())
+  revokedAt     DateTime?
+
+  @@index([subjectId])
+  @@map("ndpr_consent_records")
+}
+
+model DSRRequest {
+  id                String   @id @default(cuid())
+  type              String
+  status            String   @default("pending")
+  subjectName       String
+  subjectEmail      String
+  subjectPhone      String?
+  identifierType    String
+  identifierValue   String
+  description       String?
+  internalNotes     String?
+  assignedTo        String?
+  submittedAt       DateTime @default(now())
+  acknowledgedAt    DateTime?
+  completedAt       DateTime?
+  dueAt             DateTime
+
+  @@index([status])
+  @@index([subjectEmail])
+  @@map("ndpr_dsr_requests")
+}
+
+model BreachReport {
+  id                    String   @id @default(cuid())
+  title                 String
+  description           String
+  category              String
+  severity              String
+  status                String   @default("ongoing")
+  discoveredAt          DateTime
+  occurredAt            DateTime?
+  reportedAt            DateTime @default(now())
+  ndpcNotifiedAt        DateTime?
+  reporterName          String
+  reporterEmail         String
+  reporterDepartment    String?
+  affectedSystems       Json
+  dataTypes             Json
+  estimatedAffected     Int?
+  initialActions        String?
+  ndpcNotificationSent  Boolean  @default(false)
+
+  @@index([status])
+  @@index([severity])
+  @@map("ndpr_breach_reports")
+}
+
+model ProcessingRecord {
+  id                  String   @id @default(cuid())
+  purpose             String
+  lawfulBasis         String
+  dataCategories      Json
+  dataSubjects        Json
+  recipients          Json
+  retentionPeriod     String
+  securityMeasures    Json
+  transferCountries   Json?
+  transferMechanism   String?
+  dpiaConducted       Boolean @default(false)
+  status              String  @default("active")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("ndpr_processing_records")
+}
+
+model ComplianceAuditLog {
+  id          String   @id @default(cuid())
+  module      String
+  action      String
+  entityId    String
+  entityType  String
+  changes     Json?
+  performedBy String?
+  createdAt   DateTime @default(now())
+
+  @@index([module, entityId])
+  @@map("ndpr_audit_log")
+}

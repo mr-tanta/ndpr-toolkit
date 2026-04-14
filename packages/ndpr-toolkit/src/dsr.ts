@@ -11,3 +11,10 @@ export type { DSRRequest, RequestType, DSRStatus, DSRType, RequestStatus } from 
 export type { DSRRequestFormClassNames, DSRFormSubmission } from './components/dsr/DSRRequestForm';
 export type { DSRDashboardClassNames } from './components/dsr/DSRDashboard';
 export type { DSRTrackerClassNames } from './components/dsr/DSRTracker';
+
+// Compound components (v3)
+export { DSR } from './components/dsr/compound';
+export { DSRProvider } from './components/dsr/Provider';
+export type { DSRProviderProps } from './components/dsr/Provider';
+export { useDSRCompound } from './components/dsr/context';
+export type { StorageAdapter } from './adapters/types';

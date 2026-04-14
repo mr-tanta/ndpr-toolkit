@@ -13,3 +13,8 @@ export type { RegulatoryReportGeneratorClassNames } from './components/breach/Re
 export { useBreach } from './hooks/useBreach';
 export { calculateBreachSeverity } from './utils/breach';
 export type { BreachReport, BreachCategory, RiskAssessment, NotificationRequirement, RegulatoryNotification } from './types/breach';
+export { Breach } from './components/breach/compound';
+export { BreachProvider } from './components/breach/Provider';
+export type { BreachProviderProps } from './components/breach/Provider';
+export { useBreachCompound } from './components/breach/context';
+export type { StorageAdapter } from './adapters/types';

@@ -14,3 +14,16 @@ export { validateConsent, validateConsentOptions } from './utils/consent';
 export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
 export type { ConsentAuditEntry } from './utils/consent-audit';
 export type { ConsentOption, ConsentSettings, ConsentStorageOptions, LawfulBasisType } from './types/consent';
+
+// Compound components (v3)
+export { Consent } from './components/consent/compound';
+export { ConsentProvider } from './components/consent/Provider';
+export type { ConsentProviderProps } from './components/consent/Provider';
+export { OptionList as ConsentOptionList } from './components/consent/OptionList';
+export { AcceptButton as ConsentAcceptButton } from './components/consent/AcceptButton';
+export { RejectButton as ConsentRejectButton } from './components/consent/RejectButton';
+export { SaveButton as ConsentSaveButton } from './components/consent/SaveButton';
+export { useConsentCompound } from './components/consent/context';
+
+// Re-export adapter types for convenience
+export type { StorageAdapter } from './adapters/types';

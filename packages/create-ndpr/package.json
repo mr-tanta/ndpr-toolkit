@@ -1,0 +1,28 @@
+{
+  "name": "@tantainnovative/create-ndpr",
+  "version": "0.1.0",
+  "description": "CLI scaffolder for NDPA compliance with @tantainnovative/ndpr-toolkit",
+  "license": "MIT",
+  "author": {
+    "name": "Abraham Esandayinze Tanta",
+    "url": "https://linkedin.com/in/mr-tanta"
+  },
+  "bin": {
+    "create-ndpr": "./bin/index.mjs"
+  },
+  "files": [
+    "bin/",
+    "templates/"
+  ],
+  "keywords": [
+    "ndpa",
+    "ndpr",
+    "cli",
+    "scaffold",
+    "nigeria",
+    "data-protection"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

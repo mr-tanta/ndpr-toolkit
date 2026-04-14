@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   CrossBorderTransfer,
   CrossBorderSummary,
@@ -9,6 +9,15 @@ import {
   validateTransfer as validateTransferUtil,
   TransferValidationResult,
 } from '../utils/cross-border';
+import type { StorageAdapter } from '../adapters/types';
+import { localStorageAdapter } from '../adapters/local-storage';
+
+function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAdapter<CrossBorderTransfer[]> {
+  if (!useLocalStorage) {
+    return { load: () => null, save: () => {}, remove: () => {} };
+  }
+  return localStorageAdapter<CrossBorderTransfer[]>(storageKey);
+}
 
 interface UseCrossBorderTransferOptions {
   /**
@@ -17,14 +26,21 @@ interface UseCrossBorderTransferOptions {
   initialTransfers?: CrossBorderTransfer[];
 
   /**
+   * Pluggable storage adapter. When provided, takes precedence over storageKey/useLocalStorage.
+   */
+  adapter?: StorageAdapter<CrossBorderTransfer[]>;
+
+  /**
    * Storage key for transfer data
    * @default "ndpr_cross_border_transfers"
+   * @deprecated Use adapter instead
    */
   storageKey?: string;
 
   /**
    * Whether to use local storage to persist transfers
    * @default true
+   * @deprecated Use adapter instead
    */
   useLocalStorage?: boolean;
 
@@ -44,7 +60,7 @@ interface UseCrossBorderTransferOptions {
   onRemove?: (id: string) => void;
 }
 
-interface UseCrossBorderTransferReturn {
+export interface UseCrossBorderTransferReturn {
   /**
    * All cross-border transfers
    */
@@ -84,6 +100,11 @@ interface UseCrossBorderTransferReturn {
    * Validate a cross-border transfer
    */
   validateTransfer: (transfer: CrossBorderTransfer) => TransferValidationResult;
+
+  /**
+   * Whether the adapter is still loading data (relevant for async adapters)
+   */
+  isLoading: boolean;
 }
 
 /**
@@ -91,38 +112,55 @@ interface UseCrossBorderTransferReturn {
  */
 export function useCrossBorderTransfer({
   initialTransfers = [],
+  adapter,
   storageKey = 'ndpr_cross_border_transfers',
   useLocalStorage = true,
   onAdd,
   onUpdate,
   onRemove,
 }: UseCrossBorderTransferOptions = {}): UseCrossBorderTransferReturn {
+  const resolvedAdapter = adapter ?? resolveAdapter(storageKey, useLocalStorage);
+  const adapterRef = useRef(resolvedAdapter);
+  adapterRef.current = resolvedAdapter;
+
   const [transfers, setTransfers] = useState<CrossBorderTransfer[]>(initialTransfers);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Load transfers from storage on mount
   useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        const savedData = localStorage.getItem(storageKey);
-        if (savedData) {
-          setTransfers(JSON.parse(savedData));
-        }
-      } catch (error) {
-        console.error('Error loading cross-border transfers:', error);
-      }
-    }
-  }, [storageKey, useLocalStorage]);
+    let cancelled = false;
 
-  // Save transfers to storage when they change
-  useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(transfers));
-      } catch (error) {
-        console.error('Error saving cross-border transfers:', error);
+    try {
+      const result = adapterRef.current.load();
+
+      if (result instanceof Promise) {
+        result.then(
+          (loaded) => {
+            if (cancelled) return;
+            if (loaded) setTransfers(loaded);
+            setIsLoading(false);
+          },
+          () => {
+            if (!cancelled) setIsLoading(false);
+          }
+        );
+      } else {
+        if (result) setTransfers(result);
+        setIsLoading(false);
       }
+    } catch {
+      if (!cancelled) setIsLoading(false);
     }
-  }, [transfers, storageKey, useLocalStorage]);
+
+    return () => { cancelled = true; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Persist transfers to adapter (fire-and-forget)
+  const persistTransfers = useCallback((updated: CrossBorderTransfer[]) => {
+    Promise.resolve(adapterRef.current.save(updated)).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to save cross-border transfers:', err);
+    });
+  }, []);
 
   // Generate a unique ID
   const generateId = (): string => {
@@ -142,7 +180,11 @@ export function useCrossBorderTransfer({
         updatedAt: now,
       };
 
-      setTransfers((prev) => [...prev, newTransfer]);
+      setTransfers((prev) => {
+        const updated = [...prev, newTransfer];
+        persistTransfers(updated);
+        return updated;
+      });
 
       if (onAdd) {
         onAdd(newTransfer);
@@ -150,7 +192,7 @@ export function useCrossBorderTransfer({
 
       return newTransfer;
     },
-    [onAdd]
+    [onAdd, persistTransfers]
   );
 
   // Update an existing transfer
@@ -172,6 +214,7 @@ export function useCrossBorderTransfer({
 
         const newTransfers = [...prev];
         newTransfers[index] = updatedTransfer as CrossBorderTransfer;
+        persistTransfers(newTransfers);
         return newTransfers;
       });
 
@@ -181,7 +224,7 @@ export function useCrossBorderTransfer({
 
       return updatedTransfer;
     },
-    [onUpdate]
+    [onUpdate, persistTransfers]
   );
 
   // Remove a transfer
@@ -195,7 +238,9 @@ export function useCrossBorderTransfer({
           return prev;
         }
         found = true;
-        return prev.filter((t) => t.id !== id);
+        const updated = prev.filter((t) => t.id !== id);
+        persistTransfers(updated);
+        return updated;
       });
 
       if (found && onRemove) {
@@ -204,7 +249,7 @@ export function useCrossBorderTransfer({
 
       return found;
     },
-    [onRemove]
+    [onRemove, persistTransfers]
   );
 
   // Get a transfer by ID
@@ -297,5 +342,6 @@ export function useCrossBorderTransfer({
     getTransfer,
     getSummary,
     validateTransfer,
+    isLoading,
   };
 }

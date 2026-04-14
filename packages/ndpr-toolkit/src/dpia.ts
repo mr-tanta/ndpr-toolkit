@@ -11,3 +11,10 @@ export type { StepIndicatorClassNames } from './components/dpia/StepIndicator';
 export { useDPIA } from './hooks/useDPIA';
 export { assessDPIARisk } from './utils/dpia';
 export type { DPIAQuestion, DPIASection, DPIAResult, DPIARisk } from './types/dpia';
+
+// Compound components (v3)
+export { DPIA } from './components/dpia/compound';
+export { DPIAProvider } from './components/dpia/Provider';
+export type { DPIAProviderProps } from './components/dpia/Provider';
+export { useDPIACompound } from './components/dpia/context';
+export type { StorageAdapter } from './adapters/types';

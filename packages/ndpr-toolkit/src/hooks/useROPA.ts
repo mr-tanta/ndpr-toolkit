@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type {
   ProcessingRecord,
   RecordOfProcessingActivities,
@@ -10,12 +10,20 @@ import {
   identifyComplianceGaps,
   type ROPAComplianceGap,
 } from '../utils/ropa';
+import type { StorageAdapter } from '../adapters/types';
 
 export interface UseROPAOptions {
   /**
    * Initial ROPA state
    */
   initialData: RecordOfProcessingActivities;
+
+  /**
+   * Pluggable storage adapter. When provided, adapter data is loaded on mount
+   * and the ROPA is persisted after every mutation. Falls back to initialData
+   * when no adapter data is found.
+   */
+  adapter?: StorageAdapter<RecordOfProcessingActivities>;
 
   /**
    * Callback when a record is added
@@ -73,6 +81,11 @@ export interface UseROPAReturn {
    * Identify compliance gaps across all records
    */
   getComplianceGaps: () => ROPAComplianceGap[];
+
+  /**
+   * Whether the adapter is still loading data (relevant for async adapters)
+   */
+  isLoading: boolean;
 }
 
 /**
@@ -84,54 +97,110 @@ export interface UseROPAReturn {
  */
 export function useROPA({
   initialData,
+  adapter,
   onRecordAdd,
   onRecordUpdate,
   onRecordArchive,
 }: UseROPAOptions): UseROPAReturn {
+  const adapterRef = useRef(adapter);
+  adapterRef.current = adapter;
+
   const [ropa, setROPA] = useState<RecordOfProcessingActivities>(initialData);
+  const [isLoading, setIsLoading] = useState<boolean>(adapter !== undefined);
+
+  // When adapter is provided, load initial state on mount (falling back to initialData)
+  useEffect(() => {
+    if (!adapterRef.current) return;
+
+    let cancelled = false;
+
+    try {
+      const result = adapterRef.current.load();
+
+      if (result instanceof Promise) {
+        result.then(
+          (loaded) => {
+            if (cancelled) return;
+            if (loaded) setROPA(loaded);
+            setIsLoading(false);
+          },
+          () => {
+            if (!cancelled) setIsLoading(false);
+          }
+        );
+      } else {
+        if (result) setROPA(result);
+        setIsLoading(false);
+      }
+    } catch {
+      if (!cancelled) setIsLoading(false);
+    }
+
+    return () => { cancelled = true; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Persist ROPA to adapter (fire-and-forget)
+  const persistROPA = useCallback((updated: RecordOfProcessingActivities) => {
+    if (!adapterRef.current) return;
+    Promise.resolve(adapterRef.current.save(updated)).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to save ROPA:', err);
+    });
+  }, []);
 
   const addRecord = useCallback(
     (record: ProcessingRecord) => {
-      setROPA((prev) => ({
-        ...prev,
-        records: [...prev.records, record],
-        lastUpdated: Date.now(),
-      }));
+      setROPA((prev) => {
+        const updated = {
+          ...prev,
+          records: [...prev.records, record],
+          lastUpdated: Date.now(),
+        };
+        persistROPA(updated);
+        return updated;
+      });
       onRecordAdd?.(record);
     },
-    [onRecordAdd]
+    [onRecordAdd, persistROPA]
   );
 
   const updateRecord = useCallback(
     (id: string, updates: Partial<ProcessingRecord>) => {
-      setROPA((prev) => ({
-        ...prev,
-        records: prev.records.map((record) =>
-          record.id === id
-            ? { ...record, ...updates, updatedAt: Date.now() }
-            : record
-        ),
-        lastUpdated: Date.now(),
-      }));
+      setROPA((prev) => {
+        const updated = {
+          ...prev,
+          records: prev.records.map((record) =>
+            record.id === id
+              ? { ...record, ...updates, updatedAt: Date.now() }
+              : record
+          ),
+          lastUpdated: Date.now(),
+        };
+        persistROPA(updated);
+        return updated;
+      });
       onRecordUpdate?.(id, updates);
     },
-    [onRecordUpdate]
+    [onRecordUpdate, persistROPA]
   );
 
   const archiveRecord = useCallback(
     (id: string) => {
-      setROPA((prev) => ({
-        ...prev,
-        records: prev.records.map((record) =>
-          record.id === id
-            ? { ...record, status: 'archived' as const, updatedAt: Date.now() }
-            : record
-        ),
-        lastUpdated: Date.now(),
-      }));
+      setROPA((prev) => {
+        const updated = {
+          ...prev,
+          records: prev.records.map((record) =>
+            record.id === id
+              ? { ...record, status: 'archived' as const, updatedAt: Date.now() }
+              : record
+          ),
+          lastUpdated: Date.now(),
+        };
+        persistROPA(updated);
+        return updated;
+      });
       onRecordArchive?.(id);
     },
-    [onRecordArchive]
+    [onRecordArchive, persistROPA]
   );
 
   const getRecord = useCallback(
@@ -162,5 +231,6 @@ export function useROPA({
     getSummary,
     exportCSV,
     getComplianceGaps,
+    isLoading,
   };
 }
