@@ -1,4 +1,7 @@
 import React, { createContext, useContext, useMemo } from 'react';
+import type { NDPRLocale } from '../types/locale';
+import { mergeLocale } from '../utils/locale';
+import { defaultLocale } from '../locales/en';
 
 /**
  * Configuration for the NDPR toolkit provider.
@@ -28,6 +31,12 @@ export interface NDPRConfig {
     /** Foreground colour used on primary backgrounds */
     primaryForeground?: string;
   };
+
+  /**
+   * Locale strings for all toolkit components.
+   * Pass partial overrides — missing keys fall back to English defaults.
+   */
+  locale?: NDPRLocale;
 }
 
 const NDPRContext = createContext<NDPRConfig>({});
@@ -67,4 +76,14 @@ export const NDPRProvider: React.FC<NDPRConfig & { children: React.ReactNode }> 
  */
 export function useNDPRConfig(): NDPRConfig {
   return useContext(NDPRContext);
+}
+
+/**
+ * Returns the resolved locale for the nearest `NDPRProvider`.
+ * Merges any partial `locale` prop with the default English strings,
+ * so all keys are always present and non-nullable.
+ */
+export function useNDPRLocale(): typeof defaultLocale {
+  const { locale } = useContext(NDPRContext);
+  return useMemo(() => mergeLocale(locale), [locale]);
 }

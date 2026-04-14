@@ -19,8 +19,13 @@ export type { TransferValidationResult, TransferRiskResult } from './utils/cross
 export type { ROPAComplianceGap, ROPAValidationResult } from './utils/ropa';
 
 // NDPRProvider
-export { NDPRProvider, useNDPRConfig } from './components/NDPRProvider';
+export { NDPRProvider, useNDPRConfig, useNDPRLocale } from './components/NDPRProvider';
 export type { NDPRConfig } from './components/NDPRProvider';
+
+// i18n locale support
+export type { NDPRLocale } from './types/locale';
+export { defaultLocale } from './locales/en';
+export { mergeLocale } from './utils/locale';
 
 // All utility functions
 export { validateConsent, validateConsentOptions } from './utils/consent';
