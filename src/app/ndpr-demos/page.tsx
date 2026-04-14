@@ -1,252 +1,417 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
+import {
+  Container,
+  SiteButton,
+  SiteBadge,
+  Section,
+  GradientText,
+  FeatureCard,
+  Grid,
+} from '@/components/site/ui';
+import { siteConfig } from '@/lib/site-config';
+
+/* ── Demo data ─────────────────────────────────────────────── */
 
 const demos = [
   {
     title: 'Consent Management',
-    section: 'NDPA S.25-26',
-    description: 'Consent banners, preference management, and audit-ready storage aligned with NDPA provisions.',
+    description:
+      'Interactive consent banners, preference modals, and audit-ready storage — aligned with NDPA S.25–26.',
     href: '/ndpr-demos/consent',
-    icon: '\u2714',
+    badge: 'NDPA S.25–26',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
   },
   {
     title: 'Data Subject Rights',
-    section: 'NDPA S.34-40',
-    description: 'DSR request forms, dashboards, and real-time tracking for access, rectification, and erasure requests.',
+    description:
+      'DSR request forms, real-time dashboards, and request tracking for access, rectification, and erasure.',
     href: '/ndpr-demos/dsr',
-    icon: '\uD83D\uDC64',
+    badge: 'NDPA S.34–40',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
   },
   {
     title: 'DPIA Tools',
-    section: 'NDPA S.28-30',
-    description: 'Data Protection Impact Assessments with risk scoring, templates, and regulatory guidance.',
+    description:
+      'Data Protection Impact Assessments with live risk scoring, guided templates, and regulatory guidance.',
     href: '/ndpr-demos/dpia',
-    icon: '\uD83D\uDCCB',
+    badge: 'NDPA S.28–30',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+      </svg>
+    ),
   },
   {
     title: 'Breach Management',
-    section: 'NDPA S.40-41',
-    description: 'Breach notification workflows, severity assessment, and NDPC reporting timelines.',
+    description:
+      'Breach notification workflows, severity assessment, and NDPC 72-hour reporting timeline tracking.',
     href: '/ndpr-demos/breach',
-    icon: '\uD83D\uDEA8',
+    badge: 'NDPA S.40–41',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    ),
   },
   {
     title: 'Privacy Policy',
-    section: 'NDPA S.24',
-    description: 'Generate, preview, and manage privacy policies with full NDPA-compliant clause coverage.',
+    description:
+      'Generate, preview, and manage NDPA-compliant privacy policies with full clause coverage.',
     href: '/ndpr-demos/policy',
-    icon: '\uD83D\uDCC4',
+    badge: 'NDPA S.24',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+        <polyline points="10 9 9 9 8 9" />
+      </svg>
+    ),
   },
   {
     title: 'Lawful Basis Tracker',
-    section: 'NDPA S.25',
-    description: 'Document and track the lawful basis for every processing activity with full audit trails.',
+    description:
+      'Document and track the lawful basis for every processing activity with full audit trails.',
     href: '/ndpr-demos/lawful-basis',
-    icon: '\u2696\uFE0F',
+    badge: 'NDPA S.25',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
   },
   {
     title: 'Cross-Border Transfers',
-    section: 'NDPA S.41-45',
-    description: 'Assess international data transfers with adequacy checks and safeguard recommendations.',
+    description:
+      'Assess international data transfers with adequacy checks and safeguard recommendations.',
     href: '/ndpr-demos/cross-border',
-    icon: '\uD83C\uDF10',
+    badge: 'NDPA S.41–45',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+      </svg>
+    ),
   },
   {
     title: 'ROPA',
-    section: 'NDPA S.29',
-    description: 'Maintain a Record of Processing Activities with categorization, filtering, and export.',
+    description:
+      'Maintain Records of Processing Activities with categorization, filtering, and export capabilities.',
     href: '/ndpr-demos/ropa',
-    icon: '\uD83D\uDCD2',
+    badge: 'NDPA S.29',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    ),
   },
 ];
 
-import { siteConfig } from '@/lib/site-config';
-
 const stats = [
-  { label: 'Modules', value: String(siteConfig.moduleCount) },
-  { label: 'NDPA 2023 Aligned', value: null },
-  { label: 'TypeScript Native', value: null },
-  { label: `${siteConfig.testCount}+ Tests`, value: null },
+  { value: String(siteConfig.moduleCount), label: 'Live demos' },
+  { value: `${siteConfig.testCount}+`, label: 'Tests passing' },
+  { value: 'Zero', label: 'Config required' },
+  { value: '2023', label: 'NDPA aligned' },
 ];
+
+/* ── Page ──────────────────────────────────────────────────── */
 
 export default function NDPRDemosPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/20" />
-        <div className="relative container mx-auto px-4 pt-16 pb-12 sm:pt-24 sm:pb-16">
-          <div className="max-w-3xl mx-auto text-center">
-            <Badge className="mb-4 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 border-0 px-3 py-1 text-sm">
-              NDPA Toolkit
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4">
-              Interactive Demos
-            </h1>
-            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 mb-2">
-              Explore NDPA 2023 compliance modules in action
-            </p>
-            <p className="text-base text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-              Each module below is a fully functional demonstration of the{' '}
-              <span className="font-medium text-slate-700 dark:text-slate-200">ndpr-toolkit</span>{' '}
-              components. Click any card to explore consent flows, data subject rights,
-              breach management, and more &mdash; all built for the Nigeria Data Protection Act.
-            </p>
-          </div>
-        </div>
-      </section>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
+      }}
+    >
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section
+        style={{
+          position: 'relative',
+          padding: 'var(--space-20) 0 var(--space-16)',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Background glow */}
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            top: '-10rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '60rem',
+            height: '30rem',
+            background:
+              'radial-gradient(ellipse at center, rgba(99, 102, 241, 0.14) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }}
+        />
 
-      {/* Quick Stats Bar */}
-      <section className="container mx-auto px-4 -mt-2 mb-12">
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-0 sm:divide-x sm:divide-slate-200 dark:sm:divide-slate-700 bg-white dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 py-4 px-6 shadow-sm">
-          {stats.map((stat, i) => (
+        <Container size="lg">
+          <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto' }}>
+            {/* Badge */}
             <div
-              key={i}
-              className="flex items-center gap-2 sm:px-6 first:sm:pl-0 last:sm:pr-0"
+              className="animate-fade-in-up"
+              style={{ marginBottom: 'var(--space-5)' }}
             >
-              {stat.value ? (
-                <>
-                  <span className="text-2xl font-bold text-slate-900 dark:text-white">
-                    {stat.value}
-                  </span>
-                  <span className="text-sm text-slate-500 dark:text-slate-400">
-                    {stat.label}
-                  </span>
-                </>
-              ) : (
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                  {stat.label}
-                </span>
-              )}
+              <SiteBadge variant="success" size="md" dot>
+                Interactive — zero setup
+              </SiteBadge>
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* Demo Cards Grid */}
-      <section className="container mx-auto px-4 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {demos.map((demo) => (
-            <Link
-              key={demo.href}
-              href={demo.href}
-              className="group no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl"
+            {/* Title */}
+            <h1
+              className="animate-fade-in-up stagger-1"
+              style={{
+                fontSize: 'clamp(2.5rem, 5vw, 3.75rem)',
+                fontWeight: 800,
+                lineHeight: 'var(--leading-tight)',
+                letterSpacing: '-0.03em',
+                margin: '0 0 var(--space-5)',
+                color: 'var(--text-primary)',
+              }}
             >
-              <Card
-                className="
-                  h-full border border-gray-200 dark:border-gray-700
-                  bg-white dark:bg-gray-800/50
-                  transition-all duration-200
-                  group-hover:scale-[1.02] group-hover:shadow-lg
-                  cursor-pointer
-                "
-              >
-                <CardHeader className="pb-0">
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div
-                      className="w-10 h-10 rounded-lg flex items-center justify-center text-lg bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-                    >
-                      {demo.icon}
-                    </div>
-                    <span
-                      className="text-[11px] font-medium rounded-full px-2 py-0.5 bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                    >
-                      {demo.section}
-                    </span>
-                  </div>
-                  <CardTitle className="text-base font-semibold text-slate-900 dark:text-white">
-                    {demo.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0 flex flex-col justify-between flex-1">
-                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
-                    {demo.description}
-                  </p>
-                  <span
-                    className="
-                      inline-flex items-center gap-1 text-sm font-medium
-                      text-blue-600 dark:text-blue-400
-                      group-hover:gap-2 transition-all duration-200
-                    "
-                  >
-                    Explore
-                    <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                      &rarr;
-                    </span>
-                  </span>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
+              <GradientText>Live Demos</GradientText>
+            </h1>
 
-      {/* Getting Started Section */}
-      <section className="container mx-auto px-4 pb-20">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              Get Started
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400">
-              Add NDPA compliance to your project in seconds.
+            {/* Subtitle */}
+            <p
+              className="animate-fade-in-up stagger-2"
+              style={{
+                fontSize: 'var(--text-xl)',
+                color: 'var(--text-secondary)',
+                lineHeight: 'var(--leading-relaxed)',
+                margin: '0 0 var(--space-8)',
+              }}
+            >
+              See every module in action — interactive, zero-config. Click any card to explore consent flows, data subject rights, breach management, and more.
             </p>
-          </div>
 
-          {/* Install Command */}
-          <div className="bg-slate-900 dark:bg-slate-800 rounded-xl p-5 mb-6 shadow-lg">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-3 h-3 rounded-full bg-red-400" />
-              <span className="w-3 h-3 rounded-full bg-yellow-400" />
-              <span className="w-3 h-3 rounded-full bg-green-400" />
-              <span className="ml-auto text-xs text-slate-500 font-mono">terminal</span>
-            </div>
-            <div className="font-mono text-sm">
-              <div className="flex items-center gap-2">
-                <span className="text-green-400 select-none">$</span>
-                <code className="text-slate-100">npm install @tantainnovative/ndpr-toolkit</code>
-              </div>
-            </div>
-          </div>
-
-          {/* Links */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/docs"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 no-underline"
+            {/* CTAs */}
+            <div
+              className="animate-fade-in-up stagger-3"
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 'var(--space-3)',
+                justifyContent: 'center',
+              }}
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <SiteButton href="/ndpr-demos/consent" size="lg">
+                Start with Consent
+              </SiteButton>
+              <SiteButton href="/docs" variant="secondary" size="lg">
+                Read the Docs
+              </SiteButton>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Stats bar ────────────────────────────────────── */}
+      <section style={{ paddingBottom: 'var(--space-12)' }}>
+        <Container size="lg">
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+              gap: 'var(--space-4)',
+              padding: 'var(--space-6) var(--space-8)',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-xl)',
+              boxShadow: 'var(--shadow-md)',
+            }}
+          >
+            {stats.map((stat) => (
+              <div
+                key={stat.label}
+                style={{ textAlign: 'center' }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                />
-              </svg>
-              Documentation
-            </Link>
-            <a
-              href="https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-700 dark:text-slate-300 text-sm font-medium rounded-lg transition-colors duration-200 no-underline"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M0 0v24h24V0H0zm6.672 19.334H3.334V8h3.338v11.334zm6.66 0H10V8h3.332v11.334zm6.67 0H16.67V8h3.332v8.002h-3.338v3.332z" />
-              </svg>
-              View on npm
-            </a>
+                <div
+                  style={{
+                    fontSize: 'var(--text-3xl)',
+                    fontWeight: 800,
+                    letterSpacing: '-0.03em',
+                    background: 'var(--gradient-text)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    lineHeight: 1,
+                    marginBottom: 'var(--space-1)',
+                  }}
+                >
+                  {stat.value}
+                </div>
+                <div
+                  style={{
+                    fontSize: 'var(--text-sm)',
+                    color: 'var(--text-muted)',
+                    fontWeight: 500,
+                  }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+        </Container>
+      </section>
+
+      {/* ── Demo Grid ────────────────────────────────────── */}
+      <Section
+        badge="All Modules"
+        title="8 compliance modules, live and interactive"
+        subtitle="Each demo is a fully functional component powered by ndpr-toolkit. No mocks, no stubs — real compliance logic running in your browser."
+        gradient
+      >
+        <Container>
+          <Grid cols={4} gap="md">
+            {demos.map((demo, i) => (
+              <FeatureCard
+                key={demo.href}
+                icon={demo.icon}
+                title={demo.title}
+                description={demo.description}
+                href={demo.href}
+                badge={demo.badge}
+                index={i}
+              />
+            ))}
+          </Grid>
+        </Container>
+      </Section>
+
+      {/* ── Install CTA ──────────────────────────────────── */}
+      <section
+        style={{
+          padding: 'var(--space-20) 0',
+        }}
+      >
+        <Container size="md">
+          <div
+            style={{
+              textAlign: 'center',
+              padding: 'var(--space-12) var(--space-8)',
+              background: 'var(--bg-surface)',
+              border: '1px solid var(--border-default)',
+              borderRadius: 'var(--radius-2xl)',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Glow */}
+            <div
+              aria-hidden
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background:
+                  'radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.08) 0%, transparent 60%)',
+                pointerEvents: 'none',
+              }}
+            />
+
+            <div style={{ marginBottom: 'var(--space-5)' }}>
+              <SiteBadge variant="default" size="md" dot>
+                Ready to use in production
+              </SiteBadge>
+            </div>
+
+            <h2
+              style={{
+                fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+                fontWeight: 700,
+                color: 'var(--text-primary)',
+                letterSpacing: '-0.025em',
+                margin: '0 0 var(--space-4)',
+              }}
+            >
+              Add NDPA compliance to your app{' '}
+              <GradientText>today</GradientText>
+            </h2>
+
+            <p
+              style={{
+                fontSize: 'var(--text-lg)',
+                color: 'var(--text-secondary)',
+                lineHeight: 'var(--leading-relaxed)',
+                margin: '0 0 var(--space-8)',
+                maxWidth: '480px',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+              }}
+            >
+              One package, {siteConfig.moduleCount} modules, zero configuration required. Covers all major NDPA 2023 obligations out of the box.
+            </p>
+
+            {/* Install command */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 'var(--space-3)',
+                padding: '0.75rem 1.5rem',
+                background: 'var(--bg-inset)',
+                border: '1px solid var(--border-default)',
+                borderRadius: 'var(--radius-lg)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: 'var(--text-sm)',
+                color: 'var(--text-secondary)',
+                marginBottom: 'var(--space-8)',
+              }}
+            >
+              <span style={{ color: 'var(--success)', userSelect: 'none' }}>$</span>
+              <span>pnpm add @tantainnovative/ndpr-toolkit</span>
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 'var(--space-3)',
+                justifyContent: 'center',
+              }}
+            >
+              <SiteButton href="/docs" size="lg">
+                Read the Docs
+              </SiteButton>
+              <SiteButton
+                href={siteConfig.npmUrl}
+                variant="secondary"
+                size="lg"
+                icon={
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M0 0v24h24V0H0zm6.672 19.334H3.334V8h3.338v11.334zm6.66 0H10V8h3.332v11.334zm6.67 0H16.67V8h3.332v8.002h-3.338v3.332z" />
+                  </svg>
+                }
+              >
+                View on npm
+              </SiteButton>
+            </div>
+          </div>
+        </Container>
       </section>
     </div>
   );

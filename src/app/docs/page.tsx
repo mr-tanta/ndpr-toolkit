@@ -1,821 +1,785 @@
 'use client';
 
-import Link from 'next/link';
-import { DocLayout } from '@/components/docs/DocLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+import React from 'react';
+import {
+  Container,
+  SiteButton,
+  SiteCard,
+  SiteBadge,
+  Section,
+  SiteCodeBlock,
+  GradientText,
+  FeatureCard,
+  Grid,
+} from '@/components/site/ui';
+import { SiteHeader } from '@/components/site/SiteHeader';
+import { SiteFooter } from '@/components/site/SiteFooter';
 import { siteConfig } from '@/lib/site-config';
+
+/* ── Data ─────────────────────────────────────────────────── */
+
+const v3Features = [
+  {
+    title: 'Storage Adapters',
+    description:
+      'Swap storage backends at runtime — localStorage, IndexedDB, REST API, or a custom adapter — without touching component code.',
+    href: '/docs/guides/adapters',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="12" cy="5" rx="9" ry="3" />
+        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Compound Components',
+    description:
+      'Compose granular sub-components to build exactly the UI you need, with full control over layout and structure.',
+    href: '/docs/guides/compound-components',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" />
+        <rect x="14" y="3" width="7" height="7" />
+        <rect x="3" y="14" width="7" height="7" />
+        <rect x="14" y="14" width="7" height="7" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Zero-Config Presets',
+    description:
+      'Drop in NDPRConsent, NDPRSubjectRights, and other presets for instant compliance with zero boilerplate.',
+    href: '/docs/guides/presets',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Compliance Score',
+    description:
+      'Real-time compliance scoring across all NDPA 2023 obligations, surfaced through the NDPRDashboard component.',
+    href: '/docs/guides/compliance-score',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Backend Recipes',
+    description:
+      'Pre-built patterns for Express, Next.js API routes, and REST endpoints — drop-in compliance for your backend.',
+    href: '/docs/guides/backend-integration',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" />
+        <path d="M8 21h8M12 17v4" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Styling & Customization',
+    description:
+      'Full className injection system — pass unstyled mode, merge Tailwind, or use CSS variables to match any brand.',
+    href: '/docs/guides/styling-customization',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="13.5" cy="6.5" r=".5" />
+        <circle cx="17.5" cy="10.5" r=".5" />
+        <circle cx="8.5" cy="7.5" r=".5" />
+        <circle cx="6.5" cy="12.5" r=".5" />
+        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+      </svg>
+    ),
+  },
+];
+
+const quickStartSteps = [
+  {
+    step: '01',
+    title: 'Install',
+    code: `pnpm add @tantainnovative/ndpr-toolkit`,
+    language: 'bash',
+    title_label: 'terminal',
+  },
+  {
+    step: '02',
+    title: 'Add Provider',
+    code: `import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
+
+export default function RootLayout({ children }) {
+  return (
+    <NDPRProvider config={{ organizationName: 'Acme Corp' }}>
+      {children}
+    </NDPRProvider>
+  );
+}`,
+    language: 'tsx',
+    title_label: 'app/layout.tsx',
+  },
+  {
+    step: '03',
+    title: 'Add Preset',
+    code: `import { NDPRConsent } from '@tantainnovative/ndpr-toolkit';
+
+export default function Page() {
+  return (
+    <>
+      <NDPRConsent />
+      {/* your page content */}
+    </>
+  );
+}`,
+    language: 'tsx',
+    title_label: 'app/page.tsx',
+  },
+];
+
+const componentGuides = [
+  {
+    title: 'Consent Management',
+    description: 'Banners, preference modals, and audit-ready storage for NDPA S.25–26.',
+    href: '/docs/components/consent-management',
+    badge: 'S.25–26',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Data Subject Rights',
+    description: 'DSR forms, dashboards, and request tracking for NDPA S.34–40.',
+    href: '/docs/components/data-subject-rights',
+    badge: 'S.34–40',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+  {
+    title: 'DPIA Questionnaire',
+    description: 'Risk scoring, templates, and regulatory guidance for NDPA S.28–30.',
+    href: '/docs/components/dpia-questionnaire',
+    badge: 'S.28–30',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Breach Notification',
+    description: 'Notification workflows, severity assessment, and NDPC reporting timelines.',
+    href: '/docs/components/breach-notification',
+    badge: 'S.40–41',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+        <line x1="12" y1="9" x2="12" y2="13" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Privacy Policy Generator',
+    description: 'Generate, preview, and manage privacy policies with full NDPA clause coverage.',
+    href: '/docs/components/privacy-policy-generator',
+    badge: 'S.24',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+        <polyline points="10 9 9 9 8 9" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Lawful Basis Tracker',
+    description: 'Document and track the lawful basis for every processing activity.',
+    href: '/docs/components/lawful-basis-tracker',
+    badge: 'S.25',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Cross-Border Transfers',
+    description: 'Adequacy checks and safeguard recommendations for international transfers.',
+    href: '/docs/components/cross-border-transfers',
+    badge: 'S.41–45',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'ROPA',
+    description: 'Records of Processing Activities with categorization, filtering, and export.',
+    href: '/docs/components/ropa',
+    badge: 'S.29',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      </svg>
+    ),
+  },
+];
+
+const implGuides = [
+  {
+    title: 'Storage Adapters',
+    description: 'Plug in localStorage, IndexedDB, REST, or a fully custom storage backend.',
+    href: '/docs/guides/adapters',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <ellipse cx="12" cy="5" rx="9" ry="3" />
+        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Compound Components',
+    description: 'Build custom UI layouts with granular sub-component control.',
+    href: '/docs/guides/compound-components',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" />
+        <rect x="14" y="3" width="7" height="7" />
+        <rect x="3" y="14" width="7" height="7" />
+        <rect x="14" y="14" width="7" height="7" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Zero-Config Presets',
+    description: 'Single-component drop-ins that handle everything out of the box.',
+    href: '/docs/guides/presets',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Compliance Score',
+    description: 'Real-time NDPA 2023 obligation scoring and dashboard integration.',
+    href: '/docs/guides/compliance-score',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Backend Integration',
+    description: 'Express, Next.js API routes, and REST endpoint recipes for server-side compliance.',
+    href: '/docs/guides/backend-integration',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" />
+        <path d="M8 21h8M12 17v4" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Styling & Customization',
+    description: 'CSS variables, className injection, unstyled mode, and Tailwind integration.',
+    href: '/docs/guides/styling-customization',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+      </svg>
+    ),
+  },
+];
+
+/* ── Page ─────────────────────────────────────────────────── */
 
 export default function DocsPage() {
   return (
-    <DocLayout
-      title="NDPR Toolkit Documentation"
-      description="Comprehensive guides and API reference for implementing NDPA 2023-compliant features"
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
+      }}
     >
-      {/* Search Hero */}
-      <section className="mb-12">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-8 text-white">
-          <h2 className="text-2xl font-bold mb-2 text-white">Find what you need</h2>
-          <p className="text-blue-100 mb-4">Browse components, guides, and API references for the NDPR Toolkit.</p>
-          <div className="relative max-w-xl">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input
-              type="text"
-              placeholder="Search documentation..."
-              className="w-full pl-12 pr-4 py-3 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/15 transition-colors"
-              readOnly
-              aria-label="Search documentation"
-            />
-          </div>
-        </div>
-      </section>
+      <SiteHeader />
 
-      {/* What's New in v3.0 */}
-      <section className="mb-12">
-        <div className="flex items-center gap-3 mb-6">
-          <h2 className="text-2xl font-bold">What&apos;s New in v{siteConfig.version}</h2>
-          <Badge variant="success">Latest</Badge>
-        </div>
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Zero-Config Presets</h3>
+      <main>
+        {/* ── Hero ─────────────────────────────────────────── */}
+        <section
+          style={{
+            position: 'relative',
+            padding: 'var(--space-20) 0 var(--space-16)',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Background glow */}
+          <div
+            aria-hidden
+            style={{
+              position: 'absolute',
+              top: '-10rem',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '60rem',
+              height: '30rem',
+              background:
+                'radial-gradient(ellipse at center, rgba(99, 102, 241, 0.12) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }}
+          />
+
+          <Container size="lg">
+            <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto' }}>
+              <div
+                style={{ marginBottom: 'var(--space-5)' }}
+                className="animate-fade-in-up"
+              >
+                <SiteBadge variant="default" size="md" dot>
+                  v{siteConfig.version} — Latest
+                </SiteBadge>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Drop in <code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">NDPRConsent</code>, <code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">NDPRSubjectRights</code>, and other presets for instant compliance with zero boilerplate.</p>
-              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/guides/presets">View Docs</Link>
-              </Button>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Pluggable Storage Adapters</h3>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Swap storage backends at runtime — localStorage, IndexedDB, REST, or a custom adapter — without touching component code.</p>
-              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/guides/adapters">View Docs</Link>
-              </Button>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Compound Components</h3>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Compose granular sub-components to build exactly the UI you need, with full control over layout and structure.</p>
-              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/guides/compound-components">View Docs</Link>
-              </Button>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Compliance Score Engine</h3>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Real-time compliance scoring across all NDPA 2023 obligations, surfaced through the new <code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">NDPRDashboard</code> component.</p>
-              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/guides/compliance-score">View Docs</Link>
-              </Button>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Backend Recipes Package</h3>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Server-side helpers for Express, Next.js API routes, and serverless functions to handle DSR workflows and breach reporting end-to-end.</p>
-              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/guides/backend-integration">View Docs</Link>
-              </Button>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">CLI Scaffolder</h3>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Bootstrap a fully wired compliance setup in seconds with <code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">npx ndpr-toolkit init</code>, including adapters, presets, and config.</p>
-              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/guides/presets">View Docs</Link>
-              </Button>
-            </div>
-          </div>
-          <div className="mt-6 pt-4 border-t border-green-200 dark:border-green-800">
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              <strong>Also in v3.0:</strong> Full backward compatibility with v2.x component APIs, enhanced TypeScript generics, improved tree-shaking, and continued <Link href="/docs/guides/styling-customization" className="underline font-medium hover:text-green-900 dark:hover:text-green-100">styling customization</Link> with classNames overrides and unstyled mode across all components.
-            </p>
-          </div>
-        </div>
-      </section>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Getting Started</h2>
-        <div className="prose prose-blue dark:prose-invert max-w-none">
-          <p>
-            The NDPR Toolkit is a comprehensive set of components and utilities designed to help Nigerian businesses
-            implement NDPA 2023-compliant features in their web applications with minimal development effort.
-          </p>
+              <h1
+                className="animate-fade-in-up stagger-1"
+                style={{
+                  fontSize: 'clamp(2.5rem, 5vw, 3.75rem)',
+                  fontWeight: 800,
+                  lineHeight: 'var(--leading-tight)',
+                  letterSpacing: '-0.03em',
+                  margin: '0 0 var(--space-5)',
+                  color: 'var(--text-primary)',
+                }}
+              >
+                <GradientText>Documentation</GradientText>
+              </h1>
 
-          <p>
-            v3.0 introduces zero-config presets, pluggable storage adapters, compound components, a compliance score
-            engine, backend recipes, and a CLI scaffolder — so you can go from zero to compliant in minutes.
-          </p>
-
-          <h3>Installation</h3>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
-          </div>
-
-          <h3>Import Paths</h3>
-          <p>
-            The toolkit supports multiple import styles so you can pick exactly what you need and keep your bundles lean:
-          </p>
-        </div>
-
-        {/* Prominent import path cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <h4 className="font-semibold text-gray-900 dark:text-white text-sm uppercase tracking-wide">Core</h4>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Types + utilities, zero UI dependencies</p>
-            <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono overflow-x-auto">
-              <code>@tantainnovative/ndpr-toolkit/core</code>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
-              <h4 className="font-semibold text-gray-900 dark:text-white text-sm uppercase tracking-wide">Hooks</h4>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">React hooks with no component overhead</p>
-            <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono overflow-x-auto">
-              <code>@tantainnovative/ndpr-toolkit/hooks</code>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <h4 className="font-semibold text-gray-900 dark:text-white text-sm uppercase tracking-wide">Per-Module</h4>
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Import only the module you need</p>
-            <div className="bg-gray-900 text-green-400 p-3 rounded text-xs font-mono overflow-x-auto">
-              <code>@tantainnovative/ndpr-toolkit/consent</code>
-            </div>
-          </div>
-        </div>
-
-        <div className="prose prose-blue dark:prose-invert max-w-none">
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-            <pre><code>{`// Import components, hooks, utilities, and types from the main package
-import {
-  ConsentBanner,
-  ConsentManager,
-  DSRRequestForm,
-  DSRDashboard,
-  DPIAQuestionnaire,
-  BreachReportForm,
-  PolicyGenerator,
-  LawfulBasisTracker,
-  CrossBorderTransferManager,
-  ROPAManager,
-} from '@tantainnovative/ndpr-toolkit';
-
-// Hooks
-import {
-  useConsent,
-  useDSR,
-  useDPIA,
-  useBreach,
-  usePrivacyPolicy,
-  useLawfulBasis,
-  useCrossBorderTransfer,
-  useROPA,
-} from '@tantainnovative/ndpr-toolkit';
-
-// Utility functions
-import {
-  validateConsent,
-  formatDSRRequest,
-  assessDPIARisk,
-  calculateBreachSeverity,
-  generatePolicyText,
-  validateProcessingActivity,
-  validateTransfer,
-  generateROPASummary,
-} from '@tantainnovative/ndpr-toolkit';`}</code></pre>
-          </div>
-
-          <h3>3-File Preset Quickstart</h3>
-          <p>
-            The fastest path to compliance: install, configure an adapter, drop in a preset. Three files, done.
-          </p>
-
-          <p><strong>1. adapter.ts</strong> — choose where consent data is stored</p>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-            <pre><code>{`// src/lib/ndpr-adapter.ts
-import { createLocalStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
-
-export const adapter = createLocalStorageAdapter({ key: 'my-app-ndpr' });`}</code></pre>
-          </div>
-
-          <p><strong>2. layout.tsx</strong> — mount the provider once at the root</p>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-            <pre><code>{`// src/app/layout.tsx
-import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
-import { adapter } from '@/lib/ndpr-adapter';
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>
-        <NDPRProvider adapter={adapter} orgName="Acme Ltd" privacyPolicyUrl="/privacy">
-          {children}
-        </NDPRProvider>
-      </body>
-    </html>
-  );
-}`}</code></pre>
-          </div>
-
-          <p><strong>3. page.tsx</strong> — drop in a preset, get a fully compliant UI</p>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-            <pre><code>{`// src/app/page.tsx
-import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
-
-export default function Home() {
-  return (
-    <main>
-      {/* Your app content */}
-      <NDPRConsent />  {/* NDPA 2023-compliant consent banner — zero config needed */}
-    </main>
-  );
-}`}</code></pre>
-          </div>
-
-          <p>
-            Need DSR handling too? Swap in <code>NDPRSubjectRights</code> or mount <code>NDPRDashboard</code> for the full compliance score view.
-            See the <Link href="/docs/guides/presets" className="underline font-medium">Presets guide</Link> for all available presets.
-          </p>
-        </div>
-
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Try the Demo</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Explore interactive demos of all components
+              <p
+                className="animate-fade-in-up stagger-2"
+                style={{
+                  fontSize: 'var(--text-xl)',
+                  color: 'var(--text-secondary)',
+                  lineHeight: 'var(--leading-relaxed)',
+                  margin: '0 0 var(--space-8)',
+                }}
+              >
+                Everything you need to build NDPA 2023-compliant applications — component API references, implementation guides, adapter recipes, and NDPC best practices.
               </p>
-              <Button asChild variant="default">
-                <Link href="/#demos">View Demos</Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>GitHub Repository</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                View source code, report issues, and contribute
-              </p>
-              <Button asChild variant="outline">
-                <a href="https://github.com/mr-tanta/ndpr-toolkit" target="_blank" rel="noopener noreferrer">
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                  </svg>
-                  GitHub
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Components & Hooks</h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            {
-              title: 'DPIA Questionnaire',
-              description: 'Interactive questionnaire for data protection impact assessments with step indicator',
-              href: '/docs/components/dpia-questionnaire',
-              category: 'Risk Assessment',
-              isNew: true,
-            },
-            {
-              title: 'Consent Management',
-              description: 'NDPA 2023-compliant cookie consent banner with storage and preference management',
-              href: '/docs/components/consent-management',
-              category: 'Consent Management',
-              isNew: false,
-            },
-            {
-              title: 'Data Subject Rights Portal',
-              description: 'Complete system for handling DSR requests with dashboard and tracking',
-              href: '/docs/components/data-subject-rights',
-              category: 'Rights Management',
-              isNew: false,
-            },
-            {
-              title: 'Breach Notification System',
-              description: 'Tools for reporting, assessing, and managing data breaches with regulatory reporting',
-              href: '/docs/components/breach-notification',
-              category: 'Incident Management',
-              isNew: true,
-            },
-            {
-              title: 'Privacy Policy Generator',
-              description: 'Customizable NDPA 2023-compliant privacy policy generator with variable support',
-              href: '/docs/components/privacy-policy-generator',
-              category: 'Documentation',
-              isNew: false,
-            },
-            {
-              title: 'React Hooks',
-              description: 'Custom hooks for managing state and logic in NDPA 2023-compliant applications',
-              href: '/docs/components/hooks',
-              category: 'State Management',
-              isNew: true,
-            },
-          ].map((component) => (
-            <Card key={component.title} className="overflow-hidden transition-all duration-300 hover:shadow-lg">
-              <Link href={component.href} className="block h-full">
-                <div className="p-1 bg-gradient-to-r from-blue-500 to-indigo-600">
-                  <div className="bg-white dark:bg-gray-800 p-5">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                        {component.category}
-                      </div>
-                      {component.isNew && (
-                        <Badge variant="success" className="text-xs">New</Badge>
-                      )}
+              {/* Decorative search bar */}
+              <div
+                className="animate-fade-in-up stagger-3"
+                style={{
+                  position: 'relative',
+                  maxWidth: '520px',
+                  margin: '0 auto var(--space-8)',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 'var(--space-3)',
+                    padding: '0.75rem 1.25rem',
+                    borderRadius: 'var(--radius-xl)',
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border-default)',
+                    boxShadow: 'var(--shadow-md)',
+                    transition: 'border-color var(--transition-base)',
+                  }}
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{ color: 'var(--text-muted)', flexShrink: 0 }}
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" />
+                  </svg>
+                  <span
+                    style={{
+                      fontSize: 'var(--text-sm)',
+                      color: 'var(--text-muted)',
+                      flex: 1,
+                      textAlign: 'left',
+                    }}
+                  >
+                    Search documentation...
+                  </span>
+                  <kbd
+                    style={{
+                      fontSize: '0.6875rem',
+                      color: 'var(--text-muted)',
+                      padding: '0.125rem 0.375rem',
+                      borderRadius: 'var(--radius-sm)',
+                      border: '1px solid var(--border-default)',
+                      background: 'var(--bg-elevated)',
+                      fontFamily: 'var(--font-mono)',
+                    }}
+                  >
+                    ⌘K
+                  </kbd>
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div
+                className="animate-fade-in-up stagger-4"
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 'var(--space-3)',
+                  justifyContent: 'center',
+                }}
+              >
+                <SiteButton href="/docs/components" size="lg">
+                  Browse Components
+                </SiteButton>
+                <SiteButton href="/ndpr-demos" variant="secondary" size="lg">
+                  See Live Demos
+                </SiteButton>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* ── What's New in v3 ──────────────────────────────── */}
+        <Section
+          badge={`What's New in v${siteConfig.version}`}
+          title="Everything new in the latest release"
+          subtitle="Six major capabilities added to make NDPA compliance faster, more flexible, and production-ready."
+          gradient
+        >
+          <Container>
+            <Grid cols={3} gap="md">
+              {v3Features.map((feat, i) => (
+                <FeatureCard
+                  key={feat.href}
+                  icon={feat.icon}
+                  title={feat.title}
+                  description={feat.description}
+                  href={feat.href}
+                  index={i}
+                />
+              ))}
+            </Grid>
+          </Container>
+        </Section>
+
+        {/* ── Quick Start ──────────────────────────────────── */}
+        <Section
+          badge="Getting Started"
+          title="Up and running in 3 steps"
+          subtitle="From zero to NDPA-compliant in under 5 minutes. No configuration required."
+        >
+          <Container size="lg">
+            <div
+              style={{
+                display: 'grid',
+                gap: 'var(--space-6)',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
+              }}
+            >
+              {quickStartSteps.map((step, i) => (
+                <div
+                  key={step.step}
+                  className="animate-fade-in-up"
+                  style={{
+                    animationDelay: `${i * 100}ms`,
+                    opacity: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 'var(--space-4)',
+                  }}
+                >
+                  {/* Step header */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                    <div
+                      style={{
+                        width: '2rem',
+                        height: '2rem',
+                        borderRadius: 'var(--radius-full)',
+                        background: 'var(--gradient-primary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 'var(--text-xs)',
+                        fontWeight: 700,
+                        color: '#fff',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {step.step}
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      {component.title}
+                    <h3
+                      style={{
+                        fontSize: 'var(--text-lg)',
+                        fontWeight: 600,
+                        color: 'var(--text-primary)',
+                        margin: 0,
+                      }}
+                    >
+                      {step.title}
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-300 text-sm">
-                      {component.description}
-                    </p>
-                    <div className="mt-4 flex items-center text-blue-600 dark:text-blue-400 font-medium">
-                      <span>View Documentation</span>
-                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </div>
                   </div>
+
+                  {/* Code block */}
+                  <SiteCodeBlock
+                    code={step.code}
+                    language={step.language}
+                    title={step.title_label}
+                  />
                 </div>
-              </Link>
-            </Card>
-          ))}
-        </div>
-      </section>
+              ))}
+            </div>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Implementation Guides</h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {[
-            {
-              title: 'Zero-Config Presets',
-              description: 'Get up and running instantly with NDPRConsent, NDPRSubjectRights, NDPRDashboard, and other ready-made presets.',
-              href: '/docs/guides/presets',
-              isNew: true,
-            },
-            {
-              title: 'Storage Adapters',
-              description: 'Swap localStorage, IndexedDB, REST, or a custom backend adapter without changing component code.',
-              href: '/docs/guides/adapters',
-              isNew: true,
-            },
-            {
-              title: 'Compound Components',
-              description: 'Compose granular sub-components to build exactly the compliance UI your product needs.',
-              href: '/docs/guides/compound-components',
-              isNew: true,
-            },
-            {
-              title: 'Compliance Score Engine',
-              description: 'Understand how the toolkit scores your NDPA 2023 obligations and surface insights with NDPRDashboard.',
-              href: '/docs/guides/compliance-score',
-              isNew: true,
-            },
-            {
-              title: 'Backend Integration',
-              description: 'Server-side recipes for Express, Next.js API routes, and serverless to handle DSR workflows end-to-end.',
-              href: '/docs/guides/backend-integration',
-              isNew: true,
-            },
-            {
-              title: 'Conducting a DPIA',
-              description: 'Step-by-step guide to conducting a Data Protection Impact Assessment',
-              href: '/docs/guides/conducting-dpia',
-            },
-            {
-              title: 'Managing Consent',
-              description: 'Learn how to implement a complete consent management system',
-              href: '/docs/guides/managing-consent',
-            },
-            {
-              title: 'Handling Data Subject Requests',
-              description: 'Best practices for handling data subject rights requests',
-              href: '/docs/guides/data-subject-requests',
-            },
-            {
-              title: 'Breach Notification Process',
-              description: 'How to implement a 72-hour breach notification process',
-              href: '/docs/guides/breach-notification-process',
-            },
-            {
-              title: 'NDPA 2023 Compliance Checklist',
-              description: 'A comprehensive checklist for NDPA 2023 compliance',
-              href: '/docs/guides/ndpr-compliance-checklist',
-            },
-            {
-              title: 'Lawful Basis for Processing',
-              description: 'Understanding lawful basis under NDPA 2023 Section 25',
-              href: '/docs/guides/lawful-basis',
-            },
-            {
-              title: 'Cross-Border Data Transfers',
-              description: 'Guide to NDPA 2023 Section 41 cross-border transfer compliance',
-              href: '/docs/guides/cross-border-transfers',
-            },
-            {
-              title: 'Styling & Customization',
-              description: 'Customize component styles with classNames, unstyled mode, and CSS frameworks',
-              href: '/docs/guides/styling-customization',
-            },
-          ].map((guide) => (
-            <Card key={guide.title}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  {guide.title}
-                  {guide.isNew && <Badge variant="success" className="text-xs">New in v3</Badge>}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-500 dark:text-gray-400 mb-4">{guide.description}</p>
-                <Button asChild variant="outline">
-                  <Link href={guide.href}>
-                    Read Guide
-                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+            {/* Full docs CTA */}
+            <div
+              style={{
+                textAlign: 'center',
+                marginTop: 'var(--space-12)',
+              }}
+            >
+              <SiteButton href="/docs/guides" variant="secondary" size="lg">
+                View all guides
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ marginLeft: 'var(--space-2)' }}
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </SiteButton>
+            </div>
+          </Container>
+        </Section>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Latest Features</h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                Variable Support in Policy Generator
-                <Badge className="ml-2" variant="outline">New</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Create dynamic privacy policies with variable placeholders that can be easily updated when your organization information changes.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/privacy-policy-generator">
-                  Learn More
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+        {/* ── Browse by Category ────────────────────────────── */}
+        <Section gradient>
+          <Container>
+            {/* Component Guides */}
+            <div style={{ marginBottom: 'var(--space-16)' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 'var(--space-4)',
+                  marginBottom: 'var(--space-8)',
+                }}
+              >
+                <div>
+                  <div style={{ marginBottom: 'var(--space-3)' }}>
+                    <SiteBadge variant="info" size="md">
+                      Component Guides
+                    </SiteBadge>
+                  </div>
+                  <h2
+                    style={{
+                      fontSize: 'var(--text-2xl)',
+                      fontWeight: 700,
+                      color: 'var(--text-primary)',
+                      margin: 0,
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    8 compliance modules, fully documented
+                  </h2>
+                  <p
+                    style={{
+                      fontSize: 'var(--text-base)',
+                      color: 'var(--text-secondary)',
+                      marginTop: 'var(--space-2)',
+                      marginBottom: 0,
+                    }}
+                  >
+                    Each module maps to specific NDPA 2023 obligations, complete with props reference and usage examples.
+                  </p>
+                </div>
+                <SiteButton href="/docs/components" variant="secondary" size="sm">
+                  View all components
+                </SiteButton>
+              </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                Enhanced DSR Types
-                <Badge className="ml-2" variant="outline">Updated</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Improved type definitions for Data Subject Requests with standardized enums for request types and statuses.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/data-subject-rights">
-                  Learn More
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+              <Grid cols={4} gap="md">
+                {componentGuides.map((guide, i) => (
+                  <FeatureCard
+                    key={guide.href}
+                    icon={guide.icon}
+                    title={guide.title}
+                    description={guide.description}
+                    href={guide.href}
+                    badge={guide.badge}
+                    index={i}
+                  />
+                ))}
+              </Grid>
+            </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                ConsentStorage Component
-                <Badge className="ml-2" variant="outline">New</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                A flexible component for handling the storage and retrieval of consent settings with support for multiple storage mechanisms.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/consent-management">
-                  Learn More
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+            {/* Implementation Guides */}
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 'var(--space-4)',
+                  marginBottom: 'var(--space-8)',
+                }}
+              >
+                <div>
+                  <div style={{ marginBottom: 'var(--space-3)' }}>
+                    <SiteBadge variant="success" size="md">
+                      Implementation Guides
+                    </SiteBadge>
+                  </div>
+                  <h2
+                    style={{
+                      fontSize: 'var(--text-2xl)',
+                      fontWeight: 700,
+                      color: 'var(--text-primary)',
+                      margin: 0,
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    Deep-dive implementation patterns
+                  </h2>
+                  <p
+                    style={{
+                      fontSize: 'var(--text-base)',
+                      color: 'var(--text-secondary)',
+                      marginTop: 'var(--space-2)',
+                      marginBottom: 0,
+                    }}
+                  >
+                    Advanced patterns for adapters, presets, backend recipes, and full NDPA compliance strategies.
+                  </p>
+                </div>
+                <SiteButton href="/docs/guides" variant="secondary" size="sm">
+                  View all guides
+                </SiteButton>
+              </div>
 
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Component Documentation</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Consent Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Implement NDPA 2023-compliant cookie consent banners and preference centers with flexible storage options.
-              </p>
-              <ul className="list-disc pl-5 mb-4 text-sm">
-                <li>ConsentBanner & ConsentManager components</li>
-                <li>Customizable consent options</li>
-                <li>Multiple storage mechanisms</li>
-                <li>Preference management UI</li>
-              </ul>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/consent-management">
-                  View Documentation
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+              <Grid cols={3} gap="md">
+                {implGuides.map((guide, i) => (
+                  <FeatureCard
+                    key={guide.href}
+                    icon={guide.icon}
+                    title={guide.title}
+                    description={guide.description}
+                    href={guide.href}
+                    index={i}
+                  />
+                ))}
+              </Grid>
+            </div>
+          </Container>
+        </Section>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Data Subject Rights</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Handle data subject access requests and other rights with a complete request management system.
-              </p>
-              <ul className="list-disc pl-5 mb-4 text-sm">
-                <li>Request submission forms</li>
-                <li>Admin dashboard for request management</li>
-                <li>Status tracking and notifications</li>
-                <li>Standardized request types</li>
-              </ul>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/data-subject-rights">
-                  View Documentation
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>DPIA Questionnaire</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Conduct Data Protection Impact Assessments with an interactive questionnaire and risk assessment tools.
-              </p>
-              <ul className="list-disc pl-5 mb-4 text-sm">
-                <li>Multi-section questionnaire</li>
-                <li>Risk identification and assessment</li>
-                <li>Report generation</li>
-                <li>Compliance recommendations</li>
-              </ul>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/dpia-questionnaire">
-                  View Documentation
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Breach Notification</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Manage data breach reporting, risk assessment, and notification within the NDPA 2023&apos;s 72-hour requirement.
-              </p>
-              <ul className="list-disc pl-5 mb-4 text-sm">
-                <li>Breach reporting forms</li>
-                <li>Risk assessment tools</li>
-                <li>Notification requirement determination</li>
-                <li>Regulatory report generation</li>
-              </ul>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/breach-notification">
-                  View Documentation
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Privacy Policy Generator</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Create NDPA 2023-compliant privacy policies with customizable templates and variable support.
-              </p>
-              <ul className="list-disc pl-5 mb-4 text-sm">
-                <li>Customizable policy sections</li>
-                <li>Variable placeholder support</li>
-                <li>Preview and export options</li>
-                <li>Compliance checking</li>
-              </ul>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/privacy-policy-generator">
-                  View Documentation
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>React Hooks</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Utilize custom React hooks for state management across all NDPR toolkit components.
-              </p>
-              <ul className="list-disc pl-5 mb-4 text-sm">
-                <li>useConsent</li>
-                <li>useDSR</li>
-                <li>useDPIA</li>
-                <li>useBreach</li>
-                <li>usePrivacyPolicy</li>
-              </ul>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/hooks">
-                  View Documentation
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Implementation Guides</h2>
-        <div className="prose prose-blue max-w-none dark:prose-invert mb-6">
-          <p>
-            Our implementation guides provide step-by-step instructions for integrating NDPR Toolkit components
-            into your applications and addressing specific compliance scenarios.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Start Guide</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Get up and running with the NDPR Toolkit in minutes.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs">
-                  Read Guide
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Consent Implementation</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Implement a complete consent management system.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/guides/managing-consent">
-                  Read Guide
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>DSR Portal Setup</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 dark:text-gray-400 mb-4">
-                Create a complete data subject rights management portal.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/guides/data-subject-requests">
-                  Read Guide
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">NDPA 2023 Compliance</h2>
-        <div className="prose prose-blue max-w-none dark:prose-invert">
-          <p>
-            The Nigeria Data Protection Act (NDPA) 2023 is Nigeria&apos;s principal data protection legislation, signed into law
-            in June 2023. The NDPA establishes the Nigeria Data Protection Commission (NDPC) as the regulatory body and
-            aims to safeguard the rights of natural persons to data privacy.
-          </p>
-
-          <h3>Key Requirements</h3>
-          <ul>
-            <li>
-              <strong>Lawful Processing:</strong> Organizations must process personal data lawfully, fairly, and transparently.
-            </li>
-            <li>
-              <strong>Consent:</strong> Valid consent must be obtained before collecting or processing personal data.
-            </li>
-            <li>
-              <strong>Data Subject Rights:</strong> Organizations must respect and facilitate data subject rights, including access, rectification, and erasure.
-            </li>
-            <li>
-              <strong>Data Protection Impact Assessment:</strong> Organizations must conduct DPIAs for high-risk processing activities.
-            </li>
-            <li>
-              <strong>Breach Notification:</strong> Organizations must report data breaches to the NDPC within 72 hours.
-            </li>
-            <li>
-              <strong>Privacy Policy:</strong> Organizations must maintain a clear and accessible privacy policy.
-            </li>
-          </ul>
-
-          <h3>How the NDPR Toolkit Helps</h3>
-          <p>
-            The toolkit provides ready-to-use components that address each of these key requirements:
-          </p>
-          <ul>
-            <li><strong>Consent Management:</strong> Implement proper consent collection and management</li>
-            <li><strong>Data Subject Rights Portal:</strong> Handle DSR requests efficiently and in compliance with regulations</li>
-            <li><strong>DPIA Questionnaire:</strong> Conduct and document Data Protection Impact Assessments</li>
-            <li><strong>Breach Notification System:</strong> Report and manage breaches within the required timeframes</li>
-            <li><strong>Privacy Policy Generator:</strong> Create and maintain NDPA 2023-compliant privacy policies</li>
-            <li><strong>Lawful Basis Tracker:</strong> Document and track the lawful basis for each processing activity</li>
-            <li><strong>Cross-Border Transfers:</strong> Manage data transfers across national boundaries with proper safeguards</li>
-            <li><strong>ROPA:</strong> Maintain Records of Processing Activities as required by the NDPA</li>
-          </ul>
-
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md mt-6">
-            <h4 className="text-blue-800 dark:text-blue-200">Disclaimer</h4>
-            <p className="text-blue-700 dark:text-blue-300 text-sm">
-              While the NDPR Toolkit is designed to help organizations implement NDPA 2023-compliant features, using this toolkit does not guarantee
-              full compliance with the NDPA 2023. Organizations should consult with legal professionals to ensure their specific implementation
-              meets all regulatory requirements.
+        {/* ── Bottom CTA ───────────────────────────────────── */}
+        <section
+          style={{
+            padding: 'var(--space-20) 0',
+            textAlign: 'center',
+          }}
+        >
+          <Container size="md">
+            <div style={{ marginBottom: 'var(--space-5)' }}>
+              <SiteBadge variant="default" size="md" dot>
+                Ready to build?
+              </SiteBadge>
+            </div>
+            <h2
+              style={{
+                fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+                fontWeight: 700,
+                color: 'var(--text-primary)',
+                letterSpacing: '-0.025em',
+                margin: '0 0 var(--space-5)',
+              }}
+            >
+              Start shipping compliant features{' '}
+              <GradientText>today</GradientText>
+            </h2>
+            <p
+              style={{
+                fontSize: 'var(--text-lg)',
+                color: 'var(--text-secondary)',
+                lineHeight: 'var(--leading-relaxed)',
+                margin: '0 0 var(--space-8)',
+              }}
+            >
+              {siteConfig.moduleCount} modules, {siteConfig.testCount}+ tests, zero-config presets — everything you need to be NDPA 2023 compliant from day one.
             </p>
-          </div>
-        </div>
-      </section>
-    </DocLayout>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 'var(--space-3)',
+                justifyContent: 'center',
+              }}
+            >
+              <SiteButton href="/docs/components" size="lg">
+                Browse Components
+              </SiteButton>
+              <SiteButton
+                href={siteConfig.repoUrl}
+                variant="secondary"
+                size="lg"
+                icon={
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                }
+              >
+                Star on GitHub
+              </SiteButton>
+            </div>
+          </Container>
+        </section>
+      </main>
+
+      <SiteFooter />
+    </div>
   );
 }
