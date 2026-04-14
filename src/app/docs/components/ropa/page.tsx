@@ -2,9 +2,6 @@
 
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 
 export default function ROPADocs() {
   const jsonLd = {
@@ -26,18 +23,24 @@ export default function ROPADocs() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="flex mb-6 space-x-2">
-        <Badge variant="success" className="text-xs">New in v2.1</Badge>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/ndpr-demos/ropa">
-            View Demo
-          </Link>
-        </Button>
-        <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/ropa" target="_blank" rel="noopener noreferrer">
-            View Source
-          </a>
-        </Button>
+      <div className="flex mb-6 space-x-2 flex-wrap gap-y-2">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+          New in v2.1
+        </span>
+        <Link
+          href="/ndpr-demos/ropa"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+        >
+          View Demo
+        </Link>
+        <a
+          href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/ropa"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+        >
+          View Source
+        </a>
       </div>
 
       <section id="overview" className="mb-8">
@@ -63,16 +66,13 @@ export default function ROPADocs() {
         <p className="mb-4">
           Install the NDPR Toolkit package which includes the ROPA components:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
-        </div>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">pnpm add @tantainnovative/ndpr-toolkit</code></pre>
       </section>
 
       <section id="import" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Import</h2>
         <p className="mb-4">Import from the main package:</p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>{`import {
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import {
   ROPAManager,
   useROPA,
   validateProcessingRecord,
@@ -80,7 +80,6 @@ export default function ROPADocs() {
   exportROPAToCSV,
   identifyComplianceGaps,
 } from '@tantainnovative/ndpr-toolkit';`}</code></pre>
-        </div>
       </section>
 
       <section id="components" className="mb-8">
@@ -90,14 +89,13 @@ export default function ROPADocs() {
         </p>
 
         <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">ROPAManager</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+          <div className="bg-card border border-border p-6 rounded-xl">
+            <h3 className="text-xl font-bold mb-2 text-foreground">ROPAManager</h3>
+            <p className="text-muted-foreground mb-4">
               A comprehensive dashboard for viewing, filtering, and managing all processing activity records. Supports
               search, categorisation, and bulk operations.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { ROPAManager } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { ROPAManager } from '@tantainnovative/ndpr-toolkit';
 
 <ROPAManager
   activities={processingActivities}
@@ -106,16 +104,14 @@ export default function ROPADocs() {
   onDelete={(id) => console.log('Deleted:', id)}
   onExport={(format) => console.log('Exporting as:', format)}
 />`}</code></pre>
-            </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">useROPA Hook</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+          <div className="bg-card border border-border p-6 rounded-xl">
+            <h3 className="text-xl font-bold mb-2 text-foreground">useROPA Hook</h3>
+            <p className="text-muted-foreground mb-4">
               A React hook for managing processing records, generating summaries, and exporting data.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useROPA, exportROPAToCSV } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useROPA, exportROPAToCSV } from '@tantainnovative/ndpr-toolkit';
 
 function ProcessingRecords() {
   const { ropa, addRecord, getSummary } = useROPA({
@@ -143,7 +139,6 @@ function ProcessingRecords() {
     </div>
   );
 }`}</code></pre>
-            </div>
           </div>
         </div>
       </section>
@@ -152,8 +147,7 @@ function ProcessingRecords() {
         <h2 className="text-2xl font-bold mb-4">API Reference</h2>
 
         <h3 className="text-xl font-bold mt-8 mb-4">ProcessingActivity Type</h3>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`type ProcessingActivity = {
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`type ProcessingActivity = {
   id: string;
   name: string;
   description: string;
@@ -182,12 +176,11 @@ type ROPAManagerProps = {
   onExport?: (format: 'csv' | 'pdf' | 'json') => void;
   filterCategories?: string[];
 };`}</code></pre>
-        </div>
       </section>
 
       <section id="best-practices" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
-        <ul className="list-disc pl-6 space-y-2">
+        <ul className="list-disc pl-6 space-y-2 text-foreground">
           <li>
             <strong>Comprehensive Coverage:</strong> Record every processing activity, including those handled by third-party processors.
           </li>
@@ -209,32 +202,34 @@ type ROPAManagerProps = {
       <section id="help-resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Need Help?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">GitHub Issues</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Report bugs or request features on our GitHub repository.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
-                  View Issues
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA Resources</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Learn more about NDPA 2023 compliance requirements.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
-                  NDPC Website
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="font-medium text-foreground mb-2">GitHub Issues</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Report bugs or request features on our GitHub repository.
+            </p>
+            <a
+              href="https://github.com/mr-tanta/ndpr-toolkit/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+            >
+              View Issues
+            </a>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="font-medium text-foreground mb-2">NDPA Resources</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Learn more about NDPA 2023 compliance requirements.
+            </p>
+            <a
+              href="https://ndpc.gov.ng/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+            >
+              NDPC Website
+            </a>
+          </div>
         </div>
       </section>
     </DocLayout>

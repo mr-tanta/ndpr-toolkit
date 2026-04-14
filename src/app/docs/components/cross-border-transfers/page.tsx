@@ -2,9 +2,6 @@
 
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 
 export default function CrossBorderTransfersDocs() {
   const jsonLd = {
@@ -26,18 +23,24 @@ export default function CrossBorderTransfersDocs() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="flex mb-6 space-x-2">
-        <Badge variant="success" className="text-xs">New in v2.1</Badge>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/ndpr-demos/cross-border">
-            View Demo
-          </Link>
-        </Button>
-        <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/cross-border" target="_blank" rel="noopener noreferrer">
-            View Source
-          </a>
-        </Button>
+      <div className="flex mb-6 space-x-2 flex-wrap gap-y-2">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+          New in v2.1
+        </span>
+        <Link
+          href="/ndpr-demos/cross-border"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+        >
+          View Demo
+        </Link>
+        <a
+          href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-toolkit/src/components/cross-border"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+        >
+          View Source
+        </a>
       </div>
 
       <section id="overview" className="mb-8">
@@ -63,23 +66,19 @@ export default function CrossBorderTransfersDocs() {
         <p className="mb-4">
           Install the NDPR Toolkit package which includes the Cross-Border Transfer components:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
-        </div>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">pnpm add @tantainnovative/ndpr-toolkit</code></pre>
       </section>
 
       <section id="import" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Import</h2>
         <p className="mb-4">Import from the main package:</p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>{`import {
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import {
   CrossBorderTransferManager,
   useCrossBorderTransfer,
   validateTransfer,
   assessTransferRisk,
   isNDPCApprovalRequired,
 } from '@tantainnovative/ndpr-toolkit';`}</code></pre>
-        </div>
       </section>
 
       <section id="components" className="mb-8">
@@ -89,15 +88,14 @@ export default function CrossBorderTransfersDocs() {
         </p>
 
         <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold mb-2">CrossBorderTransferManager</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+          <div className="bg-card border border-border p-6 rounded-xl">
+            <h3 className="text-xl font-bold mb-2 text-foreground">CrossBorderTransferManager</h3>
+            <p className="text-muted-foreground mb-4">
               A comprehensive component for assessing, documenting, and managing cross-border data transfers.
               It evaluates adequacy status of destination countries, identifies required safeguards, and
               helps maintain compliance records.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { CrossBorderTransferManager, useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { CrossBorderTransferManager, useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit';
 
 function TransferManagement() {
   const { transfers, addTransfer, getSummary } = useCrossBorderTransfer();
@@ -110,7 +108,6 @@ function TransferManagement() {
     />
   );
 }`}</code></pre>
-            </div>
           </div>
         </div>
       </section>
@@ -120,41 +117,40 @@ function TransferManagement() {
 
         <h3 className="text-xl font-bold mt-8 mb-4">CrossBorderTransferManager Props</h3>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Prop</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Default</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+          <table className="min-w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">Prop</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">Type</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">Default</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-foreground uppercase tracking-wider">Description</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">transfer</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">TransferDetails</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Details of the proposed data transfer</td>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">transfer</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">TransferDetails</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">Required</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Details of the proposed data transfer</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">onComplete</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{`(result: TransferAssessmentResult) => void`}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">Required</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Called when the assessment is completed</td>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onComplete</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(result: TransferAssessmentResult) => void`}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">Required</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Called when the assessment is completed</td>
               </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">showRecommendations</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">boolean</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">true</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Whether to show safeguard recommendations</td>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">showRecommendations</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">boolean</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">true</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Whether to show safeguard recommendations</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h3 className="text-xl font-bold mt-8 mb-4">Types</h3>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`type TransferDetails = {
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`type TransferDetails = {
   id: string;
   destinationCountry: string;
   dataCategories: string[];
@@ -180,12 +176,11 @@ type TransferAssessmentResult = {
   risks: string[];
   assessedAt: string;
 };`}</code></pre>
-        </div>
       </section>
 
       <section id="best-practices" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
-        <ul className="list-disc pl-6 space-y-2">
+        <ul className="list-disc pl-6 space-y-2 text-foreground">
           <li>
             <strong>Assess First:</strong> Always complete a transfer assessment before initiating any cross-border data transfer.
           </li>
@@ -207,32 +202,34 @@ type TransferAssessmentResult = {
       <section id="help-resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Need Help?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">GitHub Issues</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Report bugs or request features on our GitHub repository.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <a href="https://github.com/mr-tanta/ndpr-toolkit/issues" target="_blank" rel="noopener noreferrer">
-                  View Issues
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA Resources</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Learn more about NDPA 2023 compliance requirements.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
-                  NDPC Website
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="font-medium text-foreground mb-2">GitHub Issues</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Report bugs or request features on our GitHub repository.
+            </p>
+            <a
+              href="https://github.com/mr-tanta/ndpr-toolkit/issues"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+            >
+              View Issues
+            </a>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="font-medium text-foreground mb-2">NDPA Resources</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Learn more about NDPA 2023 compliance requirements.
+            </p>
+            <a
+              href="https://ndpc.gov.ng/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+            >
+              NDPC Website
+            </a>
+          </div>
         </div>
       </section>
     </DocLayout>

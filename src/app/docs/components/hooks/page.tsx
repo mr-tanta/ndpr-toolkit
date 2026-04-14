@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
 
 export default function HooksDocs() {
   const jsonLd = {
@@ -26,11 +24,14 @@ export default function HooksDocs() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="flex mb-6 space-x-2">
-        <Button asChild variant="outline" size="sm">
-          <a href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/hooks" target="_blank" rel="noopener noreferrer">
-            View Source
-          </a>
-        </Button>
+        <a
+          href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/src/hooks"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+        >
+          View Source
+        </a>
       </div>
       
       <section id="overview" className="mb-8">
@@ -46,14 +47,11 @@ export default function HooksDocs() {
         <p className="mb-4">
           Install the NDPR Toolkit package which includes all hooks:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
-          <pre><code>pnpm add @tantainnovative/ndpr-toolkit</code></pre>
-        </div>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">pnpm add @tantainnovative/ndpr-toolkit</code></pre>
         <p className="mb-4">
           Import hooks from the main package:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import {
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import {
   useConsent,
   useDSR,
   useDPIA,
@@ -63,20 +61,18 @@ export default function HooksDocs() {
   useCrossBorderTransfer,
   useROPA,
 } from '@tantainnovative/ndpr-toolkit';`}</code></pre>
-        </div>
       </section>
 
       <section id="hooks" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Available Hooks</h2>
         
         <div className="space-y-6">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-card border border-border p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-2">useConsent</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-muted-foreground mb-4">
               A hook for managing consent state and preferences.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
 
 function ConsentManager() {
   const { 
@@ -104,16 +100,14 @@ function ConsentManager() {
     </div>
   );
 }`}</code></pre>
-            </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-card border border-border p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-2">useDSR</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-muted-foreground mb-4">
               A hook for managing Data Subject Rights (DSR) requests.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
 
 function DSRManager() {
   const { 
@@ -150,16 +144,14 @@ function DSRManager() {
     </div>
   );
 }`}</code></pre>
-            </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-card border border-border p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-2">useDPIA</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-muted-foreground mb-4">
               A hook for managing Data Protection Impact Assessment (DPIA) state.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useDPIA } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useDPIA } from '@tantainnovative/ndpr-toolkit';
 
 function DPIAManager() {
   const { 
@@ -185,16 +177,14 @@ function DPIAManager() {
     </div>
   );
 }`}</code></pre>
-            </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-card border border-border p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-2">useBreach</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-muted-foreground mb-4">
               A hook for managing data breach notifications and assessments.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { useBreach } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useBreach } from '@tantainnovative/ndpr-toolkit';
 
 function BreachManager() {
   const { 
@@ -220,16 +210,14 @@ function BreachManager() {
     </div>
   );
 }`}</code></pre>
-            </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-card border border-border p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-2">usePrivacyPolicy</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">
+            <p className="text-muted-foreground mb-4">
               A hook for managing privacy policy generation and customization.
             </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-              <pre><code>{`import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
 
 function PrivacyPolicyManager() {
   const { 
@@ -270,73 +258,67 @@ function PrivacyPolicyManager() {
     </div>
   );
 }`}</code></pre>
-            </div>
           </div>
         </div>
       </section>
 
       <section id="best-practices" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
-        <div className="prose prose-blue dark:prose-invert max-w-none">
-          <ul>
-            <li>
-              <strong>Use hooks at the top level</strong> - Always use React hooks at the top level of your component, not inside loops, conditions, or nested functions.
-            </li>
-            <li>
-              <strong>Combine with context</strong> - For global state management, consider using these hooks with React Context to share state across components.
-            </li>
-            <li>
-              <strong>Customize storage options</strong> - Most hooks accept storage options to customize how data is persisted. Use this to implement your own storage mechanisms.
-            </li>
-            <li>
-              <strong>Handle loading states</strong> - Check for loading states before rendering components that depend on data from hooks.
-            </li>
-          </ul>
-        </div>
+        <ul className="list-disc pl-6 space-y-2 text-foreground">
+          <li>
+            <strong>Use hooks at the top level</strong> - Always use React hooks at the top level of your component, not inside loops, conditions, or nested functions.
+          </li>
+          <li>
+            <strong>Combine with context</strong> - For global state management, consider using these hooks with React Context to share state across components.
+          </li>
+          <li>
+            <strong>Customize storage options</strong> - Most hooks accept storage options to customize how data is persisted. Use this to implement your own storage mechanisms.
+          </li>
+          <li>
+            <strong>Handle loading states</strong> - Check for loading states before rendering components that depend on data from hooks.
+          </li>
+        </ul>
       </section>
 
       <section id="related" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Related Components</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Consent Management</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                Components that work with the useConsent hook
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/consent-management">
-                  View Components
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Data Subject Rights</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                Components that work with the useDSR hook
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/data-subject-rights">
-                  View Components
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Privacy Policy</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                Components that work with the usePrivacyPolicy hook
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/privacy-policy-generator">
-                  View Components
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="text-lg font-semibold mb-2 text-foreground">Consent Management</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Components that work with the useConsent hook
+            </p>
+            <Link
+              href="/docs/components/consent-management"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+            >
+              View Components
+            </Link>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="text-lg font-semibold mb-2 text-foreground">Data Subject Rights</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Components that work with the useDSR hook
+            </p>
+            <Link
+              href="/docs/components/data-subject-rights"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+            >
+              View Components
+            </Link>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="text-lg font-semibold mb-2 text-foreground">Privacy Policy</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Components that work with the usePrivacyPolicy hook
+            </p>
+            <Link
+              href="/docs/components/privacy-policy-generator"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-muted transition-colors"
+            >
+              View Components
+            </Link>
+          </div>
         </div>
       </section>
     </DocLayout>
