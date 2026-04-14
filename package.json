@@ -30,7 +30,9 @@
     "release": "commit-and-tag-version",
     "release:minor": "commit-and-tag-version --release-as minor",
     "release:major": "commit-and-tag-version --release-as major",
-    "release:patch": "commit-and-tag-version --release-as patch"
+    "release:patch": "commit-and-tag-version --release-as patch",
+    "publish:cli": "cd packages/create-ndpr && npm publish --access public",
+    "publish:recipes": "cd packages/ndpr-recipes && npm publish --access public"
   },
   "keywords": [
     "ndpa",

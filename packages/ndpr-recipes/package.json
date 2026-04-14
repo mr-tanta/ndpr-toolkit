@@ -13,5 +13,13 @@
     "url": "git+https://github.com/mr-tanta/ndpr-toolkit.git",
     "directory": "packages/ndpr-recipes"
   },
-  "keywords": ["ndpa", "ndpr", "nigeria", "data-protection", "prisma", "nextjs", "express"]
+  "keywords": ["ndpa", "ndpr", "nigeria", "data-protection", "prisma", "nextjs", "express"],
+  "files": [
+    "src/**/*",
+    "prisma/**/*",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
