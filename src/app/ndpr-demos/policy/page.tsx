@@ -38,7 +38,7 @@ import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
           '--ndpr-border': '30 41 59',
         } as React.CSSProperties}
       >
-        <PolicyGenerator />
+        <PolicyGenerator onGenerate={(policy) => console.log('Policy generated:', policy)} />
       </div>
     </DemoLayout>
   );
