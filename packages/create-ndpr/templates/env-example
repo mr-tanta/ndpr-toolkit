@@ -1,0 +1,4 @@
+# NDPA Compliance Database
+# Organisation: {{ORG_NAME}}
+# DPO: {{DPO_EMAIL}}
+DATABASE_URL="postgresql://user:password@localhost:5432/myapp_dev"
