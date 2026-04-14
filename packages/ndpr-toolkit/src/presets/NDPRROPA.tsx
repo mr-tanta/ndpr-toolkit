@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ROPAManager } from '../components/ropa/ROPAManager';
 import type { ROPAManagerClassNames } from '../components/ropa/ROPAManager';
 import type { RecordOfProcessingActivities, ProcessingRecord } from '../types/ropa';
@@ -27,13 +27,18 @@ export const NDPRROPA: React.FC<NDPRROPAProps> = ({
   classNames,
   unstyled,
 }) => {
-  const [ropa, setRopa] = useState<RecordOfProcessingActivities>(() => {
-    if (adapter?.load) {
-      const saved = adapter.load();
-      if (saved) return saved;
-    }
-    return initialData ?? DEFAULT_ROPA;
-  });
+  const [ropa, setRopa] = useState<RecordOfProcessingActivities>(initialData ?? DEFAULT_ROPA);
+
+  useEffect(() => {
+    if (!adapter) return;
+    let cancelled = false;
+    const doLoad = async () => {
+      const saved = await adapter.load();
+      if (!cancelled && saved) setRopa(saved);
+    };
+    doLoad();
+    return () => { cancelled = true; };
+  }, [adapter]);
 
   const persist = (updated: RecordOfProcessingActivities) => {
     if (adapter) adapter.save(updated);
