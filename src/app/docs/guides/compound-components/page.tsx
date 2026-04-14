@@ -10,58 +10,55 @@ export default function CompoundComponentsGuide() {
       description="Compose full UI flows from small, focused sub-components using the v3 compound component pattern"
     >
       <section id="introduction" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">What Are Compound Components?</h2>
-        <p className="mb-4">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">What Are Compound Components?</h2>
+        <p className="mb-4 text-foreground">
           The v3 toolkit exposes every module as a <strong>compound component</strong> — a namespace object whose
           properties are individual, purpose-built sub-components that share state through React context.
           You assemble them like building blocks rather than configuring a single monolithic component via props.
         </p>
-        <p className="mb-4">
+        <p className="mb-4 text-foreground">
           This pattern gives you:
         </p>
-        <ul className="list-disc pl-6 mb-4 space-y-1">
+        <ul className="list-disc pl-6 mb-4 space-y-1 text-foreground">
           <li>Full control over layout — sub-components render wherever you place them in JSX</li>
           <li>Selective rendering — only mount the pieces you actually need</li>
           <li>Easy custom wrappers — wrap any sub-component with your own UI without forking library code</li>
-          <li>Predictable state — all sub-components within a <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm">Provider</code> share a single source of truth</li>
+          <li>Predictable state — all sub-components within a <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">Provider</code> share a single source of truth</li>
         </ul>
       </section>
 
       <section id="provider-pattern" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">The Provider + Sub-components Pattern</h2>
-        <p className="mb-4">
-          Every module follows the same structure. The <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm">Provider</code> establishes context and accepts
-          configuration. All other sub-components must be rendered inside a <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm">Provider</code>.
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">The Provider + Sub-components Pattern</h2>
+        <p className="mb-4 text-foreground">
+          Every module follows the same structure. The <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">Provider</code> establishes context and accepts
+          configuration. All other sub-components must be rendered inside a <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">Provider</code>.
         </p>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mb-4">
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`// Pattern:
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`// Pattern:
 <Module.Provider config={...}>
   <Module.SubComponentA />
   <Module.SubComponentB />
   <Module.SubComponentC />
 </Module.Provider>`}</code></pre>
-          </div>
         </div>
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md mb-4">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-xl mb-4">
           <p className="text-blue-700 dark:text-blue-300 text-sm">
             Sub-components do not need to be direct children — they can be deeply nested inside your own layout
-            components as long as the <code className="bg-blue-800 dark:bg-blue-200 px-1 rounded text-xs">Provider</code> is an ancestor in the React tree.
+            components as long as the <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded text-xs">Provider</code> is an ancestor in the React tree.
           </p>
         </div>
       </section>
 
       <section id="consent-example" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Example: Consent Module</h2>
-        <p className="mb-4">
-          Here is a complete consent banner built from <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm">Consent.*</code> sub-components.
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Example: Consent Module</h2>
+        <p className="mb-4 text-foreground">
+          Here is a complete consent banner built from <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">Consent.*</code> sub-components.
           Notice how the layout is entirely controlled by your JSX — the library provides the logic and accessible
           markup, you provide the arrangement.
         </p>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mb-4">
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { Consent } from '@tantainnovative/ndpr-toolkit';
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`import { Consent } from '@tantainnovative/ndpr-toolkit';
 import { localStorageAdapter } from '@tantainnovative/ndpr-toolkit';
 
 const categories = [
@@ -101,19 +98,17 @@ export function MyConsentBanner() {
     </Consent.Provider>
   );
 }`}</code></pre>
-          </div>
         </div>
       </section>
 
       <section id="custom-layouts" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Building Custom Layouts</h2>
-        <p className="mb-4">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Building Custom Layouts</h2>
+        <p className="mb-4 text-foreground">
           Because sub-components are independent, you can build arbitrarily complex layouts. The following example
           puts consent preferences in a modal dialog rather than a bottom banner:
         </p>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mb-4">
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { Consent } from '@tantainnovative/ndpr-toolkit';
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`import { Consent } from '@tantainnovative/ndpr-toolkit';
 import { Dialog } from '@/components/ui/Dialog';
 import { useState } from 'react';
 
@@ -141,15 +136,13 @@ export function ConsentModal() {
     </Consent.Provider>
   );
 }`}</code></pre>
-          </div>
         </div>
 
-        <p className="mb-4">
+        <p className="mb-4 text-foreground">
           You can also access the shared context directly with module-specific hooks to build fully bespoke UI:
         </p>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mb-4">
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { useConsentContext } from '@tantainnovative/ndpr-toolkit';
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`import { useConsentContext } from '@tantainnovative/ndpr-toolkit';
 
 // Must be rendered inside <Consent.Provider>
 export function CustomConsentToggle({ categoryId }: { categoryId: string }) {
@@ -167,81 +160,80 @@ export function CustomConsentToggle({ categoryId }: { categoryId: string }) {
     </label>
   );
 }`}</code></pre>
-          </div>
         </div>
       </section>
 
       <section id="all-modules" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">All 8 Modules and Their Sub-components</h2>
-        <p className="mb-4">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">All 8 Modules and Their Sub-components</h2>
+        <p className="mb-4 text-foreground">
           Every module follows the same compound component pattern. The table below lists the available sub-components
           for each module. All are accessible from{' '}
-          <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm">@tantainnovative/ndpr-toolkit</code>.
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">@tantainnovative/ndpr-toolkit</code>.
         </p>
 
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="bg-gray-100 dark:bg-gray-700">
-                <th className="border border-gray-200 dark:border-gray-600 px-4 py-2 text-left font-semibold">Module</th>
-                <th className="border border-gray-200 dark:border-gray-600 px-4 py-2 text-left font-semibold">Import</th>
-                <th className="border border-gray-200 dark:border-gray-600 px-4 py-2 text-left font-semibold">Sub-components</th>
+              <tr className="bg-muted">
+                <th className="border border-border px-4 py-2 text-left font-semibold text-foreground">Module</th>
+                <th className="border border-border px-4 py-2 text-left font-semibold text-foreground">Import</th>
+                <th className="border border-border px-4 py-2 text-left font-semibold text-foreground">Sub-components</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-semibold">Consent</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">Consent</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">Consent</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">Consent</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
                   Provider, Banner, Title, Description, CategoryList, AcceptAllButton, RejectAllButton, SaveButton, PreferencesButton
                 </td>
               </tr>
-              <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-semibold">DSR</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">DSR</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">
+              <tr className="border-b border-border bg-muted/30">
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">DSR</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">DSR</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
                   Provider, Form, RequestTypeSelector, IdentityFields, DetailsField, SubmitButton, SuccessMessage, StatusTracker
                 </td>
               </tr>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-semibold">DPIA</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">DPIA</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">DPIA</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">DPIA</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
                   Provider, Questionnaire, Section, Question, RiskMatrix, Summary, ExportButton
                 </td>
               </tr>
-              <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-semibold">Breach</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">Breach</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">
+              <tr className="border-b border-border bg-muted/30">
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">Breach</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">Breach</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
                   Provider, NotificationForm, SeverityIndicator, TimelineTracker, RegulatoryChecklist, SubmitButton
                 </td>
               </tr>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-semibold">Privacy Policy</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">PrivacyPolicy</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">Privacy Policy</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">PrivacyPolicy</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
                   Provider, Generator, Section, Preview, ExportButton, LastUpdated
                 </td>
               </tr>
-              <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-semibold">Lawful Basis</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">LawfulBasis</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">
+              <tr className="border-b border-border bg-muted/30">
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">Lawful Basis</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">LawfulBasis</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
                   Provider, Tracker, BasisSelector, ActivityList, ExpiryAlert, AuditLog
                 </td>
               </tr>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-semibold">Cross-Border</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">CrossBorder</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">Cross-Border</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">CrossBorder</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
                   Provider, TransferList, CountrySelector, SafeguardPicker, RiskAssessment, ApprovalStatus
                 </td>
               </tr>
-              <tr className="bg-gray-50 dark:bg-gray-800/50">
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-semibold">ROPA</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">ROPA</td>
-                <td className="border border-gray-200 dark:border-gray-600 px-4 py-2 font-mono text-xs">
+              <tr className="bg-muted/30">
+                <td className="border border-border px-4 py-2 font-semibold text-foreground">ROPA</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">ROPA</td>
+                <td className="border border-border px-4 py-2 font-mono text-xs text-foreground">
                   Provider, ActivityRegister, ActivityForm, CategoryBadge, RetentionSchedule, ExportButton
                 </td>
               </tr>
@@ -251,25 +243,23 @@ export function CustomConsentToggle({ categoryId }: { categoryId: string }) {
       </section>
 
       <section id="unstyled" className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Unstyled Mode</h2>
-        <p className="mb-4">
-          Every sub-component accepts an <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm">unstyled</code> prop that strips all default Tailwind classes.
-          Pass your own via <code className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm">className</code> to integrate with any design system:
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Unstyled Mode</h2>
+        <p className="mb-4 text-foreground">
+          Every sub-component accepts an <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">unstyled</code> prop that strips all default Tailwind classes.
+          Pass your own via <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">className</code> to integrate with any design system:
         </p>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mb-4">
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`<Consent.Provider categories={categories} unstyled>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`<Consent.Provider categories={categories} unstyled>
   <Consent.Banner className="my-custom-banner">
     <Consent.CategoryList className="my-category-list" />
     <Consent.AcceptAllButton className="my-btn my-btn--primary" />
   </Consent.Banner>
 </Consent.Provider>`}</code></pre>
-          </div>
         </div>
       </section>
 
-      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold mb-3">Related Guides</h3>
+      <div className="mt-8 pt-6 border-t border-border">
+        <h3 className="text-lg font-semibold text-foreground mb-3">Related Guides</h3>
         <div className="flex flex-wrap gap-3">
           <Link href="/docs/guides/presets" className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
             Zero-config Presets &rarr;
