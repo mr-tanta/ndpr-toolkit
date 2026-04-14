@@ -112,9 +112,7 @@ function App() {
       <ConsentBanner
         options={consentOptions}
         onSave={handleSaveConsent}
-        privacyPolicyUrl="/privacy-policy"
         position="bottom"
-        showCloseButton={false}
       />
       {/* Rest of your application */}
     </div>
@@ -139,16 +137,24 @@ function App() {
                 <pre className="text-foreground text-sm"><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit';
 import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 
+const emptySettings: ConsentSettings = {
+  consents: { necessary: true },
+  timestamp: Date.now(),
+  version: '1.0',
+  method: 'explicit',
+  hasInteracted: false,
+};
+
 // Use the ConsentStorage component with autoLoad and autoSave
 function ConsentStorageExample() {
   const [settings, setSettings] = useState<ConsentSettings | null>(null);
 
   return (
     <ConsentStorage
-      settings={settings || { necessary: true, lastUpdated: Date.now() }}
+      settings={settings || emptySettings}
       storageOptions={{
-        key: 'my-app-consent',
-        storage: 'localStorage',
+        storageKey: 'my-app-consent',
+        storageType: 'localStorage',
       }}
       onLoad={(loaded) => {
         if (loaded) setSettings(loaded);
@@ -185,11 +191,14 @@ function ConsentStorageExample() {
               <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
                 <pre className="text-foreground text-sm"><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
 
+// Define your options once, outside the component
+const consentOptions = [/* ... */];
+
 function AnalyticsComponent() {
-  const { hasConsent, isLoading } = useConsent('analytics');
+  const { hasConsent, isLoading } = useConsent({ options: consentOptions });
 
   useEffect(() => {
-    if (!isLoading && hasConsent) {
+    if (!isLoading && hasConsent('analytics')) {
       // Initialize analytics only if user has given consent
       initializeAnalytics();
     }
@@ -199,7 +208,7 @@ function AnalyticsComponent() {
     return <div>Loading consent preferences...</div>;
   }
 
-  if (!hasConsent) {
+  if (!hasConsent('analytics')) {
     return (
       <div>
         <p>Analytics are disabled based on your consent preferences.</p>
@@ -214,9 +223,10 @@ function AnalyticsComponent() {
 }
 
 function MarketingComponent() {
-  const { hasConsent, isLoading } = useConsent('marketing');
+  const { hasConsent, isLoading } = useConsent({ options: consentOptions });
 
   // Similar implementation for marketing features
+  // if (!isLoading && hasConsent('marketing')) { ... }
 }`}</code></pre>
               </div>
             </div>
@@ -286,7 +296,6 @@ function PrivacySettingsPage() {
       <ConsentManager
         options={consentOptions}
         onSave={handleSaveConsent}
-        initialValues={JSON.parse(localStorage.getItem('userConsents') || '{}')}
       />
     </div>
   );
@@ -332,12 +341,10 @@ async function recordConsentEvent(userId, consents, eventType) {
 // Use with the ConsentManager onSave callback
 <ConsentManager
   options={consentOptions}
-  onSave={(consents) => {
-    recordConsentEvent(userId, consents, 'given');
+  onSave={(settings) => {
+    recordConsentEvent(userId, settings.consents, 'given');
   }}
->
-  <App />
-</ConsentManager>`}</code></pre>
+/>`}</code></pre>
               </div>
             </div>
           </div>
@@ -375,72 +382,84 @@ import {
   ConsentManager,
   useConsent,
 } from '@tantainnovative/ndpr-toolkit';
+import { localStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 
-// Define consent options
+// Define consent options once, outside components
 const consentOptions = [
   {
     id: 'necessary',
     label: 'Necessary Cookies',
     description: 'These cookies are essential for the website to function properly.',
     required: true,
+    purpose: 'Core website functionality',
   },
   {
     id: 'analytics',
     label: 'Analytics Cookies',
     description: 'These cookies help us understand how visitors interact with our website.',
     required: false,
+    purpose: 'Usage analytics',
   },
   {
     id: 'marketing',
     label: 'Marketing Cookies',
     description: 'These cookies are used to track visitors across websites.',
     required: false,
+    purpose: 'Marketing and advertising',
   },
 ];
 
 // Main application with consent management
 function App() {
+  // v3 approach (recommended): use an adapter for storage
+  const consent = useConsent({
+    options: consentOptions,
+    adapter: localStorageAdapter('my-app-consent'),
+  });
+
+  // v2 approach (deprecated, still works):
+  // const consent = useConsent({
+  //   options: consentOptions,
+  //   storageOptions: { storageKey: 'my-app-consent' },
+  // });
+
   return (
-    <ConsentManager
-      options={consentOptions}
-      storageKey="my-app-consent"
-      autoLoad={true}
-      autoSave={true}
-    >
+    <div>
       <header>
         <h1>My NDPA-Compliant Website</h1>
       </header>
 
       <main>
-        <HomePage />
+        <HomePage consent={consent} />
       </main>
 
       {/* Consent banner appears automatically for new visitors */}
-      <ConsentBanner
-        options={consentOptions}
-        onSave={(consents) => console.log('Consent saved:', consents)}
-        privacyPolicyUrl="/privacy-policy"
-        position="bottom"
-      />
-    </ConsentManager>
+      {consent.shouldShowBanner && (
+        <ConsentBanner
+          options={consentOptions}
+          onSave={(settings) => consent.updateConsent(settings.consents)}
+          position="bottom"
+        />
+      )}
+    </div>
   );
 }
 
 // Example component that uses consent
-function HomePage() {
-  const { hasConsented } = useConsent();
+function HomePage({ consent }) {
+  const { hasConsent } = consent;
 
   useEffect(() => {
-    if (hasConsented('analytics')) {
+    if (hasConsent('analytics')) {
       console.log('Initializing analytics...');
     }
-  }, [hasConsented]);
+  }, [hasConsent]);
 
   useEffect(() => {
-    if (hasConsented('marketing')) {
+    if (hasConsent('marketing')) {
       console.log('Initializing marketing tools...');
     }
-  }, [hasConsented]);
+  }, [hasConsent]);
 
   return (
     <div>

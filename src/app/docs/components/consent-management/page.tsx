@@ -123,25 +123,26 @@ const consent = useConsent({ options, adapter: memoryAdapter() });`}</code>
       id: 'necessary',
       label: 'Necessary Cookies',
       description: 'Essential cookies for the website to function.',
-      required: true
+      required: true,
+      purpose: 'Core website functionality'
     },
     {
       id: 'analytics',
       label: 'Analytics Cookies',
       description: 'Cookies that help us understand how you use our website.',
-      required: false
+      required: false,
+      purpose: 'Usage analytics'
     },
     {
       id: 'marketing',
       label: 'Marketing Cookies',
       description: 'Cookies used for marketing purposes.',
-      required: false
+      required: false,
+      purpose: 'Marketing and advertising'
     }
   ]}
-  onSave={(consents) => console.log(consents)}
+  onSave={(settings) => console.log(settings)}
   position="bottom"
-  showPreferences={true}
-  privacyPolicyUrl="/privacy-policy"
 />`}</code>
             </pre>
           </div>
@@ -154,50 +155,46 @@ const consent = useConsent({ options, adapter: memoryAdapter() });`}</code>
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
               <code className="text-sm text-foreground font-mono">{`import { ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit';
 
-function App() {
+const options = [
+  {
+    id: 'necessary',
+    label: 'Necessary Cookies',
+    description: 'Essential cookies for the website to function.',
+    required: true,
+    purpose: 'Core website functionality'
+  },
+  {
+    id: 'analytics',
+    label: 'Analytics Cookies',
+    description: 'Cookies that help us understand how you use our website.',
+    required: false,
+    purpose: 'Usage analytics'
+  }
+];
+
+function PreferencesPage() {
+  const { settings, updateConsent, resetConsent } = useConsent({ options });
+
   return (
     <ConsentManager
-      options={[
-        {
-          id: 'necessary',
-          label: 'Necessary Cookies',
-          description: 'Essential cookies for the website to function.',
-          required: true
-        },
-        {
-          id: 'analytics',
-          label: 'Analytics Cookies',
-          description: 'Cookies that help us understand how you use our website.',
-          required: false
-        }
-      ]}
-      storageKey="my-app-consent"
-      autoLoad={true}
-      autoSave={true}
-    >
-      <MyApp />
-    </ConsentManager>
+      options={options}
+      settings={settings ?? undefined}
+      onSave={(newSettings) => {
+        // Persist or forward the updated ConsentSettings
+        updateConsent(newSettings.consents);
+      }}
+    />
   );
 }
 
-function MyApp() {
-  const {
-    consents,
-    hasConsented,
-    updateConsent,
-    saveConsents,
-    resetConsents
-  } = useConsent();
+function AnalyticsLoader() {
+  const { hasConsent } = useConsent({ options });
 
-  if (hasConsented('analytics')) {
+  if (hasConsent('analytics')) {
     // Initialize analytics
   }
 
-  return (
-    <div>
-      <button onClick={() => updateConsent('analytics', true)}>Enable Analytics</button>
-    </div>
-  );
+  return null;
 }`}</code>
             </pre>
           </div>
@@ -214,10 +211,11 @@ import { useState } from 'react';
 
 function ConsentStorageExample() {
   const [settings, setSettings] = useState<ConsentSettings>({
-    necessary: true,
-    analytics: false,
-    marketing: false,
-    lastUpdated: Date.now()
+    consents: { necessary: true, analytics: false, marketing: false },
+    timestamp: Date.now(),
+    version: '1.0',
+    method: 'explicit',
+    hasInteracted: true,
   });
 
   const handleLoad = (loadedSettings: ConsentSettings | null) => {
@@ -230,8 +228,8 @@ function ConsentStorageExample() {
     <ConsentStorage
       settings={settings}
       storageOptions={{
-        key: 'my-app-consent',
-        storage: 'localStorage'
+        storageKey: 'my-app-consent',
+        storageType: 'localStorage'
       }}
       onLoad={handleLoad}
       onSave={(savedSettings) => console.log('Saved:', savedSettings)}
@@ -263,7 +261,6 @@ function ConsentStorageExample() {
 import {
   ConsentBanner,
   ConsentManager,
-  ConsentStorage,
   useConsent
 } from '@tantainnovative/ndpr-toolkit';
 
@@ -272,48 +269,57 @@ const consentOptions = [
     id: 'necessary',
     label: 'Necessary Cookies',
     description: 'Essential cookies for the website to function.',
-    required: true
+    required: true,
+    purpose: 'Core website functionality'
   },
   {
     id: 'analytics',
     label: 'Analytics Cookies',
     description: 'Cookies that help us understand how you use our website.',
-    required: false
+    required: false,
+    purpose: 'Usage analytics'
   },
   {
     id: 'marketing',
     label: 'Marketing Cookies',
     description: 'Cookies used for marketing purposes.',
-    required: false
+    required: false,
+    purpose: 'Marketing and advertising'
   }
 ];
 
 function App() {
   const [showPreferences, setShowPreferences] = useState(false);
+  const consent = useConsent({ options: consentOptions });
 
   return (
-    <ConsentManager options={consentOptions} storageKey="my-app-consent">
-      <div>
-        <header>
-          <nav>
-            <button onClick={() => setShowPreferences(true)}>Cookie Preferences</button>
-          </nav>
-        </header>
-        <main>{/* Your main content */}</main>
-        {showPreferences && (
-          <PreferencesModal onClose={() => setShowPreferences(false)} />
-        )}
-        <ConsentBanner options={consentOptions} position="bottom" privacyPolicyUrl="/privacy-policy" />
-      </div>
-    </ConsentManager>
+    <div>
+      <header>
+        <nav>
+          <button onClick={() => setShowPreferences(true)}>Cookie Preferences</button>
+        </nav>
+      </header>
+      <main>{/* Your main content */}</main>
+      {showPreferences && (
+        <PreferencesModal
+          consent={consent}
+          onClose={() => setShowPreferences(false)}
+        />
+      )}
+      <ConsentBanner
+        options={consentOptions}
+        onSave={(settings) => consent.updateConsent(settings.consents)}
+        position="bottom"
+      />
+    </div>
   );
 }
 
-function PreferencesModal({ onClose }) {
-  const { consents, updateConsent, saveConsents, resetConsents } = useConsent();
+function PreferencesModal({ consent, onClose }) {
+  const { settings, updateConsent, resetConsent } = consent;
 
   const handleSave = () => {
-    saveConsents();
+    // settings are already saved via updateConsent
     onClose();
   };
 
@@ -325,15 +331,20 @@ function PreferencesModal({ onClose }) {
           <label key={option.id}>
             <input
               type="checkbox"
-              checked={consents[option.id] || false}
+              checked={settings?.consents[option.id] || false}
               disabled={option.required}
-              onChange={(e) => updateConsent(option.id, e.target.checked)}
+              onChange={(e) =>
+                updateConsent({
+                  ...settings?.consents,
+                  [option.id]: e.target.checked
+                })
+              }
             />
             {option.label}
           </label>
         ))}
         <button onClick={handleSave}>Save</button>
-        <button onClick={resetConsents}>Reset</button>
+        <button onClick={resetConsent}>Reset</button>
         <button onClick={onClose}>Cancel</button>
       </div>
     </div>
@@ -341,13 +352,13 @@ function PreferencesModal({ onClose }) {
 }
 
 function AnalyticsComponent() {
-  const { hasConsented } = useConsent();
+  const { hasConsent } = useConsent({ options: consentOptions });
 
   useEffect(() => {
-    if (hasConsented('analytics')) {
+    if (hasConsent('analytics')) {
       console.log('Analytics initialized');
     }
-  }, [hasConsented]);
+  }, [hasConsent]);
 
   return null;
 }`}</code>
@@ -377,20 +388,20 @@ function AnalyticsComponent() {
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">onSave</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`({ consents: Record<string, boolean> }) => void`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`(settings: ConsentSettings) => void`}</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Callback function called when consent is saved</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">position</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;top&apos; | &apos;bottom&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;top&apos; | &apos;bottom&apos; | &apos;center&apos; | &apos;inline&apos;</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">&apos;bottom&apos;</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Position of the banner on the page</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Position of the banner on the page. top/bottom/center render via a portal; inline renders in normal document flow.</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">title</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Cookie Consent&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;We Value Your Privacy&apos;</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Title displayed on the banner</td>
               </tr>
               <tr className="border-b border-border">
@@ -400,22 +411,70 @@ function AnalyticsComponent() {
                 <td className="py-3 px-4 text-sm text-muted-foreground">Description text explaining the purpose of cookies</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">showPreferences</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">true</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to show the &quot;Preferences&quot; button</td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground">acceptAllButtonText</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Accept All&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the accept all button</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">privacyPolicyUrl</td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground">rejectAllButtonText</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Reject All&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the reject all button</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">customizeButtonText</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Customize&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the customize button</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">storageKey</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;ndpr_consent&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">localStorage key used to persist consent</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">show</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Explicitly control banner visibility. When omitted, the banner auto-shows if no saved consent exists.</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">version</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;1.0&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Consent form version. Banner re-shows when stored version differs.</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">className</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">URL to the privacy policy page</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Additional CSS class on the banner root element</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">classNames</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentBannerClassNames</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Per-slot class overrides for granular styling</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">unstyled</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">false</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Remove all default Tailwind classes to style from scratch</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">onAnalytics</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`(event: ConsentAnalyticsEvent) => void`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Analytics callback fired on each user interaction (shown, accepted_all, rejected_all, customized, dismissed)</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentStorage Props</h3>
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentManager Props</h3>
         <div className="overflow-x-auto mb-8">
           <table className="w-full border-collapse mb-6">
             <thead>
@@ -428,46 +487,70 @@ function AnalyticsComponent() {
             </thead>
             <tbody>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">settings</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentSettings</td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground">options</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentOption[]</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Current consent settings to store</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">storageOptions</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentStorageOptions</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`{ storageKey: 'ndpr_consent', storageType: 'localStorage' }`}</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Options for storage mechanism</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">onLoad</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`(settings: ConsentSettings | null) => void`}</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Callback when settings are loaded</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Array of consent options to display</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">onSave</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">{`(settings: ConsentSettings) => void`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Callback called when the user saves their preferences</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">settings</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentSettings</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Callback when settings are saved</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Current consent settings to pre-populate the form</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">autoLoad</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">true</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to load settings on mount</td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground">title</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Manage Your Privacy Settings&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Title displayed in the manager</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">autoSave</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">true</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to save settings automatically</td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground">description</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Update your consent preferences...&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Description text displayed in the manager</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">children</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">ReactNode | Function</td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground">saveButtonText</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Save Preferences&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the save button</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">resetButtonText</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Reset to Defaults&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the reset button</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">version</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;1.0&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Version stamped on saved ConsentSettings</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">className</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">React nodes or render prop function</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Additional CSS class on the root element</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">classNames</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">ConsentManagerClassNames</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Per-slot class overrides for granular styling</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">unstyled</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">false</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Remove all default Tailwind classes to style from scratch</td>
               </tr>
             </tbody>
           </table>
@@ -475,35 +558,80 @@ function AnalyticsComponent() {
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentOption Type</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`type ConsentOption = {
+          <code className="text-sm text-foreground font-mono">{`interface ConsentOption {
   id: string;
   label: string;
   description: string;
-  required?: boolean;
-};`}</code>
+  required: boolean;
+  /** NDPA Section 25(2): specific purpose for which data will be processed */
+  purpose: string;
+  defaultValue?: boolean;
+  dataCategories?: string[];
+}`}</code>
         </pre>
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentSettings Type</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`type ConsentSettings = {
-  [key: string]: boolean;
-  lastUpdated: number;
-};`}</code>
+          <code className="text-sm text-foreground font-mono">{`interface ConsentSettings {
+  /** Map of consent option IDs to boolean consent values */
+  consents: Record<string, boolean>;
+  /** Unix timestamp of when consent was last updated */
+  timestamp: number;
+  /** Version of the consent form that was accepted */
+  version: string;
+  /** Method used to collect consent: 'banner' | 'manager' | 'explicit' | 'customize' */
+  method: string;
+  /** Whether the user actively made a choice */
+  hasInteracted: boolean;
+}`}</code>
         </pre>
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">ConsentStorageOptions Type</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`type ConsentStorageOptions = {
-  key: string;
-  storage: 'localStorage' | 'sessionStorage' | 'cookie';
+          <code className="text-sm text-foreground font-mono">{`interface ConsentStorageOptions {
+  /** Storage key — defaults to 'ndpr_consent' */
+  storageKey?: string;
+  /** Storage backend — defaults to 'localStorage' */
+  storageType?: 'localStorage' | 'sessionStorage' | 'cookie';
   cookieOptions?: {
-    path?: string;
     domain?: string;
+    path?: string;
+    /** Expiration in days — defaults to 365 */
+    expires?: number;
     secure?: boolean;
-    sameSite?: 'strict' | 'lax' | 'none';
-    maxAge?: number;
+    sameSite?: 'Strict' | 'Lax' | 'None';
   };
-};`}</code>
+}`}</code>
+        </pre>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">useConsent Hook</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
+import { localStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+
+const {
+  settings,          // ConsentSettings | null — current saved settings
+  hasConsent,        // (optionId: string) => boolean — check per-option consent
+  updateConsent,     // (consents: Record<string, boolean>) => void
+  acceptAll,         // () => void — mark every option as true
+  rejectAll,         // () => void — mark non-required options as false
+  shouldShowBanner,  // boolean — true when no valid consent is stored
+  isValid,           // boolean — current settings pass validation
+  validationErrors,  // string[] — validation error messages
+  resetConsent,      // () => void — clear stored consent
+  isLoading,         // boolean — true while an async adapter is loading
+} = useConsent({
+  options,
+
+  // v3 approach (recommended): plug in any StorageAdapter
+  adapter: localStorageAdapter('my-consent-key'),
+
+  // v2 approach (deprecated, still works):
+  // storageOptions: { storageKey: 'my-consent-key' },
+
+  version: '1.0',
+  onChange: (settings) => console.log('Consent changed:', settings),
+});`}</code>
         </pre>
       </section>
 
