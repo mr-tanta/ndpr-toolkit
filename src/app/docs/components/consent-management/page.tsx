@@ -48,6 +48,50 @@ export default function ConsentManagementDocs() {
         </div>
       </section>
 
+      <section id="v3-quick-start" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">v3 Quick Start</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
+          v3 introduces zero-config presets, compound components for custom layouts, and a StorageAdapter pattern
+          so you can plug in any persistence backend without touching component internals.
+        </p>
+
+        <div className="space-y-4">
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Zero-config preset</h3>
+            <pre className="overflow-x-auto">
+              <code className="text-sm text-foreground font-mono">{`// Drop in a fully-working consent banner with NDPA defaults
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
+
+<NDPRConsent />`}</code>
+            </pre>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Compound components for custom layouts</h3>
+            <pre className="overflow-x-auto">
+              <code className="text-sm text-foreground font-mono">{`import { Consent } from '@tantainnovative/ndpr-toolkit/consent';
+import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+
+<Consent.Provider options={options} adapter={apiAdapter('/api/consent')}>
+  <Consent.Banner />
+</Consent.Provider>`}</code>
+            </pre>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl p-4">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Hook with adapter</h3>
+            <pre className="overflow-x-auto">
+              <code className="text-sm text-foreground font-mono">{`import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+import { memoryAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+
+// The adapter prop accepts any StorageAdapter for custom persistence
+// (localStorage, sessionStorage, API, IndexedDB, etc.)
+const consent = useConsent({ options, adapter: memoryAdapter() });`}</code>
+            </pre>
+          </div>
+        </div>
+      </section>
+
       <section id="installation" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Installation</h2>
         <p className="text-muted-foreground mb-4 leading-relaxed">
