@@ -1,0 +1,17 @@
+{
+  "name": "@tantainnovative/ndpr-recipes",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Backend recipes for @tantainnovative/ndpr-toolkit — Prisma schemas, API routes, and ORM adapters for NDPA compliance",
+  "license": "MIT",
+  "author": {
+    "name": "Abraham Esandayinze Tanta",
+    "url": "https://linkedin.com/in/mr-tanta"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mr-tanta/ndpr-toolkit.git",
+    "directory": "packages/ndpr-recipes"
+  },
+  "keywords": ["ndpa", "ndpr", "nigeria", "data-protection", "prisma", "nextjs", "express"]
+}
