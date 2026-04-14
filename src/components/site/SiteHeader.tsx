@@ -121,14 +121,14 @@ export function SiteHeader() {
           top: 0;
           z-index: 100;
           border-bottom: 1px solid transparent;
-          background: rgba(10, 13, 20, 0.6);
-          backdrop-filter: blur(20px) saturate(180%);
-          -webkit-backdrop-filter: blur(20px) saturate(180%);
-          transition: border-color 0.2s ease, background 0.2s ease;
+          background: transparent;
+          transition: border-color 0.2s ease, background 0.2s ease, backdrop-filter 0.2s ease;
         }
         .ndpr-header[data-scrolled="true"] {
-          border-bottom-color: var(--border-default);
-          background: rgba(10, 13, 20, 0.92);
+          border-bottom-color: rgba(30, 41, 59, 0.6);
+          background: rgba(10, 13, 20, 0.85);
+          backdrop-filter: blur(20px) saturate(180%);
+          -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
 
         .ndpr-header-inner {
@@ -239,13 +239,13 @@ export function SiteHeader() {
           text-decoration: none;
           padding: 0.5rem 1rem;
           border-radius: 0.5rem;
-          background: var(--accent);
+          background: linear-gradient(135deg, #6366f1, #8b5cf6);
           transition: all 0.2s ease;
-          box-shadow: 0 1px 2px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+          box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         .ndpr-cta:hover {
-          background: var(--accent-hover);
-          box-shadow: 0 4px 16px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.15);
+          background: linear-gradient(135deg, #818cf8, #a78bfa);
+          box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
           transform: translateY(-1px);
         }
 
