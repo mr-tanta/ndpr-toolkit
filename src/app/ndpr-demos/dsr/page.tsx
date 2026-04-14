@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { TextArea } from '@/components/ui/TextArea';
 import { Label } from '@/components/ui/label';
-import type { DSRRequest, DSRStatus, DSRType } from '@/types';
+import type { DSRRequest, DSRStatus, DSRType } from '@tantainnovative/ndpr-toolkit/core';
 import { generateId } from '@/lib/id';
 import { DemoLayout } from '@/components/site/DemoLayout';
 
@@ -86,7 +86,8 @@ const RIGHTS: RightDefinition[] = [
 
 const STATUS_CONFIG: Record<DSRStatus, { label: string; variant: 'warning' | 'info' | 'success' | 'danger'; dotClass: string }> = {
   pending: { label: 'Pending', variant: 'warning', dotClass: 'bg-amber-500' },
-  'in-progress': { label: 'In Progress', variant: 'info', dotClass: 'bg-blue-500' },
+  awaitingVerification: { label: 'Awaiting Verification', variant: 'warning', dotClass: 'bg-amber-400' },
+  inProgress: { label: 'In Progress', variant: 'info', dotClass: 'bg-blue-500' },
   completed: { label: 'Completed', variant: 'success', dotClass: 'bg-green-500' },
   rejected: { label: 'Rejected', variant: 'danger', dotClass: 'bg-red-500' },
 };
@@ -164,18 +165,18 @@ function buildTimeline(req: DSRRequest): TimelineStep[] {
       timestamp:
         isRejected
           ? req.updatedAt
-          : req.status === 'in-progress' || req.status === 'completed'
+          : req.status === 'inProgress' || req.status === 'completed'
             ? req.updatedAt
             : null,
       note:
         isRejected
           ? 'Request was reviewed and rejected'
-          : req.status === 'in-progress'
+          : req.status === 'inProgress'
             ? 'Request is being processed'
             : req.status === 'completed'
               ? 'Processing completed'
               : 'Waiting for previous steps',
-      active: req.status === 'in-progress',
+      active: req.status === 'inProgress',
       completed: req.status === 'completed' || isRejected,
     },
     {
@@ -213,7 +214,7 @@ function createSampleRequests(): DSRRequest[] {
     {
       id: generateId(),
       type: 'erasure',
-      status: 'in-progress',
+      status: 'inProgress',
       createdAt: Date.now() - 12 * 24 * 60 * 60 * 1000,
       updatedAt: Date.now() - 2 * 24 * 60 * 60 * 1000,
       dueDate: Date.now() + 18 * 24 * 60 * 60 * 1000,
@@ -254,7 +255,7 @@ function createSampleRequests(): DSRRequest[] {
     {
       id: generateId(),
       type: 'automated_decision_making',
-      status: 'in-progress',
+      status: 'inProgress',
       createdAt: Date.now() - 7 * 24 * 60 * 60 * 1000,
       updatedAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
       dueDate: Date.now() + 23 * 24 * 60 * 60 * 1000,
@@ -411,9 +412,9 @@ export default function DSRDemoPage() {
   const stats = {
     total: requests.length,
     pending: requests.filter((r) => r.status === 'pending').length,
-    inProgress: requests.filter((r) => r.status === 'in-progress').length,
+    inProgress: requests.filter((r) => r.status === 'inProgress').length,
     completed: requests.filter((r) => r.status === 'completed').length,
-    overdue: requests.filter((r) => r.status !== 'completed' && r.status !== 'rejected' && daysRemaining(r.dueDate) < 0).length,
+    overdue: requests.filter((r) => r.status !== 'completed' && r.status !== 'rejected' && daysRemaining(r.dueDate ?? 0) < 0).length,
   };
 
   if (!isClient) {
@@ -694,7 +695,7 @@ export default function DSRDemoPage() {
                 <Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
                   <option value="all">All Statuses</option>
                   <option value="pending">Pending</option>
-                  <option value="in-progress">In Progress</option>
+                  <option value="inProgress">In Progress</option>
                   <option value="completed">Completed</option>
                   <option value="rejected">Rejected</option>
                 </Select>
@@ -722,9 +723,9 @@ export default function DSRDemoPage() {
               </Card>
             )}
             {filteredRequests.map((req) => {
-              const days = daysRemaining(req.dueDate);
+              const days = daysRemaining(req.dueDate ?? 0);
               const elapsed = daysElapsed(req.createdAt);
-              const progress = progressPercent(req.createdAt, req.dueDate);
+              const progress = progressPercent(req.createdAt, req.dueDate ?? 0);
               const isOverdue = days < 0 && req.status !== 'completed' && req.status !== 'rejected';
               const isExpanded = expandedId === req.id;
               const cfg = STATUS_CONFIG[req.status];
@@ -767,7 +768,7 @@ export default function DSRDemoPage() {
                         {/* Dates */}
                         <div className="text-xs text-gray-500 dark:text-gray-400 md:w-36 space-y-0.5">
                           <p>Submitted: {formatDate(req.createdAt)}</p>
-                          <p>Due: {formatDate(req.dueDate)}</p>
+                          <p>Due: {req.dueDate ? formatDate(req.dueDate) : '—'}</p>
                         </div>
 
                         {/* Progress bar */}
@@ -830,7 +831,7 @@ export default function DSRDemoPage() {
                                 variant="outline"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleUpdateStatus(req.id, 'in-progress');
+                                  handleUpdateStatus(req.id, 'inProgress');
                                 }}
                               >
                                 Start Processing
@@ -967,9 +968,9 @@ export default function DSRDemoPage() {
                   </CardHeader>
                   <CardContent>
                     {(() => {
-                      const days = daysRemaining(selectedRequest.dueDate);
+                      const days = daysRemaining(selectedRequest.dueDate ?? 0);
                       const elapsed = daysElapsed(selectedRequest.createdAt);
-                      const pct = progressPercent(selectedRequest.createdAt, selectedRequest.dueDate);
+                      const pct = progressPercent(selectedRequest.createdAt, selectedRequest.dueDate ?? 0);
                       const isOverdue = days < 0 && selectedRequest.status !== 'completed' && selectedRequest.status !== 'rejected';
                       const isDone = selectedRequest.status === 'completed' || selectedRequest.status === 'rejected';
 
@@ -1037,7 +1038,7 @@ export default function DSRDemoPage() {
                             <div className="flex justify-between">
                               <span className="text-gray-500 dark:text-gray-400">Due Date</span>
                               <span className={`font-medium ${isOverdue ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}>
-                                {formatDate(selectedRequest.dueDate)}
+                                {selectedRequest.dueDate ? formatDate(selectedRequest.dueDate) : '—'}
                               </span>
                             </div>
                             <div className="flex justify-between">

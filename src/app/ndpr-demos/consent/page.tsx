@@ -8,25 +8,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { DemoLayout } from '@/components/site/DemoLayout';
+import type { ConsentOption, ConsentSettings } from '@tantainnovative/ndpr-toolkit/core';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-interface ConsentOption {
-  id: string;
-  label: string;
-  description: string;
-  required: boolean;
-}
-
-interface ConsentSettings {
-  consents: Record<string, boolean>;
-  timestamp: number;
-  version: string;
-  method: string;
-  hasInteracted: boolean;
-}
 
 interface ConsentEvent {
   action: string;
@@ -48,24 +34,28 @@ const DEFAULT_CONSENT_OPTIONS: ConsentOption[] = [
     label: 'Necessary',
     description: 'Essential cookies required for the website to function properly',
     required: true,
+    purpose: 'Core website functionality and security',
   },
   {
     id: 'analytics',
     label: 'Analytics',
     description: 'Help us understand how visitors interact with our website',
     required: false,
+    purpose: 'Usage analytics and performance measurement',
   },
   {
     id: 'marketing',
     label: 'Marketing',
     description: 'Used to deliver personalized advertisements',
     required: false,
+    purpose: 'Personalized advertising and remarketing',
   },
   {
     id: 'preferences',
     label: 'Preferences',
     description: 'Remember your settings and preferences across visits',
     required: false,
+    purpose: 'User preferences and personalisation',
   },
 ];
 
