@@ -1,47 +1,69 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BreachReport, BreachCategory, RiskAssessment, NotificationRequirement, RegulatoryNotification } from '../types/breach';
 import { calculateBreachSeverity } from '../utils/breach';
+import type { StorageAdapter } from '../adapters/types';
+import { localStorageAdapter } from '../adapters/local-storage';
+
+type BreachCompositeState = {
+  reports: BreachReport[];
+  assessments: RiskAssessment[];
+  notifications: RegulatoryNotification[];
+};
 
 interface UseBreachOptions {
   /**
    * Available breach categories
    */
   categories: BreachCategory[];
-  
+
   /**
    * Initial breach reports
    */
   initialReports?: BreachReport[];
-  
+
+  /**
+   * Pluggable storage adapter. When provided, takes precedence over storageKey/useLocalStorage.
+   */
+  adapter?: StorageAdapter<BreachCompositeState>;
+
   /**
    * Storage key for breach data
    * @default "ndpr_breach_data"
+   * @deprecated Use adapter instead
    */
   storageKey?: string;
-  
+
   /**
    * Whether to use local storage to persist breach data
    * @default true
+   * @deprecated Use adapter instead
    */
   useLocalStorage?: boolean;
-  
+
   /**
    * Callback function called when a breach is reported
    */
   onReport?: (report: BreachReport) => void;
-  
+
   /**
    * Callback function called when a risk assessment is completed
    */
   onAssessment?: (assessment: RiskAssessment) => void;
-  
+
   /**
    * Callback function called when a notification is sent
    */
   onNotification?: (notification: RegulatoryNotification) => void;
 }
 
-interface UseBreachReturn {
+function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAdapter<BreachCompositeState> {
+  if (!useLocalStorage) {
+    return { load: () => null, save: () => {}, remove: () => {} };
+  }
+  return localStorageAdapter<BreachCompositeState>(storageKey);
+}
+
+export interface UseBreachReturn {
   /**
    * All breach reports
    */
@@ -111,6 +133,11 @@ interface UseBreachReturn {
    * Clear all breach data
    */
   clearBreachData: () => void;
+
+  /**
+   * Whether the adapter is still loading data (relevant for async adapters)
+   */
+  isLoading: boolean;
 }
 
 /**
@@ -119,47 +146,69 @@ interface UseBreachReturn {
 export function useBreach({
   categories,
   initialReports = [],
-  storageKey = "ndpr_breach_data",
+  adapter,
+  storageKey = 'ndpr_breach_data',
   useLocalStorage = true,
   onReport,
   onAssessment,
-  onNotification
+  onNotification,
 }: UseBreachOptions): UseBreachReturn {
+  const resolvedAdapter = adapter ?? resolveAdapter(storageKey, useLocalStorage);
+  const adapterRef = useRef(resolvedAdapter);
+  adapterRef.current = resolvedAdapter;
+
   const [reports, setReports] = useState<BreachReport[]>(initialReports);
   const [assessments, setAssessments] = useState<RiskAssessment[]>([]);
   const [notifications, setNotifications] = useState<RegulatoryNotification[]>([]);
-  
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   // Load breach data from storage on mount
   useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        const savedData = localStorage.getItem(storageKey);
-        if (savedData) {
-          const { reports, assessments, notifications } = JSON.parse(savedData);
-          setReports(reports || []);
-          setAssessments(assessments || []);
-          setNotifications(notifications || []);
+    let cancelled = false;
+
+    try {
+      const result = adapterRef.current.load();
+
+      const applyLoaded = (loaded: BreachCompositeState | null) => {
+        if (loaded) {
+          setReports(loaded.reports ?? []);
+          setAssessments(loaded.assessments ?? []);
+          setNotifications(loaded.notifications ?? []);
         }
-      } catch (error) {
-        console.error('Error loading breach data:', error);
+        setIsLoading(false);
+      };
+
+      if (result instanceof Promise) {
+        result.then(
+          (loaded) => {
+            if (!cancelled) applyLoaded(loaded);
+          },
+          () => {
+            if (!cancelled) setIsLoading(false);
+          }
+        );
+      } else {
+        applyLoaded(result);
       }
+    } catch {
+      if (!cancelled) setIsLoading(false);
     }
-  }, [storageKey, useLocalStorage]);
-  
-  // Save breach data to storage when it changes
-  useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify({
-          reports,
-          assessments,
-          notifications
-        }));
-      } catch (error) {
-        console.error('Error saving breach data:', error);
-      }
-    }
-  }, [reports, assessments, notifications, storageKey, useLocalStorage]);
+
+    return () => { cancelled = true; };
+  }, []);
+
+  // Persist composite state to adapter
+  const persistState = (
+    nextReports: BreachReport[],
+    nextAssessments: RiskAssessment[],
+    nextNotifications: RegulatoryNotification[]
+  ) => {
+    Promise.resolve(
+      adapterRef.current.save({ reports: nextReports, assessments: nextAssessments, notifications: nextNotifications })
+    ).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to save breach data:', err);
+    });
+  };
   
   // Generate a unique ID
   const generateId = (prefix: string): string => {
@@ -171,41 +220,31 @@ export function useBreach({
     const newReport: BreachReport = {
       id: generateId('breach'),
       reportedAt: Date.now(),
-      ...reportData
+      ...reportData,
     };
-    
-    setReports(prevReports => [...prevReports, newReport]);
-    
+
+    const nextReports = [...reports, newReport];
+    setReports(nextReports);
+    persistState(nextReports, assessments, notifications);
+
     if (onReport) {
       onReport(newReport);
     }
-    
+
     return newReport;
   };
-  
+
   // Update an existing breach report
   const updateReport = (id: string, updates: Partial<BreachReport>): BreachReport | null => {
-    let updatedReport: BreachReport | null = null;
-    
-    setReports(prevReports => {
-      const index = prevReports.findIndex(report => report.id === id);
-      
-      if (index === -1) {
-        return prevReports;
-      }
-      
-      const report = prevReports[index];
-      updatedReport = {
-        ...report,
-        ...updates
-      };
-      
-      const newReports = [...prevReports];
-      newReports[index] = updatedReport as BreachReport;
-      
-      return newReports;
-    });
-    
+    const index = reports.findIndex(r => r.id === id);
+    if (index === -1) return null;
+
+    const updatedReport: BreachReport = { ...reports[index], ...updates };
+    const nextReports = [...reports];
+    nextReports[index] = updatedReport;
+    setReports(nextReports);
+    persistState(nextReports, assessments, notifications);
+
     return updatedReport;
   };
   
@@ -216,45 +255,26 @@ export function useBreach({
   
   // Conduct a risk assessment for a breach
   const assessRisk = (breachId: string, assessmentData: Omit<RiskAssessment, 'id' | 'breachId' | 'assessedAt'>): RiskAssessment => {
-    // Check if an assessment already exists for this breach
-    const existingAssessment = assessments.find(assessment => assessment.breachId === breachId);
-    
+    const existingAssessment = assessments.find(a => a.breachId === breachId);
+    let nextAssessments: RiskAssessment[];
+    let result: RiskAssessment;
+
     if (existingAssessment) {
-      // Update the existing assessment
-      const updatedAssessment: RiskAssessment = {
-        ...existingAssessment,
-        ...assessmentData,
-        assessedAt: Date.now()
-      };
-      
-      setAssessments(prevAssessments => 
-        prevAssessments.map(assessment => 
-          assessment.id === existingAssessment.id ? updatedAssessment : assessment
-        )
-      );
-      
-      if (onAssessment) {
-        onAssessment(updatedAssessment);
-      }
-      
-      return updatedAssessment;
+      result = { ...existingAssessment, ...assessmentData, assessedAt: Date.now() };
+      nextAssessments = assessments.map(a => a.id === existingAssessment.id ? result : a);
     } else {
-      // Create a new assessment
-      const newAssessment: RiskAssessment = {
-        id: generateId('assessment'),
-        breachId,
-        assessedAt: Date.now(),
-        ...assessmentData
-      };
-      
-      setAssessments(prevAssessments => [...prevAssessments, newAssessment]);
-      
-      if (onAssessment) {
-        onAssessment(newAssessment);
-      }
-      
-      return newAssessment;
+      result = { id: generateId('assessment'), breachId, assessedAt: Date.now(), ...assessmentData };
+      nextAssessments = [...assessments, result];
     }
+
+    setAssessments(nextAssessments);
+    persistState(reports, nextAssessments, notifications);
+
+    if (onAssessment) {
+      onAssessment(result);
+    }
+
+    return result;
   };
   
   // Get a risk assessment for a breach
@@ -286,45 +306,26 @@ export function useBreach({
   
   // Send a regulatory notification
   const sendNotification = (breachId: string, notificationData: Omit<RegulatoryNotification, 'id' | 'breachId' | 'sentAt'>): RegulatoryNotification => {
-    // Check if a notification already exists for this breach
-    const existingNotification = notifications.find(notification => notification.breachId === breachId);
-    
+    const existingNotification = notifications.find(n => n.breachId === breachId);
+    let nextNotifications: RegulatoryNotification[];
+    let result: RegulatoryNotification;
+
     if (existingNotification) {
-      // Update the existing notification
-      const updatedNotification: RegulatoryNotification = {
-        ...existingNotification,
-        ...notificationData,
-        sentAt: Date.now()
-      };
-      
-      setNotifications(prevNotifications => 
-        prevNotifications.map(notification => 
-          notification.id === existingNotification.id ? updatedNotification : notification
-        )
-      );
-      
-      if (onNotification) {
-        onNotification(updatedNotification);
-      }
-      
-      return updatedNotification;
+      result = { ...existingNotification, ...notificationData, sentAt: Date.now() };
+      nextNotifications = notifications.map(n => n.id === existingNotification.id ? result : n);
     } else {
-      // Create a new notification
-      const newNotification: RegulatoryNotification = {
-        id: generateId('notification'),
-        breachId,
-        sentAt: Date.now(),
-        ...notificationData
-      };
-      
-      setNotifications(prevNotifications => [...prevNotifications, newNotification]);
-      
-      if (onNotification) {
-        onNotification(newNotification);
-      }
-      
-      return newNotification;
+      result = { id: generateId('notification'), breachId, sentAt: Date.now(), ...notificationData };
+      nextNotifications = [...notifications, result];
     }
+
+    setNotifications(nextNotifications);
+    persistState(reports, assessments, nextNotifications);
+
+    if (onNotification) {
+      onNotification(result);
+    }
+
+    return result;
   };
   
   // Get a regulatory notification for a breach
@@ -385,12 +386,11 @@ export function useBreach({
     setReports([]);
     setAssessments([]);
     setNotifications([]);
-    
-    if (useLocalStorage && typeof window !== 'undefined') {
-      localStorage.removeItem(storageKey);
-    }
+    Promise.resolve(adapterRef.current.remove()).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to remove breach data:', err);
+    });
   };
-  
+
   return {
     reports,
     assessments,
@@ -404,6 +404,7 @@ export function useBreach({
     sendNotification,
     getNotification,
     getBreachesRequiringNotification,
-    clearBreachData
+    clearBreachData,
+    isLoading,
   };
 }
