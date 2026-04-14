@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
-import { Button } from '@/components/ui/Button';
 import Introduction from './components/Introduction';
 import KeyRequirements from './components/KeyRequirements';
 import ComplianceChecklist from './components/ComplianceChecklist';
@@ -16,18 +15,22 @@ export default function NDPRComplianceChecklistGuide() {
       description="A comprehensive checklist to help organizations achieve and maintain NDPA 2023 compliance"
     >
       <div className="flex mb-6 space-x-2">
-        <Button asChild variant="outline" size="sm">
-          <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
-            NDPA 2023
-          </a>
-        </Button>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/docs">
-            Toolkit Documentation
-          </Link>
-        </Button>
+        <a
+          href="https://ndpc.gov.ng/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+        >
+          NDPA 2023
+        </a>
+        <Link
+          href="/docs"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+        >
+          Toolkit Documentation
+        </Link>
       </div>
-      
+
       <Introduction />
       <KeyRequirements />
       <ComplianceChecklist />

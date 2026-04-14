@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
 
 export default function ManagingConsentGuide() {
   return (
@@ -12,18 +10,20 @@ export default function ManagingConsentGuide() {
       description="Learn how to implement a complete consent management system with the NDPA 2023 Toolkit"
     >
       <div className="flex mb-6 space-x-2">
-        <Button asChild variant="outline" size="sm">
-          <Link href="/ndpr-demos/consent">
-            View Consent Demo
-          </Link>
-        </Button>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/docs/components/consent-management">
-            Consent Component Docs
-          </Link>
-        </Button>
+        <Link
+          href="/ndpr-demos/consent"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+        >
+          View Consent Demo
+        </Link>
+        <Link
+          href="/docs/components/consent-management"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+        >
+          Consent Component Docs
+        </Link>
       </div>
-      
+
       <section id="introduction" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Introduction</h2>
         <p className="mb-4">
@@ -31,12 +31,12 @@ export default function ManagingConsentGuide() {
           Organizations must obtain valid consent before collecting, processing, or sharing personal data.
           This guide will help you implement a comprehensive consent management system using the NDPR Toolkit.
         </p>
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA 2023 Consent Requirements</h4>
-          <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
+        <div className="bg-primary/10 p-4 rounded-xl border border-border">
+          <h4 className="text-primary font-medium mb-2">NDPA 2023 Consent Requirements</h4>
+          <p className="text-muted-foreground text-sm mb-0">
             Under the NDPA 2023, valid consent must be:
           </p>
-          <ul className="list-disc pl-6 mt-2 text-blue-700 dark:text-blue-300 text-sm">
+          <ul className="list-disc pl-6 mt-2 text-muted-foreground text-sm">
             <li><strong>Freely given:</strong> Data subjects must have a genuine choice and control</li>
             <li><strong>Specific:</strong> Consent must be granular for different types of processing</li>
             <li><strong>Informed:</strong> Data subjects must understand what they&apos;re consenting to</li>
@@ -49,24 +49,24 @@ export default function ManagingConsentGuide() {
       <section id="consent-lifecycle" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">The Consent Lifecycle</h2>
         <p className="mb-4">
-          A complete consent management system covers the entire lifecycle of consent, from collection to withdrawal. 
+          A complete consent management system covers the entire lifecycle of consent, from collection to withdrawal.
           The NDPR Toolkit provides components for each stage of this lifecycle:
         </p>
-        
-        <div className="relative border-l-2 border-blue-500 pl-8 pb-8 space-y-10">
+
+        <div className="relative border-l-2 border-primary pl-8 pb-8 space-y-10">
           <div className="relative">
-            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
+            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-primary flex items-center justify-center">
               <span className="text-white font-bold text-sm">1</span>
             </div>
             <h3 className="text-xl font-bold">Consent Collection</h3>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              The first step is collecting consent from data subjects. This typically happens when users first visit your website 
+            <p className="text-muted-foreground mt-2">
+              The first step is collecting consent from data subjects. This typically happens when users first visit your website
               or when they sign up for your service. The NDPR Toolkit&apos;s ConsentBanner component is designed for this purpose.
             </p>
-            <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+            <div className="mt-4 bg-card border border-border rounded-xl p-4">
               <h4 className="font-medium mb-2">Code Example</h4>
-              <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
+              <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+                <pre className="text-foreground text-sm"><code>{`import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
 
 function App() {
   const consentOptions = [
@@ -93,10 +93,10 @@ function App() {
   const handleSaveConsent = (consents) => {
     // Save consent preferences to your backend or local storage
     console.log('Consent preferences:', consents);
-    
+
     // Example: Save to localStorage
     localStorage.setItem('userConsents', JSON.stringify(consents));
-    
+
     // Example: Send to backend API
     fetch('/api/consents', {
       method: 'POST',
@@ -123,20 +123,20 @@ function App() {
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
-            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
+            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-primary flex items-center justify-center">
               <span className="text-white font-bold text-sm">2</span>
             </div>
             <h3 className="text-xl font-bold">Consent Storage</h3>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Once collected, consent preferences must be securely stored and easily retrievable. The NDPR Toolkit provides 
+            <p className="text-muted-foreground mt-2">
+              Once collected, consent preferences must be securely stored and easily retrievable. The NDPR Toolkit provides
               utilities for storing consent in various formats, including local storage, cookies, and server-side databases.
             </p>
-            <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+            <div className="mt-4 bg-card border border-border rounded-xl p-4">
               <h4 className="font-medium mb-2">Code Example</h4>
-              <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit';
+              <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+                <pre className="text-foreground text-sm"><code>{`import { ConsentStorage } from '@tantainnovative/ndpr-toolkit';
 import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 
 // Use the ConsentStorage component with autoLoad and autoSave
@@ -170,35 +170,35 @@ function ConsentStorageExample() {
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
-            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
+            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-primary flex items-center justify-center">
               <span className="text-white font-bold text-sm">3</span>
             </div>
             <h3 className="text-xl font-bold">Consent Verification</h3>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Before processing personal data, you must verify that the user has given consent for the specific processing activity. 
+            <p className="text-muted-foreground mt-2">
+              Before processing personal data, you must verify that the user has given consent for the specific processing activity.
               The NDPR Toolkit provides utilities for checking consent status.
             </p>
-            <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+            <div className="mt-4 bg-card border border-border rounded-xl p-4">
               <h4 className="font-medium mb-2">Code Example</h4>
-              <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
+              <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+                <pre className="text-foreground text-sm"><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
 
 function AnalyticsComponent() {
   const { hasConsent, isLoading } = useConsent('analytics');
-  
+
   useEffect(() => {
     if (!isLoading && hasConsent) {
       // Initialize analytics only if user has given consent
       initializeAnalytics();
     }
   }, [hasConsent, isLoading]);
-  
+
   if (isLoading) {
     return <div>Loading consent preferences...</div>;
   }
-  
+
   if (!hasConsent) {
     return (
       <div>
@@ -209,32 +209,32 @@ function AnalyticsComponent() {
       </div>
     );
   }
-  
+
   return <div>Analytics are enabled and tracking your usage.</div>;
 }
 
 function MarketingComponent() {
   const { hasConsent, isLoading } = useConsent('marketing');
-  
+
   // Similar implementation for marketing features
 }`}</code></pre>
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
-            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
+            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-primary flex items-center justify-center">
               <span className="text-white font-bold text-sm">4</span>
             </div>
             <h3 className="text-xl font-bold">Consent Management</h3>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Data subjects must be able to view and update their consent preferences at any time. The NDPR Toolkit&apos;s 
+            <p className="text-muted-foreground mt-2">
+              Data subjects must be able to view and update their consent preferences at any time. The NDPR Toolkit&apos;s
               ConsentManager component provides a user interface for managing consent preferences.
             </p>
-            <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+            <div className="mt-4 bg-card border border-border rounded-xl p-4">
               <h4 className="font-medium mb-2">Code Example</h4>
-              <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit';
+              <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+                <pre className="text-foreground text-sm"><code>{`import { ConsentManager } from '@tantainnovative/ndpr-toolkit';
 
 function PrivacySettingsPage() {
   const consentOptions = [
@@ -261,10 +261,10 @@ function PrivacySettingsPage() {
   const handleSaveConsent = (consents) => {
     // Save updated consent preferences
     console.log('Updated consent preferences:', consents);
-    
+
     // Example: Save to localStorage
     localStorage.setItem('userConsents', JSON.stringify(consents));
-    
+
     // Example: Send to backend API
     fetch('/api/consents', {
       method: 'POST',
@@ -282,7 +282,7 @@ function PrivacySettingsPage() {
         Manage your consent preferences for how we use your data.
         You can change these settings at any time.
       </p>
-      
+
       <ConsentManager
         options={consentOptions}
         onSave={handleSaveConsent}
@@ -294,20 +294,20 @@ function PrivacySettingsPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
-            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
+            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-primary flex items-center justify-center">
               <span className="text-white font-bold text-sm">5</span>
             </div>
             <h3 className="text-xl font-bold">Consent Records</h3>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              For compliance purposes, you must maintain records of consent, including when and how consent was given or withdrawn. 
+            <p className="text-muted-foreground mt-2">
+              For compliance purposes, you must maintain records of consent, including when and how consent was given or withdrawn.
               The NDPR Toolkit provides utilities for maintaining detailed consent records.
             </p>
-            <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+            <div className="mt-4 bg-card border border-border rounded-xl p-4">
               <h4 className="font-medium mb-2">Code Example</h4>
-              <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-                <pre><code>{`// Consent records should be maintained server-side.
+              <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+                <pre className="text-foreground text-sm"><code>{`// Consent records should be maintained server-side.
 // When saving consent via the ConsentManager, also record
 // the event in your backend for audit compliance.
 
@@ -341,21 +341,21 @@ async function recordConsentEvent(userId, consents, eventType) {
               </div>
             </div>
           </div>
-          
+
           <div className="relative">
-            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
+            <div className="absolute -left-10 mt-1.5 h-6 w-6 rounded-full bg-primary flex items-center justify-center">
               <span className="text-white font-bold text-sm">6</span>
             </div>
             <h3 className="text-xl font-bold">Consent Withdrawal</h3>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Data subjects must be able to withdraw their consent as easily as they gave it. The NDPR Toolkit provides 
+            <p className="text-muted-foreground mt-2">
+              Data subjects must be able to withdraw their consent as easily as they gave it. The NDPR Toolkit provides
               components and utilities for handling consent withdrawal.
             </p>
-            <div className="mt-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-md">
+            <div className="mt-4 bg-card border border-border rounded-xl p-4">
               <h4 className="font-medium mb-2">Implementation Tip</h4>
-              <p className="text-sm">
-                When a user withdraws consent, you must stop processing their data for the purposes they&apos;ve withdrawn consent for. 
-                This may include deleting data or disabling certain features. Make sure your application architecture supports 
+              <p className="text-sm text-muted-foreground">
+                When a user withdraws consent, you must stop processing their data for the purposes they&apos;ve withdrawn consent for.
+                This may include deleting data or disabling certain features. Make sure your application architecture supports
                 this granular control.
               </p>
             </div>
@@ -368,8 +368,8 @@ async function recordConsentEvent(userId, consents, eventType) {
         <p className="mb-4">
           Here&apos;s a complete example of how to implement a consent management system using the NDPR Toolkit:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import { useEffect } from 'react';
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+          <pre className="text-foreground text-sm"><code>{`import { useEffect } from 'react';
 import {
   ConsentBanner,
   ConsentManager,
@@ -454,93 +454,81 @@ function HomePage() {
       <section id="best-practices" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-2">No Pre-checked Boxes</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Never use pre-checked boxes for optional consent options. The NDPA 2023 requires that consent be given through
-                a clear affirmative action, and pre-checked boxes do not meet this requirement.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-2">Clear Language</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Use clear, plain language to explain what data you&apos;re collecting, why you&apos;re collecting it, and how it will be used. 
-                Avoid legal jargon that may confuse users.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-2">Granular Consent</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Provide granular consent options for different types of processing. Do not bundle multiple purposes into a single
-                consent option. This allows users to consent to some types of processing but not others.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-2">Easy Withdrawal</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Make it as easy to withdraw consent as it is to give it. Provide a clear, accessible way for users to 
-                update their consent preferences at any time.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-2">Record Keeping</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Maintain detailed records of consent, including when and how consent was given or withdrawn. This is essential 
-                for demonstrating compliance with the NDPA 2023.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-2">Regular Review</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Regularly review and update your consent mechanisms to ensure they remain compliant with the NDPA 2023 and
-                effective for your users. Consider conducting user testing to ensure your consent mechanisms are clear and usable.
-              </p>
-            </CardContent>
-          </Card>
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-bold text-lg mb-2">No Pre-checked Boxes</h3>
+            <p className="text-muted-foreground text-sm">
+              Never use pre-checked boxes for optional consent options. The NDPA 2023 requires that consent be given through
+              a clear affirmative action, and pre-checked boxes do not meet this requirement.
+            </p>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-bold text-lg mb-2">Clear Language</h3>
+            <p className="text-muted-foreground text-sm">
+              Use clear, plain language to explain what data you&apos;re collecting, why you&apos;re collecting it, and how it will be used.
+              Avoid legal jargon that may confuse users.
+            </p>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-bold text-lg mb-2">Granular Consent</h3>
+            <p className="text-muted-foreground text-sm">
+              Provide granular consent options for different types of processing. Do not bundle multiple purposes into a single
+              consent option. This allows users to consent to some types of processing but not others.
+            </p>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-bold text-lg mb-2">Easy Withdrawal</h3>
+            <p className="text-muted-foreground text-sm">
+              Make it as easy to withdraw consent as it is to give it. Provide a clear, accessible way for users to
+              update their consent preferences at any time.
+            </p>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-bold text-lg mb-2">Record Keeping</h3>
+            <p className="text-muted-foreground text-sm">
+              Maintain detailed records of consent, including when and how consent was given or withdrawn. This is essential
+              for demonstrating compliance with the NDPA 2023.
+            </p>
+          </div>
+
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-bold text-lg mb-2">Regular Review</h3>
+            <p className="text-muted-foreground text-sm">
+              Regularly review and update your consent mechanisms to ensure they remain compliant with the NDPA 2023 and
+              effective for your users. Consider conducting user testing to ensure your consent mechanisms are clear and usable.
+            </p>
+          </div>
         </div>
       </section>
 
       <section id="common-pitfalls" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Common Pitfalls to Avoid</h2>
-        <ul className="list-disc pl-6 space-y-2">
+        <ul className="list-disc pl-6 space-y-2 text-foreground">
           <li>
-            <strong>Cookie Walls:</strong> Blocking access to your website unless users accept all cookies is generally not 
+            <strong>Cookie Walls:</strong> Blocking access to your website unless users accept all cookies is generally not
             considered valid consent under the NDPA 2023, as it doesn&apos;t give users a genuine choice.
           </li>
           <li>
-            <strong>Bundling Consent:</strong> Requiring users to consent to multiple unrelated purposes as a package deal 
+            <strong>Bundling Consent:</strong> Requiring users to consent to multiple unrelated purposes as a package deal
             is not compliant with the NDPA 2023&apos;s requirement for specific consent.
           </li>
           <li>
-            <strong>Ignoring Consent:</strong> Loading tracking scripts or cookies before obtaining consent is a common 
+            <strong>Ignoring Consent:</strong> Loading tracking scripts or cookies before obtaining consent is a common
             mistake that violates the NDPA 2023&apos;s requirement for valid consent.
           </li>
           <li>
-            <strong>Unclear Language:</strong> Using vague or technical language that users may not understand undermines 
+            <strong>Unclear Language:</strong> Using vague or technical language that users may not understand undermines
             the &apos;informed&apos; aspect of valid consent.
           </li>
           <li>
-            <strong>Difficult Withdrawal:</strong> Making it difficult for users to withdraw consent, such as by hiding 
+            <strong>Difficult Withdrawal:</strong> Making it difficult for users to withdraw consent, such as by hiding
             the option in a complex settings menu, is not compliant with the NDPA 2023&apos;s requirement for withdrawable consent.
           </li>
           <li>
-            <strong>Inadequate Records:</strong> Failing to maintain adequate records of consent can make it difficult to 
+            <strong>Inadequate Records:</strong> Failing to maintain adequate records of consent can make it difficult to
             demonstrate compliance with the NDPA 2023&apos;s requirement for record-keeping.
           </li>
         </ul>
@@ -549,32 +537,32 @@ function HomePage() {
       <section id="resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Additional Resources</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPA 2023 Official Text</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Official text of the Nigeria Data Protection Act 2023, including consent requirements.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
-                  View Act
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">Consent Component Documentation</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Technical documentation for the Consent Management components.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/consent-management">
-                  View Documentation
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-medium text-foreground mb-2">NDPA 2023 Official Text</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Official text of the Nigeria Data Protection Act 2023, including consent requirements.
+            </p>
+            <a
+              href="https://ndpc.gov.ng/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+            >
+              View Act
+            </a>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-medium text-foreground mb-2">Consent Component Documentation</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Technical documentation for the Consent Management components.
+            </p>
+            <Link
+              href="/docs/components/consent-management"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+            >
+              View Documentation
+            </Link>
+          </div>
         </div>
       </section>
     </DocLayout>

@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
 
 export default function CrossBorderTransfersGuide() {
   return (
@@ -12,16 +10,18 @@ export default function CrossBorderTransfersGuide() {
       description="Guide to managing cross-border data transfers in compliance with NDPA 2023 Section 41"
     >
       <div className="flex mb-6 space-x-2">
-        <Button asChild variant="outline" size="sm">
-          <Link href="/ndpr-demos/cross-border">
-            View Demo
-          </Link>
-        </Button>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/docs/components/cross-border-transfers">
-            Component Docs
-          </Link>
-        </Button>
+        <Link
+          href="/ndpr-demos/cross-border"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+        >
+          View Demo
+        </Link>
+        <Link
+          href="/docs/components/cross-border-transfers"
+          className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+        >
+          Component Docs
+        </Link>
       </div>
 
       <section className="mb-8">
@@ -31,9 +31,9 @@ export default function CrossBorderTransfersGuide() {
           specific requirements. This guide walks you through the legal framework, the assessment process, and how to
           use the NDPR Toolkit to manage cross-border transfers compliantly.
         </p>
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">Why This Matters</h4>
-          <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
+        <div className="bg-primary/10 p-4 rounded-xl border border-border">
+          <h4 className="text-primary font-medium mb-2">Why This Matters</h4>
+          <p className="text-muted-foreground text-sm mb-0">
             Many Nigerian businesses use international cloud services, payment processors, and SaaS platforms that process
             data outside Nigeria. Each of these transfers must comply with Sections 41-45 of the NDPA 2023.
           </p>
@@ -45,7 +45,7 @@ export default function CrossBorderTransfersGuide() {
         <p className="mb-4">
           The NDPA 2023 permits cross-border transfers of personal data only when one of the following conditions is met:
         </p>
-        <ol className="list-decimal pl-6 space-y-3">
+        <ol className="list-decimal pl-6 space-y-3 text-foreground">
           <li>
             <strong>Adequacy Decision:</strong> The NDPC has determined that the destination country provides an
             adequate level of data protection.
@@ -53,7 +53,7 @@ export default function CrossBorderTransfersGuide() {
           <li>
             <strong>Appropriate Safeguards:</strong> The controller or processor has provided appropriate safeguards,
             which may include:
-            <ul className="list-disc pl-6 mt-2 space-y-1">
+            <ul className="list-disc pl-6 mt-2 space-y-1 text-muted-foreground">
               <li>Standard contractual clauses approved by the NDPC</li>
               <li>Binding corporate rules</li>
               <li>An approved code of conduct with binding commitments</li>
@@ -71,10 +71,10 @@ export default function CrossBorderTransfersGuide() {
         <h2 className="text-2xl font-bold mb-4">Step-by-Step Assessment Process</h2>
         <div className="space-y-4">
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">1</div>
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">1</div>
             <div>
-              <h3 className="font-semibold mb-1">Map Your Data Flows</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <h3 className="font-semibold mb-1 text-foreground">Map Your Data Flows</h3>
+              <p className="text-muted-foreground text-sm">
                 Identify all instances where personal data leaves Nigeria, including cloud hosting, analytics services,
                 email providers, and third-party processors.
               </p>
@@ -82,10 +82,10 @@ export default function CrossBorderTransfersGuide() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">2</div>
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">2</div>
             <div>
-              <h3 className="font-semibold mb-1">Check Adequacy Status</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <h3 className="font-semibold mb-1 text-foreground">Check Adequacy Status</h3>
+              <p className="text-muted-foreground text-sm">
                 Verify whether the NDPC has issued an adequacy decision for the destination country. If yes, the transfer
                 can proceed without additional safeguards.
               </p>
@@ -93,10 +93,10 @@ export default function CrossBorderTransfersGuide() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">3</div>
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">3</div>
             <div>
-              <h3 className="font-semibold mb-1">Select Transfer Mechanism</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <h3 className="font-semibold mb-1 text-foreground">Select Transfer Mechanism</h3>
+              <p className="text-muted-foreground text-sm">
                 If no adequacy decision exists, choose and implement appropriate safeguards such as standard contractual
                 clauses or binding corporate rules.
               </p>
@@ -104,20 +104,20 @@ export default function CrossBorderTransfersGuide() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">4</div>
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">4</div>
             <div>
-              <h3 className="font-semibold mb-1">Document the Transfer</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <h3 className="font-semibold mb-1 text-foreground">Document the Transfer</h3>
+              <p className="text-muted-foreground text-sm">
                 Record all transfer details in your ROPA, including the destination, recipient, safeguards, and data categories.
               </p>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">5</div>
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">5</div>
             <div>
-              <h3 className="font-semibold mb-1">Update Your Privacy Notice</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <h3 className="font-semibold mb-1 text-foreground">Update Your Privacy Notice</h3>
+              <p className="text-muted-foreground text-sm">
                 Inform data subjects about cross-border transfers, including which countries receive their data and the
                 safeguards in place.
               </p>
@@ -131,8 +131,8 @@ export default function CrossBorderTransfersGuide() {
         <p className="mb-4">
           The NDPR Toolkit provides components to automate much of this process:
         </p>
-        <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-          <pre><code>{`import {
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+          <pre className="text-foreground text-sm"><code>{`import {
   CrossBorderTransferManager,
   useCrossBorderTransfer,
   validateTransfer,
@@ -159,29 +159,29 @@ function TransferAssessmentPage() {
       <section className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Common Transfer Scenarios</h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-card">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Scenario</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Typical Mechanism</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Scenario</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Typical Mechanism</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-card divide-y divide-border">
               <tr>
-                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Cloud hosting (AWS, GCP, Azure)</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Standard contractual clauses + data processing agreement</td>
+                <td className="px-6 py-4 text-sm text-foreground">Cloud hosting (AWS, GCP, Azure)</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Standard contractual clauses + data processing agreement</td>
               </tr>
               <tr>
-                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">SaaS tools (Salesforce, HubSpot)</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Standard contractual clauses</td>
+                <td className="px-6 py-4 text-sm text-foreground">SaaS tools (Salesforce, HubSpot)</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Standard contractual clauses</td>
               </tr>
               <tr>
-                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Intra-group transfers (multinational)</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Binding corporate rules</td>
+                <td className="px-6 py-4 text-sm text-foreground">Intra-group transfers (multinational)</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Binding corporate rules</td>
               </tr>
               <tr>
-                <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Payment processing (Stripe, Paystack)</td>
-                <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">Contractual necessity + standard contractual clauses</td>
+                <td className="px-6 py-4 text-sm text-foreground">Payment processing (Stripe, Paystack)</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Contractual necessity + standard contractual clauses</td>
               </tr>
             </tbody>
           </table>
@@ -191,32 +191,32 @@ function TransferAssessmentPage() {
       <section id="help-resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Related Resources</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">Cross-Border Transfers Component</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Full API reference and component documentation.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/docs/components/cross-border-transfers">
-                  View Docs
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">NDPC Website</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                Official guidance from the Nigeria Data Protection Commission.
-              </p>
-              <Button asChild variant="outline" size="sm">
-                <a href="https://ndpc.gov.ng/" target="_blank" rel="noopener noreferrer">
-                  Visit NDPC
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-medium text-foreground mb-2">Cross-Border Transfers Component</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Full API reference and component documentation.
+            </p>
+            <Link
+              href="/docs/components/cross-border-transfers"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+            >
+              View Docs
+            </Link>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-6">
+            <h3 className="font-medium text-foreground mb-2">NDPC Website</h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Official guidance from the Nigeria Data Protection Commission.
+            </p>
+            <a
+              href="https://ndpc.gov.ng/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-border bg-card text-foreground hover:bg-primary/10 transition-colors"
+            >
+              Visit NDPC
+            </a>
+          </div>
         </div>
       </section>
     </DocLayout>

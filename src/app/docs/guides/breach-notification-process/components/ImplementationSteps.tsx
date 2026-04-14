@@ -5,19 +5,19 @@ export default function ImplementationSteps() {
     <section id="implementation-steps" className="mb-8">
       <h2 className="text-2xl font-bold mb-4">Implementation Steps</h2>
       <p className="mb-4">
-        Implementing a comprehensive breach notification process involves several key components from the NDPR Toolkit. 
+        Implementing a comprehensive breach notification process involves several key components from the NDPR Toolkit.
         Here&apos;s how to set up each part of the process:
       </p>
-      
+
       <div className="space-y-8">
         <div>
           <h3 className="text-xl font-bold mb-3">1. Breach Detection and Reporting</h3>
           <p className="mb-3">
-            The first step is to implement a system for detecting and reporting potential data breaches. The NDPR Toolkit&apos;s 
+            The first step is to implement a system for detecting and reporting potential data breaches. The NDPR Toolkit&apos;s
             BreachReportForm component provides a structured way for staff to report suspected breaches.
           </p>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit';
+          <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+            <pre className="text-foreground text-sm"><code>{`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit';
 
 function BreachReportingPage() {
   const breachCategories = [
@@ -31,7 +31,7 @@ function BreachReportingPage() {
   const handleSubmitReport = (reportData) => {
     // Save report to your backend
     console.log('Breach report submitted:', reportData);
-    
+
     // Example: Send to backend API
     fetch('/api/breach-reports', {
       method: 'POST',
@@ -54,15 +54,15 @@ function BreachReportingPage() {
   return (
     <div>
       <h1>Report a Data Breach</h1>
-      
+
       {!submitted ? (
         <>
           <p>
             Use this form to report a suspected data breach. All breaches must be
             reported internally within 24 hours of discovery.
           </p>
-          
-          <BreachReportForm 
+
+          <BreachReportForm
             onSubmit={handleSubmitReport}
             categories={breachCategories}
           />
@@ -83,21 +83,21 @@ function BreachReportingPage() {
 }`}</code></pre>
           </div>
         </div>
-        
+
         <div>
           <h3 className="text-xl font-bold mb-3">2. Risk Assessment</h3>
           <p className="mb-3">
-            Once a breach is reported, you need to assess the risk to determine if notification is required and to whom. 
+            Once a breach is reported, you need to assess the risk to determine if notification is required and to whom.
             The BreachRiskAssessment component guides users through this process.
           </p>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit';
+          <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+            <pre className="text-foreground text-sm"><code>{`import { BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit';
 
 function RiskAssessmentPage({ breachData }) {
   const handleRiskAssessmentComplete = (assessment) => {
     // Save assessment to your backend
     console.log('Risk assessment completed:', assessment);
-    
+
     // Example: Update breach record with assessment
     fetch(\`/api/breach-reports/\${breachData.id}/assessment\`, {
       method: 'POST',
@@ -121,15 +121,15 @@ function RiskAssessmentPage({ breachData }) {
     <div>
       <h1>Breach Risk Assessment</h1>
       <p>Breach ID: {breachData.id}</p>
-      
+
       {!assessmentComplete ? (
         <>
           <p>
             Complete this assessment to determine the risk level of the breach and whether
             notification to NDPC and/or data subjects is required.
           </p>
-          
-          <BreachRiskAssessment 
+
+          <BreachRiskAssessment
             breachData={breachData}
             onComplete={handleRiskAssessmentComplete}
           />
@@ -155,26 +155,26 @@ function RiskAssessmentPage({ breachData }) {
 }`}</code></pre>
           </div>
         </div>
-        
+
         <div>
           <h3 className="text-xl font-bold mb-3">3. Notification Management</h3>
           <p className="mb-3">
-            For breaches that require notification, you need a system to manage the notification process. 
+            For breaches that require notification, you need a system to manage the notification process.
             The BreachNotificationManager component provides a dashboard for tracking notifications.
           </p>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { BreachNotificationManager } from '@tantainnovative/ndpr-toolkit';
+          <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+            <pre className="text-foreground text-sm"><code>{`import { BreachNotificationManager } from '@tantainnovative/ndpr-toolkit';
 
 function NotificationManagementPage() {
   const [breaches, setBreaches] = useState([]);
-  
+
   useEffect(() => {
     // Fetch breaches that require notification
     fetch('/api/breach-reports?requiresNotification=true')
       .then(response => response.json())
       .then(data => setBreaches(data));
   }, []);
-  
+
   const handleUpdateStatus = (breachId, status) => {
     // Update breach status in your backend
     fetch(\`/api/breach-reports/\${breachId}/status\`, {
@@ -187,12 +187,12 @@ function NotificationManagementPage() {
     .then(response => response.json())
     .then(data => {
       // Update local state
-      setBreaches(breaches.map(breach => 
+      setBreaches(breaches.map(breach =>
         breach.id === breachId ? { ...breach, status } : breach
       ));
     });
   };
-  
+
   const handleSendNotification = (breachId, notification) => {
     // Record notification in your backend
     fetch(\`/api/breach-reports/\${breachId}/notifications\`, {
@@ -205,10 +205,10 @@ function NotificationManagementPage() {
     .then(response => response.json())
     .then(data => {
       // Update local state
-      setBreaches(breaches.map(breach => 
-        breach.id === breachId ? { 
-          ...breach, 
-          notifications: [...breach.notifications, data] 
+      setBreaches(breaches.map(breach =>
+        breach.id === breachId ? {
+          ...breach,
+          notifications: [...breach.notifications, data]
         } : breach
       ));
     });
@@ -217,8 +217,8 @@ function NotificationManagementPage() {
   return (
     <div>
       <h1>Breach Notification Management</h1>
-      
-      <BreachNotificationManager 
+
+      <BreachNotificationManager
         breaches={breaches}
         onUpdateStatus={handleUpdateStatus}
         onSendNotification={handleSendNotification}
@@ -228,15 +228,15 @@ function NotificationManagementPage() {
 }`}</code></pre>
           </div>
         </div>
-        
+
         <div>
           <h3 className="text-xl font-bold mb-3">4. Regulatory Report Generation</h3>
           <p className="mb-3">
-            For breaches that require notification to NDPC, you need to prepare a formal report. 
+            For breaches that require notification to NDPC, you need to prepare a formal report.
             The RegulatoryReportGenerator component helps create NDPA 2023-compliant breach notification reports.
           </p>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
+          <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto">
+            <pre className="text-foreground text-sm"><code>{`import { RegulatoryReportGenerator } from '@tantainnovative/ndpr-toolkit';
 
 function ReportGenerationPage({ breachData }) {
   const organizationInfo = {
@@ -250,7 +250,7 @@ function ReportGenerationPage({ breachData }) {
   const handleGenerateReport = (report) => {
     // Save report to your backend
     console.log('Report generated:', report);
-    
+
     // Example: Save report and update breach record
     fetch(\`/api/breach-reports/\${breachData.id}/regulatory-report\`, {
       method: 'POST',
@@ -272,15 +272,15 @@ function ReportGenerationPage({ breachData }) {
     <div>
       <h1>Generate NDPC Notification Report</h1>
       <p>Breach ID: {breachData.id}</p>
-      
+
       {!reportGenerated ? (
         <>
           <p>
             Generate a NDPC breach notification report for submission. This report must be
             submitted within 72 hours of becoming aware of the breach.
           </p>
-          
-          <RegulatoryReportGenerator 
+
+          <RegulatoryReportGenerator
             breachData={breachData}
             organizationInfo={organizationInfo}
             onGenerate={handleGenerateReport}
@@ -303,14 +303,14 @@ function ReportGenerationPage({ breachData }) {
           </div>
         </div>
       </div>
-      
+
       <div className="mt-8">
         <h3 className="text-xl font-bold mb-3">Putting It All Together</h3>
         <p className="mb-3">
-          To implement a complete breach notification process, you need to integrate these components into a cohesive workflow. 
+          To implement a complete breach notification process, you need to integrate these components into a cohesive workflow.
           This typically involves:
         </p>
-        <ul className="list-disc pl-6 mb-4">
+        <ul className="list-disc pl-6 mb-4 text-foreground">
           <li>Creating a breach response plan that defines roles, responsibilities, and procedures</li>
           <li>Implementing the NDPR Toolkit components as part of your breach response system</li>
           <li>Setting up automated notifications to alert the breach response team when a breach is reported</li>
@@ -319,7 +319,7 @@ function ReportGenerationPage({ breachData }) {
           <li>Regularly testing the breach response process through tabletop exercises or simulations</li>
         </ul>
         <p>
-          The NDPR Toolkit provides all the necessary components to implement this workflow, but it&apos;s important to 
+          The NDPR Toolkit provides all the necessary components to implement this workflow, but it&apos;s important to
           adapt it to your organization&apos;s specific needs and integrate it with your existing systems.
         </p>
       </div>
