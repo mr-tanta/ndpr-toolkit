@@ -1004,6 +1004,39 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
         .doc-prose .shadow-sm {
           box-shadow: var(--shadow-sm) !important;
         }
+        .doc-prose .text-foreground {
+          color: var(--text-primary) !important;
+        }
+        .doc-prose .text-blue-600 {
+          color: #60a5fa !important;
+        }
+        .doc-prose .text-blue-400 {
+          color: #60a5fa !important;
+        }
+        .doc-prose .border-border {
+          border-color: var(--border-default) !important;
+        }
+        .doc-prose .text-primary {
+          color: var(--text-primary) !important;
+        }
+        .doc-prose .bg-card {
+          background: var(--bg-surface) !important;
+        }
+        .doc-prose .text-card-foreground {
+          color: var(--text-primary) !important;
+        }
+        .doc-prose .bg-popover {
+          background: var(--bg-elevated) !important;
+        }
+        .doc-prose .text-popover-foreground {
+          color: var(--text-primary) !important;
+        }
+        .doc-prose .bg-secondary {
+          background: var(--bg-elevated) !important;
+        }
+        .doc-prose .text-secondary-foreground {
+          color: var(--text-primary) !important;
+        }
 
         /* ── Responsive ── */
         @media (max-width: 1280px) {
