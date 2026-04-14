@@ -18,38 +18,40 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://ndprtoolkit.com.ng"),
   title: {
-    default: "NDPA Toolkit | Nigeria Data Protection",
+    default: "NDPA Toolkit — NDPA 2023 Compliance Infrastructure for React",
     template: "%s | NDPA Toolkit",
   },
   description:
-    "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features. Consent, DSR, DPIA, breach notification, and more.",
+    "v3 — Production-ready React components and adapters for NDPA 2023 compliance. Consent management, DSR portal, DPIA, breach notification, compliance score, and presets for Nigerian applications.",
   keywords:
-    "NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, compliance toolkit, React, Next.js, open source",
+    "NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, compliance toolkit, React, Next.js, open source, compliance score, adapters, presets, DSR portal",
   other: {
     "theme-color": "#1d4ed8",
   },
   openGraph: {
-    title: "NDPA Toolkit | Nigeria Data Protection",
+    title: "NDPA Toolkit — NDPA 2023 Compliance Infrastructure for React",
     description:
-      "Open-source toolkit for implementing NDPA 2023 (Nigeria Data Protection Act) compliant features. Consent, DSR, DPIA, breach notification, and more.",
+      "v3 — Production-ready React components and adapters for NDPA 2023 compliance. Consent management, DSR portal, DPIA, breach notification, compliance score, and presets for Nigerian applications.",
     type: "website",
     siteName: "NDPA Toolkit",
     locale: "en_US",
+    url: "https://ndprtoolkit.com.ng",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "NDPA Toolkit — Nigeria Data Protection Compliance Components",
+        alt: "NDPA Toolkit — NDPA 2023 Compliance Infrastructure for React",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NDPA Toolkit | Nigeria Data Protection",
+    title: "NDPA Toolkit — NDPA 2023 Compliance Infrastructure for React",
     description:
-      "Open-source toolkit for NDPA 2023 compliance: consent management, DSR, DPIA, breach notification, and more for Nigerian applications.",
+      "v3 — Production-ready React toolkit for NDPA 2023: adapters, presets, compliance score, consent management, DSR, DPIA, and breach notification for Nigerian applications.",
     images: ["/og-image.png"],
+    creator: "@mr_tanta",
   },
 };
 

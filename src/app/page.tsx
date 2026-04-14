@@ -1,15 +1,15 @@
 import { HomePageClient } from './HomePageClient';
 
 export const metadata = {
-  title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
+  title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit v3',
   description:
-    'Build NDPA 2023-compliant apps with our open-source toolkit. Consent management, DSR, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
+    'Build NDPA 2023-compliant apps with our open-source toolkit v3. Adapters, presets, compliance score, consent management, DSR portal, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
   keywords:
-    'NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, compliance toolkit, React, Next.js, open source, data protection Nigeria',
+    'NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, compliance toolkit, React, Next.js, open source, data protection Nigeria, adapters, presets, compliance score',
   openGraph: {
-    title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
+    title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit v3',
     description:
-      'Build NDPA 2023-compliant apps with our open-source toolkit. Consent management, DSR, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
+      'Build NDPA 2023-compliant apps with our open-source toolkit v3. Adapters, presets, compliance score, consent management, DSR portal, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
     url: 'https://ndprtoolkit.com.ng',
     siteName: 'NDPA Toolkit',
     images: [
@@ -17,7 +17,7 @@ export const metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'NDPA Toolkit - Nigeria Data Protection Compliance',
+        alt: 'NDPA Toolkit v3 - Nigeria Data Protection Compliance Infrastructure',
       },
     ],
     locale: 'en_US',
@@ -25,9 +25,9 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
+    title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit v3',
     description:
-      'Build NDPA 2023-compliant apps with our open-source toolkit. Consent management, DSR, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
+      'Build NDPA 2023-compliant apps with our open-source toolkit v3. Adapters, presets, compliance score, consent management, DSR portal, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
     images: ['/og-image.png'],
   },
 };
@@ -37,8 +37,9 @@ const jsonLdString = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'NDPA Toolkit',
+  version: '3.0.0',
   description:
-    'Enterprise-grade React components for Nigeria Data Protection Act (NDPA) 2023 compliance',
+    'Enterprise-grade React compliance infrastructure for Nigeria Data Protection Act (NDPA) 2023. v3 introduces adapters, presets, compliance score, DSR portal, and fully customisable theming.',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Any',
   url: 'https://ndprtoolkit.com.ng',
@@ -54,6 +55,26 @@ const jsonLdString = JSON.stringify({
   },
   license: 'https://opensource.org/licenses/MIT',
   programmingLanguage: 'TypeScript',
+  featureList: [
+    'Consent management',
+    'Data Subject Rights (DSR) portal',
+    'DPIA questionnaire',
+    'Breach notification',
+    'Compliance score',
+    'Adapters',
+    'Presets',
+    'Lawful basis tracker',
+    'Cross-border transfer safeguards',
+    'ROPA management',
+    'Privacy policy generator',
+    'NDPC reporting',
+  ],
+  softwareVersion: '3.0.0',
+  downloadUrl: 'https://www.npmjs.com/package/ndpr-toolkit',
+  sameAs: [
+    'https://github.com/tantainnovative/ndpr-toolkit',
+    'https://www.npmjs.com/package/ndpr-toolkit',
+  ],
 });
 
 export default function HomePage() {
