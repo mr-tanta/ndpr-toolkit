@@ -30,3 +30,6 @@ export type { UseROPAOptions, UseROPAReturn } from './hooks/useROPA';
 // Compliance score
 export { useComplianceScore } from './hooks/useComplianceScore';
 export type { ComplianceInput, ComplianceReport } from './utils/compliance-score';
+
+export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
+export type { UseAdaptivePolicyWizardOptions, UseAdaptivePolicyWizardReturn } from './hooks/useAdaptivePolicyWizard';
