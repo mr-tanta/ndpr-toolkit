@@ -4,6 +4,12 @@
  */
 export { LawfulBasisTracker } from './components/lawful-basis/LawfulBasisTracker';
 export { useLawfulBasis } from './hooks/useLawfulBasis';
+export type { UseLawfulBasisReturn } from './hooks/useLawfulBasis';
 export { validateProcessingActivity, getLawfulBasisDescription, assessComplianceGaps, generateLawfulBasisSummary } from './utils/lawful-basis';
 export type { LawfulBasisComplianceGap, LawfulBasisValidationResult } from './utils/lawful-basis';
-export type { LawfulBasis, SensitiveDataCondition, ProcessingActivity, LegitimateInterestAssessment, LawfulBasisSummary } from './types/lawful-basis';
+export type { LawfulBasis as LawfulBasisType, SensitiveDataCondition, ProcessingActivity, LegitimateInterestAssessment, LawfulBasisSummary } from './types/lawful-basis';
+export { LawfulBasis } from './components/lawful-basis/compound';
+export { LawfulBasisProvider } from './components/lawful-basis/Provider';
+export type { LawfulBasisProviderProps } from './components/lawful-basis/Provider';
+export { useLawfulBasisCompound } from './components/lawful-basis/context';
+export type { StorageAdapter } from './adapters/types';

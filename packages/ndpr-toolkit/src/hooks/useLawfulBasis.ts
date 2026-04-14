@@ -1,10 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ProcessingActivity, LawfulBasisSummary } from '../types/lawful-basis';
 import {
   validateProcessingActivity,
   generateLawfulBasisSummary,
   LawfulBasisValidationResult,
 } from '../utils/lawful-basis';
+import type { StorageAdapter } from '../adapters/types';
+import { localStorageAdapter } from '../adapters/local-storage';
+
+function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAdapter<ProcessingActivity[]> {
+  if (!useLocalStorage) {
+    return { load: () => null, save: () => {}, remove: () => {} };
+  }
+  return localStorageAdapter<ProcessingActivity[]>(storageKey);
+}
 
 interface UseLawfulBasisOptions {
   /**
@@ -13,14 +22,21 @@ interface UseLawfulBasisOptions {
   initialActivities?: ProcessingActivity[];
 
   /**
+   * Pluggable storage adapter. When provided, takes precedence over storageKey/useLocalStorage.
+   */
+  adapter?: StorageAdapter<ProcessingActivity[]>;
+
+  /**
    * Storage key for persisting activities
    * @default "ndpr_lawful_basis_activities"
+   * @deprecated Use adapter instead
    */
   storageKey?: string;
 
   /**
    * Whether to use local storage to persist activities
    * @default true
+   * @deprecated Use adapter instead
    */
   useLocalStorage?: boolean;
 
@@ -40,7 +56,7 @@ interface UseLawfulBasisOptions {
   onRemove?: (id: string) => void;
 }
 
-interface UseLawfulBasisReturn {
+export interface UseLawfulBasisReturn {
   /**
    * All processing activities
    */
@@ -75,6 +91,11 @@ interface UseLawfulBasisReturn {
    * Validate a processing activity
    */
   validateActivity: (activity: ProcessingActivity) => LawfulBasisValidationResult;
+
+  /**
+   * Whether the adapter is still loading data (relevant for async adapters)
+   */
+  isLoading: boolean;
 }
 
 /**
@@ -83,38 +104,55 @@ interface UseLawfulBasisReturn {
  */
 export function useLawfulBasis({
   initialActivities = [],
+  adapter,
   storageKey = 'ndpr_lawful_basis_activities',
   useLocalStorage = true,
   onAdd,
   onUpdate,
   onRemove,
 }: UseLawfulBasisOptions = {}): UseLawfulBasisReturn {
+  const resolvedAdapter = adapter ?? resolveAdapter(storageKey, useLocalStorage);
+  const adapterRef = useRef(resolvedAdapter);
+  adapterRef.current = resolvedAdapter;
+
   const [activities, setActivities] = useState<ProcessingActivity[]>(initialActivities);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Load activities from local storage on mount
+  // Load activities from storage on mount
   useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem(storageKey);
-        if (saved) {
-          setActivities(JSON.parse(saved));
-        }
-      } catch (error) {
-        console.error('Error loading lawful basis activities:', error);
-      }
-    }
-  }, [storageKey, useLocalStorage]);
+    let cancelled = false;
 
-  // Persist activities to local storage when they change
-  useEffect(() => {
-    if (useLocalStorage && typeof window !== 'undefined') {
-      try {
-        localStorage.setItem(storageKey, JSON.stringify(activities));
-      } catch (error) {
-        console.error('Error saving lawful basis activities:', error);
+    try {
+      const result = adapterRef.current.load();
+
+      if (result instanceof Promise) {
+        result.then(
+          (loaded) => {
+            if (cancelled) return;
+            if (loaded) setActivities(loaded);
+            setIsLoading(false);
+          },
+          () => {
+            if (!cancelled) setIsLoading(false);
+          }
+        );
+      } else {
+        if (result) setActivities(result);
+        setIsLoading(false);
       }
+    } catch {
+      if (!cancelled) setIsLoading(false);
     }
-  }, [activities, storageKey, useLocalStorage]);
+
+    return () => { cancelled = true; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Persist activities to adapter (fire-and-forget)
+  const persistActivities = useCallback((updated: ProcessingActivity[]) => {
+    Promise.resolve(adapterRef.current.save(updated)).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to save lawful basis activities:', err);
+    });
+  }, []);
 
   // Generate a unique ID
   const generateId = (): string => {
@@ -132,7 +170,11 @@ export function useLawfulBasis({
         updatedAt: now,
       };
 
-      setActivities(prev => [...prev, newActivity]);
+      setActivities(prev => {
+        const updated = [...prev, newActivity];
+        persistActivities(updated);
+        return updated;
+      });
 
       if (onAdd) {
         onAdd(newActivity);
@@ -140,7 +182,7 @@ export function useLawfulBasis({
 
       return newActivity;
     },
-    [onAdd]
+    [onAdd, persistActivities]
   );
 
   // Update an existing processing activity
@@ -163,6 +205,7 @@ export function useLawfulBasis({
 
         const next = [...prev];
         next[index] = updatedActivity as ProcessingActivity;
+        persistActivities(next);
         return next;
       });
 
@@ -172,19 +215,23 @@ export function useLawfulBasis({
 
       return updatedActivity;
     },
-    [onUpdate]
+    [onUpdate, persistActivities]
   );
 
   // Remove a processing activity
   const removeActivity = useCallback(
     (id: string): void => {
-      setActivities(prev => prev.filter(a => a.id !== id));
+      setActivities(prev => {
+        const updated = prev.filter(a => a.id !== id);
+        persistActivities(updated);
+        return updated;
+      });
 
       if (onRemove) {
         onRemove(id);
       }
     },
-    [onRemove]
+    [onRemove, persistActivities]
   );
 
   // Get a specific processing activity by ID
@@ -216,5 +263,6 @@ export function useLawfulBasis({
     getActivity,
     getSummary,
     validateActivity,
+    isLoading,
   };
 }
