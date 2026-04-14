@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0] — 2026-04-14
+
+### Added
+- **Adaptive Policy Wizard** (`AdaptivePolicyWizard`) — 4-step question-driven privacy policy generator
+  - Step 1: Organization details + industry + size
+  - Step 2: Data category selection (16 categories across 5 groups)
+  - Step 3: Processing purposes, third-party processors, cross-border/automated toggles
+  - Step 4: Review, edit, reorder sections, add custom sections, export
+- **Policy section engine** (`assemblePolicy()`) — context-aware section generator producing 13 possible sections based on user answers, with industry-adapted language
+- **NDPA compliance checker** (`evaluatePolicyCompliance()`) — real-time 15-requirement checklist (115 points max) with auto-fix suggestions
+- **Professional PDF export** (`exportPDF()`) — cover page, table of contents, page numbers, headers/footers, NDPA compliance badge
+- **DOCX export** (`exportDOCX()`) — Word document with heading styles, headers, footers (optional `docx` peer dependency)
+- **HTML export** (`exportHTML()`) — self-contained responsive HTML with embedded styles, print CSS, semantic markup
+- **Markdown export** (`exportMarkdown()`) — clean markdown with TOC and metadata
+- **PolicyPage component** — embeddable React component for rendering policies at `/privacy-policy`
+- **Draft auto-save** — adapter-backed persistence with debounced save and restore-on-reload
+- **Custom sections** — UI to add, edit, reorder, and delete custom policy sections (max 10)
+- **Compliance checker sidebar** — collapsible panel with score ring, requirement checklist, and "Fix it" buttons
+- `useAdaptivePolicyWizard` hook with full state management, compliance tracking, and export functions
+- `docx` added as optional peer dependency for Word export
+
+### Changed
+- `NDPRPrivacyPolicy` preset now renders the AdaptivePolicyWizard instead of the basic PolicyGenerator
+
 ## [3.1.0] — 2026-04-14
 
 ### Added
