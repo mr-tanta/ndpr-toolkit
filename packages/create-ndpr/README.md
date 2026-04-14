@@ -125,6 +125,6 @@ app.use('/api/ndpr', createNDPRRouter());
 
 ## Links
 
-- Toolkit docs: https://ndpr-toolkit.tantainnovative.com
+- Toolkit docs: https://ndprtoolkit.com.ng
 - GitHub: https://github.com/tantainnovative/ndpr-toolkit
 - NDPC: https://ndpr.gov.ng

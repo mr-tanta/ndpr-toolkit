@@ -644,21 +644,21 @@ function RiskAssessmentView({ breachId }: { breachId: string }) {
 
 ## Documentation
 
-For detailed documentation, visit [https://ndpr-toolkit.tantainnovative.com/docs](https://ndpr-toolkit.tantainnovative.com/docs)
+For detailed documentation, visit [https://ndprtoolkit.com.ng/docs](https://ndprtoolkit.com.ng/docs)
 
 ### API Reference
 
 Detailed API documentation is available for all components:
 
-- [Consent Management](https://ndpr-toolkit.tantainnovative.com/docs/components/consent-management)
-- [Data Subject Rights](https://ndpr-toolkit.tantainnovative.com/docs/components/data-subject-rights)
-- [DPIA Questionnaire](https://ndpr-toolkit.tantainnovative.com/docs/components/dpia-questionnaire)
-- [Breach Notification](https://ndpr-toolkit.tantainnovative.com/docs/components/breach-notification)
-- [Privacy Policy Generator](https://ndpr-toolkit.tantainnovative.com/docs/components/privacy-policy-generator)
-- [Lawful Basis Tracking](https://ndpr-toolkit.tantainnovative.com/docs/components/lawful-basis-tracking)
-- [Cross-Border Transfers](https://ndpr-toolkit.tantainnovative.com/docs/components/cross-border-transfers)
-- [Record of Processing Activities](https://ndpr-toolkit.tantainnovative.com/docs/components/ropa)
-- [React Hooks](https://ndpr-toolkit.tantainnovative.com/docs/components/hooks)
+- [Consent Management](https://ndprtoolkit.com.ng/docs/components/consent-management)
+- [Data Subject Rights](https://ndprtoolkit.com.ng/docs/components/data-subject-rights)
+- [DPIA Questionnaire](https://ndprtoolkit.com.ng/docs/components/dpia-questionnaire)
+- [Breach Notification](https://ndprtoolkit.com.ng/docs/components/breach-notification)
+- [Privacy Policy Generator](https://ndprtoolkit.com.ng/docs/components/privacy-policy-generator)
+- [Lawful Basis Tracking](https://ndprtoolkit.com.ng/docs/components/lawful-basis-tracking)
+- [Cross-Border Transfers](https://ndprtoolkit.com.ng/docs/components/cross-border-transfers)
+- [Record of Processing Activities](https://ndprtoolkit.com.ng/docs/components/ropa)
+- [React Hooks](https://ndprtoolkit.com.ng/docs/components/hooks)
 
 ## Contributing
 
