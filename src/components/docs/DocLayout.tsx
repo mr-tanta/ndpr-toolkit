@@ -69,6 +69,11 @@ const navigation: NavItem[] = [
       { title: 'Lawful Basis for Processing', href: '/docs/guides/lawful-basis', isNew: true },
       { title: 'Cross-Border Transfers', href: '/docs/guides/cross-border-transfers', isNew: true },
       { title: 'Styling & Customization', href: '/docs/guides/styling-customization', isNew: true },
+      { title: 'Storage Adapters', href: '/docs/guides/adapters', isNew: true },
+      { title: 'Compound Components', href: '/docs/guides/compound-components', isNew: true },
+      { title: 'Zero-config Presets', href: '/docs/guides/presets', isNew: true },
+      { title: 'Compliance Score', href: '/docs/guides/compliance-score', isNew: true },
+      { title: 'Backend Integration', href: '/docs/guides/backend-integration', isNew: true },
     ],
   },
 ];
