@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { DemoLayout } from '@/components/site/DemoLayout';
-import PolicyGenerator from '@/components/privacy-policy/PolicyGenerator';
+import { AdaptivePolicyWizard } from '@tantainnovative/ndpr-toolkit/policy';
 
 export default function PolicyDemoPage() {
   return (
@@ -25,7 +25,7 @@ import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 />`}
     >
       <div className="policy-demo-wrapper">
-        <PolicyGenerator onGenerate={(policy) => console.log('Generated:', policy)} />
+        <AdaptivePolicyWizard onComplete={(policy) => console.log('Generated:', policy)} />
       </div>
 
       <style>{`
