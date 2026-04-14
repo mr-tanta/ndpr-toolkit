@@ -35,7 +35,7 @@ export default function DocsPage() {
         </div>
       </section>
 
-      {/* What's New in v2.1 */}
+      {/* What's New in v3.0 */}
       <section className="mb-12">
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-2xl font-bold">What&apos;s New in v{siteConfig.version}</h2>
@@ -47,28 +47,42 @@ export default function DocsPage() {
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Lawful Basis Tracker</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Zero-Config Presets</h3>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Track and document lawful basis for each processing activity under NDPA 2023 Section 25.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Drop in <code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">NDPRConsent</code>, <code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">NDPRSubjectRights</code>, and other presets for instant compliance with zero boilerplate.</p>
               <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/components/lawful-basis-tracker">View Docs</Link>
+                <Link href="/docs/guides/presets">View Docs</Link>
               </Button>
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">Cross-Border Transfers</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Pluggable Storage Adapters</h3>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Manage and validate cross-border data transfers in compliance with NDPA 2023 Section 41.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Swap storage backends at runtime — localStorage, IndexedDB, REST, or a custom adapter — without touching component code.</p>
               <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/components/cross-border-transfers">View Docs</Link>
+                <Link href="/docs/guides/adapters">View Docs</Link>
+              </Button>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Compound Components</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Compose granular sub-components to build exactly the UI you need, with full control over layout and structure.</p>
+              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
+                <Link href="/docs/guides/compound-components">View Docs</Link>
               </Button>
             </div>
             <div className="flex flex-col">
@@ -78,17 +92,45 @@ export default function DocsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-gray-900 dark:text-white">ROPA (Records of Processing)</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Compliance Score Engine</h3>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Maintain Records of Processing Activities as required by the NDPA 2023.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Real-time compliance scoring across all NDPA 2023 obligations, surfaced through the new <code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">NDPRDashboard</code> component.</p>
               <Button asChild variant="outline" size="sm" className="mt-auto self-start">
-                <Link href="/docs/components/ropa">View Docs</Link>
+                <Link href="/docs/guides/compliance-score">View Docs</Link>
+              </Button>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">Backend Recipes Package</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Server-side helpers for Express, Next.js API routes, and serverless functions to handle DSR workflows and breach reporting end-to-end.</p>
+              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
+                <Link href="/docs/guides/backend-integration">View Docs</Link>
+              </Button>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">CLI Scaffolder</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Bootstrap a fully wired compliance setup in seconds with <code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">npx ndpr-toolkit init</code>, including adapters, presets, and config.</p>
+              <Button asChild variant="outline" size="sm" className="mt-auto self-start">
+                <Link href="/docs/guides/presets">View Docs</Link>
               </Button>
             </div>
           </div>
           <div className="mt-6 pt-4 border-t border-green-200 dark:border-green-800">
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              <strong>Also in v2.1:</strong> Modular imports for tree-shaking, per-module entry points, improved TypeScript definitions, and full <Link href="/docs/guides/styling-customization" className="underline font-medium hover:text-green-900 dark:hover:text-green-100">styling customization</Link> with classNames overrides and unstyled mode across all components.
+              <strong>Also in v3.0:</strong> Full backward compatibility with v2.x component APIs, enhanced TypeScript generics, improved tree-shaking, and continued <Link href="/docs/guides/styling-customization" className="underline font-medium hover:text-green-900 dark:hover:text-green-100">styling customization</Link> with classNames overrides and unstyled mode across all components.
             </p>
           </div>
         </div>
@@ -103,9 +145,8 @@ export default function DocsPage() {
           </p>
 
           <p>
-            The toolkit includes components for consent management, data subject rights handling, privacy policy generation,
-            breach reporting, and data protection impact assessments. All components are built with TypeScript for type safety
-            and designed to be easily integrated into React and Next.js applications.
+            v3.0 introduces zero-config presets, pluggable storage adapters, compound components, a compliance score
+            engine, backend recipes, and a CLI scaffolder — so you can go from zero to compliant in minutes.
           </p>
 
           <h3>Installation</h3>
@@ -194,61 +235,57 @@ import {
 } from '@tantainnovative/ndpr-toolkit';`}</code></pre>
           </div>
 
-          <h3>Basic Setup</h3>
+          <h3>3-File Preset Quickstart</h3>
           <p>
-            Import and use the components and hooks in your React or Next.js application:
+            The fastest path to compliance: install, configure an adapter, drop in a preset. Three files, done.
           </p>
-          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto">
-            <pre><code>{`import { ConsentBanner, ConsentManager, ConsentStorage, useConsent } from '@tantainnovative/ndpr-toolkit';
 
-function MyApp() {
+          <p><strong>1. adapter.ts</strong> — choose where consent data is stored</p>
+          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
+            <pre><code>{`// src/lib/ndpr-adapter.ts
+import { createLocalStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+
+export const adapter = createLocalStorageAdapter({ key: 'my-app-ndpr' });`}</code></pre>
+          </div>
+
+          <p><strong>2. layout.tsx</strong> — mount the provider once at the root</p>
+          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
+            <pre><code>{`// src/app/layout.tsx
+import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
+import { adapter } from '@/lib/ndpr-adapter';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ConsentManager
-      options={[
-        {
-          id: 'necessary',
-          label: 'Necessary Cookies',
-          description: 'Essential cookies for the website to function.',
-          required: true
-        },
-        {
-          id: 'analytics',
-          label: 'Analytics Cookies',
-          description: 'Cookies that help us understand how you use our website.',
-          required: false
-        }
-      ]}
-      storageKey="my-app-consent"
-      autoLoad={true}
-      autoSave={true}
-    >
-      <AppContent />
-      <ConsentBanner
-        position="bottom"
-        privacyPolicyUrl="/privacy-policy"
-        showPreferences={true}
-        onSave={({ consents }) => console.log('Consent saved:', consents)}
-      />
-    </ConsentManager>
-  );
-}
-
-function AppContent() {
-  // Use the useConsent hook to manage consent state
-  const { consents, hasConsented, updateConsent } = useConsent();
-
-  // Check if user has given consent for analytics
-  if (hasConsented('analytics')) {
-    // Initialize analytics
-  }
-
-  return (
-    <div>
-      {/* Your app content */}
-    </div>
+    <html lang="en">
+      <body>
+        <NDPRProvider adapter={adapter} orgName="Acme Ltd" privacyPolicyUrl="/privacy">
+          {children}
+        </NDPRProvider>
+      </body>
+    </html>
   );
 }`}</code></pre>
           </div>
+
+          <p><strong>3. page.tsx</strong> — drop in a preset, get a fully compliant UI</p>
+          <div className="bg-gray-800 text-gray-200 p-4 rounded-md overflow-x-auto mb-4">
+            <pre><code>{`// src/app/page.tsx
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
+
+export default function Home() {
+  return (
+    <main>
+      {/* Your app content */}
+      <NDPRConsent />  {/* NDPA 2023-compliant consent banner — zero config needed */}
+    </main>
+  );
+}`}</code></pre>
+          </div>
+
+          <p>
+            Need DSR handling too? Swap in <code>NDPRSubjectRights</code> or mount <code>NDPRDashboard</code> for the full compliance score view.
+            See the <Link href="/docs/guides/presets" className="underline font-medium">Presets guide</Link> for all available presets.
+          </p>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -370,6 +407,36 @@ function AppContent() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           {[
             {
+              title: 'Zero-Config Presets',
+              description: 'Get up and running instantly with NDPRConsent, NDPRSubjectRights, NDPRDashboard, and other ready-made presets.',
+              href: '/docs/guides/presets',
+              isNew: true,
+            },
+            {
+              title: 'Storage Adapters',
+              description: 'Swap localStorage, IndexedDB, REST, or a custom backend adapter without changing component code.',
+              href: '/docs/guides/adapters',
+              isNew: true,
+            },
+            {
+              title: 'Compound Components',
+              description: 'Compose granular sub-components to build exactly the compliance UI your product needs.',
+              href: '/docs/guides/compound-components',
+              isNew: true,
+            },
+            {
+              title: 'Compliance Score Engine',
+              description: 'Understand how the toolkit scores your NDPA 2023 obligations and surface insights with NDPRDashboard.',
+              href: '/docs/guides/compliance-score',
+              isNew: true,
+            },
+            {
+              title: 'Backend Integration',
+              description: 'Server-side recipes for Express, Next.js API routes, and serverless to handle DSR workflows end-to-end.',
+              href: '/docs/guides/backend-integration',
+              isNew: true,
+            },
+            {
               title: 'Conducting a DPIA',
               description: 'Step-by-step guide to conducting a Data Protection Impact Assessment',
               href: '/docs/guides/conducting-dpia',
@@ -412,7 +479,10 @@ function AppContent() {
           ].map((guide) => (
             <Card key={guide.title}>
               <CardHeader>
-                <CardTitle>{guide.title}</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  {guide.title}
+                  {guide.isNew && <Badge variant="success" className="text-xs">New in v3</Badge>}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-500 dark:text-gray-400 mb-4">{guide.description}</p>

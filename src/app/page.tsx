@@ -132,8 +132,16 @@ export default function Home() {
   // Benefits of using the toolkit
   const benefits = [
     {
-      title: "Rapid Implementation",
-      description: "Deploy compliance features in days, not months, with our pre-built components."
+      title: "Zero-Config Quickstart",
+      description: "Drop in a preset like NDPRConsent or NDPRSubjectRights and get a fully compliant UI with no configuration required."
+    },
+    {
+      title: "Pluggable Storage Adapters",
+      description: "Swap localStorage, IndexedDB, REST, or a custom backend adapter at runtime without touching component code."
+    },
+    {
+      title: "Compliance Score Engine",
+      description: "Real-time scoring across all NDPA 2023 obligations with actionable insights via the built-in NDPRDashboard."
     },
     {
       title: "NDPA 2023 Compliant",
@@ -141,11 +149,11 @@ export default function Home() {
     },
     {
       title: "Customizable UI",
-      description: "Fully customizable components that can be styled to match your brand's look and feel."
+      description: "Fully customizable components that can be styled to match your brand's look and feel, with unstyled mode and classNames overrides."
     },
     {
       title: "Developer-Friendly",
-      description: "Well-documented API with TypeScript support and examples to help you get started quickly."
+      description: "Well-documented API with TypeScript support, compound components, backend recipes, and a CLI scaffolder to get started in seconds."
     }
   ];
 
@@ -163,15 +171,20 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
-              <Badge variant="primary" className="mb-4 px-3 py-1 text-sm">
-                NDPA 2023 Compliant
-              </Badge>
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-4">
+                <Badge variant="primary" className="px-3 py-1 text-sm">
+                  NDPA 2023 Compliant
+                </Badge>
+                <Badge variant="success" className="px-3 py-1 text-sm">
+                  v3.0 — Now Available
+                </Badge>
+              </div>
               <h1 className="text-3xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-4xl md:text-5xl lg:text-6xl">
                 <span className="block">Nigeria Data Protection Act</span>
                 <span className="block mt-2 bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">Compliance Toolkit</span>
               </h1>
               <p className="mt-6 text-base sm:text-lg md:text-xl text-gray-500 dark:text-gray-300 leading-relaxed">
-                An open-source toolkit that helps Nigerian developers implement NDPA 2023 compliant features in their web applications with minimal effort.
+                An open-source toolkit that helps Nigerian developers implement NDPA 2023 compliant features in their web applications with minimal effort. v3 brings zero-config presets, pluggable storage adapters, and a compliance score engine.
               </p>
               
               <div className="mt-8 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
@@ -284,6 +297,153 @@ export default function Home() {
         </div>
       </div>
     
+      {/* New in v3 Section */}
+      <div className="py-12 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-green-200 dark:border-green-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <Badge variant="success" className="mb-4 px-3 py-1 text-sm">
+              New in v3.0
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
+              A Major Step Forward for NDPA Compliance
+            </h2>
+            <p className="mt-3 max-w-2xl mx-auto text-base sm:text-lg text-gray-600 dark:text-gray-300">
+              v3 rebuilds the foundation so you can ship compliance in minutes, not days.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                title: "Zero-Config Presets",
+                description: "NDPRConsent, NDPRSubjectRights, NDPRDashboard, and more — fully wired presets that work straight out of the box.",
+                icon: "M13 10V3L4 14h7v7l9-11h-7z",
+                href: "/docs/guides/presets",
+              },
+              {
+                title: "Pluggable Storage Adapters",
+                description: "Switch between localStorage, IndexedDB, or a REST backend with a one-line config change. Bring your own adapter.",
+                icon: "M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4",
+                href: "/docs/guides/adapters",
+              },
+              {
+                title: "Compound Components",
+                description: "Build exactly the UI you need by composing granular sub-components with full layout control.",
+                icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10",
+                href: "/docs/guides/compound-components",
+              },
+              {
+                title: "Compliance Score Engine",
+                description: "Real-time NDPA 2023 obligation scoring with actionable insights, powered by the new NDPRDashboard.",
+                icon: "M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+                href: "/docs/guides/compliance-score",
+              },
+              {
+                title: "Backend Recipes",
+                description: "Server-side helpers for Express, Next.js API routes, and serverless to handle DSR and breach workflows end-to-end.",
+                icon: "M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2",
+                href: "/docs/guides/backend-integration",
+              },
+              {
+                title: "CLI Scaffolder",
+                description: "Run npx ndpr-toolkit init to bootstrap a complete, wired-up compliance setup with adapters, presets, and config.",
+                icon: "M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
+                href: "/docs/guides/presets",
+              },
+            ].map((item) => (
+              <Link key={item.title} href={item.href} className="group flex items-start gap-4 bg-white dark:bg-gray-800 rounded-xl p-5 border border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 hover:shadow-md transition-all duration-200">
+                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/40 flex items-center justify-center text-green-700 dark:text-green-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-green-700 dark:group-hover:text-green-400 transition-colors">{item.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 3-File Quickstart Section */}
+      <div className="py-16 bg-gray-900 dark:bg-gray-950">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <Badge variant="secondary" className="mb-4 px-3 py-1 text-sm">
+              Quick Start
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+              From zero to compliant in 3 files
+            </h2>
+            <p className="mt-3 max-w-xl mx-auto text-base text-gray-400">
+              Install the package, pick an adapter, drop in a preset. No boilerplate, no ceremony.
+            </p>
+          </div>
+          <div className="space-y-6">
+            <div className="rounded-xl overflow-hidden border border-gray-700">
+              <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 border-b border-gray-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                <span className="ml-2 text-xs text-gray-400 font-mono">src/lib/ndpr-adapter.ts</span>
+              </div>
+              <pre className="p-5 text-sm text-green-300 font-mono overflow-x-auto bg-gray-900"><code>{`import { createLocalStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+
+export const adapter = createLocalStorageAdapter({ key: 'my-app-ndpr' });`}</code></pre>
+            </div>
+            <div className="rounded-xl overflow-hidden border border-gray-700">
+              <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 border-b border-gray-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                <span className="ml-2 text-xs text-gray-400 font-mono">src/app/layout.tsx</span>
+              </div>
+              <pre className="p-5 text-sm text-green-300 font-mono overflow-x-auto bg-gray-900"><code>{`import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
+import { adapter } from '@/lib/ndpr-adapter';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <NDPRProvider adapter={adapter} orgName="Acme Ltd" privacyPolicyUrl="/privacy">
+          {children}
+        </NDPRProvider>
+      </body>
+    </html>
+  );
+}`}</code></pre>
+            </div>
+            <div className="rounded-xl overflow-hidden border border-gray-700">
+              <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 border-b border-gray-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>
+                <span className="ml-2 text-xs text-gray-400 font-mono">src/app/page.tsx</span>
+              </div>
+              <pre className="p-5 text-sm text-green-300 font-mono overflow-x-auto bg-gray-900"><code>{`import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
+
+export default function Home() {
+  return (
+    <main>
+      {/* Your app content */}
+      <NDPRConsent />  {/* NDPA 2023-compliant consent banner — zero config needed */}
+    </main>
+  );
+}`}</code></pre>
+            </div>
+          </div>
+          <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+            <Button variant="default" size="lg" asChild className="rounded-lg">
+              <Link href="/docs/guides/presets">Read the Presets Guide</Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild className="rounded-lg border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white">
+              <Link href="/docs">Full Documentation</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Features Section */}
       <div className="py-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700" id="demos">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
