@@ -20,6 +20,8 @@ export async function exportDOCX(
 ): Promise<Blob> {
   let docxLib: any;
   try {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore — optional peer dependency; may not be installed
     docxLib = await import('docx');
   } catch {
     throw new Error(

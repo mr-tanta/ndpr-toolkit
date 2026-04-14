@@ -28,6 +28,7 @@ export default defineConfig({
     "react",
     "react-dom",
     "jspdf",
+    "docx",
     "@radix-ui/react-label",
     "@radix-ui/react-slot",
     "@radix-ui/react-switch",
