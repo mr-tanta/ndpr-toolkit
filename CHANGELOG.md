@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0] — 2026-04-14
+
+### Added
+- Complete site redesign with new design system (dark theme, blue primary palette)
+- Shared UI component library (Button, Card, Badge, Section, CodeBlock, FeatureCard, Grid, Tabs, CTASection)
+- DemoLayout component for consistent demo page presentation
+- Redesigned SiteHeader with sticky blur, gradient logo, and responsive mobile menu
+- Redesigned SiteFooter with multi-column layout
+- Redesigned DocLayout with collapsible sidebar navigation
+- i18n locale support — `NDPRLocale` type, `defaultLocale` (English), `mergeLocale()` utility
+- `locale` prop on NDPRProvider for global text customization
+- Comprehensive SEO updates (sitemap, robots.txt, structured data)
+- Prepared `@tantainnovative/create-ndpr` and `@tantainnovative/ndpr-recipes` for npm publishing
+
+### Changed
+- All documentation pages restyled with dark theme and consistent design system
+- All 8 demo pages wrapped in shared DemoLayout
+- Homepage hero with animated code example and 3-file quickstart tabs
+- Blog listing and post pages redesigned
+
 ## [3.0.0] — 2026-04-14
 
 ### Architecture
