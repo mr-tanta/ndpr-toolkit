@@ -41,6 +41,12 @@ export { validateTransfer, getTransferMechanismDescription, assessTransferRisk, 
 export { validateProcessingRecord, generateROPASummary, exportROPAToCSV, identifyComplianceGaps } from './utils/ropa';
 export { sanitizeInput } from './utils/sanitize';
 
+// Policy engine types
+export type { TemplateContext, PolicyDraft, ComplianceResult, ComplianceGap, CustomSection, DataCategory, ThirdPartyProcessor } from './types/policy-engine';
+export { createDefaultContext } from './types/policy-engine';
+export { evaluatePolicyCompliance } from './utils/policy-compliance';
+export { assemblePolicy } from './utils/policy-sections';
+
 // Compliance score engine
 export { getComplianceScore } from './utils/compliance-score';
 export type {

@@ -7,6 +7,7 @@ export * from './privacy';
 export * from './lawful-basis';
 export * from './cross-border';
 export * from './ropa';
+export * from './policy-engine';
 
 /**
  * Global configuration for the Nigeria Data Protection Toolkit

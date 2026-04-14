@@ -15,3 +15,14 @@ export { PolicyProvider } from './components/policy/Provider';
 export type { PolicyProviderProps } from './components/policy/Provider';
 export { usePolicyCompound } from './components/policy/context';
 export type { StorageAdapter } from './adapters/types';
+
+// Adaptive Policy Wizard (v3.1)
+export { AdaptivePolicyWizard } from './components/policy/AdaptivePolicyWizard';
+export { PolicyPage } from './components/policy/PolicyPage';
+export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
+export type { UseAdaptivePolicyWizardOptions, UseAdaptivePolicyWizardReturn } from './hooks/useAdaptivePolicyWizard';
+export { evaluatePolicyCompliance } from './utils/policy-compliance';
+export { assemblePolicy } from './utils/policy-sections';
+export { exportPDF, exportDOCX, exportHTML, exportMarkdown } from './utils/policy-export';
+export type { TemplateContext, PolicyDraft, ComplianceResult, ComplianceGap, CustomSection, DataCategory, ThirdPartyProcessor, Industry, OrgSize, ProcessingPurpose } from './types/policy-engine';
+export { createDefaultContext, DEFAULT_DATA_CATEGORIES } from './types/policy-engine';
