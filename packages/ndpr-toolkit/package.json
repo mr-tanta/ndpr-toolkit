@@ -61,6 +61,11 @@
       "import": "./dist/ropa-entry.mjs",
       "require": "./dist/ropa-entry.js"
     },
+    "./adapters": {
+      "types": "./dist/adapters.d.ts",
+      "import": "./dist/adapters.mjs",
+      "require": "./dist/adapters.js"
+    },
     "./unstyled": {
       "types": "./dist/unstyled.d.ts",
       "import": "./dist/unstyled.mjs",
@@ -82,7 +87,8 @@
       "policy": ["./dist/policy.d.ts"],
       "lawful-basis": ["./dist/lawful-basis-entry.d.ts"],
       "cross-border": ["./dist/cross-border-entry.d.ts"],
-      "ropa": ["./dist/ropa-entry.d.ts"]
+      "ropa": ["./dist/ropa-entry.d.ts"],
+      "adapters": ["./dist/adapters.d.ts"]
     }
   },
   "files": [
