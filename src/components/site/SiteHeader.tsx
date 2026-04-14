@@ -38,8 +38,8 @@ export function SiteHeader() {
               <path d="M10 22V10h3.5l4.5 7.5V10H21v12h-3.5L13 14.5V22H10z" fill="white" />
               <defs>
                 <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32">
-                  <stop stopColor="#6366f1" />
-                  <stop offset="1" stopColor="#8b5cf6" />
+                  <stop stopColor="#1d4ed8" />
+                  <stop offset="1" stopColor="#3b82f6" />
                 </linearGradient>
               </defs>
             </svg>
@@ -125,8 +125,8 @@ export function SiteHeader() {
           transition: border-color 0.2s ease, background 0.2s ease, backdrop-filter 0.2s ease;
         }
         .ndpr-header[data-scrolled="true"] {
-          border-bottom-color: rgba(30, 41, 59, 0.6);
-          background: rgba(10, 13, 20, 0.85);
+          border-bottom-color: rgba(22, 37, 68, 0.6);
+          background: rgba(3, 7, 18, 0.88);
           backdrop-filter: blur(20px) saturate(180%);
           -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
@@ -161,8 +161,8 @@ export function SiteHeader() {
           letter-spacing: 0.04em;
           padding: 0.125rem 0.375rem;
           border-radius: 9999px;
-          background: rgba(99, 102, 241, 0.15);
-          color: #818cf8;
+          background: rgba(37, 99, 235, 0.15);
+          color: #60a5fa;
           line-height: 1.4;
         }
 
@@ -239,13 +239,13 @@ export function SiteHeader() {
           text-decoration: none;
           padding: 0.5rem 1rem;
           border-radius: 0.5rem;
-          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+          background: linear-gradient(135deg, #1d4ed8, #2563eb);
           transition: all 0.2s ease;
           box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         .ndpr-cta:hover {
-          background: linear-gradient(135deg, #818cf8, #a78bfa);
-          box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+          background: linear-gradient(135deg, #2563eb, #3b82f6);
+          box-shadow: 0 4px 20px rgba(37, 99, 235, 0.3);
           transform: translateY(-1px);
         }
 
