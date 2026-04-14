@@ -1,49 +1,44 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { DemoLayout } from '@/components/site/DemoLayout';
-import { AdaptivePolicyWizard } from '../../../packages/ndpr-toolkit/src/components/policy/AdaptivePolicyWizard';
-import type { PrivacyPolicy } from '../../../packages/ndpr-toolkit/src/types/privacy';
+
+// Use the existing published PolicyGenerator until the adaptive wizard is published
+import PolicyGenerator from '@/components/privacy-policy/PolicyGenerator';
 
 export default function PolicyDemoPage() {
-  const handleComplete = (policy: PrivacyPolicy) => {
-    console.log('Policy generated:', policy);
-  };
-
   return (
     <DemoLayout
       title="Privacy Policy Generator"
-      description="Generate NDPA-compliant privacy policies with an adaptive step-by-step wizard. Covers all mandatory disclosures under Sections 27–28 of the Nigeria Data Protection Act 2023."
+      description="Generate NDPA-compliant privacy policies with a step-by-step wizard. Covers all mandatory disclosures under Sections 27-28 of the Nigeria Data Protection Act 2023."
       ndpaSection="Sections 27-28"
-      code={`import { AdaptivePolicyWizard } from '@tantainnovative/ndpr-toolkit/policy';
+      code={`import { NDPRPrivacyPolicy } from '@tantainnovative/ndpr-toolkit/presets';
 
-export default function PrivacyPolicyPage() {
-  return (
-    <AdaptivePolicyWizard
-      onComplete={(policy) => {
-        // Save or display the generated policy
-        console.log(policy);
-      }}
-    />
-  );
-}`}
+// Zero-config — renders the full adaptive wizard
+<NDPRPrivacyPolicy />
+
+// Or with custom adapter for backend persistence
+import { AdaptivePolicyWizard } from '@tantainnovative/ndpr-toolkit/policy';
+import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+
+<AdaptivePolicyWizard
+  adapter={apiAdapter('/api/policy/draft')}
+  onComplete={(policy) => console.log('Generated:', policy)}
+/>`}
     >
       <div
         style={{
-          '--ndpr-bg': 'var(--bg-secondary)',
-          '--ndpr-surface': 'var(--bg-primary)',
-          '--ndpr-border': 'var(--border-primary)',
-          '--ndpr-text': 'var(--text-primary)',
-          '--ndpr-text-muted': 'var(--text-secondary)',
-          '--ndpr-accent': 'var(--accent-primary)',
-          '--ndpr-accent-hover': 'var(--accent-hover)',
-          '--ndpr-radius': '0.5rem',
-          '--ndpr-shadow': 'var(--shadow-sm)',
+          '--ndpr-primary': '99 102 241',
+          '--ndpr-primary-hover': '129 140 248',
+          '--ndpr-primary-foreground': '255 255 255',
+          '--ndpr-background': '17 24 39',
+          '--ndpr-foreground': '241 245 249',
+          '--ndpr-muted': '26 34 53',
+          '--ndpr-muted-foreground': '148 163 184',
+          '--ndpr-border': '30 41 59',
         } as React.CSSProperties}
       >
-        <AdaptivePolicyWizard
-          onComplete={handleComplete}
-        />
+        <PolicyGenerator />
       </div>
     </DemoLayout>
   );
