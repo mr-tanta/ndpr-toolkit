@@ -3,8 +3,6 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 
 type NavItem = {
   title: string;
@@ -20,14 +18,12 @@ type DocLayoutProps = {
   description?: string;
 };
 
-const NEW_MODULES = ['Lawful Basis Tracker', 'Cross-Border Transfers', 'ROPA'];
-
 const navigation: NavItem[] = [
   {
     title: 'Getting Started',
     href: '/docs',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
@@ -36,7 +32,7 @@ const navigation: NavItem[] = [
     title: 'Components',
     href: '/docs/components',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
       </svg>
     ),
@@ -56,7 +52,7 @@ const navigation: NavItem[] = [
     title: 'Implementation Guides',
     href: '/docs/guides',
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
       </svg>
     ),
@@ -78,6 +74,8 @@ const navigation: NavItem[] = [
   },
 ];
 
+/* ── Breadcrumbs ── */
+
 function Breadcrumbs({ pathname }: { pathname: string }) {
   const crumbs = useMemo(() => {
     const parts: { label: string; href: string }[] = [
@@ -85,17 +83,11 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
       { label: 'Docs', href: '/docs' },
     ];
 
-    if (pathname === '/docs') {
-      return parts;
-    }
+    if (pathname === '/docs') return parts;
 
-    // Find matching nav item for richer labels
     for (const item of navigation) {
       if (item.children) {
-        // Check if current page is a child
-        const matchedChild = item.children.find(
-          (child) => child.href === pathname
-        );
+        const matchedChild = item.children.find((child) => child.href === pathname);
         if (matchedChild) {
           parts.push({ label: item.title, href: item.href });
           parts.push({ label: matchedChild.title, href: matchedChild.href });
@@ -108,7 +100,6 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
       }
     }
 
-    // Fallback: build from path segments
     const segments = pathname.replace('/docs/', '').split('/');
     let accumulated = '/docs';
     for (const seg of segments) {
@@ -124,35 +115,63 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
   }, [pathname]);
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-4">
-      <ol className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 overflow-x-auto">
+    <nav
+      aria-label="Breadcrumb"
+      style={{ marginBottom: 'var(--space-4)' }}
+    >
+      <ol
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.375rem',
+          listStyle: 'none',
+          margin: 0,
+          padding: 0,
+          fontSize: 'var(--text-sm)',
+          color: 'var(--text-muted)',
+          overflowX: 'auto',
+        }}
+      >
         {crumbs.map((crumb, index) => (
-          <li key={crumb.href} className={`flex items-center flex-shrink-0 ${
-            index > 0 && index < crumbs.length - 1 ? 'hidden sm:flex' : 'flex'
-          }`}>
+          <li
+            key={crumb.href}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              flexShrink: 0,
+            }}
+          >
             {index > 0 && (
               <svg
-                className="w-4 h-4 mx-1 text-gray-400 dark:text-gray-500"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                viewBox="0 0 24 24"
+                strokeWidth={2}
+                style={{ marginRight: '0.375rem' }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             )}
             {index === crumbs.length - 1 ? (
-              <span className="font-medium text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-none">
+              <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>
                 {crumb.label}
               </span>
             ) : (
               <Link
                 href={crumb.href}
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors whitespace-nowrap"
+                style={{
+                  color: 'var(--text-muted)',
+                  textDecoration: 'none',
+                  transition: 'color var(--transition-fast)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = 'var(--accent)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'var(--text-muted)';
+                }}
               >
                 {crumb.label}
               </Link>
@@ -164,64 +183,16 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
   );
 }
 
-function NavItemLink({
-  item,
-  isActive,
-  isChildActive,
-  onClick,
-}: {
-  item: NavItem;
-  isActive: boolean;
-  isChildActive?: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <Link
-      href={item.href}
-      className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-        isActive
-          ? 'border-l-3 border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-900/30 dark:text-blue-200'
-          : isChildActive
-            ? 'text-blue-700 dark:text-blue-200'
-            : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-      }`}
-      onClick={onClick}
-    >
-      {item.icon && (
-        <span
-          className={`mr-3 ${
-            isActive || isChildActive
-              ? 'text-blue-500 dark:text-blue-400'
-              : 'text-gray-500 dark:text-gray-400'
-          }`}
-        >
-          {item.icon}
-        </span>
-      )}
-      <span className="flex-1">{item.title}</span>
-      {item.isNew && (
-        <Badge variant="success" className="ml-2 text-[10px] px-1.5 py-0">
-          New
-        </Badge>
-      )}
-    </Link>
-  );
-}
+/* ── DocLayout ── */
 
 export function DocLayout({ children, title, description }: DocLayoutProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Function to check if a nav item is the exact active page
-  const isExactActive = (href: string) => {
-    return pathname === href;
-  };
+  const isExactActive = (href: string) => pathname === href;
 
-  // Function to check if a nav item or any of its children is active
   const isActive = (href: string) => {
-    if (href === '/docs' && pathname === '/docs') {
-      return true;
-    }
+    if (href === '/docs' && pathname === '/docs') return true;
     return pathname !== '/docs' && pathname.startsWith(href);
   };
 
@@ -230,49 +201,114 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
     const exactActive = isExactActive(item.href);
 
     return (
-      <div key={item.title} className="py-1">
-        <NavItemLink
-          item={item}
-          isActive={exactActive}
-          isChildActive={sectionActive && !exactActive}
+      <div key={item.title} style={{ marginBottom: 'var(--space-2)' }}>
+        {/* Section header link */}
+        <Link
+          href={item.href}
           onClick={onLinkClick}
-        />
-        {/* Always show children -- all nav sections expanded by default */}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.375rem 0.75rem',
+            fontSize: 'var(--text-sm)',
+            fontWeight: exactActive || sectionActive ? 600 : 500,
+            color: exactActive
+              ? 'var(--accent)'
+              : sectionActive
+                ? 'var(--text-primary)'
+                : 'var(--text-secondary)',
+            textDecoration: 'none',
+            borderRadius: 'var(--radius-md)',
+            transition: 'all var(--transition-fast)',
+            background: exactActive ? 'var(--accent-light)' : 'transparent',
+          }}
+          onMouseEnter={(e) => {
+            if (!exactActive) {
+              e.currentTarget.style.background = 'var(--bg-hover)';
+              e.currentTarget.style.color = 'var(--text-primary)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!exactActive) {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = sectionActive
+                ? 'var(--text-primary)'
+                : 'var(--text-secondary)';
+            }
+          }}
+        >
+          {item.icon && (
+            <span style={{ color: exactActive || sectionActive ? 'var(--accent)' : 'var(--text-muted)' }}>
+              {item.icon}
+            </span>
+          )}
+          <span style={{ flex: 1 }}>{item.title}</span>
+        </Link>
+
+        {/* Children */}
         {item.children && (
-          <div className="mt-1 ml-8 space-y-1">
+          <div
+            style={{
+              marginTop: 'var(--space-1)',
+              marginLeft: '1.75rem',
+              borderLeft: '1px solid var(--border-default)',
+              paddingLeft: 'var(--space-3)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1px',
+            }}
+          >
             {item.children.map((child) => {
               const childActive = pathname === child.href;
               return (
                 <Link
-                  key={child.title}
+                  key={child.href}
                   href={child.href}
-                  className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                    childActive
-                      ? 'border-l-3 border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-900/30 dark:text-blue-200'
-                      : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
-                  }`}
                   onClick={onLinkClick}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.375rem',
+                    padding: '0.3125rem 0.625rem',
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: childActive ? 500 : 400,
+                    color: childActive ? 'var(--accent)' : 'var(--text-muted)',
+                    textDecoration: 'none',
+                    borderRadius: 'var(--radius-sm)',
+                    transition: 'all var(--transition-fast)',
+                    background: childActive ? 'var(--accent-light)' : 'transparent',
+                    position: 'relative',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!childActive) {
+                      e.currentTarget.style.color = 'var(--text-secondary)';
+                      e.currentTarget.style.background = 'var(--bg-hover)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!childActive) {
+                      e.currentTarget.style.color = 'var(--text-muted)';
+                      e.currentTarget.style.background = 'transparent';
+                    }
+                  }}
                 >
-                  <span className="flex-1">{child.title}</span>
+                  <span style={{ flex: 1 }}>{child.title}</span>
                   {child.isNew && (
-                    <Badge variant="success" className="ml-2 text-[10px] px-1.5 py-0">
-                      New
-                    </Badge>
-                  )}
-                  {childActive && (
-                    <svg
-                      className="h-4 w-4 text-blue-500 dark:text-blue-400 ml-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                    <span
+                      style={{
+                        fontSize: '0.625rem',
+                        fontWeight: 600,
+                        padding: '0.0625rem 0.375rem',
+                        borderRadius: 'var(--radius-full)',
+                        background: 'var(--success-light)',
+                        color: 'var(--success)',
+                        lineHeight: 1.4,
+                        letterSpacing: '0.02em',
+                      }}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
+                      New
+                    </span>
                   )}
                 </Link>
               );
@@ -284,157 +320,528 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-3 left-3 z-50">
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
+      }}
+    >
+      {/* Mobile menu toggle */}
+      <div className="doc-mobile-toggle">
         <button
           type="button"
-          className="p-2.5 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-md bg-white dark:bg-gray-800 shadow-md text-gray-500 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-expanded={mobileMenuOpen}
           aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          style={{
+            position: 'fixed',
+            top: '0.75rem',
+            left: '0.75rem',
+            zIndex: 'var(--z-overlay)' as unknown as number,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '2.5rem',
+            height: '2.5rem',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border-default)',
+            background: 'var(--bg-surface)',
+            color: 'var(--text-secondary)',
+            cursor: 'pointer',
+            boxShadow: 'var(--shadow-md)',
+          }}
         >
-          <span className="sr-only">{mobileMenuOpen ? 'Close sidebar' : 'Open sidebar'}</span>
           {mobileMenuOpen ? (
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           ) : (
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
             </svg>
           )}
         </button>
       </div>
 
-      {/* Sidebar for desktop */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0" aria-label="Documentation navigation">
-        <div className="flex flex-col flex-grow bg-white dark:bg-gray-800 shadow-lg overflow-y-auto">
-          <div className="flex items-center flex-shrink-0 px-4 py-5 border-b border-gray-200 dark:border-gray-700">
-            <Link href="/" className="flex items-center">
-              <span className="text-xl font-semibold text-gray-900 dark:text-white">NDPA Toolkit</span>
-            </Link>
-          </div>
-          <div className="mt-5 flex-1 flex flex-col">
-            <nav className="flex-1 px-4 space-y-1" aria-label="Sidebar">
-              {navigation.map((item) => renderNavSection(item))}
-            </nav>
-          </div>
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-            <Button asChild variant="outline" size="sm" className="w-full">
-              <a href="/blog" className="flex items-center">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                </svg>
-                Blog
-              </a>
-            </Button>
-            <Button asChild variant="outline" size="sm" className="w-full">
-              <a href="https://github.com/mr-tanta/ndpr-toolkit" target="_blank" rel="noopener noreferrer" className="flex items-center">
-                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-                GitHub
-              </a>
-            </Button>
-          </div>
+      {/* Desktop Sidebar */}
+      <aside
+        className="doc-sidebar-desktop"
+        aria-label="Documentation navigation"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: '16rem',
+          background: 'var(--bg-surface)',
+          borderRight: '1px solid var(--border-default)',
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          zIndex: 'var(--z-sticky)' as unknown as number,
+        }}
+      >
+        {/* Logo */}
+        <div
+          style={{
+            padding: 'var(--space-5) var(--space-5)',
+            borderBottom: '1px solid var(--border-default)',
+            flexShrink: 0,
+          }}
+        >
+          <Link
+            href="/"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              textDecoration: 'none',
+              color: 'var(--text-primary)',
+            }}
+          >
+            <div
+              style={{
+                width: '1.5rem',
+                height: '1.5rem',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--gradient-primary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 700,
+                fontSize: '0.625rem',
+                color: '#fff',
+              }}
+            >
+              N
+            </div>
+            <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>
+              NDPA Toolkit
+            </span>
+          </Link>
+        </div>
+
+        {/* Nav items */}
+        <nav
+          style={{
+            flex: 1,
+            padding: 'var(--space-4) var(--space-3)',
+            overflowY: 'auto',
+          }}
+          aria-label="Sidebar"
+        >
+          {navigation.map((item) => renderNavSection(item))}
+        </nav>
+
+        {/* Bottom actions */}
+        <div
+          style={{
+            padding: 'var(--space-4) var(--space-4)',
+            borderTop: '1px solid var(--border-default)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-2)',
+            flexShrink: 0,
+          }}
+        >
+          <Link
+            href="/blog"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.375rem 0.75rem',
+              fontSize: 'var(--text-sm)',
+              fontWeight: 500,
+              color: 'var(--text-muted)',
+              textDecoration: 'none',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-default)',
+              transition: 'all var(--transition-fast)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-hover)';
+              e.currentTarget.style.color = 'var(--text-secondary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-default)';
+              e.currentTarget.style.color = 'var(--text-muted)';
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            Blog
+          </Link>
+          <a
+            href="https://github.com/mr-tanta/ndpr-toolkit"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.375rem 0.75rem',
+              fontSize: 'var(--text-sm)',
+              fontWeight: 500,
+              color: 'var(--text-muted)',
+              textDecoration: 'none',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-default)',
+              transition: 'all var(--transition-fast)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-hover)';
+              e.currentTarget.style.color = 'var(--text-secondary)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-default)';
+              e.currentTarget.style.color = 'var(--text-muted)';
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                clipRule="evenodd"
+              />
+            </svg>
+            GitHub
+          </a>
         </div>
       </aside>
 
-      {/* Mobile menu, show/hide based on menu state */}
-      <div
-        className={`lg:hidden fixed inset-0 z-40 ${mobileMenuOpen ? 'block' : 'hidden'}`}
-        aria-hidden={!mobileMenuOpen}
-      >
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75"
-          role="button"
-          tabIndex={-1}
-          aria-label="Close navigation menu"
-          onClick={() => setMobileMenuOpen(false)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-              e.preventDefault();
-              setMobileMenuOpen(false);
-            }
-          }}
-        ></div>
-        <aside className="fixed inset-y-0 left-0 max-w-xs w-full bg-white dark:bg-gray-800 shadow-lg overflow-y-auto" aria-label="Mobile navigation">
-          <div className="flex items-center justify-between px-4 py-5 border-b border-gray-200 dark:border-gray-700">
-            <Link href="/" className="flex items-center" onClick={() => setMobileMenuOpen(false)}>
-              <span className="text-xl font-semibold text-gray-900 dark:text-white">NDPA Toolkit</span>
-            </Link>
-            <button
-              type="button"
-              className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-              onClick={() => setMobileMenuOpen(false)}
-              aria-label="Close navigation menu"
+      {/* Mobile overlay + sidebar */}
+      {mobileMenuOpen && (
+        <div className="doc-mobile-overlay">
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.6)',
+              zIndex: 149,
+            }}
+            onClick={() => setMobileMenuOpen(false)}
+            role="button"
+            tabIndex={-1}
+            aria-label="Close navigation menu"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setMobileMenuOpen(false);
+            }}
+          />
+          <aside
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              width: '18rem',
+              maxWidth: '85vw',
+              background: 'var(--bg-surface)',
+              borderRight: '1px solid var(--border-default)',
+              overflowY: 'auto',
+              zIndex: 150,
+              animation: 'slideInLeft 0.2s ease-out',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+            aria-label="Mobile navigation"
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: 'var(--space-5)',
+                borderBottom: '1px solid var(--border-default)',
+              }}
             >
-              <span className="sr-only">Close sidebar</span>
-              <svg className="h-6 w-6 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <div className="mt-5 flex-1 flex flex-col">
-            <nav className="flex-1 px-4 space-y-1" aria-label="Mobile sidebar">
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  textDecoration: 'none',
+                  color: 'var(--text-primary)',
+                }}
+              >
+                <div
+                  style={{
+                    width: '1.5rem',
+                    height: '1.5rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'var(--gradient-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 700,
+                    fontSize: '0.625rem',
+                    color: '#fff',
+                  }}
+                >
+                  N
+                </div>
+                <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>
+                  NDPA Toolkit
+                </span>
+              </Link>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '2rem',
+                  height: '2rem',
+                  borderRadius: 'var(--radius-md)',
+                  border: 'none',
+                  background: 'transparent',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                }}
+                aria-label="Close navigation"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <nav
+              style={{
+                flex: 1,
+                padding: 'var(--space-4) var(--space-3)',
+                overflowY: 'auto',
+              }}
+            >
               {navigation.map((item) =>
                 renderNavSection(item, () => setMobileMenuOpen(false))
               )}
             </nav>
-          </div>
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-            <Button asChild variant="outline" size="sm" className="w-full">
-              <a href="/blog" className="flex items-center">
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                </svg>
-                Blog
-              </a>
-            </Button>
-            <Button asChild variant="outline" size="sm" className="w-full">
-              <a href="https://github.com/mr-tanta/ndpr-toolkit" target="_blank" rel="noopener noreferrer" className="flex items-center">
-                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-                GitHub
-              </a>
-            </Button>
-          </div>
-        </aside>
-      </div>
+          </aside>
+        </div>
+      )}
 
       {/* Main content */}
-      <div className="lg:pl-64">
-        <main className="py-6 sm:py-10">
-          <div className="max-w-7xl mx-auto px-4 pt-10 lg:pt-0 sm:px-6 lg:px-8">
-            {/* Breadcrumbs */}
-            <Breadcrumbs pathname={pathname} />
+      <div className="doc-main-content">
+        <main
+          style={{
+            padding: 'var(--space-8) var(--space-6)',
+            maxWidth: '900px',
+          }}
+        >
+          {/* Breadcrumbs */}
+          <Breadcrumbs pathname={pathname} />
 
-            <div className="pb-5 border-b border-gray-200 dark:border-gray-700 mb-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{title}</h1>
-                  {description && <p className="mt-2 text-lg text-gray-500 dark:text-gray-400">{description}</p>}
-                </div>
-                <div className="mt-4 md:mt-0 flex space-x-3">
-                  <Button asChild variant="outline" size="sm">
-                    <Link href="/ndpr-demos">View Demos</Link>
-                  </Button>
-                  <Button asChild variant="default" size="sm">
-                    <Link href="/">Back to Home</Link>
-                  </Button>
-                </div>
+          {/* Title block */}
+          <div
+            style={{
+              paddingBottom: 'var(--space-6)',
+              marginBottom: 'var(--space-8)',
+              borderBottom: '1px solid var(--border-default)',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                gap: 'var(--space-4)',
+              }}
+            >
+              <div>
+                <h1
+                  style={{
+                    fontSize: 'var(--text-3xl)',
+                    fontWeight: 700,
+                    color: 'var(--text-primary)',
+                    margin: 0,
+                    lineHeight: 'var(--leading-tight)',
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  {title}
+                </h1>
+                {description && (
+                  <p
+                    style={{
+                      fontSize: 'var(--text-lg)',
+                      color: 'var(--text-secondary)',
+                      marginTop: 'var(--space-2)',
+                      marginBottom: 0,
+                      lineHeight: 'var(--leading-relaxed)',
+                    }}
+                  >
+                    {description}
+                  </p>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: 'var(--space-3)', flexShrink: 0 }}>
+                <Link
+                  href="/ndpr-demos"
+                  style={{
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: 500,
+                    color: 'var(--text-secondary)',
+                    textDecoration: 'none',
+                    padding: '0.375rem 0.875rem',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--border-default)',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-hover)';
+                    e.currentTarget.style.color = 'var(--text-primary)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border-default)';
+                    e.currentTarget.style.color = 'var(--text-secondary)';
+                  }}
+                >
+                  View Demos
+                </Link>
+                <Link
+                  href="/"
+                  style={{
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: 500,
+                    color: '#fff',
+                    textDecoration: 'none',
+                    padding: '0.375rem 0.875rem',
+                    borderRadius: 'var(--radius-md)',
+                    background: 'var(--gradient-primary)',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                >
+                  Home
+                </Link>
               </div>
             </div>
+          </div>
 
-            {/* Page content */}
-            <div className="prose prose-blue max-w-none dark:prose-invert">
-              {children}
-            </div>
+          {/* Page content */}
+          <div className="doc-prose">
+            {children}
           </div>
         </main>
       </div>
+
+      {/* Responsive rules */}
+      <style>{`
+        .doc-sidebar-desktop {
+          display: flex;
+        }
+        .doc-mobile-toggle {
+          display: none;
+        }
+        .doc-main-content {
+          margin-left: 16rem;
+        }
+        .doc-prose {
+          font-size: var(--text-base);
+          line-height: var(--leading-relaxed);
+          color: var(--text-secondary);
+        }
+        .doc-prose h1, .doc-prose h2, .doc-prose h3, .doc-prose h4 {
+          color: var(--text-primary);
+          font-weight: 600;
+          letter-spacing: -0.01em;
+        }
+        .doc-prose h2 {
+          font-size: var(--text-2xl);
+          margin-top: var(--space-10);
+          margin-bottom: var(--space-4);
+          padding-bottom: var(--space-3);
+          border-bottom: 1px solid var(--border-default);
+        }
+        .doc-prose h3 {
+          font-size: var(--text-xl);
+          margin-top: var(--space-8);
+          margin-bottom: var(--space-3);
+        }
+        .doc-prose p {
+          margin-bottom: var(--space-4);
+        }
+        .doc-prose a {
+          color: var(--accent);
+          text-decoration: underline;
+          text-decoration-color: rgba(99, 102, 241, 0.3);
+          text-underline-offset: 2px;
+          transition: text-decoration-color var(--transition-fast);
+        }
+        .doc-prose a:hover {
+          text-decoration-color: var(--accent);
+        }
+        .doc-prose code {
+          font-family: var(--font-mono);
+          font-size: 0.875em;
+          padding: 0.125em 0.375em;
+          border-radius: var(--radius-sm);
+          background: var(--bg-elevated);
+          color: var(--accent-hover);
+        }
+        .doc-prose pre {
+          background: var(--bg-inset);
+          border: 1px solid var(--border-default);
+          border-radius: var(--radius-lg);
+          padding: var(--space-4);
+          overflow-x: auto;
+          margin-bottom: var(--space-6);
+        }
+        .doc-prose pre code {
+          background: none;
+          padding: 0;
+          color: var(--text-secondary);
+        }
+        .doc-prose ul, .doc-prose ol {
+          padding-left: var(--space-6);
+          margin-bottom: var(--space-4);
+        }
+        .doc-prose li {
+          margin-bottom: var(--space-2);
+        }
+        .doc-prose blockquote {
+          border-left: 3px solid var(--accent);
+          padding-left: var(--space-4);
+          margin-left: 0;
+          color: var(--text-secondary);
+          font-style: italic;
+        }
+        .doc-prose table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: var(--space-6);
+        }
+        .doc-prose th, .doc-prose td {
+          text-align: left;
+          padding: var(--space-3) var(--space-4);
+          border-bottom: 1px solid var(--border-default);
+        }
+        .doc-prose th {
+          font-weight: 600;
+          color: var(--text-primary);
+          font-size: var(--text-sm);
+        }
+        @media (max-width: 1024px) {
+          .doc-sidebar-desktop {
+            display: none !important;
+          }
+          .doc-mobile-toggle {
+            display: block;
+          }
+          .doc-main-content {
+            margin-left: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 }
