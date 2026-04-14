@@ -289,46 +289,130 @@ export function ComplianceWidget() {
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">The NDPRDashboard Component</h2>
         <p className="mb-4 text-foreground">
           For teams that want a complete compliance overview without building a custom UI, the toolkit ships a
-          ready-made <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRDashboard</code> component. It renders the compliance score gauge, module cards,
-          recommendation list, and per-module drill-downs.
+          ready-made <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRDashboard</code> component. It renders a score ring, per-module cards with
+          progress bars, and a prioritised recommendations list — all driven by a{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">ComplianceReport</code> you pass in as a prop.
+        </p>
+
+        <h3 className="text-xl font-bold text-foreground mb-3">Props</h3>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`interface NDPRDashboardProps {
+  /** Compliance report produced by getComplianceScore() — required */
+  report: ComplianceReport;
+
+  /** Dashboard heading. Defaults to "NDPA Compliance Dashboard" */
+  title?: string;
+
+  /** Show/hide the recommendations list. Defaults to true */
+  showRecommendations?: boolean;
+
+  /** Maximum number of recommendations to render. Defaults to 5 */
+  maxRecommendations?: number;
+
+  /** Per-section class name overrides for custom styling */
+  classNames?: NDPRDashboardClassNames;
+
+  /** Strip all default classes so you can style from scratch */
+  unstyled?: boolean;
+}`}</code></pre>
+        </div>
+
+        <h3 className="text-xl font-bold text-foreground mb-3">Basic usage</h3>
+        <p className="mb-4 text-foreground">
+          Call <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">getComplianceScore()</code> with your module state, then pass the resulting report to{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRDashboard</code>:
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`import { NDPRDashboard } from '@tantainnovative/ndpr-toolkit';
+          <pre className="text-foreground"><code>{`'use client';
 
-// Must be rendered inside NDPRProvider
+import { getComplianceScore, NDPRDashboard } from '@tantainnovative/ndpr-toolkit';
+
+const report = getComplianceScore({
+  consent:      { bannerImplemented: true, granularCategories: true, withdrawalMechanism: true, consentRecordsStored: true, privacyPolicyLinked: true },
+  dsr:          { formImplemented: true,  allRightsCovered: true,   acknowledgementSent: false, processingTimeTracked: false },
+  breach:       { formImplemented: true,  timelineTracked: true,    ndpcNotificationProcess: false },
+  dpia:         { questionnaireImplemented: true, riskMatrixPresent: true, highRiskProjectsAssessed: false },
+  privacyPolicy: { pageExists: true, ndpaClausesPresent: true, lastUpdated: '2024-11-01' },
+  lawfulBasis:  { trackerImplemented: true,   allActivitiesRecorded: false },
+  ropa:         { registerExists: true,        allActivitiesLogged: false },
+  crossBorder:  { transfersIdentified: false },
+});
+
 export default function ComplianceDashboardPage() {
   return (
-    <main className="max-w-5xl mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold mb-8">NDPA Compliance Dashboard</h1>
-      <NDPRDashboard
-        showModuleDetails       // expand per-module breakdown
-        showRecommendations     // render the recommendations list
-        onRecommendationClick={(rec) => {
-          // Navigate to the relevant module page, e.g.:
-          router.push(\`/docs/guides/\${rec.module}\`);
-        }}
-      />
+    <main className="max-w-4xl mx-auto py-12 px-4">
+      <NDPRDashboard report={report} />
     </main>
   );
 }`}</code></pre>
         </div>
 
-        <h3 className="text-xl font-bold text-foreground mb-3">Embedding the dashboard in a restricted admin area</h3>
+        <h3 className="text-xl font-bold text-foreground mb-3">Controlling what renders</h3>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`// src/app/(admin)/compliance/page.tsx
-import { NDPRProvider, ndprPreset, NDPRDashboard } from '@tantainnovative/ndpr-toolkit';
-import { requireAdmin } from '@/lib/auth';
+          <pre className="text-foreground"><code>{`// Hide recommendations, change the title, show only top 3 items
+<NDPRDashboard
+  report={report}
+  title="Q2 Compliance Review"
+  showRecommendations={false}
+/>
 
-export default async function CompliancePage() {
-  await requireAdmin(); // your auth guard
+// Show at most 3 recommendations
+<NDPRDashboard
+  report={report}
+  maxRecommendations={3}
+/>`}</code></pre>
+        </div>
 
-  return (
-    // Nest a local NDPRProvider if the root layout doesn't already have one
-    <NDPRProvider preset={ndprPreset}>
-      <NDPRDashboard showModuleDetails showRecommendations />
-    </NDPRProvider>
-  );
+        <h3 className="text-xl font-bold text-foreground mb-3">Custom styling with classNames</h3>
+        <p className="mb-4 text-foreground">
+          Every visual section accepts a class name override via the{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">classNames</code> prop. Pass{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">unstyled</code> to strip all defaults and style from scratch:
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`<NDPRDashboard
+  report={report}
+  classNames={{
+    root: 'bg-card border border-border rounded-2xl p-8',
+    moduleCard: 'bg-muted rounded-lg p-4',
+    recommendationItem: 'border border-border rounded-lg p-3',
+  }}
+/>`}</code></pre>
+        </div>
+
+        <h3 className="text-xl font-bold text-foreground mb-3">Live dashboard with useComplianceScore()</h3>
+        <p className="mb-4 text-foreground">
+          Pair <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRDashboard</code> with{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useComplianceScore()</code> inside an{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRProvider</code> for a dashboard that updates
+          automatically as module state changes:
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`'use client';
+
+import { useComplianceScore, NDPRDashboard } from '@tantainnovative/ndpr-toolkit';
+
+export function LiveComplianceDashboard() {
+  // Reads module state from NDPRProvider context and re-computes on change
+  const report = useComplianceScore();
+
+  return <NDPRDashboard report={report} />;
 }`}</code></pre>
+        </div>
+
+        <h3 className="text-xl font-bold text-foreground mb-3">Preset: NDPRComplianceDashboard</h3>
+        <p className="mb-4 text-foreground">
+          The presets package ships <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRComplianceDashboard</code>, which combines the{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRProvider</code>,{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">getComplianceScore()</code>, and{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRDashboard</code> into a single drop-in component — ideal for
+          admin dashboards:
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`import { NDPRComplianceDashboard } from '@tantainnovative/ndpr-toolkit/presets';
+
+// Pass your ComplianceInput directly — no need to call getComplianceScore() yourself
+<NDPRComplianceDashboard input={complianceInput} />`}</code></pre>
         </div>
       </section>
 
