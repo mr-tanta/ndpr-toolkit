@@ -7,7 +7,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import type { ProcessingActivity, LawfulBasis, LawfulBasisSummary } from '@tantainnovative/ndpr-toolkit/core';
+// Local types matching what the demo actually uses
+type LawfulBasis = 'consent' | 'contract' | 'legal_obligation' | 'vital_interests' | 'public_interest' | 'legitimate_interests';
+
+interface ProcessingActivity {
+  id: string;
+  name: string;
+  description: string;
+  lawfulBasis: LawfulBasis;
+  dataCategories: string[];
+  dataSubjects: string;
+  retentionPeriod: string;
+  createdAt: number;
+  status: 'active' | 'inactive' | 'under_review' | 'archived';
+  justification?: string;
+  department?: string;
+}
 
 const LAWFUL_BASES: Record<
   LawfulBasis,
@@ -261,6 +276,7 @@ export default function LawfulBasisDemoPage() {
   const getStatusBadgeVariant = (status: ProcessingActivity['status']) => {
     const variants: Record<ProcessingActivity['status'], 'success' | 'warning' | 'secondary'> = {
       active: 'success',
+      inactive: 'secondary',
       under_review: 'warning',
       archived: 'secondary',
     };

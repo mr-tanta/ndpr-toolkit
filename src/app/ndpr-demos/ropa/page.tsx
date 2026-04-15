@@ -7,9 +7,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import type { ProcessingRecord, RecordOfProcessingActivities, ROPASummary, LawfulBasis } from '@tantainnovative/ndpr-toolkit/core';
-
+// Local types matching what the demo actually uses
+type LawfulBasis = 'consent' | 'contract' | 'legal_obligation' | 'vital_interests' | 'public_interest' | 'legitimate_interests';
 type RiskLevel = 'low' | 'medium' | 'high';
+
+interface ProcessingRecord {
+  id: string;
+  activityName: string;
+  purpose: string;
+  lawfulBasis: LawfulBasis;
+  department: string;
+  dataCategories: string[];
+  dataSubjects: string[];
+  recipients: string[];
+  retentionPeriod: string;
+  securityMeasures: string[];
+  crossBorderTransfer: boolean;
+  transferCountries: string[];
+  dpoContact: string;
+  riskLevel: RiskLevel;
+  lastReviewed: number;
+  createdAt: number;
+  status: 'active' | 'under_review' | 'archived';
+}
 
 const LAWFUL_BASIS_LABELS: Record<LawfulBasis, string> = {
   consent: 'Consent',
