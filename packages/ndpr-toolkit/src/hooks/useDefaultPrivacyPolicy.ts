@@ -44,19 +44,12 @@ export function useDefaultPrivacyPolicy(options: UseDefaultPrivacyPolicyOptions 
   const { orgInfo, storageKey, useLocalStorage } = options;
   const { sections, variables } = createBusinessPolicyTemplate();
 
-  // Pre-fill org info into variables if provided
+  // Build overrides from orgInfo without mutating the source variables
+  const variableOverrides: Record<string, string> = {};
   if (orgInfo) {
-    for (const variable of variables) {
-      if (orgInfo.name && variable.name === 'orgName') {
-        variable.value = orgInfo.name;
-      }
-      if (orgInfo.email && variable.name === 'privacyEmail') {
-        variable.value = orgInfo.email;
-      }
-      if (orgInfo.dpoName && variable.name === 'dpoName') {
-        variable.value = orgInfo.dpoName;
-      }
-    }
+    if (orgInfo.name) variableOverrides['orgName'] = orgInfo.name;
+    if (orgInfo.email) variableOverrides['privacyEmail'] = orgInfo.email;
+    if (orgInfo.dpoName) variableOverrides['dpoName'] = orgInfo.dpoName;
   }
 
   // Build a PolicyTemplate from the defaults so usePrivacyPolicy can consume it
@@ -73,7 +66,7 @@ export function useDefaultPrivacyPolicy(options: UseDefaultPrivacyPolicyOptions 
           name: v.name,
           description: v.description,
           required: v.required,
-          defaultValue: v.value || undefined,
+          defaultValue: variableOverrides[v.name] || v.value || undefined,
         },
       ])
     ),

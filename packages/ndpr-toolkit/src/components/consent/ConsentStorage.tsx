@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ConsentSettings, ConsentStorageOptions } from '../../types/consent';
 import { resolveClass } from '../../utils/styling';
 
@@ -80,25 +80,11 @@ export const ConsentStorage = ({
   } = storageOptions;
   
   const [loaded, setLoaded] = useState<boolean>(false);
-  
-  // Load consent settings from storage on mount
-  useEffect(() => {
-    if (autoLoad && !loaded) {
-      loadSettings();
-    }
-  }, [autoLoad, loaded]);
-  
-  // Save consent settings to storage when they change
-  useEffect(() => {
-    if (autoSave && loaded) {
-      saveSettings(settings);
-    }
-  }, [settings, autoSave, loaded]);
-  
+
   // Load settings from storage
-  const loadSettings = (): ConsentSettings | null => {
+  const loadSettings = useCallback((): ConsentSettings | null => {
     let loadedSettings: ConsentSettings | null = null;
-    
+
     try {
       if (storageType === 'localStorage' && typeof window !== 'undefined') {
         const savedData = localStorage.getItem(storageKey);
@@ -118,29 +104,29 @@ export const ConsentStorage = ({
           loadedSettings = JSON.parse(decodeURIComponent(cookieValue));
         }
       }
-      
+
       setLoaded(true);
-      
+
       if (onLoad) {
         onLoad(loadedSettings);
       }
     } catch (error) {
       console.error('Error loading consent settings:', error);
       setLoaded(true);
-      
+
       if (onLoad) {
         onLoad(null);
       }
     }
-    
+
     return loadedSettings;
-  };
-  
+  }, [storageType, storageKey, onLoad]);
+
   // Save settings to storage
-  const saveSettings = (settingsToSave: ConsentSettings): boolean => {
+  const saveSettings = useCallback((settingsToSave: ConsentSettings): boolean => {
     try {
       const settingsString = JSON.stringify(settingsToSave);
-      
+
       if (storageType === 'localStorage' && typeof window !== 'undefined') {
         localStorage.setItem(storageKey, settingsString);
       } else if (storageType === 'sessionStorage' && typeof window !== 'undefined') {
@@ -153,38 +139,38 @@ export const ConsentStorage = ({
           secure = true,
           sameSite = 'Lax'
         } = cookieOptions;
-        
+
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + expires);
-        
+
         let cookieString = `${storageKey}=${encodeURIComponent(settingsString)}; path=${path}; expires=${expiryDate.toUTCString()}`;
-        
+
         if (domain) {
           cookieString += `; domain=${domain}`;
         }
-        
+
         if (secure) {
           cookieString += '; secure';
         }
-        
+
         cookieString += `; samesite=${sameSite}`;
-        
+
         document.cookie = cookieString;
       }
-      
+
       if (onSave) {
         onSave(settingsToSave);
       }
-      
+
       return true;
     } catch (error) {
       console.error('Error saving consent settings:', error);
       return false;
     }
-  };
-  
+  }, [storageType, storageKey, cookieOptions, onSave]);
+
   // Clear settings from storage
-  const clearSettings = (): boolean => {
+  const clearSettings = useCallback((): boolean => {
     try {
       if (storageType === 'localStorage' && typeof window !== 'undefined') {
         localStorage.removeItem(storageKey);
@@ -192,22 +178,36 @@ export const ConsentStorage = ({
         sessionStorage.removeItem(storageKey);
       } else if (storageType === 'cookie' && typeof document !== 'undefined') {
         const { domain, path = '/' } = cookieOptions;
-        
+
         let cookieString = `${storageKey}=; path=${path}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-        
+
         if (domain) {
           cookieString += `; domain=${domain}`;
         }
-        
+
         document.cookie = cookieString;
       }
-      
+
       return true;
     } catch (error) {
       console.error('Error clearing consent settings:', error);
       return false;
     }
-  };
+  }, [storageType, storageKey, cookieOptions]);
+
+  // Load consent settings from storage on mount
+  useEffect(() => {
+    if (autoLoad && !loaded) {
+      loadSettings();
+    }
+  }, [autoLoad, loaded, loadSettings]);
+
+  // Save consent settings to storage when they change
+  useEffect(() => {
+    if (autoSave && loaded) {
+      saveSettings(settings);
+    }
+  }, [settings, autoSave, loaded, saveSettings]);
   
   const rootClass = resolveClass('', classNames?.root, unstyled);
 

@@ -47,7 +47,7 @@ export function formatDSRRequest(request: DSRRequest): {
     dueDate: request.dueDate 
       ? new Date(request.dueDate).toISOString() 
       : undefined,
-    dataSubject: {
+    dataSubject: request.subject ? {
       name: request.subject.name,
       email: request.subject.email,
       phone: request.subject.phone || 'Not provided',
@@ -55,7 +55,7 @@ export function formatDSRRequest(request: DSRRequest): {
         type: request.subject.identifierType || 'Not specified',
         value: request.subject.identifierValue || 'Not provided'
       }
-    },
+    } : undefined,
     additionalInformation: request.additionalInfo || {},
     verificationStatus: request.verification 
       ? `${request.verification.verified ? 'Verified' : 'Not verified'}${request.verification.method ? ` via ${request.verification.method}` : ''}`

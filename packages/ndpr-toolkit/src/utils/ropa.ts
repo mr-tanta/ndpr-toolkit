@@ -232,6 +232,10 @@ export function generateROPASummary(
  * Escapes a string value for safe inclusion in CSV output
  */
 function escapeCSVField(value: string): string {
+  // Guard against CSV formula injection
+  if (/^[=+\-@\t\r]/.test(value)) {
+    value = "'" + value;
+  }
   if (
     value.includes(',') ||
     value.includes('"') ||

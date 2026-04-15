@@ -1,6 +1,13 @@
 import { PolicySection, OrganizationInfo, PolicyVariable } from '../types/privacy';
 
 /**
+ * Escapes special RegExp characters in a string so it can be safely interpolated into a RegExp.
+ */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Generates policy text by replacing variables in a template with organization-specific values
  * @param sectionsOrTemplate The policy sections or template string to generate text for
  * @param organizationInfoOrVariables The organization information or variable map to use for replacement
@@ -31,11 +38,11 @@ export function generatePolicyText(
       
       // Replace the variable in the content
       result = result.replace(
-        new RegExp(`\\{\\{\\s*${variable}\\s*\\}\\}`, 'g'), 
+        new RegExp(`\\{\\{\\s*${escapeRegExp(variable)}\\s*\\}\\}`, 'g'),
         replacement
       );
     }
-    
+
     return result;
   } 
   // Otherwise use the original API (sections array and organization info)
@@ -79,7 +86,7 @@ export function generatePolicyText(
           
           // Replace the variable in the content
           content = content.replace(
-            new RegExp(`\\{\\{\\s*${variable}\\s*\\}\\}`, 'g'), 
+            new RegExp(`\\{\\{\\s*${escapeRegExp(variable)}\\s*\\}\\}`, 'g'), 
             replacement
           );
         });

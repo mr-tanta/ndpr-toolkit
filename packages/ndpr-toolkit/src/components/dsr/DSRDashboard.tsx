@@ -172,10 +172,13 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
     setFilteredRequests(filtered);
   }, [requests, statusFilter, typeFilter, searchTerm, sortBy, sortDirection]);
   
-  // Select the first request if none is selected
+  // Select the first request if none is selected or current selection is no longer visible
   useEffect(() => {
-    if (filteredRequests.length > 0 && !selectedRequestId) {
-      setSelectedRequestId(filteredRequests[0].id);
+    if (filteredRequests.length > 0) {
+      const currentStillVisible = selectedRequestId && filteredRequests.some(r => r.id === selectedRequestId);
+      if (!currentStillVisible) {
+        setSelectedRequestId(filteredRequests[0].id);
+      }
     }
   }, [filteredRequests, selectedRequestId]);
   

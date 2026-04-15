@@ -171,13 +171,11 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
   const [isGenerated, setIsGenerated] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   
-  // Generate the initial report content
+  // Generate the initial report content (regenerate when core props change)
   useEffect(() => {
-    if (!isGenerated) {
-      const initialContent = generateInitialContent();
-      setReportContent(initialContent);
-      setIsGenerated(true);
-    }
+    const initialContent = generateInitialContent();
+    setReportContent(initialContent);
+    setIsGenerated(true);
   }, [breachData, assessmentData, organizationInfo]);
   
   // Format a date from timestamp
@@ -296,13 +294,48 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
   
   // Handle download
   const handleDownload = () => {
-    // In a real implementation, this would generate a PDF, DOCX, or HTML file
-    // For this example, we'll just create a text file
-    
+    let mimeType: string;
+    let extension: string;
+    let content: string;
+
+    switch (downloadFormat) {
+      case 'html': {
+        mimeType = 'text/html';
+        extension = 'html';
+        content = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NDPC Breach Notification Report</title>
+<style>body{font-family:monospace;white-space:pre-wrap;max-width:800px;margin:2rem auto;padding:0 1rem;}</style>
+</head>
+<body>${reportContent.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</body>
+</html>`;
+        break;
+      }
+      case 'pdf':
+        // Real PDF generation requires a library like jspdf
+        mimeType = 'text/plain';
+        extension = 'pdf.txt';
+        content = reportContent;
+        break;
+      case 'docx':
+        // Real DOCX generation requires a library like docx
+        mimeType = 'text/plain';
+        extension = 'docx.txt';
+        content = reportContent;
+        break;
+      default:
+        mimeType = 'text/plain';
+        extension = 'txt';
+        content = reportContent;
+    }
+
     const element = document.createElement('a');
-    const file = new Blob([reportContent], {type: 'text/plain'});
+    const file = new Blob([content], { type: mimeType });
     element.href = URL.createObjectURL(file);
-    element.download = `NDPC_Breach_Notification_${new Date().toISOString().split('T')[0]}.txt`;
+    element.download = `NDPC_Breach_Notification_${new Date().toISOString().split('T')[0]}.${extension}`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);

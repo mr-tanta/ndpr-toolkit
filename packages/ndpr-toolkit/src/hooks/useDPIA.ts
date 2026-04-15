@@ -325,19 +325,7 @@ export function useDPIA({
   // Check if the DPIA is complete (pure read — no state mutation)
   const isComplete = (): boolean => {
     return sections.every((section) => {
-      const visibleQuestions = section.questions.filter(q => {
-        if (!q.showWhen || q.showWhen.length === 0) return true;
-        return q.showWhen.some(condition => {
-          const answer = answers[condition.questionId];
-          switch (condition.operator) {
-            case 'equals': return answer === condition.value;
-            case 'contains': return Array.isArray(answer) && answer.includes(condition.value);
-            case 'greaterThan': return typeof answer === 'number' && answer > condition.value;
-            case 'lessThan': return typeof answer === 'number' && answer < condition.value;
-            default: return false;
-          }
-        });
-      });
+      const visibleQuestions = section.questions.filter(shouldShowQuestion);
 
       return visibleQuestions.every(q => {
         if (!q.required) return true;

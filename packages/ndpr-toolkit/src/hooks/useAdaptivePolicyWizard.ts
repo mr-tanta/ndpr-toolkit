@@ -120,12 +120,16 @@ export function useAdaptivePolicyWizard(
 ): UseAdaptivePolicyWizardReturn {
   const { onComplete, onComplianceChange } = options;
 
-  // Stable ref for the adapter — avoids stale closures in callbacks
+  // Stable ref for the adapter — avoids stale closures in callbacks.
+  // The fallback is created once inside useRef so we don't instantiate a new
+  // localStorageAdapter on every render when options.adapter is undefined.
   const adapterRef = useRef<StorageAdapter<PolicyDraft>>(
     options.adapter ?? localStorageAdapter<PolicyDraft>(DRAFT_KEY),
   );
-  // Keep in sync if the caller swaps adapters between renders
-  adapterRef.current = options.adapter ?? localStorageAdapter<PolicyDraft>(DRAFT_KEY);
+  // Keep in sync only when the caller explicitly provides an adapter
+  if (options.adapter) {
+    adapterRef.current = options.adapter;
+  }
 
   // Stable ref for a draft ID so it persists across renders without being
   // part of state (no extra re-renders)
@@ -141,6 +145,10 @@ export function useAdaptivePolicyWizard(
   const [isDraftSaved, setIsDraftSaved] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Tracks whether onComplete has already been fired for the current visit to
+  // step 4, preventing duplicate calls on every keystroke / state change.
+  const hasCompletedRef = useRef(false);
 
   // Debounce timer ref — ref so mutations don't trigger re-renders
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -288,7 +296,9 @@ export function useAdaptivePolicyWizard(
   // ── Step management ───────────────────────────────────────────────────────
 
   const goToStep = useCallback((step: number) => {
-    setCurrentStep(Math.min(Math.max(1, step), 4));
+    const clamped = Math.min(Math.max(1, step), 4);
+    if (clamped < 4) hasCompletedRef.current = false;
+    setCurrentStep(clamped);
   }, []);
 
   const nextStep = useCallback(() => {
@@ -296,6 +306,7 @@ export function useAdaptivePolicyWizard(
   }, []);
 
   const prevStep = useCallback(() => {
+    hasCompletedRef.current = false;
     setCurrentStep((s) => Math.max(s - 1, 1));
   }, []);
 
@@ -427,6 +438,7 @@ export function useAdaptivePolicyWizard(
       switch (gap.fixType) {
         case 'fill_field': {
           // Navigate to step 1 (org details) for most fill_field gaps
+          hasCompletedRef.current = false;
           const step1Ids = ['controller-identity', 'dpo-contact-info', 'policy-effective-date'];
           const step2Ids = ['data-categories-disclosed'];
           const step3Ids = ['purpose-of-processing'];
@@ -512,6 +524,7 @@ export function useAdaptivePolicyWizard(
     });
     // Reset state
     draftIdRef.current = generateDraftId();
+    hasCompletedRef.current = false;
     setContext(createDefaultContext());
     setCustomSections([]);
     setSectionOverrides({});
@@ -552,7 +565,8 @@ export function useAdaptivePolicyWizard(
   // ── Notify onComplete when step 4 is reached and policy is built ──────────
 
   useEffect(() => {
-    if (currentStep === 4 && policy && onComplete) {
+    if (currentStep === 4 && policy && onComplete && !hasCompletedRef.current) {
+      hasCompletedRef.current = true;
       onComplete(policy);
     }
   }, [currentStep, policy, onComplete]);

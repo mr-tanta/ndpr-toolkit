@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
 import { resolveClass } from '../../utils/styling';
 
@@ -140,7 +140,15 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
 }) => {
   const [consents, setConsents] = useState<Record<string, boolean>>({});
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
+  const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
+  // Clear the success message timer on unmount
+  useEffect(() => {
+    return () => {
+      if (successTimerRef.current) clearTimeout(successTimerRef.current);
+    };
+  }, []);
+
   // Initialize consents from settings or options
   useEffect(() => {
     if (settings && settings.consents) {
@@ -174,7 +182,8 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
     
     if (showSuccessMessage) {
       setShowSuccess(true);
-      setTimeout(() => {
+      if (successTimerRef.current) clearTimeout(successTimerRef.current);
+      successTimerRef.current = setTimeout(() => {
         setShowSuccess(false);
       }, successMessageDuration);
     }
@@ -232,7 +241,11 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
       </div>
 
       {showSuccess && (
-        <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 rounded-md">
+        <div
+          className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 rounded-md"
+          aria-live="polite"
+          role="status"
+        >
           {successMessage}
         </div>
       )}

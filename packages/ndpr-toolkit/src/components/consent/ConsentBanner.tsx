@@ -192,9 +192,13 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showCustomize, setShowCustomize] = useState<boolean>(false);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
+  const [isMounted, setIsMounted] = useState(false);
   const bannerRef = useRef<HTMLDivElement>(null);
   const customizePanelRef = useRef<HTMLDivElement>(null);
   const analyticsShownFired = useRef<boolean>(false);
+
+  // Avoid SSR hydration mismatch: portals only render after client mount
+  useEffect(() => { setIsMounted(true); }, []);
 
   // Helper to fire analytics events
   const fireAnalytics = useCallback((
@@ -559,13 +563,11 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
       </div>
     );
 
-    return typeof document !== 'undefined'
-      ? createPortal(centerOverlay, document.body)
-      : centerOverlay;
+    if (!isMounted) return null;
+    return createPortal(centerOverlay, document.body);
   }
 
   // Top / Bottom positions: portal to document.body with fixed positioning
-  return typeof document !== 'undefined'
-    ? createPortal(bannerContent, document.body)
-    : bannerContent;
+  if (!isMounted) return null;
+  return createPortal(bannerContent, document.body);
 };

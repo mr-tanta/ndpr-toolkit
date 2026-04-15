@@ -23,10 +23,10 @@ const customJestConfig = {
   ],
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/_*.{js,jsx,ts,tsx}',
-    '!src/**/index.{js,jsx,ts,tsx}',
+    'packages/ndpr-toolkit/src/**/*.{ts,tsx}',
+    '!packages/ndpr-toolkit/src/**/*.d.ts',
+    '!packages/ndpr-toolkit/src/**/__tests__/**',
+    '!packages/ndpr-toolkit/src/**/index.{ts,tsx}',
   ],
 };
 

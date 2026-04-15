@@ -17,23 +17,29 @@ export function cookieAdapter<T = unknown>(
     load(): T | null {
       if (typeof document === 'undefined') return null;
       try {
-        const match = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith(`${key}=`));
+        const encodedKey = encodeURIComponent(key);
+        const match = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith(`${encodedKey}=`));
         if (!match) return null;
-        return JSON.parse(decodeURIComponent(match.split('=')[1])) as T;
+        const eqIdx = match.indexOf('=');
+        return JSON.parse(decodeURIComponent(match.slice(eqIdx + 1))) as T;
       } catch { return null; }
     },
     save(data: T): void {
       if (typeof document === 'undefined') return;
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + expires);
-      let cookie = `${key}=${encodeURIComponent(JSON.stringify(data))}; path=${path}; expires=${expiryDate.toUTCString()}; samesite=${sameSite}`;
+      const effectiveSecure = secure || sameSite === 'None';
+      let cookie = `${encodeURIComponent(key)}=${encodeURIComponent(JSON.stringify(data))}; path=${path}; samesite=${sameSite}`;
+      if (expires > 0) {
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + expires);
+        cookie += `; expires=${expiryDate.toUTCString()}`;
+      }
       if (domain) cookie += `; domain=${domain}`;
-      if (secure) cookie += '; secure';
+      if (effectiveSecure) cookie += '; secure';
       document.cookie = cookie;
     },
     remove(): void {
       if (typeof document === 'undefined') return;
-      let cookie = `${key}=; path=${path}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+      let cookie = `${encodeURIComponent(key)}=; path=${path}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
       if (domain) cookie += `; domain=${domain}`;
       document.cookie = cookie;
     },

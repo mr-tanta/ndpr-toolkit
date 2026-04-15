@@ -39,9 +39,13 @@ export function validateConsent(settings: ConsentSettings): {
   }
   
   // Check if consent is recent enough (within last 13 months for NDPA compliance)
-  const thirteenMonthsAgo = Date.now() - (13 * 30 * 24 * 60 * 60 * 1000);
-  if (settings.timestamp < thirteenMonthsAgo) {
-    errors.push('Consent is older than 13 months and should be refreshed');
+  if (settings.timestamp) {
+    const cutoff = new Date();
+    cutoff.setMonth(cutoff.getMonth() - 13);
+    const thirteenMonthsAgo = cutoff.getTime();
+    if (settings.timestamp < thirteenMonthsAgo) {
+      errors.push('Consent is older than 13 months and should be refreshed');
+    }
   }
   
   return {

@@ -22,7 +22,7 @@
     "build:lib": "tsup && cp packages/ndpr-toolkit/src/styles.d.ts dist/styles.d.ts",
     "prepublishOnly": "pnpm build:lib",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint .",
     "test": "jest --passWithNoTests",
     "export": "next export",
     "build:static": "next build",

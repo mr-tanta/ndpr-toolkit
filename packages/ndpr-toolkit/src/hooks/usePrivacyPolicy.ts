@@ -149,6 +149,8 @@ export function usePrivacyPolicy({
     industry: '',
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const templatesRef = useRef(templates);
+  templatesRef.current = templates;
 
   // Load policy data from storage on mount (skip if initialPolicy provided)
   useEffect(() => {
@@ -167,7 +169,7 @@ export function usePrivacyPolicy({
           setPolicy(loaded);
           // Restore template selection from loaded policy
           if (loaded.templateId) {
-            const foundTemplate = templates.find(t => t.id === loaded.templateId);
+            const foundTemplate = templatesRef.current.find(t => t.id === loaded.templateId);
             if (foundTemplate) setSelectedTemplate(foundTemplate);
           }
           if (loaded.organizationInfo) {
@@ -194,7 +196,7 @@ export function usePrivacyPolicy({
     }
 
     return () => { cancelled = true; };
-  }, [initialPolicy, templates]);
+  }, [initialPolicy]);
 
   // Persist policy to adapter (fire-and-forget)
   const persistPolicy = (nextPolicy: PrivacyPolicy) => {
@@ -212,19 +214,33 @@ export function usePrivacyPolicy({
     }
     
     setSelectedTemplate(template);
-    
+
     // Initialize sections from the template
     const sections = template.sections.map(section => ({
       ...section,
       customContent: undefined
     }));
-    
+
     // Initialize variable values
     const variableValues: Record<string, string> = {};
     Object.keys(template.variables).forEach(variable => {
       variableValues[variable] = template.variables[variable].defaultValue || '';
     });
-    
+
+    // Store the initialized sections and variable values in policy state
+    const now = Date.now();
+    setPolicy({
+      id: 'policy_' + now + '_' + Math.random().toString(36).substr(2, 9),
+      title: '',
+      templateId: template.id,
+      organizationInfo,
+      sections,
+      variableValues,
+      effectiveDate: now,
+      lastUpdated: now,
+      version: '1.0',
+    });
+
     return true;
   };
   

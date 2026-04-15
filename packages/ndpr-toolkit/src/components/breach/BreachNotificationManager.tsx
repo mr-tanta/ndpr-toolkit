@@ -177,10 +177,13 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
     setFilteredBreaches(filtered);
   }, [breachReports, statusFilter, searchTerm, sortBy, sortDirection, riskAssessments]);
   
-  // Select the first breach if none is selected
+  // Select the first breach if none is selected or current selection is no longer visible
   useEffect(() => {
-    if (filteredBreaches.length > 0 && !selectedBreachId) {
-      setSelectedBreachId(filteredBreaches[0].id);
+    if (filteredBreaches.length > 0) {
+      const currentStillVisible = selectedBreachId && filteredBreaches.some(r => r.id === selectedBreachId);
+      if (!currentStillVisible) {
+        setSelectedBreachId(filteredBreaches[0].id);
+      }
     }
   }, [filteredBreaches, selectedBreachId]);
   

@@ -19,16 +19,22 @@ export function apiAdapter<T = unknown>(
     },
     async save(data: T): Promise<void> {
       try {
-        await fetch(endpoint, {
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...baseHeaders },
           body: JSON.stringify(data),
         });
+        if (!res.ok) {
+          console.warn(`[ndpr-toolkit] Failed to save to ${endpoint}: ${res.status}`);
+        }
       } catch { console.warn(`[ndpr-toolkit] Failed to save to ${endpoint}`); }
     },
     async remove(): Promise<void> {
       try {
-        await fetch(endpoint, { method: 'DELETE', headers: { ...baseHeaders } });
+        const res = await fetch(endpoint, { method: 'DELETE', headers: { ...baseHeaders } });
+        if (!res.ok) {
+          console.warn(`[ndpr-toolkit] Failed to delete from ${endpoint}: ${res.status}`);
+        }
       } catch { console.warn(`[ndpr-toolkit] Failed to delete from ${endpoint}`); }
     },
   };

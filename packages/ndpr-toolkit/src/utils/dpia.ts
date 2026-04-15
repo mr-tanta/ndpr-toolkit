@@ -26,7 +26,7 @@ export function assessDPIARisk(dpiaResult: DPIAResult): {
   const unmitigatedHighRisks: DPIARisk[] = [];
   
   // Analyze each risk
-  dpiaResult.risks.forEach(risk => {
+  (dpiaResult.risks ?? []).forEach(risk => {
     // Count by level
     riskCounts[risk.level]++;
     

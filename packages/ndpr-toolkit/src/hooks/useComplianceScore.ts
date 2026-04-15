@@ -7,5 +7,6 @@ interface UseComplianceScoreOptions {
 }
 
 export function useComplianceScore({ input }: UseComplianceScoreOptions): ComplianceReport {
-  return useMemo(() => getComplianceScore(input), [input]);
+  const inputKey = JSON.stringify(input);
+  return useMemo(() => getComplianceScore(input), [inputKey]); // eslint-disable-line react-hooks/exhaustive-deps
 }

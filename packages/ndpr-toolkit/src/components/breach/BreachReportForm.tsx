@@ -306,10 +306,12 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
       newFiles.push(file);
     }
     
+    if (newFiles.length > 0) {
+      setAttachments(prev => [...prev, ...newFiles]);
+    }
     if (Object.keys(fileErrors).length > 0) {
       setErrors(prev => ({ ...prev, ...fileErrors }));
     } else {
-      setAttachments(prev => [...prev, ...newFiles]);
       setErrors(prev => ({ ...prev, attachments: '' }));
     }
   };
@@ -658,10 +660,10 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                 {errors.estimatedAffectedSubjects && <p id="estimatedAffectedSubjects-error" role="alert" className="mt-1 text-sm text-red-500">{errors.estimatedAffectedSubjects}</p>}
               </div>
               
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-1">
+              <fieldset className="md:col-span-2">
+                <legend className="block text-sm font-medium mb-1">
                   Types of Data Involved <span className="text-red-500">*</span>
-                </label>
+                </legend>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {commonDataTypes.map(type => (
                     <div key={type.id} className="flex items-center">
@@ -679,7 +681,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                   ))}
                 </div>
                 {errors.dataTypes && <p id="dataTypes-error" role="alert" className="mt-1 text-sm text-red-500">{errors.dataTypes}</p>}
-              </div>
+              </fieldset>
               
               <div>
                 <label htmlFor="status" className="block text-sm font-medium mb-1">

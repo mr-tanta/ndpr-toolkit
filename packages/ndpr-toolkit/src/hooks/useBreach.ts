@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useReducer, useCallback } from 'react';
 import { BreachReport, BreachCategory, RiskAssessment, NotificationRequirement, RegulatoryNotification } from '../types/breach';
 import { calculateBreachSeverity } from '../utils/breach';
 import type { StorageAdapter } from '../adapters/types';
@@ -9,6 +9,44 @@ type BreachCompositeState = {
   assessments: RiskAssessment[];
   notifications: RegulatoryNotification[];
 };
+
+type BreachAction =
+  | { type: 'LOAD'; payload: BreachCompositeState }
+  | { type: 'ADD_REPORT'; payload: BreachReport }
+  | { type: 'UPDATE_REPORT'; payload: { index: number; report: BreachReport } }
+  | { type: 'SET_ASSESSMENT'; payload: { existing: boolean; id?: string; assessment: RiskAssessment } }
+  | { type: 'SET_NOTIFICATION'; payload: { existing: boolean; id?: string; notification: RegulatoryNotification } }
+  | { type: 'CLEAR' };
+
+function breachReducer(state: BreachCompositeState, action: BreachAction): BreachCompositeState {
+  switch (action.type) {
+    case 'LOAD':
+      return action.payload;
+    case 'ADD_REPORT':
+      return { ...state, reports: [...state.reports, action.payload] };
+    case 'UPDATE_REPORT': {
+      const nextReports = [...state.reports];
+      nextReports[action.payload.index] = action.payload.report;
+      return { ...state, reports: nextReports };
+    }
+    case 'SET_ASSESSMENT': {
+      const { existing, id, assessment } = action.payload;
+      const nextAssessments = existing
+        ? state.assessments.map(a => a.id === id ? assessment : a)
+        : [...state.assessments, assessment];
+      return { ...state, assessments: nextAssessments };
+    }
+    case 'SET_NOTIFICATION': {
+      const { existing, id, notification } = action.payload;
+      const nextNotifications = existing
+        ? state.notifications.map(n => n.id === id ? notification : n)
+        : [...state.notifications, notification];
+      return { ...state, notifications: nextNotifications };
+    }
+    case 'CLEAR':
+      return { reports: [], assessments: [], notifications: [] };
+  }
+}
 
 interface UseBreachOptions {
   /**
@@ -157,10 +195,25 @@ export function useBreach({
   const adapterRef = useRef(resolvedAdapter);
   adapterRef.current = resolvedAdapter;
 
-  const [reports, setReports] = useState<BreachReport[]>(initialReports);
-  const [assessments, setAssessments] = useState<RiskAssessment[]>([]);
-  const [notifications, setNotifications] = useState<RegulatoryNotification[]>([]);
+  const [state, dispatch] = useReducer(breachReducer, {
+    reports: initialReports,
+    assessments: [],
+    notifications: [],
+  });
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Keep a ref to the latest state so callbacks always read current values
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
+  // Persist composite state to adapter
+  const persistState = useCallback((nextState: BreachCompositeState) => {
+    Promise.resolve(
+      adapterRef.current.save(nextState)
+    ).catch((err) => {
+      console.warn('[ndpr-toolkit] Failed to save breach data:', err);
+    });
+  }, []);
 
   // Load breach data from storage on mount
   useEffect(() => {
@@ -171,9 +224,14 @@ export function useBreach({
 
       const applyLoaded = (loaded: BreachCompositeState | null) => {
         if (loaded) {
-          setReports(loaded.reports ?? []);
-          setAssessments(loaded.assessments ?? []);
-          setNotifications(loaded.notifications ?? []);
+          dispatch({
+            type: 'LOAD',
+            payload: {
+              reports: loaded.reports ?? [],
+              assessments: loaded.assessments ?? [],
+              notifications: loaded.notifications ?? [],
+            },
+          });
         }
         setIsLoading(false);
       };
@@ -197,102 +255,102 @@ export function useBreach({
     return () => { cancelled = true; };
   }, []);
 
-  // Persist composite state to adapter
-  const persistState = (
-    nextReports: BreachReport[],
-    nextAssessments: RiskAssessment[],
-    nextNotifications: RegulatoryNotification[]
-  ) => {
-    Promise.resolve(
-      adapterRef.current.save({ reports: nextReports, assessments: nextAssessments, notifications: nextNotifications })
-    ).catch((err) => {
-      console.warn('[ndpr-toolkit] Failed to save breach data:', err);
-    });
-  };
-  
   // Generate a unique ID
-  const generateId = (prefix: string): string => {
+  const generateId = useCallback((prefix: string): string => {
     return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  };
-  
+  }, []);
+
   // Submit a new breach report
-  const reportBreach = (reportData: Omit<BreachReport, 'id' | 'reportedAt'>): BreachReport => {
+  const reportBreach = useCallback((reportData: Omit<BreachReport, 'id' | 'reportedAt'>): BreachReport => {
     const newReport: BreachReport = {
       id: generateId('breach'),
       reportedAt: Date.now(),
       ...reportData,
     };
 
-    const nextReports = [...reports, newReport];
-    setReports(nextReports);
-    persistState(nextReports, assessments, notifications);
+    dispatch({ type: 'ADD_REPORT', payload: newReport });
+
+    // Compute next state from ref for persistence
+    const current = stateRef.current;
+    const nextState = { ...current, reports: [...current.reports, newReport] };
+    persistState(nextState);
 
     if (onReport) {
       onReport(newReport);
     }
 
     return newReport;
-  };
+  }, [generateId, onReport, persistState]);
 
   // Update an existing breach report
-  const updateReport = (id: string, updates: Partial<BreachReport>): BreachReport | null => {
-    const index = reports.findIndex(r => r.id === id);
+  const updateReport = useCallback((id: string, updates: Partial<BreachReport>): BreachReport | null => {
+    const current = stateRef.current;
+    const index = current.reports.findIndex(r => r.id === id);
     if (index === -1) return null;
 
-    const updatedReport: BreachReport = { ...reports[index], ...updates };
-    const nextReports = [...reports];
+    const updatedReport: BreachReport = { ...current.reports[index], ...updates };
+    dispatch({ type: 'UPDATE_REPORT', payload: { index, report: updatedReport } });
+
+    const nextReports = [...current.reports];
     nextReports[index] = updatedReport;
-    setReports(nextReports);
-    persistState(nextReports, assessments, notifications);
+    persistState({ ...current, reports: nextReports });
 
     return updatedReport;
-  };
-  
+  }, [persistState]);
+
   // Get a breach report by ID
-  const getReport = (id: string): BreachReport | null => {
-    return reports.find(report => report.id === id) || null;
-  };
-  
+  const getReport = useCallback((id: string): BreachReport | null => {
+    return stateRef.current.reports.find(report => report.id === id) || null;
+  }, []);
+
   // Conduct a risk assessment for a breach
-  const assessRisk = (breachId: string, assessmentData: Omit<RiskAssessment, 'id' | 'breachId' | 'assessedAt'>): RiskAssessment => {
-    const existingAssessment = assessments.find(a => a.breachId === breachId);
-    let nextAssessments: RiskAssessment[];
+  const assessRisk = useCallback((breachId: string, assessmentData: Omit<RiskAssessment, 'id' | 'breachId' | 'assessedAt'>): RiskAssessment => {
+    const current = stateRef.current;
+    const existingAssessment = current.assessments.find(a => a.breachId === breachId);
     let result: RiskAssessment;
+    let existing: boolean;
 
     if (existingAssessment) {
       result = { ...existingAssessment, ...assessmentData, assessedAt: Date.now() };
-      nextAssessments = assessments.map(a => a.id === existingAssessment.id ? result : a);
+      existing = true;
     } else {
       result = { id: generateId('assessment'), breachId, assessedAt: Date.now(), ...assessmentData };
-      nextAssessments = [...assessments, result];
+      existing = false;
     }
 
-    setAssessments(nextAssessments);
-    persistState(reports, nextAssessments, notifications);
+    dispatch({
+      type: 'SET_ASSESSMENT',
+      payload: { existing, id: existingAssessment?.id, assessment: result },
+    });
+
+    const nextAssessments = existing
+      ? current.assessments.map(a => a.id === existingAssessment!.id ? result : a)
+      : [...current.assessments, result];
+    persistState({ ...current, assessments: nextAssessments });
 
     if (onAssessment) {
       onAssessment(result);
     }
 
     return result;
-  };
-  
+  }, [generateId, onAssessment, persistState]);
+
   // Get a risk assessment for a breach
-  const getAssessment = (breachId: string): RiskAssessment | null => {
-    return assessments.find(assessment => assessment.breachId === breachId) || null;
-  };
-  
+  const getAssessment = useCallback((breachId: string): RiskAssessment | null => {
+    return stateRef.current.assessments.find(assessment => assessment.breachId === breachId) || null;
+  }, []);
+
   // Calculate notification requirements based on a risk assessment
-  const calculateNotificationRequirements = (breachId: string): NotificationRequirement | null => {
-    const report = getReport(breachId);
-    const assessment = getAssessment(breachId);
-    
+  const calculateNotificationRequirements = useCallback((breachId: string): NotificationRequirement | null => {
+    const report = stateRef.current.reports.find(r => r.id === breachId) || null;
+    const assessment = stateRef.current.assessments.find(a => a.breachId === breachId) || null;
+
     if (!report) {
       return null;
     }
-    
+
     const { severityLevel, notificationRequired, timeframeHours, justification } = calculateBreachSeverity(report, assessment || undefined);
-    
+
     // Calculate the deadline (72 hours from discovery under NDPA Section 40)
     const deadline = report.discoveredAt + (timeframeHours * 60 * 60 * 1000);
 
@@ -302,63 +360,72 @@ export function useBreach({
       dataSubjectNotificationRequired: severityLevel === 'high' || severityLevel === 'critical',
       justification
     };
-  };
-  
+  }, []);
+
   // Send a regulatory notification
-  const sendNotification = (breachId: string, notificationData: Omit<RegulatoryNotification, 'id' | 'breachId' | 'sentAt'>): RegulatoryNotification => {
-    const existingNotification = notifications.find(n => n.breachId === breachId);
-    let nextNotifications: RegulatoryNotification[];
+  const sendNotification = useCallback((breachId: string, notificationData: Omit<RegulatoryNotification, 'id' | 'breachId' | 'sentAt'>): RegulatoryNotification => {
+    const current = stateRef.current;
+    const existingNotification = current.notifications.find(n => n.breachId === breachId);
     let result: RegulatoryNotification;
+    let existing: boolean;
 
     if (existingNotification) {
       result = { ...existingNotification, ...notificationData, sentAt: Date.now() };
-      nextNotifications = notifications.map(n => n.id === existingNotification.id ? result : n);
+      existing = true;
     } else {
       result = { id: generateId('notification'), breachId, sentAt: Date.now(), ...notificationData };
-      nextNotifications = [...notifications, result];
+      existing = false;
     }
 
-    setNotifications(nextNotifications);
-    persistState(reports, assessments, nextNotifications);
+    dispatch({
+      type: 'SET_NOTIFICATION',
+      payload: { existing, id: existingNotification?.id, notification: result },
+    });
+
+    const nextNotifications = existing
+      ? current.notifications.map(n => n.id === existingNotification!.id ? result : n)
+      : [...current.notifications, result];
+    persistState({ ...current, notifications: nextNotifications });
 
     if (onNotification) {
       onNotification(result);
     }
 
     return result;
-  };
-  
+  }, [generateId, onNotification, persistState]);
+
   // Get a regulatory notification for a breach
-  const getNotification = (breachId: string): RegulatoryNotification | null => {
-    return notifications.find(notification => notification.breachId === breachId) || null;
-  };
-  
+  const getNotification = useCallback((breachId: string): RegulatoryNotification | null => {
+    return stateRef.current.notifications.find(notification => notification.breachId === breachId) || null;
+  }, []);
+
   // Get breaches that require notification within the next X hours
-  const getBreachesRequiringNotification = (hoursThreshold = 24): Array<{
+  const getBreachesRequiringNotification = useCallback((hoursThreshold = 24): Array<{
     report: BreachReport;
     assessment: RiskAssessment;
     requirements: NotificationRequirement;
     hoursRemaining: number;
   }> => {
     const now = Date.now();
+    const current = stateRef.current;
     const result: Array<{
       report: BreachReport;
       assessment: RiskAssessment;
       requirements: NotificationRequirement;
       hoursRemaining: number;
     }> = [];
-    
-    reports.forEach(report => {
+
+    current.reports.forEach(report => {
       // Skip if a notification has already been sent
-      if (notifications.some(notification => notification.breachId === report.id)) {
+      if (current.notifications.some(notification => notification.breachId === report.id)) {
         return;
       }
-      
-      const assessment = getAssessment(report.id);
+
+      const assessment = current.assessments.find(a => a.breachId === report.id) || null;
       if (!assessment) {
         return;
       }
-      
+
       const requirements = calculateNotificationRequirements(report.id);
       if (!requirements || !requirements.ndpcNotificationRequired) {
         return;
@@ -366,7 +433,7 @@ export function useBreach({
 
       const timeRemaining = requirements.ndpcNotificationDeadline - now;
       const hoursRemaining = timeRemaining / (60 * 60 * 1000);
-      
+
       if (hoursRemaining <= hoursThreshold) {
         result.push({
           report,
@@ -376,25 +443,23 @@ export function useBreach({
         });
       }
     });
-    
+
     // Sort by hours remaining (ascending)
     return result.sort((a, b) => a.hoursRemaining - b.hoursRemaining);
-  };
-  
+  }, [calculateNotificationRequirements]);
+
   // Clear all breach data
-  const clearBreachData = () => {
-    setReports([]);
-    setAssessments([]);
-    setNotifications([]);
+  const clearBreachData = useCallback(() => {
+    dispatch({ type: 'CLEAR' });
     Promise.resolve(adapterRef.current.remove()).catch((err) => {
       console.warn('[ndpr-toolkit] Failed to remove breach data:', err);
     });
-  };
+  }, []);
 
   return {
-    reports,
-    assessments,
-    notifications,
+    reports: state.reports,
+    assessments: state.assessments,
+    notifications: state.notifications,
     reportBreach,
     updateReport,
     getReport,

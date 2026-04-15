@@ -131,8 +131,9 @@ const PRIORITY_ORDER: RecommendationPriority[] = ['critical', 'high', 'medium', 
 
 function monthsDiff(dateStr: string): number {
   const then = new Date(dateStr).getTime();
-  const now = Date.now();
-  return (now - then) / (1000 * 60 * 60 * 24 * 30.44);
+  if (isNaN(then)) return Infinity;
+  const diff = (Date.now() - then) / (1000 * 60 * 60 * 24 * 30.44);
+  return Math.max(0, diff);
 }
 
 function scoreChecks(checks: CheckDefinition[]): number {

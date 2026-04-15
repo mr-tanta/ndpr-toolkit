@@ -13,11 +13,15 @@ export function localStorageAdapter<T = unknown>(key: string): StorageAdapter<T>
     },
     save(data: T): void {
       if (typeof window === 'undefined') return;
-      localStorage.setItem(key, JSON.stringify(data));
+      try {
+        localStorage.setItem(key, JSON.stringify(data));
+      } catch { /* QuotaExceededError or SecurityError */ }
     },
     remove(): void {
       if (typeof window === 'undefined') return;
-      localStorage.removeItem(key);
+      try {
+        localStorage.removeItem(key);
+      } catch { /* SecurityError */ }
     },
   };
 }

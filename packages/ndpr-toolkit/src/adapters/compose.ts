@@ -10,29 +10,29 @@ export function composeAdapters<T = unknown>(
     },
     save(data: T): void | Promise<void> {
       const primaryResult = primary.save(data);
-      const runSecondaries = async () => {
+      const runSecondaries = () => {
         for (const adapter of secondaries) {
-          try { await adapter.save(data); }
+          try { adapter.save(data); }
           catch (err) { console.warn('[ndpr-toolkit] Secondary adapter save failed:', err); }
         }
       };
       if (primaryResult instanceof Promise) {
         return primaryResult.then(() => runSecondaries());
       }
-      return runSecondaries();
+      runSecondaries();
     },
     remove(): void | Promise<void> {
       const primaryResult = primary.remove();
-      const runSecondaries = async () => {
+      const runSecondaries = () => {
         for (const adapter of secondaries) {
-          try { await adapter.remove(); }
+          try { adapter.remove(); }
           catch (err) { console.warn('[ndpr-toolkit] Secondary adapter remove failed:', err); }
         }
       };
       if (primaryResult instanceof Promise) {
         return primaryResult.then(() => runSecondaries());
       }
-      return runSecondaries();
+      runSecondaries();
     },
   };
 }

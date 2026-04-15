@@ -88,29 +88,10 @@ export function calculateBreachSeverity(
     .map(([key, _]) => key)
     .join(', ');
   
-  // Build justification based on severity level and factors
-  let justification = '';
-  
-  if (severityLevel === 'low') {
-    justification = 'Low risk due to minimal data exposure and effective containment';
-  } else if (severityLevel === 'medium') {
-    if (severityFactors.ongoing) {
-      justification = `Medium risk due to personal data exposure (ongoing: ${severityFactors.ongoing})`;
-    } else {
-      justification = 'Medium risk due to personal data exposure';
-    }
-  } else if (severityLevel === 'high') {
-    justification = 'High risk due to sensitive financial data';
-  } else if (severityLevel === 'critical') {
-    justification = 'Critical risk due to large-scale sensitive data exposure';
-  }
-  
-  // For test cases that expect factor information
-  if (factors && (severityLevel === 'medium' || severityLevel === 'high' || severityLevel === 'critical')) {
-    if (!justification.includes(factors)) {
-      justification += ` (factors: ${factors})`;
-    }
-  }
+  // Build justification dynamically from actual factors
+  const justification = factors
+    ? `${severityLevel.charAt(0).toUpperCase() + severityLevel.slice(1)} risk (factors: ${factors})`
+    : `${severityLevel.charAt(0).toUpperCase() + severityLevel.slice(1)} risk`;
   
   return {
     severityLevel,

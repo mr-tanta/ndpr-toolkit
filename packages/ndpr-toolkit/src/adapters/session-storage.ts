@@ -11,11 +11,15 @@ export function sessionStorageAdapter<T = unknown>(key: string): StorageAdapter<
     },
     save(data: T): void {
       if (typeof window === 'undefined') return;
-      sessionStorage.setItem(key, JSON.stringify(data));
+      try {
+        sessionStorage.setItem(key, JSON.stringify(data));
+      } catch { /* QuotaExceededError or SecurityError */ }
     },
     remove(): void {
       if (typeof window === 'undefined') return;
-      sessionStorage.removeItem(key);
+      try {
+        sessionStorage.removeItem(key);
+      } catch { /* SecurityError */ }
     },
   };
 }

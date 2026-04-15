@@ -165,7 +165,7 @@ export function useDSR({
   };
 
   // Submit a new request
-  const submitRequest = (requestData: Omit<DSRRequest, 'id' | 'status' | 'submittedAt' | 'updatedAt' | 'estimatedCompletionDate'>): DSRRequest => {
+  const submitRequest = useCallback((requestData: Omit<DSRRequest, 'id' | 'status' | 'submittedAt' | 'updatedAt' | 'estimatedCompletionDate'>): DSRRequest => {
     // Find the request type to get the estimated completion time
     const requestType = requestTypes.find(type => type.id === requestData.type);
     const estimatedCompletionDays = requestType?.estimatedCompletionTime || 30; // Default to 30 days
@@ -196,10 +196,10 @@ export function useDSR({
     }
 
     return newRequest;
-  };
+  }, [requestTypes, persistRequests, onSubmit]);
 
   // Update an existing request
-  const updateRequest = (id: string, updates: Partial<DSRRequest>): DSRRequest | null => {
+  const updateRequest = useCallback((id: string, updates: Partial<DSRRequest>): DSRRequest | null => {
     let updatedRequest: DSRRequest | null = null;
 
     setRequests(prevRequests => {
@@ -227,22 +227,22 @@ export function useDSR({
     }
 
     return updatedRequest;
-  };
+  }, [persistRequests, onUpdate]);
 
   // Get a request by ID
-  const getRequest = (id: string): DSRRequest | null => {
+  const getRequest = useCallback((id: string): DSRRequest | null => {
     return requests.find(request => request.id === id) || null;
-  };
+  }, [requests]);
 
   // Get requests by status
-  const getRequestsByStatus = (status: RequestStatus): DSRRequest[] => {
+  const getRequestsByStatus = useCallback((status: RequestStatus): DSRRequest[] => {
     return requests.filter(request => request.status === status);
-  };
+  }, [requests]);
 
   // Get requests by type
-  const getRequestsByType = (type: string): DSRRequest[] => {
+  const getRequestsByType = useCallback((type: string): DSRRequest[] => {
     return requests.filter(request => request.type === type);
-  };
+  }, [requests]);
 
   // Get the request type definition by ID
   const getRequestType = (typeId: string): RequestType | undefined => {

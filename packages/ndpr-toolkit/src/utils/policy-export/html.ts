@@ -379,13 +379,14 @@ ${tocItems}
     .join('\n\n');
 
   // ── Style block ──────────────────────────────────────────────────────────
+  const safeCSS = customCSS ? customCSS.replace(/<\/style>/gi, '') : '';
   const styleBlock = includeStyles
     ? `<style>
 ${BASE_STYLES}
-${customCSS ? `\n/* ── Custom styles ──────────────────────────────────────── */\n${customCSS}` : ''}
+${safeCSS ? `\n/* ── Custom styles ──────────────────────────────────────── */\n${safeCSS}` : ''}
 </style>`
-    : customCSS
-    ? `<style>${customCSS}</style>`
+    : safeCSS
+    ? `<style>${safeCSS}</style>`
     : '';
 
   // ── Full document ────────────────────────────────────────────────────────
