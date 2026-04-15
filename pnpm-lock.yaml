@@ -47,6 +47,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4.1.13
         version: 4.1.13
+      '@tantainnovative/ndpr-toolkit':
+        specifier: 3.2.0
+        version: 3.2.0(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(jspdf@4.2.1)(lucide-react@0.507.0(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)
       '@testing-library/dom':
         specifier: ^10.4.1
         version: 10.4.1
@@ -1548,6 +1551,40 @@ packages:
 
   '@tailwindcss/postcss@4.1.13':
     resolution: {integrity: sha512-HLgx6YSFKJT7rJqh9oJs/TkBFhxuMOfUKSBEPYwV+t78POOBsdQ7crhZLzwcH3T0UyUuOzU/GK5pk5eKr3wCiQ==}
+
+  '@tantainnovative/ndpr-toolkit@3.2.0':
+    resolution: {integrity: sha512-3a7tKloUukhCDE+dmeNW2/pJ4ILcK+HHF3VnxOI5USNR6U8UfKbGhKM9nYePuUkNFEC+ZCFyOr3HvUwI7I8kXg==}
+    peerDependencies:
+      '@radix-ui/react-label': ^2.1.4
+      '@radix-ui/react-slot': ^1.2.0
+      '@radix-ui/react-switch': ^1.2.2
+      '@radix-ui/react-tabs': ^1.1.9
+      class-variance-authority: ^0.7.1
+      clsx: ^2.1.1
+      jspdf: ^3.0.3
+      lucide-react: '>=0.400.0'
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      tailwind-merge: ^2.6.0
+    peerDependenciesMeta:
+      '@radix-ui/react-label':
+        optional: true
+      '@radix-ui/react-slot':
+        optional: true
+      '@radix-ui/react-switch':
+        optional: true
+      '@radix-ui/react-tabs':
+        optional: true
+      class-variance-authority:
+        optional: true
+      clsx:
+        optional: true
+      jspdf:
+        optional: true
+      lucide-react:
+        optional: true
+      tailwind-merge:
+        optional: true
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -6105,6 +6142,22 @@ snapshots:
       '@tailwindcss/oxide': 4.1.13
       postcss: 8.5.6
       tailwindcss: 4.1.13
+
+  '@tantainnovative/ndpr-toolkit@3.2.0(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(jspdf@4.2.1)(lucide-react@0.507.0(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)':
+    dependencies:
+      '@phosphor-icons/react': 2.1.10(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      react: 19.1.1
+      react-dom: 19.1.1(react@19.1.1)
+    optionalDependencies:
+      '@radix-ui/react-label': 2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@radix-ui/react-slot': 1.2.4(@types/react@19.1.15)(react@19.1.1)
+      '@radix-ui/react-switch': 1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@radix-ui/react-tabs': 1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      class-variance-authority: 0.7.1
+      clsx: 2.1.1
+      jspdf: 4.2.1
+      lucide-react: 0.507.0(react@19.1.1)
+      tailwind-merge: 3.5.0
 
   '@testing-library/dom@10.4.1':
     dependencies:
