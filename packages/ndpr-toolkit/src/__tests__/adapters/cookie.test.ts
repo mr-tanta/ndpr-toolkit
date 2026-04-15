@@ -61,7 +61,7 @@ describe('cookieAdapter', () => {
       const data = { token: 'abc=def==' };
 
       adapter.save(data);
-      const loaded = adapter.load();
+      const loaded = adapter.load() as { token: string } | null;
 
       expect(loaded).toEqual(data);
       expect(loaded!.token).toBe('abc=def==');

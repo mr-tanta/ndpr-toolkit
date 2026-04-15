@@ -81,7 +81,6 @@ describe('sessionStorageAdapter', () => {
 
   it('returns safely when window is undefined (SSR)', () => {
     const originalWindow = globalThis.window;
-    // @ts-expect-error -- simulating SSR by removing window
     delete (globalThis as Record<string, unknown>).window;
     try {
       const adapter = sessionStorageAdapter('ssr_key');
