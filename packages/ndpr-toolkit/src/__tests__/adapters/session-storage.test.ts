@@ -1,6 +1,6 @@
-import { localStorageAdapter } from '../../adapters/local-storage';
+import { sessionStorageAdapter } from '../../adapters/session-storage';
 
-const mockLocalStorage = (() => {
+const mockSessionStorage = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: jest.fn((key: string) => store[key] ?? null),
@@ -10,71 +10,71 @@ const mockLocalStorage = (() => {
   };
 })();
 
-Object.defineProperty(window, 'localStorage', { value: mockLocalStorage });
+Object.defineProperty(window, 'sessionStorage', { value: mockSessionStorage });
 
-describe('localStorageAdapter', () => {
+describe('sessionStorageAdapter', () => {
   beforeEach(() => {
-    mockLocalStorage.clear();
+    mockSessionStorage.clear();
     jest.clearAllMocks();
   });
 
   it('returns null when no data is stored', () => {
-    const adapter = localStorageAdapter('test_key');
+    const adapter = sessionStorageAdapter('test_key');
     expect(adapter.load()).toBeNull();
   });
 
   it('saves and loads data', () => {
-    const adapter = localStorageAdapter<{ name: string }>('test_key');
+    const adapter = sessionStorageAdapter<{ name: string }>('test_key');
     const data = { name: 'test' };
     adapter.save(data);
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith('test_key', JSON.stringify(data));
+    expect(mockSessionStorage.setItem).toHaveBeenCalledWith('test_key', JSON.stringify(data));
     const loaded = adapter.load();
     expect(loaded).toEqual(data);
   });
 
   it('removes data', () => {
-    const adapter = localStorageAdapter('test_key');
+    const adapter = sessionStorageAdapter('test_key');
     adapter.save({ value: 1 });
     adapter.remove();
-    expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('test_key');
+    expect(mockSessionStorage.removeItem).toHaveBeenCalledWith('test_key');
     expect(adapter.load()).toBeNull();
   });
 
   it('returns null on corrupted JSON', () => {
-    mockLocalStorage.setItem('test_key', 'not-json');
-    const adapter = localStorageAdapter('test_key');
+    mockSessionStorage.setItem('test_key', 'not-json');
+    const adapter = sessionStorageAdapter('test_key');
     expect(adapter.load()).toBeNull();
   });
 
   it('does not throw on QuotaExceededError during save', () => {
-    mockLocalStorage.setItem.mockImplementationOnce(() => {
+    mockSessionStorage.setItem.mockImplementationOnce(() => {
       throw new DOMException('Storage quota exceeded', 'QuotaExceededError');
     });
-    const adapter = localStorageAdapter('test_key');
+    const adapter = sessionStorageAdapter('test_key');
     expect(() => adapter.save({ big: 'data' })).not.toThrow();
   });
 
   it('does not throw on SecurityError during save', () => {
-    mockLocalStorage.setItem.mockImplementationOnce(() => {
+    mockSessionStorage.setItem.mockImplementationOnce(() => {
       throw new DOMException('Access denied', 'SecurityError');
     });
-    const adapter = localStorageAdapter('test_key');
+    const adapter = sessionStorageAdapter('test_key');
     expect(() => adapter.save({ secret: 'data' })).not.toThrow();
   });
 
   it('does not throw on SecurityError during remove', () => {
-    mockLocalStorage.removeItem.mockImplementationOnce(() => {
+    mockSessionStorage.removeItem.mockImplementationOnce(() => {
       throw new DOMException('Access denied', 'SecurityError');
     });
-    const adapter = localStorageAdapter('test_key');
+    const adapter = sessionStorageAdapter('test_key');
     expect(() => adapter.remove()).not.toThrow();
   });
 
   it('writes data correctly when no error occurs', () => {
-    const adapter = localStorageAdapter<{ count: number; label: string }>('write_key');
+    const adapter = sessionStorageAdapter<{ count: number; label: string }>('write_key');
     const payload = { count: 42, label: 'hello' };
     adapter.save(payload);
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith('write_key', JSON.stringify(payload));
+    expect(mockSessionStorage.setItem).toHaveBeenCalledWith('write_key', JSON.stringify(payload));
     const loaded = adapter.load();
     expect(loaded).toEqual(payload);
   });
@@ -84,7 +84,7 @@ describe('localStorageAdapter', () => {
     // @ts-expect-error -- simulating SSR by removing window
     delete (globalThis as Record<string, unknown>).window;
     try {
-      const adapter = localStorageAdapter('ssr_key');
+      const adapter = sessionStorageAdapter('ssr_key');
       expect(() => adapter.save({ ssr: true })).not.toThrow();
       expect(() => adapter.remove()).not.toThrow();
       expect(adapter.load()).toBeNull();

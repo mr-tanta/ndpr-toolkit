@@ -402,6 +402,110 @@ describe('exportROPAToCSV', () => {
   });
 });
 
+describe('CSV injection prevention (escapeCSVField)', () => {
+  it('should prefix values starting with = to prevent formula injection', () => {
+    const record = createValidRecord({
+      name: "=cmd|'/C calc'!A0",
+    });
+    const ropa = createROPA([record]);
+    const csv = exportROPAToCSV(ropa);
+    const dataRow = csv.split('\n')[1];
+
+    expect(dataRow).toContain("'=cmd|'/C calc'!A0");
+    expect(dataRow).not.toMatch(/(?<!')"?=cmd/);
+  });
+
+  it('should prefix values starting with + to prevent formula injection', () => {
+    const record = createValidRecord({
+      name: '+1-555-0100',
+    });
+    const ropa = createROPA([record]);
+    const csv = exportROPAToCSV(ropa);
+    const dataRow = csv.split('\n')[1];
+
+    expect(dataRow).toContain("'+1-555-0100");
+  });
+
+  it('should prefix values starting with - to prevent formula injection (even negative numbers)', () => {
+    const record = createValidRecord({
+      name: '-5',
+    });
+    const ropa = createROPA([record]);
+    const csv = exportROPAToCSV(ropa);
+    const dataRow = csv.split('\n')[1];
+
+    expect(dataRow).toContain("'-5");
+  });
+
+  it('should prefix values starting with @ to prevent formula injection', () => {
+    const record = createValidRecord({
+      name: '@SUM(A1:A10)',
+    });
+    const ropa = createROPA([record]);
+    const csv = exportROPAToCSV(ropa);
+    const dataRow = csv.split('\n')[1];
+
+    expect(dataRow).toContain("'@SUM(A1:A10)");
+  });
+
+  it('should prefix values starting with tab character to prevent formula injection', () => {
+    const record = createValidRecord({
+      name: '\tcmd',
+    });
+    const ropa = createROPA([record]);
+    const csv = exportROPAToCSV(ropa);
+    const dataRow = csv.split('\n')[1];
+
+    expect(dataRow).toContain("'\tcmd");
+  });
+
+  it('should NOT prefix normal values starting with letters', () => {
+    const record = createValidRecord({
+      name: 'Employee Payroll Processing',
+    });
+    const ropa = createROPA([record]);
+    const csv = exportROPAToCSV(ropa);
+    const dataRow = csv.split('\n')[1];
+
+    expect(dataRow).toContain('Employee Payroll Processing');
+    expect(dataRow).not.toContain("'Employee Payroll Processing");
+  });
+
+  it('should NOT prefix normal values starting with numbers', () => {
+    const record = createValidRecord({
+      name: '2025 Annual Review',
+    });
+    const ropa = createROPA([record]);
+    const csv = exportROPAToCSV(ropa);
+    const dataRow = csv.split('\n')[1];
+
+    expect(dataRow).toContain('2025 Annual Review');
+    expect(dataRow).not.toContain("'2025 Annual Review");
+  });
+
+  it('should sanitize formula-trigger characters in exported ROPA CSV (integration)', () => {
+    const maliciousRecord = createValidRecord({
+      id: 'rec-injection',
+      name: '=SUM(A1:A10)',
+      description: 'A normal description',
+    });
+    const ropa = createROPA([maliciousRecord]);
+    const csv = exportROPAToCSV(ropa);
+
+    // The name field should be prefixed with a single quote
+    expect(csv).toContain("'=SUM(A1:A10)");
+    // Verify the raw =SUM without the prefix does NOT appear
+    const lines = csv.split('\n');
+    const dataLine = lines[1];
+    // The data row should contain the record ID followed by the sanitized name
+    expect(dataLine).toContain('rec-injection');
+    // Split on comma to find the name field (second field)
+    // The name has no commas/quotes so it won't be wrapped in CSV quotes
+    const fields = dataLine.split(',');
+    expect(fields[1]).toBe("'=SUM(A1:A10)");
+  });
+});
+
 describe('identifyComplianceGaps', () => {
   it('should return no gaps for a fully compliant ROPA', () => {
     const records = [

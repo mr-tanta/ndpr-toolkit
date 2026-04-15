@@ -64,4 +64,48 @@ describe('getComplianceScore', () => {
     expect(report.rating).toBe('critical');
     expect(report.score).toBeLessThanOrEqual(25);
   });
+
+  it('treats a future lastUpdated date as 0 months old (passes recency check)', () => {
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 1);
+    const report = getComplianceScore({
+      ...fullInput,
+      policy: { ...fullInput.policy, lastUpdated: futureDate.toISOString().split('T')[0] },
+    });
+    // The policy recency check (<=13 months) should pass because monthsDiff clamps to 0
+    expect(report.modules.policy.score).toBe(100);
+    expect(report.modules.policy.gaps).not.toContain('Privacy policy reviewed within 13 months');
+  });
+
+  it('treats an invalid (empty string) lastUpdated as infinitely old (fails recency check)', () => {
+    const report = getComplianceScore({
+      ...fullInput,
+      policy: { ...fullInput.policy, lastUpdated: '' },
+    });
+    // monthsDiff('') returns Infinity, so the <=13 check fails
+    expect(report.modules.policy.gaps).toContain('Privacy policy reviewed within 13 months');
+    expect(report.modules.policy.score).toBeLessThan(100);
+  });
+
+  it('treats an invalid lastReviewed ("not-a-date") as failing the 6-month recency check', () => {
+    const report = getComplianceScore({
+      ...fullInput,
+      ropa: { ...fullInput.ropa, lastReviewed: 'not-a-date' },
+    });
+    // monthsDiff('not-a-date') returns Infinity, so the <=6 check fails
+    expect(report.modules.ropa.gaps).toContain('ROPA reviewed within 6 months');
+    expect(report.modules.ropa.score).toBeLessThan(100);
+  });
+
+  it('treats a future lastReviewed date as 0 months old (passes recency check)', () => {
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 1);
+    const report = getComplianceScore({
+      ...fullInput,
+      ropa: { ...fullInput.ropa, lastReviewed: futureDate.toISOString().split('T')[0] },
+    });
+    // The ROPA recency check (<=6 months) should pass because monthsDiff clamps to 0
+    expect(report.modules.ropa.score).toBe(100);
+    expect(report.modules.ropa.gaps).not.toContain('ROPA reviewed within 6 months');
+  });
 });

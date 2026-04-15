@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ConsentManager } from '../../../components/consent/ConsentManager';
 import { ConsentOption, ConsentSettings } from '../../../types/consent';
 
@@ -120,5 +120,90 @@ describe('ConsentManager (NDPA Privacy Settings)', () => {
     
     // Check thatit&apos;s disabled
     expect(necessaryCheckbox).toBeDisabled();
+  });
+
+  describe('timer cleanup and accessibility', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('clears the success message timer on unmount without state update warnings', () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      const { unmount } = render(
+        <ConsentManager
+          options={consentOptions}
+          onSave={mockOnSave}
+          successMessageDuration={5000}
+        />
+      );
+
+      // Trigger save to start the success timer
+      fireEvent.click(screen.getByRole('button', { name: /Save Preferences/i }));
+
+      // Unmount immediately before the timer fires
+      unmount();
+
+      // Advance timers past the success duration
+      act(() => {
+        jest.advanceTimersByTime(6000);
+      });
+
+      // Verify no "state update on unmounted component" warning was logged
+      const stateUpdateWarnings = consoleErrorSpy.mock.calls.filter(call =>
+        call.some(
+          arg =>
+            typeof arg === 'string' &&
+            arg.includes("Can't perform a React state update on an unmounted component")
+        )
+      );
+      expect(stateUpdateWarnings).toHaveLength(0);
+
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('renders the success message with aria-live="polite" and role="status"', () => {
+      render(
+        <ConsentManager
+          options={consentOptions}
+          onSave={mockOnSave}
+        />
+      );
+
+      // Trigger save to show the success message
+      fireEvent.click(screen.getByRole('button', { name: /Save Preferences/i }));
+
+      const successElement = screen.getByText('Your preferences have been saved.');
+      expect(successElement).toHaveAttribute('aria-live', 'polite');
+      expect(successElement).toHaveAttribute('role', 'status');
+    });
+
+    it('hides the success message after the configured timeout', () => {
+      render(
+        <ConsentManager
+          options={consentOptions}
+          onSave={mockOnSave}
+          successMessageDuration={3000}
+        />
+      );
+
+      // Trigger save to show the success message
+      fireEvent.click(screen.getByRole('button', { name: /Save Preferences/i }));
+
+      // The message should be visible
+      expect(screen.getByText('Your preferences have been saved.')).toBeInTheDocument();
+
+      // Advance time past the duration
+      act(() => {
+        jest.advanceTimersByTime(3000);
+      });
+
+      // The message should now be gone
+      expect(screen.queryByText('Your preferences have been saved.')).not.toBeInTheDocument();
+    });
   });
 });

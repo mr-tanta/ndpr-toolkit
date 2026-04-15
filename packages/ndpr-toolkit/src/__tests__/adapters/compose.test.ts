@@ -42,4 +42,58 @@ describe('composeAdapters', () => {
     expect(warnSpy).toHaveBeenCalled();
     warnSpy.mockRestore();
   });
+
+  it('sync + sync save returns void (not a Promise)', () => {
+    const primary = memoryAdapter<string>();
+    const secondary = memoryAdapter<string>();
+    const composed = composeAdapters(primary, secondary);
+    const result = composed.save('test');
+    expect(result instanceof Promise).toBe(false);
+    expect(result).toBeUndefined();
+  });
+
+  it('sync + sync remove returns void (not a Promise)', () => {
+    const primary = memoryAdapter<string>('data');
+    const secondary = memoryAdapter<string>('data');
+    const composed = composeAdapters(primary, secondary);
+    const result = composed.remove();
+    expect(result instanceof Promise).toBe(false);
+    expect(result).toBeUndefined();
+  });
+
+  it('async + sync save returns a Promise', () => {
+    const asyncAdapter: StorageAdapter<string> = {
+      load: () => Promise.resolve(null),
+      save: () => Promise.resolve(),
+      remove: () => Promise.resolve(),
+    };
+    const secondary = memoryAdapter<string>();
+    const composed = composeAdapters(asyncAdapter, secondary);
+    const result = composed.save('test');
+    expect(result instanceof Promise).toBe(true);
+  });
+
+  it('propagates data to both individual adapters', () => {
+    const primary = memoryAdapter<string>();
+    const secondary = memoryAdapter<string>();
+    const composed = composeAdapters(primary, secondary);
+    composed.save('propagated');
+    expect(primary.load()).toBe('propagated');
+    expect(secondary.load()).toBe('propagated');
+  });
+
+  it('secondary failure in save does not crash the composed adapter', () => {
+    const primary = memoryAdapter<string>();
+    const crashy: StorageAdapter<string> = {
+      load: () => null,
+      save: () => { throw new Error('boom'); },
+      remove: () => {},
+    };
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    expect(() => {
+      composeAdapters(primary, crashy).save('safe');
+    }).not.toThrow();
+    expect(primary.load()).toBe('safe');
+    warnSpy.mockRestore();
+  });
 });

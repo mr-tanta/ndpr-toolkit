@@ -139,7 +139,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
     };
 
     const result = formatDSRRequest(request);
-    
+
     expect(result.isValid).toBe(true);
     expect(result.formattedRequest.dataSubject.name).toBe('Alice Brown');
     expect(result.formattedRequest.requestType).toBe('portability');
@@ -147,6 +147,109 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
     expect(result.formattedRequest.additionalInformation).toEqual({
       format: 'CSV',
       timeRange: 'Last 12 months'
+    });
+  });
+
+  describe('null-pointer safety for request.subject', () => {
+    it('should not throw when request.subject is undefined', () => {
+      const request = {
+        id: '301',
+        type: 'access',
+        status: 'pending',
+        createdAt: 1620000000000,
+        updatedAt: 1620000000000,
+        subject: undefined
+      } as unknown as DSRRequest;
+
+      expect(() => formatDSRRequest(request)).not.toThrow();
+
+      const result = formatDSRRequest(request);
+      expect(result.isValid).toBe(false);
+      expect(result.validationErrors).toContain('Data subject name is required');
+      expect(result.validationErrors).toContain('Data subject email is required');
+    });
+
+    it('should not throw when request.subject is null', () => {
+      const request = {
+        id: '302',
+        type: 'erasure',
+        status: 'pending',
+        createdAt: 1620000000000,
+        updatedAt: 1620000000000,
+        subject: null
+      } as unknown as DSRRequest;
+
+      expect(() => formatDSRRequest(request)).not.toThrow();
+
+      const result = formatDSRRequest(request);
+      expect(result.isValid).toBe(false);
+      expect(result.validationErrors).toContain('Data subject name is required');
+      expect(result.validationErrors).toContain('Data subject email is required');
+    });
+
+    it('should return validation errors when subject has empty fields', () => {
+      const request: DSRRequest = {
+        id: '303',
+        type: 'rectification',
+        status: 'pending',
+        createdAt: 1620000000000,
+        updatedAt: 1620000000000,
+        subject: {
+          name: '',
+          email: ''
+        }
+      };
+
+      expect(() => formatDSRRequest(request)).not.toThrow();
+
+      const result = formatDSRRequest(request);
+      expect(result.isValid).toBe(false);
+      expect(result.validationErrors).toContain('Data subject name is required');
+      expect(result.validationErrors).toContain('Data subject email is required');
+    });
+
+    it('should include all subject fields in formatted result when fully populated', () => {
+      const request: DSRRequest = {
+        id: '304',
+        type: 'access',
+        status: 'pending',
+        createdAt: 1620000000000,
+        updatedAt: 1620000000000,
+        subject: {
+          name: 'Adaeze Okoro',
+          email: 'adaeze@example.com',
+          phone: '+2348012345678',
+          identifierType: 'NIN',
+          identifierValue: '12345678901'
+        }
+      };
+
+      const result = formatDSRRequest(request);
+      expect(result.isValid).toBe(true);
+      expect(result.validationErrors).toHaveLength(0);
+      expect(result.formattedRequest.dataSubject).toEqual({
+        name: 'Adaeze Okoro',
+        email: 'adaeze@example.com',
+        phone: '+2348012345678',
+        identifier: {
+          type: 'NIN',
+          value: '12345678901'
+        }
+      });
+    });
+
+    it('should set dataSubject to undefined when request.subject is missing', () => {
+      const request = {
+        id: '305',
+        type: 'portability',
+        status: 'pending',
+        createdAt: 1620000000000,
+        updatedAt: 1620000000000,
+        subject: undefined
+      } as unknown as DSRRequest;
+
+      const result = formatDSRRequest(request);
+      expect(result.formattedRequest.dataSubject).toBeUndefined();
     });
   });
 });

@@ -95,3 +95,75 @@ describe('generatePolicyText (NDPA-compliant Privacy Policy)', () => {
     expect(result.missingVariables).toContain('company');
   });
 });
+
+describe('generatePolicyText RegExp injection safety', () => {
+  it('should replace variable names containing a dot (.)', () => {
+    const result = generatePolicyText(
+      'Hello {{user.name}}, welcome!',
+      { 'user.name': 'Alice' }
+    );
+    expect(result).toBe('Hello Alice, welcome!');
+  });
+
+  it('should replace variable names containing an asterisk (*)', () => {
+    const result = generatePolicyText(
+      'Total: {{price*tax}}',
+      { 'price*tax': '100' }
+    );
+    expect(result).toBe('Total: 100');
+  });
+
+  it('should replace variable names containing parentheses', () => {
+    const result = generatePolicyText(
+      'Output: {{fn(x)}}',
+      { 'fn(x)': 'result' }
+    );
+    expect(result).toBe('Output: result');
+  });
+
+  it('should replace variable names containing square brackets', () => {
+    const result = generatePolicyText(
+      'Item: {{arr[0]}}',
+      { 'arr[0]': 'first' }
+    );
+    expect(result).toBe('Item: first');
+  });
+
+  it('should replace variable names containing a plus (+)', () => {
+    const result = generatePolicyText(
+      'Sum: {{a+b}}',
+      { 'a+b': '42' }
+    );
+    expect(result).toBe('Sum: 42');
+  });
+
+  it('should still replace normal variable names correctly', () => {
+    const result = generatePolicyText(
+      'Welcome to {{orgName}}!',
+      { 'orgName': 'Test Corp' }
+    );
+    expect(result).toBe('Welcome to Test Corp!');
+  });
+
+  it('should not throw SyntaxError for any regex special characters in variable names', () => {
+    const specialNames: Record<string, string> = {
+      'user.name': 'Alice',
+      'price*tax': '100',
+      'fn(x)': 'result',
+      'arr[0]': 'first',
+      'a+b': '42',
+      'x?y': 'maybe',
+      'a^b': 'power',
+      'a$b': 'dollar',
+      'a{2}': 'braces',
+      'a|b': 'pipe',
+      'a\\b': 'backslash',
+    };
+
+    for (const [name, value] of Object.entries(specialNames)) {
+      expect(() => {
+        generatePolicyText(`{{${name}}}`, { [name]: value });
+      }).not.toThrow();
+    }
+  });
+});

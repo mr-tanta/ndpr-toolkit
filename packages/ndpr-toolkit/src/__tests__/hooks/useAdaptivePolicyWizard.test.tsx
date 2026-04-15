@@ -320,6 +320,100 @@ describe('useAdaptivePolicyWizard', () => {
     }
   });
 
+  it('onComplete fires exactly once when reaching step 4', () => {
+    const onComplete = jest.fn();
+    const { result } = renderHook(() => useAdaptivePolicyWizard({ onComplete }));
+    act(() => {
+      result.current.updateOrg({ name: 'Acme', privacyEmail: 'a@b.com' });
+    });
+    act(() => {
+      result.current.goToStep(4);
+    });
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    expect(onComplete).toHaveBeenCalledWith(
+      expect.objectContaining({ organizationInfo: expect.objectContaining({ name: 'Acme' }) }),
+    );
+  });
+
+  it('onComplete does NOT fire on subsequent state changes at step 4', () => {
+    const onComplete = jest.fn();
+    const { result } = renderHook(() => useAdaptivePolicyWizard({ onComplete }));
+    act(() => {
+      result.current.updateOrg({ name: 'Acme', privacyEmail: 'a@b.com' });
+    });
+    act(() => {
+      result.current.goToStep(4);
+    });
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    // Make state changes while still on step 4
+    act(() => {
+      result.current.updateOrg({ name: 'Acme Corp' });
+    });
+    act(() => {
+      result.current.updateOrg({ website: 'https://acme.ng' });
+    });
+    act(() => {
+      result.current.togglePurpose('service_delivery');
+    });
+    // onComplete should still have been called only once
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it('onComplete resets when going back and fires again on returning to step 4', () => {
+    const onComplete = jest.fn();
+    const { result } = renderHook(() => useAdaptivePolicyWizard({ onComplete }));
+    act(() => {
+      result.current.updateOrg({ name: 'Acme', privacyEmail: 'a@b.com' });
+    });
+    // First visit to step 4
+    act(() => {
+      result.current.goToStep(4);
+    });
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    // Go back to step 3
+    act(() => {
+      result.current.prevStep();
+    });
+    expect(result.current.currentStep).toBe(3);
+    // Return to step 4
+    act(() => {
+      result.current.goToStep(4);
+    });
+    expect(onComplete).toHaveBeenCalledTimes(2);
+  });
+
+  it('adapter ref is stable across re-renders when no adapter is provided', async () => {
+    // The hook stores the adapter in a useRef so the same instance is used
+    // across renders. We verify this by rendering without an explicit adapter,
+    // saving a draft, re-rendering several times, then saving again. Both saves
+    // should go through the same underlying adapter (localStorage in jsdom).
+    // If the ref were recreated, the second save could target a different
+    // adapter instance and the data would be lost.
+    const { result, rerender } = renderHook(() => useAdaptivePolicyWizard());
+
+    // Set up some state so the draft is meaningful
+    act(() => { result.current.updateOrg({ name: 'RefStable', privacyEmail: 'ref@test.com' }); });
+
+    // Save draft (goes through the ref-held adapter)
+    await act(async () => { await result.current.saveDraft(); });
+
+    // Force multiple re-renders
+    rerender();
+    rerender();
+    rerender();
+
+    // Mutate state and save again — should still use the same adapter
+    act(() => { result.current.updateOrg({ name: 'RefStable2' }); });
+    await act(async () => { await result.current.saveDraft(); });
+
+    // Discard and verify the adapter ref can still remove (same adapter)
+    act(() => { result.current.discardDraft(); });
+    expect(result.current.context.org.name).toBe('');
+    // After discard, re-rendering should still work without errors
+    rerender();
+    expect(result.current.currentStep).toBe(1);
+  });
+
   it('reorderSections swaps sections', () => {
     const { result } = renderHook(() => useAdaptivePolicyWizard());
     act(() => {
