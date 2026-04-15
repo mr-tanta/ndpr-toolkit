@@ -1,0 +1,545 @@
+---
+title: "The Complete Guide to NDPA 2023 Compliance in React and Next.js"
+description: "Everything a developer needs to implement Nigeria Data Protection Act compliance — consent, DSR, DPIA, breach notification, cross-border transfers, and ROPA — with working code examples."
+date: "2026-04-16"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpa", "react", "nextjs", "compliance", "tutorial", "guide"]
+image: "/blog/complete-ndpa-guide.png"
+---
+
+# The Complete Guide to NDPA 2023 Compliance in React and Next.js
+
+The Nigeria Data Protection Act (NDPA) 2023 is not optional. If your application collects personal data from anyone in Nigeria — names, emails, phone numbers, payment details, IP addresses, location data — you are a data controller under the law, and you have specific obligations.
+
+The penalties are real. The Nigeria Data Protection Commission (NDPC) fined Multichoice Nigeria N766 million in 2024 for unlawful cross-border transfers. Fines can reach 2% of annual gross revenue or N10 million, whichever is higher. For startups, a single enforcement action can be existential.
+
+But here is the thing: the NDPA is not as overwhelming as it looks. It breaks down into eight distinct compliance areas, each with clear technical requirements. If you can build a React form, you can build NDPA compliance. This guide walks through every one of those areas with working code.
+
+## What This Guide Covers
+
+The NDPA maps to eight compliance modules. We will cover each one:
+
+1. **Consent Management** — collecting and recording user consent (Sections 25-26)
+2. **Data Subject Rights (DSR)** — handling access, rectification, erasure, and portability requests (Sections 34-39)
+3. **Data Protection Impact Assessment (DPIA)** — assessing risks before high-risk processing (Section 28)
+4. **Breach Notification** — detecting, assessing, and reporting breaches within 72 hours (Section 40)
+5. **Privacy Policy** — generating and maintaining a compliant privacy notice (Section 29)
+6. **Lawful Basis** — documenting the legal ground for every processing activity (Section 25)
+7. **Cross-Border Transfers** — managing data that leaves Nigeria (Sections 43-44)
+8. **Record of Processing Activities (ROPA)** — maintaining an auditable register (Section 30)
+
+By the end, you will have a compliance score engine that tells you exactly where your gaps are.
+
+## Prerequisites
+
+This guide uses the [NDPA Toolkit](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit), an open-source React library purpose-built for NDPA compliance. Install it:
+
+```bash
+pnpm add @tantainnovative/ndpr-toolkit
+```
+
+The toolkit supports React 16.8 through 19, works with Next.js (App Router and Pages Router), and supports any CSS framework via className overrides and an unstyled mode.
+
+If you want to skip the component-level setup entirely, the toolkit includes zero-config presets that give you production-ready compliance UI with a single import:
+
+```tsx
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
+
+export default function App() {
+  return <NDPRConsent />;
+}
+```
+
+One line. Legally compliant consent banner. But this guide goes deeper — we will build each module with full customisation.
+
+## 1. Consent Management
+
+**NDPA requirement**: Section 25 requires clear, affirmative consent before processing personal data. Section 26 requires that consent is as easy to withdraw as it was to give, and that minors receive special protection.
+
+Most consent implementations are legally invalid because they bundle everything into a single "Accept All" button. The NDPA requires purpose-specific consent — the user must be able to agree to analytics separately from marketing, for example.
+
+### The Hook Approach
+
+```tsx
+import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+
+function ConsentBanner() {
+  const {
+    settings,
+    hasConsent,
+    updateConsent,
+    acceptAll,
+    rejectAll,
+    shouldShowBanner,
+    resetConsent,
+    isLoading,
+  } = useConsent({
+    options: [
+      {
+        id: 'essential',
+        label: 'Essential Cookies',
+        description: 'Required for the site to function',
+        required: true,
+      },
+      {
+        id: 'analytics',
+        label: 'Analytics',
+        description: 'Helps us understand how you use the site',
+        required: false,
+      },
+      {
+        id: 'marketing',
+        label: 'Marketing',
+        description: 'Personalised advertisements',
+        required: false,
+      },
+    ],
+    version: '1.0',
+    onChange: (settings) => {
+      // Sync with your analytics provider
+      if (settings.consents.analytics) {
+        window.gtag?.('consent', 'update', { analytics_storage: 'granted' });
+      }
+    },
+  });
+
+  if (isLoading || !shouldShowBanner) return null;
+
+  return (
+    <div role="dialog" aria-label="Cookie consent">
+      <h2>We value your privacy</h2>
+      <p>
+        We use cookies to improve your experience. You can choose which
+        categories to allow. You can change your preferences at any time.
+      </p>
+      <button onClick={acceptAll}>Accept All</button>
+      <button onClick={rejectAll}>Reject Non-Essential</button>
+      <button onClick={resetConsent}>Manage Preferences</button>
+    </div>
+  );
+}
+```
+
+**Key compliance points:**
+
+- Each consent option has a clear `description` explaining the purpose (NDPA Section 25)
+- `required: true` marks essential cookies that cannot be rejected
+- `rejectAll` only rejects non-required options — essential cookies remain active
+- `resetConsent` allows easy withdrawal (NDPA Section 26)
+- `version` tracks consent form changes — if you update options, users are re-prompted
+- Consent is stored locally by default, but you can plug in any backend via storage adapters
+
+### Storage Adapters
+
+The default stores consent in `localStorage`, but for server-side access or multi-device sync, you can switch to cookies, session storage, a REST API, or compose multiple backends:
+
+```tsx
+import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+import { cookieAdapter, apiAdapter, composeAdapters } from '@tantainnovative/ndpr-toolkit/adapters';
+
+// Store in both a cookie (for SSR middleware) and your API (for audit trail)
+const adapter = composeAdapters(
+  cookieAdapter('consent', { secure: true, sameSite: 'Lax' }),
+  apiAdapter('/api/consent', { headers: { Authorization: `Bearer ${token}` } })
+);
+
+const { settings } = useConsent({ options, adapter });
+```
+
+## 2. Data Subject Rights (DSR)
+
+**NDPA requirement**: Sections 34-39 grant eight rights — access, rectification, erasure, restriction, portability, objection, and rights related to automated decision-making. You must respond within 30 days.
+
+### Building a DSR Portal
+
+```tsx
+import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
+
+function DSRPortal() {
+  const {
+    requests,
+    submitRequest,
+    updateRequest,
+    getRequestsByStatus,
+  } = useDSR({
+    requestTypes: ['access', 'rectification', 'erasure', 'portability', 'objection'],
+    onSubmit: async (request) => {
+      // Send to your backend
+      await fetch('/api/dsr', {
+        method: 'POST',
+        body: JSON.stringify(request),
+      });
+    },
+  });
+
+  const pendingRequests = getRequestsByStatus('pending');
+
+  return (
+    <div>
+      <h2>Your Data Rights</h2>
+      <p>Under the NDPA, you have the right to request access to, correction of,
+         or deletion of your personal data. We will respond within 30 days.</p>
+      {/* DSR form and request tracker UI */}
+    </div>
+  );
+}
+```
+
+For a complete, drop-in solution, use the preset:
+
+```tsx
+import { NDPRSubjectRights } from '@tantainnovative/ndpr-toolkit/presets';
+
+<NDPRSubjectRights />
+```
+
+This renders a full request submission form, status tracker, and request history — all in one component.
+
+## 3. Data Protection Impact Assessment (DPIA)
+
+**NDPA requirement**: Section 28 requires a DPIA before any processing that is likely to result in a high risk to data subjects. This includes large-scale processing of sensitive data, systematic monitoring, and automated decision-making.
+
+Most organisations skip DPIAs because the process feels bureaucratic. The toolkit makes it a guided questionnaire:
+
+```tsx
+import { useDPIA } from '@tantainnovative/ndpr-toolkit/hooks';
+
+function DPIAWizard() {
+  const {
+    currentSection,
+    progress,
+    answers,
+    updateAnswer,
+    nextSection,
+    previousSection,
+    isComplete,
+    result,
+  } = useDPIA({
+    sections: dpiaQuestions, // Built-in question set covering NDPA requirements
+    onComplete: (result) => {
+      // result contains risk assessment, recommendations, and NDPA references
+      console.log('Overall risk:', result.overallRisk);
+      console.log('Recommendations:', result.recommendations);
+    },
+  });
+
+  return (
+    <div>
+      <h2>Data Protection Impact Assessment</h2>
+      <progress value={progress} max={100} />
+      {/* Render current section questions */}
+    </div>
+  );
+}
+```
+
+The DPIA hook handles conditional questions (some questions only appear based on previous answers), automatic risk scoring, and generates a structured report you can present to the NDPC if requested.
+
+## 4. Breach Notification
+
+**NDPA requirement**: Section 40 requires notification to the NDPC within 72 hours of becoming aware of a qualifying breach. If the breach poses a high risk to data subjects, they must also be notified directly.
+
+The 72-hour clock is the hardest part. You need a system that helps you assess, document, and report — fast.
+
+```tsx
+import { useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
+
+function BreachDashboard() {
+  const {
+    reportBreach,
+    assessRisk,
+    sendNotification,
+    getBreachesRequiringNotification,
+  } = useBreach({
+    onReport: (report) => {
+      // Trigger your internal incident response workflow
+    },
+  });
+
+  // Report a new breach
+  const handleNewBreach = () => {
+    const report = reportBreach({
+      title: 'Unauthorised database access',
+      description: 'External actor accessed customer records via exposed API endpoint',
+      discoveredAt: Date.now(),
+      dataTypes: ['personal', 'financial'],
+      estimatedAffected: 2500,
+      status: 'investigating',
+    });
+
+    // Assess severity — this determines notification obligations
+    const assessment = assessRisk(report.id, {
+      sensitiveData: true,
+      largeScale: true,
+      ongoing: false,
+    });
+    // assessment.severity → 'high'
+    // assessment.requiresNDPCNotification → true
+    // assessment.requiresDataSubjectNotification → true
+  };
+}
+```
+
+The breach module calculates severity from the actual factors involved, determines whether NDPC and data subject notification is required, and generates the regulatory report format expected by the NDPC.
+
+## 5. Privacy Policy Generator
+
+**NDPA requirement**: Section 29 requires a clear, accessible privacy policy that covers the identity of the data controller, purposes of processing, lawful basis, retention periods, data subject rights, and cross-border transfer information.
+
+Writing a privacy policy from scratch is error-prone. The toolkit generates one from structured inputs:
+
+```tsx
+import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/hooks';
+
+function PolicyBuilder() {
+  const {
+    selectTemplate,
+    updateOrganizationInfo,
+    generatePolicy,
+    getPolicyText,
+  } = usePrivacyPolicy();
+
+  // Select the business template
+  selectTemplate('business');
+
+  // Fill in your organisation details
+  updateOrganizationInfo({
+    name: 'Acme Nigeria Ltd',
+    website: 'https://acme.ng',
+    privacyEmail: 'privacy@acme.ng',
+    dpoName: 'Jane Okoro',
+  });
+
+  // Generate the policy
+  const policy = generatePolicy();
+
+  // Export as HTML, PDF, Markdown, or DOCX
+  return <PolicyPreview policy={policy} />;
+}
+```
+
+The generated policy covers all NDPA-mandated sections, includes your specific data categories and processing purposes, and can be exported in multiple formats for your website, app, or regulatory filing.
+
+## 6. Lawful Basis Tracking
+
+**NDPA requirement**: Section 25(1) requires a valid lawful basis for every processing activity. The six bases are: consent, contract, legal obligation, vital interests, public interest, and legitimate interests.
+
+Most organisations default to "consent" for everything, which is legally fragile. If your lawful basis is actually "contract" (you need the data to deliver the service the user paid for), documenting it as consent means the user can withdraw it and you lose the right to process — even though you never needed consent in the first place.
+
+```tsx
+import { useLawfulBasis } from '@tantainnovative/ndpr-toolkit/hooks';
+
+const { addActivity, assessComplianceGaps, summary } = useLawfulBasis();
+
+addActivity({
+  name: 'Payment processing',
+  lawfulBasis: 'contract',
+  dataCategories: ['financial', 'identity'],
+  purposes: ['Process customer payments'],
+  justification: 'Required to fulfill purchase agreements',
+});
+
+addActivity({
+  name: 'Marketing emails',
+  lawfulBasis: 'consent',
+  dataCategories: ['contact'],
+  purposes: ['Send promotional content'],
+  justification: 'User opted in via signup form',
+});
+
+const gaps = assessComplianceGaps();
+// Identifies activities missing justification, conflicting bases, etc.
+```
+
+## 7. Cross-Border Transfers
+
+**NDPA requirement**: Sections 43-44 restrict transfers of personal data outside Nigeria. You need either an adequacy decision for the destination country, appropriate safeguards (SCCs, BCRs), or NDPC approval.
+
+If you use AWS, Vercel, Firebase, Stripe, or any cloud service with servers outside Nigeria, you are performing cross-border transfers right now.
+
+```tsx
+import { useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/hooks';
+
+const { addTransfer, assessTransferRisk } = useCrossBorderTransfer();
+
+addTransfer({
+  destinationCountry: 'United States',
+  transferMechanism: 'standard_contractual_clauses',
+  dataCategories: ['personal', 'financial'],
+  recipientName: 'Stripe Inc.',
+  safeguards: 'EU-US Data Privacy Framework + SCCs',
+});
+
+const risk = assessTransferRisk('transfer-id');
+// risk.requiresNDPCApproval → boolean
+// risk.adequacyStatus → 'adequate' | 'not_adequate' | 'pending'
+```
+
+## 8. Record of Processing Activities (ROPA)
+
+**NDPA requirement**: Section 30 requires organisations to maintain a detailed register of all processing activities. This is not a one-time exercise — the ROPA must be kept up to date and available for NDPC inspection.
+
+```tsx
+import { useROPA } from '@tantainnovative/ndpr-toolkit/hooks';
+
+const { addRecord, exportToCSV, identifyGaps, summary } = useROPA();
+
+addRecord({
+  name: 'Customer onboarding',
+  description: 'Collect and verify customer identity during signup',
+  lawfulBasis: 'contract',
+  dataCategories: ['identity', 'contact', 'financial'],
+  purposes: ['Identity verification', 'Account creation'],
+  recipients: ['Internal operations', 'KYC provider'],
+  retentionPeriod: '7 years (regulatory requirement)',
+  securityMeasures: ['Encryption at rest', 'Access controls', 'Audit logging'],
+  crossBorderTransfers: [
+    { destinationCountry: 'Ireland', transferMechanism: 'SCCs', safeguards: 'EU adequacy' },
+  ],
+});
+
+// Export for NDPC inspection
+const csv = exportToCSV();
+
+// Find compliance gaps
+const gaps = identifyGaps();
+```
+
+The ROPA module validates each record against NDPA requirements, identifies missing fields, and exports to CSV for regulatory submission.
+
+## Putting It All Together: The Compliance Score
+
+Once you have implemented the eight modules, you need a way to measure your overall compliance posture. The toolkit includes a scoring engine that evaluates all eight areas and returns a rated report:
+
+```tsx
+import { useComplianceScore } from '@tantainnovative/ndpr-toolkit/hooks';
+
+function ComplianceDashboard() {
+  const report = useComplianceScore({
+    consent: {
+      hasConsentMechanism: true,
+      hasPurposeSpecification: true,
+      hasWithdrawalMechanism: true,
+      hasMinorProtection: false,
+      consentRecordsRetained: true,
+    },
+    dsr: {
+      hasRequestMechanism: true,
+      supportsAccess: true,
+      supportsRectification: true,
+      supportsErasure: true,
+      supportsPortability: false,
+      supportsObjection: true,
+      responseTimelineDays: 14,
+    },
+    dpia: {
+      conductedForHighRisk: true,
+      documentedRisks: true,
+      mitigationMeasures: true,
+    },
+    breach: {
+      hasNotificationProcess: true,
+      notifiesWithin72Hours: true,
+      hasRiskAssessment: true,
+      hasRecordKeeping: true,
+    },
+    policy: {
+      hasPrivacyPolicy: true,
+      isPubliclyAccessible: true,
+      lastUpdated: '2026-03-01',
+      coversAllSections: true,
+    },
+    lawfulBasis: {
+      documentedForAllProcessing: true,
+      hasLegitimateInterestAssessment: false,
+    },
+    crossBorder: {
+      hasTransferMechanisms: true,
+      adequacyAssessed: true,
+      ndpcApprovalObtained: false,
+    },
+    ropa: {
+      maintained: true,
+      includesAllProcessing: true,
+      lastReviewed: '2026-02-15',
+    },
+  });
+
+  return (
+    <div>
+      <h1>Compliance Score: {report.score}/100</h1>
+      <p>Rating: {report.rating}</p>
+      {report.recommendations.map((rec) => (
+        <div key={rec.key}>
+          <strong>[{rec.priority}]</strong> {rec.recommendation}
+          <small>NDPA {rec.ndpaSection}</small>
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+The score is weighted: consent and breach notification carry more weight than ROPA because they have higher enforcement risk. Each recommendation links to the specific NDPA section, so you know exactly what the law requires.
+
+## Quick Start: Zero-Config Presets
+
+If you need compliance UI fast, the toolkit ships nine preset components that work with zero configuration:
+
+```tsx
+import {
+  NDPRConsent,
+  NDPRSubjectRights,
+  NDPRBreachReport,
+  NDPRPrivacyPolicy,
+  NDPRDPIA,
+  NDPRLawfulBasis,
+  NDPRCrossBorder,
+  NDPRROPA,
+  NDPRComplianceDashboard,
+} from '@tantainnovative/ndpr-toolkit/presets';
+```
+
+Each preset renders a complete, interactive UI for its compliance area. Drop them into your admin panel and you have functional compliance tooling in minutes.
+
+## Tree-Shakeable Architecture
+
+You do not have to import the entire library. Every module has its own entry point:
+
+```tsx
+// Only pulls in consent code — everything else is tree-shaken
+import { useConsent, ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+
+// Only types and utilities — zero React dependency
+import { getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
+
+// Only storage adapters
+import { cookieAdapter, apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+```
+
+There are 14 entry points in total. Your bundle only includes what you import.
+
+## What Happens If You Do Not Comply
+
+The NDPC has enforcement powers under Part VII of the NDPA:
+
+- **Administrative fines**: Up to 2% of annual gross revenue or N10 million, whichever is higher
+- **Criminal sanctions**: Officers can face imprisonment for egregious violations
+- **Enforcement notices**: The NDPC can order you to stop processing entirely
+- **Compensation orders**: Data subjects can claim damages for harm caused by non-compliance
+
+The NDPC is actively enforcing. The Multichoice fine, the Fidelity Bank investigation, and the increasing number of NDPC registration audits show that this is not a theoretical risk.
+
+## Next Steps
+
+1. **Install the toolkit**: `pnpm add @tantainnovative/ndpr-toolkit`
+2. **Run a compliance score**: Use `getComplianceScore()` to see where you stand
+3. **Fix the critical gaps first**: The score engine sorts recommendations by priority
+4. **Add the consent banner**: This is the most visible compliance requirement
+5. **Build your ROPA**: Document every processing activity before the NDPC asks
+
+The full API reference and interactive demos are at [ndprtoolkit.com.ng](https://ndprtoolkit.com.ng).
+
+---
+
+*The NDPA Toolkit is open source and free to use. If it helps your project, [star it on GitHub](https://github.com/mr-tanta/ndpr-toolkit) — it helps other Nigerian developers find it.*
