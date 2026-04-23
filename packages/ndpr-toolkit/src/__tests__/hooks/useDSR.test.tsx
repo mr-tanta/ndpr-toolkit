@@ -311,7 +311,7 @@ describe('useDSR (NDPA Data Subject Rights Hook)', () => {
       const formattedRequest = result.current.formatRequest(request);
       expect(formattedRequest).toBeDefined();
       expect(formattedRequest.requestType).toBe('access');
-      expect(formattedRequest.dataSubject.name).toBe('John Doe');
+      expect((formattedRequest.dataSubject as { name: string }).name).toBe('John Doe');
     }
   });
 

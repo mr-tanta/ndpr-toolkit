@@ -1,6 +1,19 @@
 import { formatDSRRequest } from '../../utils/dsr';
 import { DSRRequest, DSRType, DSRStatus } from '../../types/dsr';
 
+interface FormattedDataSubject {
+  name: string;
+  email: string;
+  phone?: string;
+  identifierType?: string;
+  identifierValue?: string;
+}
+
+/** Helper to access dataSubject from the untyped formattedRequest */
+function getDataSubject(result: ReturnType<typeof formatDSRRequest>): FormattedDataSubject | undefined {
+  return result.formattedRequest.dataSubject as FormattedDataSubject | undefined;
+}
+
 describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
   it('should format a DSR access request correctly per NDPA Section 30', () => {
     const request: DSRRequest = {
@@ -20,10 +33,10 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
     const result = formatDSRRequest(request);
     
     expect(result.isValid).toBe(true);
-    expect(result.formattedRequest.dataSubject.name).toBe('John Doe');
+    expect(getDataSubject(result)!.name).toBe('John Doe');
     expect(result.formattedRequest.requestType).toBe('access');
     expect(result.formattedRequest.status).toBe('pending');
-    expect(result.formattedRequest.dataSubject.email).toBe('john@example.com');
+    expect(getDataSubject(result)!.email).toBe('john@example.com');
     expect(result.formattedRequest.additionalInformation).toEqual({});
     expect(result.validationErrors.length).toBe(0);
   });
@@ -47,11 +60,11 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
     const result = formatDSRRequest(request);
     
     expect(result.isValid).toBe(true);
-    expect(result.formattedRequest.dataSubject.name).toBe('Jane Smith');
+    expect(getDataSubject(result)!.name).toBe('Jane Smith');
     expect(result.formattedRequest.requestType).toBe('erasure');
     expect(result.formattedRequest.status).toBe('completed');
-    expect(result.formattedRequest.dataSubject.email).toBe('jane@example.com');
-    expect(result.formattedRequest.dataSubject.phone).toBe('Not provided');
+    expect(getDataSubject(result)!.email).toBe('jane@example.com');
+    expect(getDataSubject(result)!.phone).toBe('Not provided');
     expect(JSON.stringify(result.formattedRequest)).not.toContain('undefined');
   });
 
@@ -74,7 +87,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
     expect(result.isValid).toBe(true);
     // Check that the completedAt date is properly formatted in ISO format
     expect(result.formattedRequest.lastUpdated).toBe(new Date(1620100000000).toISOString());
-    expect(result.formattedRequest.dataSubject.name).toBe('Bob Johnson');
+    expect(getDataSubject(result)!.name).toBe('Bob Johnson');
     expect(result.formattedRequest.requestType).toBe('rectification');
     expect(result.formattedRequest.status).toBe('completed');
   });
@@ -97,7 +110,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
 
     expect(result.isValid).toBe(true);
     expect(result.formattedRequest.requestType).toBe('information');
-    expect(result.formattedRequest.dataSubject.name).toBe('Grace Obi');
+    expect(getDataSubject(result)!.name).toBe('Grace Obi');
   });
 
   it('should handle NDPA Section 36 automated decision-making request type', () => {
@@ -118,7 +131,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
 
     expect(result.isValid).toBe(true);
     expect(result.formattedRequest.requestType).toBe('automated_decision_making');
-    expect(result.formattedRequest.dataSubject.name).toBe('Emeka Nwankwo');
+    expect(getDataSubject(result)!.name).toBe('Emeka Nwankwo');
   });
 
   it('should handle additional info when present', () => {
@@ -141,7 +154,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
     const result = formatDSRRequest(request);
 
     expect(result.isValid).toBe(true);
-    expect(result.formattedRequest.dataSubject.name).toBe('Alice Brown');
+    expect(getDataSubject(result)!.name).toBe('Alice Brown');
     expect(result.formattedRequest.requestType).toBe('portability');
     expect(result.formattedRequest.status).toBe('inProgress');
     expect(result.formattedRequest.additionalInformation).toEqual({
@@ -227,7 +240,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
       const result = formatDSRRequest(request);
       expect(result.isValid).toBe(true);
       expect(result.validationErrors).toHaveLength(0);
-      expect(result.formattedRequest.dataSubject).toEqual({
+      expect(getDataSubject(result)).toEqual({
         name: 'Adaeze Okoro',
         email: 'adaeze@example.com',
         phone: '+2348012345678',
@@ -249,7 +262,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
       } as unknown as DSRRequest;
 
       const result = formatDSRRequest(request);
-      expect(result.formattedRequest.dataSubject).toBeUndefined();
+      expect(getDataSubject(result)).toBeUndefined();
     });
   });
 });
