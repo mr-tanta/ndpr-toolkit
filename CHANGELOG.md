@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.3.0](https://github.com/tantainnovative/ndpr-toolkit/compare/v3.2.1...v3.3.0) (2026-04-23)
+
+
+### Features
+
+* i18n, accessibility, type safety, backend completion, and DX improvements ([8fa6d83](https://github.com/tantainnovative/ndpr-toolkit/commit/8fa6d830eeeec50d53b8e28076a790c31e423852))
+
+
+### Bug Fixes
+
+* resolve type errors in adapter test files for CI ([7c4b5b9](https://github.com/tantainnovative/ndpr-toolkit/commit/7c4b5b9194776f6d92b347064f447d6f681f6f7d))
+
+
+### Documentation
+
+* add comprehensive NDPA compliance guide for React/Next.js ([9be4502](https://github.com/tantainnovative/ndpr-toolkit/commit/9be450253fed53efcfe095cabe161b97a8834e05))
+* add screenshots and visual badges to README ([4aff0df](https://github.com/tantainnovative/ndpr-toolkit/commit/4aff0dfb5d8d1ffb07a388ccee445aec5bdcaa54)), closes [#11](https://github.com/mr-tanta/ndpr-toolkit/issues/11)
+* add v3.2.1 release blog post covering all 42 fixes ([1dd9310](https://github.com/tantainnovative/ndpr-toolkit/commit/1dd93105b6f4444cf9a6287ae6f21845c0d998d9))
+
 ## [3.2.1](https://github.com/tantainnovative/ndpr-toolkit/compare/v1.0.11...v3.2.1) (2026-04-15)
 
 
