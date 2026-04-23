@@ -15,8 +15,9 @@ export const PolicyStepIndicator: React.FC<PolicyStepIndicatorProps> = ({
   unstyled,
 }) => {
   return (
-    <div
+    <nav
       data-ndpr-component="policy-step-indicator"
+      aria-label="Policy wizard progress"
       className={resolveClass(
         'w-full flex items-center justify-between px-2 py-4',
         classNames?.root,
@@ -42,6 +43,7 @@ export const PolicyStepIndicator: React.FC<PolicyStepIndicatorProps> = ({
             >
               <div
                 aria-current={isCurrent ? 'step' : undefined}
+                aria-label={`Step ${stepNumber}: ${label}${isCompleted ? ' (completed)' : isCurrent ? ' (current)' : ''}`}
                 className={resolveClass(
                   [
                     'flex items-center justify-center rounded-full border-2 font-semibold transition-all',
@@ -109,7 +111,7 @@ export const PolicyStepIndicator: React.FC<PolicyStepIndicatorProps> = ({
           </React.Fragment>
         );
       })}
-    </div>
+    </nav>
   );
 };
 

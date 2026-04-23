@@ -48,7 +48,7 @@ export const PolicyStepData: React.FC<PolicyStepDataProps> = ({
         <h2 className={resolveClass('text-xl font-semibold text-gray-900 dark:text-gray-100', classNames?.heading, unstyled)}>
           Data Categories
         </h2>
-        <p className={resolveClass('text-sm text-gray-500 dark:text-gray-400 mt-1', classNames?.subheading, unstyled)}>
+        <p id="data-categories-desc" className={resolveClass('text-sm text-gray-500 dark:text-gray-400 mt-1', classNames?.subheading, unstyled)}>
           Select the categories of personal data your organisation collects. You must select at least one.
         </p>
       </div>

@@ -193,6 +193,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
         >
           {/* Main panel */}
           <main
+            aria-live="polite"
             className={resolveClass(
               'flex-1 min-w-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6',
               classNames?.mainPanel,

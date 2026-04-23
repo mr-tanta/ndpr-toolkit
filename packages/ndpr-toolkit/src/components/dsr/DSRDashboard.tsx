@@ -280,7 +280,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
     
     if (daysRemaining <= 0) {
       return (
-        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
+        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md" role="alert" aria-live="polite">
           <p className="text-sm text-red-800 dark:text-red-200 font-medium">
             Deadline Passed
           </p>
@@ -293,7 +293,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
     
     if (daysRemaining <= 3) {
       return (
-        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
+        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md" role="alert" aria-live="polite">
           <p className="text-sm text-red-800 dark:text-red-200 font-medium">
             Urgent: Deadline Approaching
           </p>
@@ -303,10 +303,10 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
         </div>
       );
     }
-    
+
     if (daysRemaining <= 7) {
       return (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md" aria-live="polite">
           <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
             Deadline Approaching
           </p>
@@ -316,9 +316,9 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
         </div>
       );
     }
-    
+
     return (
-      <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
+      <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md" aria-live="polite">
         <p className="text-sm text-green-800 dark:text-green-200 font-medium">
           Deadline Tracking
         </p>
@@ -585,12 +585,17 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                 return (
                   <div
                     key={request.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View request from ${request.subject.name}`}
+                    aria-selected={selectedRequestId === request.id}
                     className={resolveClass(`p-3 rounded-md cursor-pointer ${
                       selectedRequestId === request.id
                         ? 'bg-[rgb(var(--ndpr-primary)/0.05)] dark:bg-[rgb(var(--ndpr-primary)/0.1)] border border-[rgb(var(--ndpr-primary)/0.2)] dark:border-[rgb(var(--ndpr-primary)/0.3)]'
                         : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
                     }`, classNames?.requestItem, unstyled)}
                     onClick={() => handleSelectRequest(request.id)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelectRequest(request.id); } }}
                   >
                     <div className="flex justify-between items-start mb-1">
                       <h4 className="font-medium text-sm">{request.subject.name}</h4>
@@ -703,9 +708,10 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
               <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Status Update */}
                 <div>
-                  <h3 className="text-md font-medium mb-2">Update Status</h3>
+                  <h3 id="update-status-heading" className="text-md font-medium mb-2">Update Status</h3>
                   <div className="flex space-x-2">
                     <select
+                      aria-label="Update request status"
                       value={selectedRequest.status}
                       onChange={e => handleUpdateStatus(e.target.value as DSRStatus)}
                       className="flex-grow px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
@@ -714,6 +720,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                     </select>
                     <button
                       onClick={() => handleUpdateStatus(selectedRequest.status)}
+                      aria-label="Apply status update"
                       className={`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`}
                     >
                       Update
@@ -724,9 +731,10 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                 {/* Assign Request */}
                 {assignees.length > 0 && (
                   <div>
-                    <h3 className="text-md font-medium mb-2">Assign Request</h3>
+                    <h3 id="assign-request-heading" className="text-md font-medium mb-2">Assign Request</h3>
                     <div className="flex space-x-2">
                       <select
+                        aria-label="Select assignee"
                         value={assignee}
                         onChange={e => setAssignee(e.target.value)}
                         className="flex-grow px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
@@ -739,6 +747,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                       <button
                         onClick={handleAssignRequest}
                         disabled={!assignee}
+                        aria-label="Assign request to selected person"
                         className={`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] disabled:bg-gray-300 disabled:text-gray-500 ${buttonClassName}`}
                       >
                         Assign

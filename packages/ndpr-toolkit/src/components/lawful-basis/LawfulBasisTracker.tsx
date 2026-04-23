@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   LawfulBasis,
   ProcessingActivity,
@@ -197,10 +197,9 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   const [basisFilter, setBasisFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [formErrors, setFormErrors] = useState<string[]>([]);
-  const [filteredActivities, setFilteredActivities] = useState<ProcessingActivity[]>(activities);
 
-  // Filter activities when filters change
-  useEffect(() => {
+  // Memoize filtered + sorted activities instead of storing in state
+  const filteredActivities = useMemo(() => {
     let filtered = [...activities];
 
     if (statusFilter !== 'all') {
@@ -223,34 +222,40 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
     filtered.sort((a, b) => b.updatedAt - a.updatedAt);
 
-    setFilteredActivities(filtered);
+    return filtered;
   }, [activities, statusFilter, basisFilter, searchTerm]);
 
-  const formatDate = (timestamp: number): string => {
+  const formatDate = useCallback((timestamp: number): string => {
     return new Date(timestamp).toLocaleDateString();
-  };
+  }, []);
 
-  const summary: LawfulBasisSummary = generateLawfulBasisSummary(activities);
-  const complianceGaps: LawfulBasisComplianceGap[] = assessComplianceGaps(activities);
+  const summary: LawfulBasisSummary = useMemo(
+    () => generateLawfulBasisSummary(activities),
+    [activities]
+  );
+  const complianceGaps: LawfulBasisComplianceGap[] = useMemo(
+    () => assessComplianceGaps(activities),
+    [activities]
+  );
 
   // Parse comma-separated string into array
-  const parseList = (value: string): string[] => {
+  const parseList = useCallback((value: string): string[] => {
     return value
       .split(',')
       .map(s => s.trim())
       .filter(s => s.length > 0);
-  };
+  }, []);
 
   // Open form for creating a new activity
-  const handleNewActivity = () => {
+  const handleNewActivity = useCallback(() => {
     setFormData(EMPTY_FORM);
     setEditingId(null);
     setFormErrors([]);
     setViewMode('form');
-  };
+  }, []);
 
   // Open form for editing an existing activity
-  const handleEditActivity = (activity: ProcessingActivity) => {
+  const handleEditActivity = useCallback((activity: ProcessingActivity) => {
     setFormData({
       name: activity.name,
       description: activity.description,
@@ -277,10 +282,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     setEditingId(activity.id);
     setFormErrors([]);
     setViewMode('form');
-  };
+  }, []);
 
   // Handle form submission
-  const handleSubmitForm = () => {
+  const handleSubmitForm = useCallback(() => {
     const activityData: Omit<ProcessingActivity, 'id' | 'createdAt' | 'updatedAt'> = {
       name: formData.name,
       description: formData.description,
@@ -323,27 +328,28 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     setEditingId(null);
     setFormErrors([]);
     setViewMode('list');
-  };
+  }, [formData, editingId, onUpdateActivity, onAddActivity, parseList]);
 
   // Handle archiving
-  const handleArchiveActivity = (id: string) => {
+  const handleArchiveActivity = useCallback((id: string) => {
     if (onArchiveActivity) {
       onArchiveActivity(id);
     }
-  };
+  }, [onArchiveActivity]);
 
   // View activity detail
-  const handleViewDetail = (id: string) => {
+  const handleViewDetail = useCallback((id: string) => {
     setSelectedActivityId(id);
     setViewMode('detail');
-  };
+  }, []);
 
-  const selectedActivity = selectedActivityId
-    ? activities.find(a => a.id === selectedActivityId)
-    : null;
+  const selectedActivity = useMemo(
+    () => (selectedActivityId ? activities.find(a => a.id === selectedActivityId) : null),
+    [activities, selectedActivityId]
+  );
 
   // Render status badge
-  const renderStatusBadge = (status: ProcessingActivity['status']) => {
+  const renderStatusBadge = useCallback((status: ProcessingActivity['status']) => {
     const colorClasses: Record<ProcessingActivity['status'], string> = {
       active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
       inactive: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
@@ -363,10 +369,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         {labels[status]}
       </span>
     );
-  };
+  }, [classNames?.statusBadge, unstyled]);
 
   // Render lawful basis badge
-  const renderBasisBadge = (basis: LawfulBasis) => {
+  const renderBasisBadge = useCallback((basis: LawfulBasis) => {
     const colorClasses: Record<LawfulBasis, string> = {
       consent: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
       contract: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
@@ -390,10 +396,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         {labels[basis]}
       </span>
     );
-  };
+  }, []);
 
   // Render DPO approval indicator
-  const renderApprovalIndicator = (activity: ProcessingActivity) => {
+  const renderApprovalIndicator = useCallback((activity: ProcessingActivity) => {
     if (!activity.dpoApproval) {
       return (
         <span className="px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
@@ -415,12 +421,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         Pending Approval
       </span>
     );
-  };
+  }, []);
 
   // Render compliance summary
   const renderSummary = () => {
     return (
-      <div className={resolveClass('grid grid-cols-2 md:grid-cols-4 gap-4 mb-6', classNames?.summary, unstyled)}>
+      <div className={resolveClass('grid grid-cols-2 md:grid-cols-4 gap-4 mb-6', classNames?.summary, unstyled)} role="status" aria-label="Compliance summary">
         <div className={resolveClass('bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
           <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
             {summary.totalActivities}
@@ -449,11 +455,21 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     );
   };
 
+  // Memoize compliance gap severity buckets
+  const highSeverityGaps = useMemo(
+    () => complianceGaps.filter(g => g.severity === 'high'),
+    [complianceGaps]
+  );
+  const mediumSeverityGaps = useMemo(
+    () => complianceGaps.filter(g => g.severity === 'medium'),
+    [complianceGaps]
+  );
+
   // Render compliance gaps
   const renderComplianceGaps = () => {
     if (complianceGaps.length === 0) {
       return (
-        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg mb-6">
+        <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg mb-6" role="status" aria-label="No compliance gaps">
           <p className="text-sm text-green-800 dark:text-green-200 font-medium">
             No compliance gaps detected.
           </p>
@@ -464,18 +480,15 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
       );
     }
 
-    const highSeverity = complianceGaps.filter(g => g.severity === 'high');
-    const mediumSeverity = complianceGaps.filter(g => g.severity === 'medium');
-
     return (
-      <div className="mb-6">
-        {highSeverity.length > 0 && (
+      <div className="mb-6" role="status" aria-label={`${complianceGaps.length} compliance gaps detected`}>
+        {highSeverityGaps.length > 0 && (
           <div className={resolveClass('bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-3', classNames?.gapAlert, unstyled)}>
             <p className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
-              High Priority ({highSeverity.length})
+              High Priority ({highSeverityGaps.length})
             </p>
             <ul className="space-y-1">
-              {highSeverity.map((gap, index) => (
+              {highSeverityGaps.map((gap, index) => (
                 <li key={index} className="text-xs text-red-700 dark:text-red-300">
                   {gap.description}
                 </li>
@@ -483,13 +496,13 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
             </ul>
           </div>
         )}
-        {mediumSeverity.length > 0 && (
+        {mediumSeverityGaps.length > 0 && (
           <div className={resolveClass('bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg', classNames?.gapAlert, unstyled)}>
             <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">
-              Medium Priority ({mediumSeverity.length})
+              Medium Priority ({mediumSeverityGaps.length})
             </p>
             <ul className="space-y-1">
-              {mediumSeverity.map((gap, index) => (
+              {mediumSeverityGaps.map((gap, index) => (
                 <li key={index} className="text-xs text-yellow-700 dark:text-yellow-300">
                   {gap.description}
                 </li>
@@ -501,6 +514,36 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     );
   };
 
+  // Handle cancel form
+  const handleCancelForm = useCallback(() => {
+    setViewMode('list');
+    setFormErrors([]);
+  }, []);
+
+  // Handle back to list from detail
+  const handleBackToList = useCallback(() => {
+    setViewMode('list');
+  }, []);
+
+  // Form field change handlers
+  const handleFormFieldChange = useCallback(
+    (field: keyof FormData, value: string | boolean) => {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    },
+    []
+  );
+
+  const handleSensitiveDataChange = useCallback(
+    (checked: boolean) => {
+      setFormData(prev => ({
+        ...prev,
+        involvesSensitiveData: checked,
+        sensitiveDataCondition: checked ? prev.sensitiveDataCondition : '',
+      }));
+    },
+    []
+  );
+
   // Render form
   const renderForm = () => {
     return (
@@ -510,10 +553,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
             {editingId ? 'Edit Processing Activity' : 'New Processing Activity'}
           </h3>
           <button
-            onClick={() => {
-              setViewMode('list');
-              setFormErrors([]);
-            }}
+            onClick={handleCancelForm}
             className={`px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${buttonClassName}`}
           >
             Cancel
@@ -521,7 +561,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         </div>
 
         {formErrors.length > 0 && (
-          <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-4">
+          <div id="form-errors" className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-4" role="alert">
             <p className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
               Please correct the following errors:
             </p>
@@ -545,8 +585,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               type="text"
               id="activityName"
               value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
+              onChange={e => handleFormFieldChange('name', e.target.value)}
               placeholder="e.g., Customer Account Management"
+              aria-required="true"
+              aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -559,9 +601,11 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
             <textarea
               id="activityDescription"
               value={formData.description}
-              onChange={e => setFormData({ ...formData, description: e.target.value })}
+              onChange={e => handleFormFieldChange('description', e.target.value)}
               placeholder="Describe what processing is performed..."
               rows={3}
+              aria-required="true"
+              aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -575,8 +619,9 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="lawfulBasis"
               value={formData.lawfulBasis}
               onChange={e =>
-                setFormData({ ...formData, lawfulBasis: e.target.value as LawfulBasis })
+                handleFormFieldChange('lawfulBasis', e.target.value)
               }
+              aria-required="true"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               {LAWFUL_BASIS_OPTIONS.map(option => (
@@ -599,10 +644,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="justification"
               value={formData.lawfulBasisJustification}
               onChange={e =>
-                setFormData({ ...formData, lawfulBasisJustification: e.target.value })
+                handleFormFieldChange('lawfulBasisJustification', e.target.value)
               }
               placeholder="Document why this lawful basis applies to this processing activity..."
               rows={3}
+              aria-required="true"
+              aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -626,7 +673,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     id="liaPurpose"
                     value={formData.liaPurposeTest}
                     onChange={e =>
-                      setFormData({ ...formData, liaPurposeTest: e.target.value })
+                      handleFormFieldChange('liaPurposeTest', e.target.value)
                     }
                     placeholder="Describe the legitimate interest being pursued..."
                     rows={2}
@@ -642,7 +689,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     id="liaNecessity"
                     value={formData.liaNecessityTest}
                     onChange={e =>
-                      setFormData({ ...formData, liaNecessityTest: e.target.value })
+                      handleFormFieldChange('liaNecessityTest', e.target.value)
                     }
                     placeholder="Explain why this processing is necessary for the stated purpose..."
                     rows={2}
@@ -658,7 +705,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     id="liaBalancing"
                     value={formData.liaBalancingTest}
                     onChange={e =>
-                      setFormData({ ...formData, liaBalancingTest: e.target.value })
+                      handleFormFieldChange('liaBalancingTest', e.target.value)
                     }
                     placeholder="Assess the impact on data subjects' rights and interests..."
                     rows={2}
@@ -675,7 +722,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     id="liaSafeguards"
                     value={formData.liaSafeguards}
                     onChange={e =>
-                      setFormData({ ...formData, liaSafeguards: e.target.value })
+                      handleFormFieldChange('liaSafeguards', e.target.value)
                     }
                     placeholder="List safeguards (comma-separated)..."
                     className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
@@ -690,7 +737,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     id="liaConclusion"
                     value={formData.liaConclusion}
                     onChange={e =>
-                      setFormData({ ...formData, liaConclusion: e.target.value })
+                      handleFormFieldChange('liaConclusion', e.target.value)
                     }
                     placeholder="State your overall conclusion..."
                     rows={2}
@@ -710,8 +757,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               type="text"
               id="dataCategories"
               value={formData.dataCategories}
-              onChange={e => setFormData({ ...formData, dataCategories: e.target.value })}
+              onChange={e => handleFormFieldChange('dataCategories', e.target.value)}
               placeholder="e.g., Name, Email, Phone Number (comma-separated)"
+              aria-required="true"
+              aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -722,15 +771,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               <input
                 type="checkbox"
                 checked={formData.involvesSensitiveData}
-                onChange={e =>
-                  setFormData({
-                    ...formData,
-                    involvesSensitiveData: e.target.checked,
-                    sensitiveDataCondition: e.target.checked
-                      ? formData.sensitiveDataCondition
-                      : '',
-                  })
-                }
+                onChange={e => handleSensitiveDataChange(e.target.checked)}
                 className="rounded border-gray-300 dark:border-gray-600 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
               />
               <span className="text-sm font-medium">
@@ -749,11 +790,9 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 id="sensitiveCondition"
                 value={formData.sensitiveDataCondition}
                 onChange={e =>
-                  setFormData({
-                    ...formData,
-                    sensitiveDataCondition: e.target.value as SensitiveDataCondition,
-                  })
+                  handleFormFieldChange('sensitiveDataCondition', e.target.value)
                 }
+                aria-required="true"
                 className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
               >
                 <option value="">Select a condition...</option>
@@ -776,9 +815,11 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="dataSubjectCategories"
               value={formData.dataSubjectCategories}
               onChange={e =>
-                setFormData({ ...formData, dataSubjectCategories: e.target.value })
+                handleFormFieldChange('dataSubjectCategories', e.target.value)
               }
               placeholder="e.g., Customers, Employees, Vendors (comma-separated)"
+              aria-required="true"
+              aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -792,8 +833,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               type="text"
               id="purposes"
               value={formData.purposes}
-              onChange={e => setFormData({ ...formData, purposes: e.target.value })}
+              onChange={e => handleFormFieldChange('purposes', e.target.value)}
               placeholder="e.g., Account management, Service delivery (comma-separated)"
+              aria-required="true"
+              aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -808,8 +851,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 type="text"
                 id="retentionPeriod"
                 value={formData.retentionPeriod}
-                onChange={e => setFormData({ ...formData, retentionPeriod: e.target.value })}
+                onChange={e => handleFormFieldChange('retentionPeriod', e.target.value)}
                 placeholder="e.g., 3 years after account closure"
+                aria-required="true"
+                aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
                 className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
               />
             </div>
@@ -822,7 +867,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 id="retentionJustification"
                 value={formData.retentionJustification}
                 onChange={e =>
-                  setFormData({ ...formData, retentionJustification: e.target.value })
+                  handleFormFieldChange('retentionJustification', e.target.value)
                 }
                 placeholder="Reason for the retention period"
                 className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
@@ -839,7 +884,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               type="text"
               id="recipients"
               value={formData.recipients}
-              onChange={e => setFormData({ ...formData, recipients: e.target.value })}
+              onChange={e => handleFormFieldChange('recipients', e.target.value)}
               placeholder="e.g., Payment processor, Cloud provider (comma-separated)"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
@@ -852,7 +897,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 type="checkbox"
                 checked={formData.crossBorderTransfer}
                 onChange={e =>
-                  setFormData({ ...formData, crossBorderTransfer: e.target.checked })
+                  handleFormFieldChange('crossBorderTransfer', e.target.checked)
                 }
                 className="rounded border-gray-300 dark:border-gray-600 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
               />
@@ -871,7 +916,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               type="date"
               id="reviewDate"
               value={formData.reviewDate}
-              onChange={e => setFormData({ ...formData, reviewDate: e.target.value })}
+              onChange={e => handleFormFieldChange('reviewDate', e.target.value)}
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -879,10 +924,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           {/* Submit button */}
           <div className="flex justify-end space-x-3 pt-4">
             <button
-              onClick={() => {
-                setViewMode('list');
-                setFormErrors([]);
-              }}
+              onClick={handleCancelForm}
               className={`px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${buttonClassName}`}
             >
               Cancel
@@ -916,8 +958,9 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         <div className="flex justify-between items-start mb-4">
           <div>
             <button
-              onClick={() => setViewMode('list')}
+              onClick={handleBackToList}
               className="text-sm text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline mb-2"
+              aria-label="Back to activities list"
             >
               Back to list
             </button>
@@ -1064,6 +1107,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         <div className="flex space-x-3">
           <button
             onClick={() => handleEditActivity(selectedActivity)}
+            aria-label={`Edit ${selectedActivity.name}`}
             className={`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`}
           >
             Edit
@@ -1071,6 +1115,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           {selectedActivity.status !== 'archived' && (
             <button
               onClick={() => handleArchiveActivity(selectedActivity.id)}
+              aria-label={`Archive ${selectedActivity.name}`}
               className={`px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 ${buttonClassName}`}
             >
               Archive
@@ -1095,6 +1140,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="basisFilter"
               value={basisFilter}
               onChange={e => setBasisFilter(e.target.value)}
+              aria-label="Filter by lawful basis"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               <option value="all">All Bases</option>
@@ -1114,6 +1160,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="statusFilterSelect"
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
+              aria-label="Filter by status"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               <option value="all">All Statuses</option>
@@ -1207,6 +1254,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleEditActivity(activity)}
+                          aria-label={`Edit ${activity.name}`}
                           className="text-xs text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline"
                         >
                           Edit
@@ -1214,6 +1262,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                         {activity.status !== 'archived' && (
                           <button
                             onClick={() => handleArchiveActivity(activity.id)}
+                            aria-label={`Archive ${activity.name}`}
                             className="text-xs text-gray-600 dark:text-gray-400 hover:underline"
                           >
                             Archive

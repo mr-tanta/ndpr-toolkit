@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { resolveClass } from '../../utils/styling';
 
 export interface CustomSectionFormProps {
@@ -17,6 +17,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
   classNames,
   unstyled,
 }) => {
+  const instanceId = useId();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
@@ -71,7 +72,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
       <div className={resolveClass('space-y-3', classNames?.fields, unstyled)}>
         <div>
           <label
-            htmlFor="custom-section-title"
+            htmlFor={`${instanceId}-custom-section-title`}
             className={resolveClass(
               'block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1',
               classNames?.label,
@@ -81,7 +82,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
             Section Title <span className="text-red-500" aria-hidden="true">*</span>
           </label>
           <input
-            id="custom-section-title"
+            id={`${instanceId}-custom-section-title`}
             type="text"
             value={title}
             onChange={(e) => {
@@ -96,7 +97,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
 
         <div>
           <label
-            htmlFor="custom-section-content"
+            htmlFor={`${instanceId}-custom-section-content`}
             className={resolveClass(
               'block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1',
               classNames?.label,
@@ -106,7 +107,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
             Content <span className="text-red-500" aria-hidden="true">*</span>
           </label>
           <textarea
-            id="custom-section-content"
+            id={`${instanceId}-custom-section-content`}
             value={content}
             onChange={(e) => {
               setContent(e.target.value);

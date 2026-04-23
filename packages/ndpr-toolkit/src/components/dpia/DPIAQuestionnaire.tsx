@@ -48,12 +48,12 @@ export interface DPIAQuestionnaireProps {
   /**
    * Current answers to the questionnaire
    */
-  answers: Record<string, any>;
+  answers: Record<string, string | number | boolean | string[]>;
 
   /**
    * Callback function called when an answer is updated
    */
-  onAnswerChange: (questionId: string, value: any) => void;
+  onAnswerChange: (questionId: string, value: string | number | boolean | string[]) => void;
 
   /**
    * Current section index
@@ -180,11 +180,11 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
         case 'equals':
           return answer === condition.value;
         case 'contains':
-          return Array.isArray(answer) ? answer.includes(condition.value) : false;
+          return Array.isArray(answer) ? answer.includes(String(condition.value)) : false;
         case 'greaterThan':
-          return typeof answer === 'number' ? answer > condition.value : false;
+          return typeof answer === 'number' && typeof condition.value === 'number' ? answer > condition.value : false;
         case 'lessThan':
-          return typeof answer === 'number' ? answer < condition.value : false;
+          return typeof answer === 'number' && typeof condition.value === 'number' ? answer < condition.value : false;
         default:
           return true;
       }
@@ -207,7 +207,12 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
     }
 
     const error = validationErrors[question.id];
-    const value = answers[question.id];
+    const rawValue = answers[question.id];
+    // Coerce to a type suitable for HTML value attributes (string | number | string[])
+    const value = typeof rawValue === 'boolean' ? String(rawValue) : rawValue;
+    const guidanceId = question.guidance ? `${question.id}-guidance` : undefined;
+    const errorId = error ? `${question.id}-error` : undefined;
+    const describedBy = [guidanceId, errorId].filter(Boolean).join(' ') || undefined;
 
     return (
       <div key={question.id} className={cx('mb-6', 'question')}>
@@ -217,7 +222,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             {question.required && <span className="text-red-500 ml-1">*</span>}
           </label>
           {question.guidance && (
-            <p className={cx('mt-1 text-sm text-gray-600 dark:text-gray-400', 'guidance')}>{question.guidance}</p>
+            <p id={guidanceId} className={cx('mt-1 text-sm text-gray-600 dark:text-gray-400', 'guidance')}>{question.guidance}</p>
           )}
         </div>
 
@@ -229,6 +234,9 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             onChange={e => onAnswerChange(question.id, e.target.value)}
             disabled={readOnly}
             className={inputClass(error)}
+            aria-required={question.required || undefined}
+            aria-describedby={describedBy}
+            aria-invalid={error ? true : undefined}
           />
         )}
 
@@ -240,6 +248,9 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             disabled={readOnly}
             rows={4}
             className={inputClass(error)}
+            aria-required={question.required || undefined}
+            aria-describedby={describedBy}
+            aria-invalid={error ? true : undefined}
           />
         )}
 
@@ -250,6 +261,9 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             onChange={e => onAnswerChange(question.id, e.target.value)}
             disabled={readOnly}
             className={inputClass(error)}
+            aria-required={question.required || undefined}
+            aria-describedby={describedBy}
+            aria-invalid={error ? true : undefined}
           >
             <option value="">Select an option</option>
             {question.options.map(option => (
@@ -261,7 +275,13 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
         )}
 
         {question.type === 'radio' && question.options && (
-          <div className={cx('space-y-2', 'radioGroup')}>
+          <div
+            className={cx('space-y-2', 'radioGroup')}
+            role="radiogroup"
+            aria-required={question.required || undefined}
+            aria-describedby={describedBy}
+            aria-invalid={error ? true : undefined}
+          >
             {question.options.map(option => (
               <div key={option.value} className={cx('flex items-center', 'radioOption')}>
                 <input
@@ -295,7 +315,13 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
         )}
 
         {question.type === 'checkbox' && question.options && (
-          <div className="space-y-2">
+          <div
+            className="space-y-2"
+            role="group"
+            aria-label={question.text}
+            aria-describedby={describedBy}
+            aria-invalid={error ? true : undefined}
+          >
             {question.options.map(option => (
               <div key={option.value} className="flex items-center">
                 <input
@@ -339,10 +365,13 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
               id={question.id}
               min={question.minValue || 1}
               max={question.maxValue || 5}
-              value={value || (question.minValue || 1)}
+              value={typeof value === 'number' ? value : (question.minValue || 1)}
               onChange={e => onAnswerChange(question.id, parseInt(e.target.value, 10))}
               disabled={readOnly}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              aria-required={question.required || undefined}
+              aria-describedby={describedBy}
+              aria-invalid={error ? true : undefined}
             />
             <div className="mt-1 text-sm text-gray-600 dark:text-gray-400 text-center">
               Selected value: {value || (question.minValue || 1)}
@@ -350,7 +379,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
           </div>
         )}
 
-        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        {error && <p id={errorId} className="mt-1 text-sm text-red-500" role="alert">{error}</p>}
       </div>
     );
   };
@@ -367,7 +396,14 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             <span>Section {currentSectionIndex + 1} of {sections.length}</span>
             <span>{progress !== undefined ? `${progress}% Complete` : ''}</span>
           </div>
-          <div className={cx('w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700', 'progressBar')}>
+          <div
+            className={cx('w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700', 'progressBar')}
+            role="progressbar"
+            aria-valuenow={progress !== undefined ? progress : Math.round(((currentSectionIndex + 1) / sections.length) * 100)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Questionnaire progress"
+          >
             <div
               className="bg-[rgb(var(--ndpr-primary))] h-2.5 rounded-full"
               style={{ width: `${progress !== undefined ? progress : ((currentSectionIndex + 1) / sections.length) * 100}%` }}

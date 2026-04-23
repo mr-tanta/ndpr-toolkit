@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type { LawfulBasis } from '../../types/lawful-basis';
 import type {
   ProcessingRecord,
@@ -221,7 +221,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     }
   }, [editingRecord?.id]);
 
-  const handleNewRecord = () => {
+  const handleNewRecord = useCallback(() => {
     const newRecord = createEmptyRecord();
     // Prefill controller details from the organization
     newRecord.controllerDetails.name = ropa.organizationName;
@@ -236,13 +236,13 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     setEditingRecord(newRecord);
     setFormErrors([]);
     setViewMode('form');
-  };
+  }, [ropa.organizationName, ropa.organizationContact, ropa.organizationAddress, ropa.ndpcRegistrationNumber, ropa.dpoDetails]);
 
-  const handleEditRecord = (record: ProcessingRecord) => {
+  const handleEditRecord = useCallback((record: ProcessingRecord) => {
     setEditingRecord({ ...record });
     setFormErrors([]);
     setViewMode('form');
-  };
+  }, []);
 
   const parseCommaSeparated = (value: string): string[] => {
     return value
@@ -251,7 +251,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
       .filter((s) => s.length > 0);
   };
 
-  const handleSaveRecord = () => {
+  const handleSaveRecord = useCallback(() => {
     if (!editingRecord) return;
 
     // Apply comma-separated inputs to the record
@@ -297,13 +297,13 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     setEditingRecord(null);
     setFormErrors([]);
     setViewMode('list');
-  };
+  }, [editingRecord, purposesInput, dataCategoriesInput, sensitiveDataInput, subjectCategoriesInput, recipientsInput, securityMeasuresInput, systemsUsedInput, ropa.records, onUpdateRecord, onAddRecord]);
 
-  const handleArchiveRecord = (id: string) => {
+  const handleArchiveRecord = useCallback((id: string) => {
     onArchiveRecord?.(id);
-  };
+  }, [onArchiveRecord]);
 
-  const handleExportCSV = () => {
+  const handleExportCSV = useCallback(() => {
     const csv = exportROPAToCSV(ropa);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -312,21 +312,19 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     link.download = `ropa_${ropa.organizationName.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 100);
-  };
+  }, [ropa]);
 
-  const handleCancelForm = () => {
+  const handleCancelForm = useCallback(() => {
     setEditingRecord(null);
     setFormErrors([]);
     setViewMode('list');
-  };
+  }, []);
 
-  const updateEditingField = (field: string, value: any) => {
-    if (!editingRecord) return;
+  const updateEditingField = useCallback((field: string, value: any) => {
     setEditingRecord((prev) => (prev ? { ...prev, [field]: value } : prev));
-  };
+  }, []);
 
-  const updateControllerField = (field: string, value: string) => {
-    if (!editingRecord) return;
+  const updateControllerField = useCallback((field: string, value: string) => {
     setEditingRecord((prev) =>
       prev
         ? {
@@ -335,14 +333,57 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           }
         : prev
     );
-  };
+  }, []);
 
-  const isReviewOverdue = (record: ProcessingRecord): boolean => {
+  const isReviewOverdue = useCallback((record: ProcessingRecord): boolean => {
     return !!record.nextReviewDate && record.nextReviewDate <= Date.now();
-  };
+  }, []);
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  }, []);
+
+  const handleStatusFilterChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatusFilter(e.target.value);
+  }, []);
+
+  const handleBasisFilterChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setBasisFilter(e.target.value);
+  }, []);
+
+  const handlePurposesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setPurposesInput(e.target.value);
+  }, []);
+
+  const handleDataCategoriesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setDataCategoriesInput(e.target.value);
+  }, []);
+
+  const handleSensitiveDataChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSensitiveDataInput(e.target.value);
+  }, []);
+
+  const handleSubjectCategoriesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSubjectCategoriesInput(e.target.value);
+  }, []);
+
+  const handleRecipientsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setRecipientsInput(e.target.value);
+  }, []);
+
+  const handleSecurityMeasuresChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSecurityMeasuresInput(e.target.value);
+  }, []);
+
+  const handleSystemsUsedChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSystemsUsedInput(e.target.value);
+  }, []);
+
+  const handleSetViewList = useCallback(() => setViewMode('list'), []);
+  const handleSetViewSummary = useCallback(() => setViewMode('summary'), []);
 
   // Status badge rendering
-  const renderStatusBadge = (status: ProcessingRecord['status']) => {
+  const renderStatusBadge = useCallback((status: ProcessingRecord['status']) => {
     const colorClasses: Record<ProcessingRecord['status'], string> = {
       active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
       inactive: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
@@ -360,10 +401,10 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
         {labels[status]}
       </span>
     );
-  };
+  }, [classNames?.statusBadge, unstyled]);
 
   // Lawful basis badge rendering
-  const renderBasisBadge = (basis: LawfulBasis) => {
+  const renderBasisBadge = useCallback((basis: LawfulBasis) => {
     const labels: Record<LawfulBasis, string> = {
       consent: 'Consent',
       contract: 'Contract',
@@ -378,7 +419,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
         {labels[basis]}
       </span>
     );
-  };
+  }, []);
 
   // Render organization header
   const renderOrganizationHeader = () => (
@@ -487,7 +528,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
       </div>
 
       {complianceGaps.length > 0 && (
-        <div className={resolveClass('p-3 bg-red-50 dark:bg-red-900/20 rounded-md', classNames?.complianceGap, unstyled)}>
+        <div className={resolveClass('p-3 bg-red-50 dark:bg-red-900/20 rounded-md', classNames?.complianceGap, unstyled)} role="status" aria-live="polite">
           <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
             Compliance Gaps Detected
           </p>
@@ -526,7 +567,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
             type="text"
             id="ropaSearch"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             placeholder="Search records..."
             className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
           />
@@ -538,7 +579,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           <select
             id="ropaStatusFilter"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={handleStatusFilterChange}
             className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
           >
             <option value="all">All Statuses</option>
@@ -556,7 +597,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           <select
             id="ropaBasisFilter"
             value={basisFilter}
-            onChange={(e) => setBasisFilter(e.target.value)}
+            onChange={handleBasisFilterChange}
             className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
           >
             <option value="all">All Bases</option>
@@ -576,6 +617,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </button>
           <button
             onClick={handleExportCSV}
+            aria-label="Export ROPA records as CSV"
             className={resolveClass(`px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 text-sm ${buttonClassName}`, classNames?.secondaryButton || classNames?.exportButton, unstyled)}
           >
             Export CSV
@@ -646,6 +688,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleEditRecord(record)}
+                          aria-label={`Edit record: ${record.name}`}
                           className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline text-xs"
                         >
                           Edit
@@ -653,6 +696,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                         {record.status !== 'archived' && (
                           <button
                             onClick={() => handleArchiveRecord(record.id)}
+                            aria-label={`Archive record: ${record.name}`}
                             className="text-gray-600 dark:text-gray-400 hover:underline text-xs"
                           >
                             Archive
@@ -670,11 +714,16 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     </div>
   );
 
+  const isNewRecord = useMemo(() => {
+    if (!editingRecord) return true;
+    return !ropa.records.find((r) => r.id === editingRecord.id);
+  }, [editingRecord, ropa.records]);
+
   // Render the add/edit form
   const renderForm = () => {
     if (!editingRecord) return null;
 
-    const isNew = !ropa.records.find((r) => r.id === editingRecord.id);
+    const isNew = isNewRecord;
 
     return (
       <div className={resolveClass('', classNames?.form, unstyled)}>
@@ -691,7 +740,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
         </div>
 
         {formErrors.length > 0 && (
-          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-md">
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-md" role="status" aria-live="polite">
             <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-1">
               Please fix the following errors:
             </p>
@@ -719,6 +768,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="recordName"
                   value={editingRecord.name}
                   onChange={(e) => updateEditingField('name', e.target.value)}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Customer Account Management"
                 />
@@ -745,6 +795,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={editingRecord.description}
                   onChange={(e) => updateEditingField('description', e.target.value)}
                   rows={3}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="Describe what personal data processing is performed..."
                 />
@@ -759,6 +810,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   onChange={(e) =>
                     updateEditingField('status', e.target.value as ProcessingRecord['status'])
                   }
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
                 >
                   {STATUS_OPTIONS.map((opt) => (
@@ -784,6 +836,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="controllerName"
                   value={editingRecord.controllerDetails.name}
                   onChange={(e) => updateControllerField('name', e.target.value)}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
@@ -796,6 +849,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="controllerContact"
                   value={editingRecord.controllerDetails.contact}
                   onChange={(e) => updateControllerField('contact', e.target.value)}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
@@ -808,6 +862,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="controllerAddress"
                   value={editingRecord.controllerDetails.address}
                   onChange={(e) => updateControllerField('address', e.target.value)}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                 />
               </div>
@@ -828,6 +883,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   onChange={(e) =>
                     updateEditingField('lawfulBasis', e.target.value as LawfulBasis)
                   }
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
                 >
                   {LAWFUL_BASIS_OPTIONS.map((opt) => (
@@ -848,6 +904,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     updateEditingField('lawfulBasisJustification', e.target.value)
                   }
                   rows={2}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="Explain why this lawful basis applies..."
                 />
@@ -867,7 +924,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   type="text"
                   id="purposes"
                   value={purposesInput}
-                  onChange={(e) => setPurposesInput(e.target.value)}
+                  onChange={handlePurposesChange}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Account management, Service delivery"
                 />
@@ -880,7 +938,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   type="text"
                   id="dataCategories"
                   value={dataCategoriesInput}
-                  onChange={(e) => setDataCategoriesInput(e.target.value)}
+                  onChange={handleDataCategoriesChange}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Name, Email, Phone number"
                 />
@@ -893,7 +952,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   type="text"
                   id="sensitiveData"
                   value={sensitiveDataInput}
-                  onChange={(e) => setSensitiveDataInput(e.target.value)}
+                  onChange={handleSensitiveDataChange}
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Health data, Biometric data"
                 />
@@ -906,7 +965,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   type="text"
                   id="subjectCategories"
                   value={subjectCategoriesInput}
-                  onChange={(e) => setSubjectCategoriesInput(e.target.value)}
+                  onChange={handleSubjectCategoriesChange}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Customers, Employees"
                 />
@@ -919,7 +979,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   type="text"
                   id="recipients"
                   value={recipientsInput}
-                  onChange={(e) => setRecipientsInput(e.target.value)}
+                  onChange={handleRecipientsChange}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Payment processors, Cloud service providers"
                 />
@@ -937,6 +998,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       e.target.value as ProcessingRecord['dataSource']
                     )
                   }
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
                 >
                   {DATA_SOURCE_OPTIONS.map((opt) => (
@@ -961,6 +1023,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     onChange={(e) =>
                       updateEditingField('thirdPartySourceDetails', e.target.value || undefined)
                     }
+                    aria-required="true"
                     className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                     placeholder="Describe the third-party data source..."
                   />
@@ -982,6 +1045,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="retentionPeriod"
                   value={editingRecord.retentionPeriod}
                   onChange={(e) => updateEditingField('retentionPeriod', e.target.value)}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., 5 years after account closure"
                 />
@@ -1009,7 +1073,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   type="text"
                   id="securityMeasures"
                   value={securityMeasuresInput}
-                  onChange={(e) => setSecurityMeasuresInput(e.target.value)}
+                  onChange={handleSecurityMeasuresChange}
+                  aria-required="true"
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., Encryption at rest, Access controls, Audit logging"
                 />
@@ -1022,7 +1087,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   type="text"
                   id="systemsUsed"
                   value={systemsUsedInput}
-                  onChange={(e) => setSystemsUsedInput(e.target.value)}
+                  onChange={handleSystemsUsedChange}
                   className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                   placeholder="e.g., CRM, ERP, Cloud Storage"
                 />
@@ -1058,6 +1123,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     onChange={(e) =>
                       updateEditingField('dpiaReference', e.target.value || undefined)
                     }
+                    aria-required="true"
                     className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                     placeholder="Reference to the completed DPIA"
                   />
@@ -1095,6 +1161,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       )
                     }
                     rows={2}
+                    aria-required="true"
                     className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
                     placeholder="Describe the automated decision-making process..."
                   />
@@ -1155,7 +1222,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
   const renderViewTabs = () => (
     <div className="flex space-x-4 mb-6 border-b border-gray-200 dark:border-gray-600">
       <button
-        onClick={() => setViewMode('list')}
+        onClick={handleSetViewList}
         className={`pb-2 text-sm font-medium ${
           viewMode === 'list'
             ? 'border-b-2 border-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]'
@@ -1165,7 +1232,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
         Processing Records
       </button>
       <button
-        onClick={() => setViewMode('summary')}
+        onClick={handleSetViewSummary}
         className={`pb-2 text-sm font-medium ${
           viewMode === 'summary'
             ? 'border-b-2 border-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]'

@@ -3,11 +3,14 @@
 // DPO: {{DPO_EMAIL}}
 //
 // Covers:
-//   - ConsentRecord       — NDPA §25–26 (consent & withdrawal)
-//   - DSRRequest          — NDPA Part IV §34–38 (data subject rights)
-//   - BreachReport        — NDPA §40 (72-hour breach notification)
-//   - ProcessingRecord    — ROPA (accountability principle)
-//   - ComplianceAuditLog  — §44 audit trail
+//   - ConsentRecord              — NDPA §25–26 (consent & withdrawal)
+//   - DSRRequest                 — NDPA Part IV §34–38 (data subject rights)
+//   - BreachReport               — NDPA §40 (72-hour breach notification)
+//   - ProcessingRecord           — ROPA (accountability principle)
+//   - DPIARecord                 — NDPA §34(3) (impact assessments)
+//   - LawfulBasisRecord          — NDPA §25 (lawful basis register)
+//   - CrossBorderTransferRecord  — NDPA §41–42 (cross-border transfers)
+//   - ComplianceAuditLog         — §44 audit trail
 //
 // Run `prisma migrate dev --name ndpr-init` to apply.
 
@@ -100,6 +103,61 @@ model ProcessingRecord {
   updatedAt         DateTime @updatedAt
 
   @@map("ndpr_processing_records")
+}
+
+model DPIARecord {
+  id           String   @id @default(cuid())
+  projectName  String
+  description  String
+  dpiaData     Json
+  overallRisk  String
+  score        Int
+  status       String   @default("draft")
+  conductedBy  String
+  approvedBy   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status])
+  @@index([conductedBy])
+  @@map("ndpr_dpia_records")
+}
+
+model LawfulBasisRecord {
+  id             String    @id @default(cuid())
+  activityName   String
+  lawfulBasis    String
+  justification  String
+  dataCategories Json
+  purposes       Json
+  assessedBy     String
+  assessedAt     DateTime  @default(now())
+  reviewDate     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([lawfulBasis])
+  @@index([assessedBy])
+  @@map("ndpr_lawful_basis_records")
+}
+
+model CrossBorderTransferRecord {
+  id                    String   @id @default(cuid())
+  destinationCountry    String
+  recipientName         String
+  transferMechanism     String
+  safeguards            String
+  dataCategories        Json
+  adequacyStatus        String
+  ndpcApprovalRequired  Boolean  @default(false)
+  ndpcApprovalReference String?
+  riskLevel             String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([destinationCountry])
+  @@index([riskLevel])
+  @@map("ndpr_cross_border_transfer_records")
 }
 
 model ComplianceAuditLog {

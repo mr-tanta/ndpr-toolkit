@@ -89,16 +89,71 @@ model ProcessingRecord {
   @@map("ndpr_processing_records")
 }
 
+model DPIARecord {
+  id           String   @id @default(cuid())
+  projectName  String
+  description  String
+  dpiaData     Json
+  overallRisk  String
+  score        Int
+  status       String   @default("draft")
+  conductedBy  String
+  approvedBy   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status])
+  @@index([conductedBy])
+  @@map("ndpr_dpia_records")
+}
+
+model LawfulBasisRecord {
+  id               String   @id @default(cuid())
+  activityName     String
+  lawfulBasis      String
+  justification    String
+  dataCategories   Json
+  purposes         Json
+  assessedBy       String
+  assessedAt       DateTime @default(now())
+  reviewDate       DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([lawfulBasis])
+  @@index([assessedBy])
+  @@map("ndpr_lawful_basis_records")
+}
+
+model CrossBorderTransferRecord {
+  id                    String   @id @default(cuid())
+  destinationCountry    String
+  recipientName         String
+  transferMechanism     String
+  safeguards            String
+  dataCategories        Json
+  adequacyStatus        String
+  ndpcApprovalRequired  Boolean  @default(false)
+  ndpcApprovalReference String?
+  riskLevel             String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([destinationCountry])
+  @@index([riskLevel])
+  @@map("ndpr_cross_border_transfer_records")
+}
+
 model ComplianceAuditLog {
   id          String   @id @default(cuid())
-  module      String
   action      String
-  entityId    String
-  entityType  String
-  changes     Json?
+  module      String
+  details     Json?
   performedBy String?
+  ipAddress   String?
   createdAt   DateTime @default(now())
 
-  @@index([module, entityId])
+  @@index([module])
+  @@index([performedBy])
   @@map("ndpr_audit_log")
 }

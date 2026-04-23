@@ -84,7 +84,7 @@ export interface UseDSRReturn {
   /**
    * Format a request for display or submission
    */
-  formatRequest: (request: DSRRequest) => Record<string, any>;
+  formatRequest: (request: DSRRequest) => Record<string, unknown>;
 
   /**
    * Clear all requests
@@ -174,7 +174,7 @@ export function useDSR({
     const estimatedCompletionDate = now + (estimatedCompletionDays * 24 * 60 * 60 * 1000);
 
     // Extract any properties we want to override from requestData
-    const { createdAt, ...restRequestData } = requestData as any;
+    const { createdAt, ...restRequestData } = requestData as Omit<DSRRequest, 'id' | 'status' | 'submittedAt' | 'updatedAt' | 'estimatedCompletionDate'> & { createdAt?: number };
 
     const newRequest: DSRRequest = {
       id: generateId(),
@@ -250,7 +250,7 @@ export function useDSR({
   };
 
   // Format a request for display or submission
-  const formatRequest = (request: DSRRequest): Record<string, any> => {
+  const formatRequest = (request: DSRRequest): Record<string, unknown> => {
     const { formattedRequest } = formatDSRRequest(request);
     return formattedRequest;
   };

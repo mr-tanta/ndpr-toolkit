@@ -392,6 +392,218 @@ export const processingRecords = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// ndpr_dpia_records
+// ---------------------------------------------------------------------------
+
+/**
+ * Data Protection Impact Assessment (DPIA) records.
+ *
+ * Under NDPA Sections 38-39, a DPIA is required when processing is likely to
+ * result in high risk to data subjects. This table stores the assessment results,
+ * risk scores, and approval status.
+ *
+ * Records are never deleted — draft assessments are superseded by newer versions,
+ * and completed assessments are retained for the audit trail.
+ *
+ * NDPA reference: Sections 38–39 (DPIA and prior consultation)
+ */
+export const dpiaRecords = pgTable(
+  'ndpr_dpia_records',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+
+    /** Name of the project or processing activity being assessed. */
+    projectName: text('project_name').notNull(),
+
+    /** Detailed description of the processing activity. */
+    description: text('description').notNull(),
+
+    /**
+     * Full DPIA data including answers, risks, and recommendations.
+     * Stored as JSON to accommodate the flexible DPIAResult structure.
+     */
+    dpiaData: json('dpia_data').notNull(),
+
+    /**
+     * Overall risk level determined by the assessment.
+     * One of: "low" | "medium" | "high" | "critical"
+     */
+    overallRisk: text('overall_risk').notNull(),
+
+    /** Numeric risk score for sorting and filtering. */
+    score: integer('score').notNull(),
+
+    /**
+     * Current status of the DPIA.
+     * One of: "draft" | "in_progress" | "completed" | "approved" | "rejected"
+     */
+    status: text('status').notNull().default('draft'),
+
+    /** Email or name of the person who conducted the assessment. */
+    conductedBy: text('conducted_by').notNull(),
+
+    /** Email or name of the person who approved the DPIA (if approved). */
+    approvedBy: text('approved_by'),
+
+    /** When this DPIA record was first created. */
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+
+    /** When this DPIA record was last updated. */
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    statusIdx: index('dpia_status_idx').on(table.status),
+    conductedByIdx: index('dpia_conducted_by_idx').on(table.conductedBy),
+  }),
+);
+
+// ---------------------------------------------------------------------------
+// ndpr_lawful_basis_records
+// ---------------------------------------------------------------------------
+
+/**
+ * Lawful Basis determination records.
+ *
+ * Every processing activity must have a documented lawful basis under NDPA
+ * Part III (Sections 24-28). This table stores the assessment of which lawful
+ * basis applies, along with the justification, data categories, and review dates.
+ *
+ * Records are never deleted — superseded assessments are retained for the
+ * compliance audit trail.
+ *
+ * NDPA reference: Part III, Sections 24–28
+ */
+export const lawfulBasisRecords = pgTable(
+  'ndpr_lawful_basis_records',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+
+    /** Name of the processing activity being assessed. */
+    activityName: text('activity_name').notNull(),
+
+    /**
+     * The determined lawful basis.
+     * One of: "consent" | "contract" | "legal_obligation" | "vital_interests" |
+     *         "public_interest" | "legitimate_interests"
+     */
+    lawfulBasis: text('lawful_basis').notNull(),
+
+    /** Written justification for why this lawful basis applies. */
+    justification: text('justification').notNull(),
+
+    /**
+     * Categories of personal data involved.
+     * Stored as a JSON array of strings.
+     */
+    dataCategories: json('data_categories').notNull(),
+
+    /**
+     * Purposes for the processing activity.
+     * Stored as a JSON array of strings.
+     */
+    purposes: json('purposes').notNull(),
+
+    /** Email or name of the person who assessed the lawful basis. */
+    assessedBy: text('assessed_by').notNull(),
+
+    /** When the assessment was performed. */
+    assessedAt: timestamp('assessed_at').defaultNow().notNull(),
+
+    /** When the lawful basis determination should be reviewed. */
+    reviewDate: timestamp('review_date'),
+
+    /** When this record was first created. */
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+
+    /** When this record was last updated. */
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    lawfulBasisIdx: index('lawful_basis_idx').on(table.lawfulBasis),
+    assessedByIdx: index('lawful_basis_assessed_by_idx').on(table.assessedBy),
+  }),
+);
+
+// ---------------------------------------------------------------------------
+// ndpr_cross_border_transfer_records
+// ---------------------------------------------------------------------------
+
+/**
+ * Cross-border data transfer records.
+ *
+ * Under NDPA Part VI (Sections 41-45), personal data may only be transferred
+ * outside Nigeria under specific conditions. This table tracks every cross-border
+ * transfer, the mechanism relied upon, NDPC approval status, and risk assessment.
+ *
+ * Records are never deleted — terminated transfers are retained for the audit trail.
+ *
+ * NDPA reference: Part VI, Sections 41–45
+ */
+export const crossBorderTransferRecords = pgTable(
+  'ndpr_cross_border_transfer_records',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+
+    /** Destination country or territory. */
+    destinationCountry: text('destination_country').notNull(),
+
+    /** Name of the recipient organisation. */
+    recipientName: text('recipient_name').notNull(),
+
+    /**
+     * Transfer mechanism relied upon.
+     * One of: "adequacy_decision" | "standard_clauses" | "binding_corporate_rules" |
+     *         "ndpc_authorization" | "explicit_consent" | "contract_performance" |
+     *         "public_interest" | "legal_claims" | "vital_interests"
+     */
+    transferMechanism: text('transfer_mechanism').notNull(),
+
+    /** Description of safeguards in place to protect the transferred data. */
+    safeguards: text('safeguards').notNull(),
+
+    /**
+     * Categories of personal data being transferred.
+     * Stored as a JSON array of strings.
+     */
+    dataCategories: json('data_categories').notNull(),
+
+    /**
+     * Adequacy status of the destination country.
+     * One of: "adequate" | "inadequate" | "pending_review" | "unknown"
+     */
+    adequacyStatus: text('adequacy_status').notNull(),
+
+    /** Whether NDPC approval is required for this transfer mechanism. */
+    ndpcApprovalRequired: boolean('ndpc_approval_required').notNull().default(false),
+
+    /** NDPC approval reference number (if approval was obtained). */
+    ndpcApprovalReference: text('ndpc_approval_reference'),
+
+    /**
+     * Risk level of the transfer.
+     * One of: "low" | "medium" | "high"
+     */
+    riskLevel: text('risk_level').notNull(),
+
+    /** When this record was first created. */
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+
+    /** When this record was last updated. */
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    destinationCountryIdx: index('cross_border_destination_idx').on(table.destinationCountry),
+    riskLevelIdx: index('cross_border_risk_level_idx').on(table.riskLevel),
+  }),
+);
+
+// ---------------------------------------------------------------------------
 // ndpr_audit_log
 // ---------------------------------------------------------------------------
 
@@ -477,6 +689,21 @@ export type NewBreachReport = typeof breachReports.$inferInsert;
 export type ProcessingRecord = typeof processingRecords.$inferSelect;
 /** Insert type for ndpr_processing_records */
 export type NewProcessingRecord = typeof processingRecords.$inferInsert;
+
+/** Row type for ndpr_dpia_records */
+export type DPIARecord = typeof dpiaRecords.$inferSelect;
+/** Insert type for ndpr_dpia_records */
+export type NewDPIARecord = typeof dpiaRecords.$inferInsert;
+
+/** Row type for ndpr_lawful_basis_records */
+export type LawfulBasisRecord = typeof lawfulBasisRecords.$inferSelect;
+/** Insert type for ndpr_lawful_basis_records */
+export type NewLawfulBasisRecord = typeof lawfulBasisRecords.$inferInsert;
+
+/** Row type for ndpr_cross_border_transfer_records */
+export type CrossBorderTransferRecord = typeof crossBorderTransferRecords.$inferSelect;
+/** Insert type for ndpr_cross_border_transfer_records */
+export type NewCrossBorderTransferRecord = typeof crossBorderTransferRecords.$inferInsert;
 
 /** Row type for ndpr_audit_log */
 export type AuditLogEntry = typeof auditLog.$inferSelect;

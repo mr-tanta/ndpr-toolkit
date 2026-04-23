@@ -4,6 +4,12 @@ import { assessDPIARisk } from '../utils/dpia';
 import type { StorageAdapter } from '../adapters/types';
 import { localStorageAdapter } from '../adapters/local-storage';
 
+/** Possible value types for a DPIA answer */
+type DPIAAnswerValue = string | number | boolean | string[];
+
+/** A map of question IDs to their answer values */
+type DPIAAnswerMap = Record<string, DPIAAnswerValue>;
+
 interface UseDPIAOptions {
   /**
    * Sections of the DPIA questionnaire
@@ -13,12 +19,12 @@ interface UseDPIAOptions {
   /**
    * Initial answers (if resuming a DPIA)
    */
-  initialAnswers?: Record<string, any>;
+  initialAnswers?: DPIAAnswerMap;
 
   /**
    * Pluggable storage adapter. When provided, takes precedence over storageKey/useLocalStorage.
    */
-  adapter?: StorageAdapter<Record<string, any>>;
+  adapter?: StorageAdapter<DPIAAnswerMap>;
 
   /**
    * Storage key for DPIA data
@@ -40,11 +46,11 @@ interface UseDPIAOptions {
   onComplete?: (result: DPIAResult) => void;
 }
 
-function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAdapter<Record<string, any>> {
+function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAdapter<DPIAAnswerMap> {
   if (!useLocalStorage) {
     return { load: () => null, save: () => {}, remove: () => {} };
   }
-  return localStorageAdapter<Record<string, any>>(storageKey);
+  return localStorageAdapter<DPIAAnswerMap>(storageKey);
 }
 
 export interface UseDPIAReturn {
@@ -61,12 +67,12 @@ export interface UseDPIAReturn {
   /**
    * All answers
    */
-  answers: Record<string, any>;
+  answers: DPIAAnswerMap;
   
   /**
    * Update an answer
    */
-  updateAnswer: (questionId: string, value: any) => void;
+  updateAnswer: (questionId: string, value: DPIAAnswerValue) => void;
   
   /**
    * Go to the next section
@@ -140,7 +146,7 @@ export function useDPIA({
   adapterRef.current = resolvedAdapter;
 
   const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
-  const [answers, setAnswers] = useState<Record<string, any>>(initialAnswers);
+  const [answers, setAnswers] = useState<DPIAAnswerMap>(initialAnswers);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Load DPIA data from storage on mount
@@ -180,14 +186,14 @@ export function useDPIA({
   const currentSection = sections[currentSectionIndex] || null;
   
   // Persist answers whenever they change (fire-and-forget)
-  const persistAnswers = (updated: Record<string, any>) => {
+  const persistAnswers = (updated: DPIAAnswerMap) => {
     Promise.resolve(adapterRef.current.save(updated)).catch((err) => {
       console.warn('[ndpr-toolkit] Failed to save DPIA answers:', err);
     });
   };
 
   // Update an answer
-  const updateAnswer = (questionId: string, value: any) => {
+  const updateAnswer = (questionId: string, value: string | number | boolean | string[]) => {
     setAnswers(prevAnswers => {
       const updated = { ...prevAnswers, [questionId]: value };
       persistAnswers(updated);
@@ -208,11 +214,11 @@ export function useDPIA({
         case 'equals':
           return answer === condition.value;
         case 'contains':
-          return Array.isArray(answer) ? answer.includes(condition.value) : false;
+          return Array.isArray(answer) ? answer.includes(String(condition.value)) : false;
         case 'greaterThan':
-          return typeof answer === 'number' ? answer > condition.value : false;
+          return typeof answer === 'number' && typeof condition.value === 'number' ? answer > condition.value : false;
         case 'lessThan':
-          return typeof answer === 'number' ? answer < condition.value : false;
+          return typeof answer === 'number' && typeof condition.value === 'number' ? answer < condition.value : false;
         default:
           return true;
       }

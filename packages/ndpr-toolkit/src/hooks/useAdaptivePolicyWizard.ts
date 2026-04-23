@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import type { PrivacyPolicy, PolicySection } from '../types/privacy';
 import type {
   TemplateContext,
+  ProcessingPurpose,
   PolicyDraft,
   ComplianceResult,
   ComplianceGap,
@@ -331,12 +332,13 @@ export function useAdaptivePolicyWizard(
 
   const togglePurpose = useCallback((purpose: string) => {
     setContext((prev) => {
-      const exists = prev.purposes.includes(purpose as any);
+      const purposeValue = purpose as ProcessingPurpose;
+      const exists = prev.purposes.includes(purposeValue);
       return {
         ...prev,
         purposes: exists
           ? prev.purposes.filter((p) => p !== purpose)
-          : [...prev.purposes, purpose as any],
+          : [...prev.purposes, purposeValue],
       };
     });
   }, []);

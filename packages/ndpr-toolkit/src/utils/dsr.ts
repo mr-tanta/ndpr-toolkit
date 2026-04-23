@@ -6,7 +6,7 @@ import { DSRRequest } from '../types/dsr';
  * @returns Formatted request data
  */
 export function formatDSRRequest(request: DSRRequest): {
-  formattedRequest: Record<string, any>;
+  formattedRequest: Record<string, unknown>;
   isValid: boolean;
   validationErrors: string[];
 } {

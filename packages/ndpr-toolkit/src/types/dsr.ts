@@ -122,7 +122,7 @@ export interface DSRRequest {
   };
 
   /** Additional information provided by the data subject */
-  additionalInfo?: Record<string, any>;
+  additionalInfo?: Record<string, string | number | boolean | null>;
 
   /** Notes added by staff processing the request */
   internalNotes?: Array<{

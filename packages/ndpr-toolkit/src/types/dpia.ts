@@ -48,7 +48,7 @@ export interface DPIAQuestion {
   showWhen?: Array<{
     questionId: string;
     operator: 'equals' | 'contains' | 'greaterThan' | 'lessThan';
-    value: any;
+    value: string | number | boolean;
   }>;
 }
 
@@ -134,7 +134,7 @@ export interface DPIAResult {
   };
 
   /** Answers to all questions in the DPIA */
-  answers: Record<string, any>;
+  answers: Record<string, string | number | boolean | string[]>;
 
   /** Risks identified in the DPIA */
   risks: DPIARisk[];

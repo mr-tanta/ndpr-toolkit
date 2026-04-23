@@ -417,6 +417,15 @@ async function main() {
       if (selectedModules.includes('breach')) {
         generate(`${appDir}/api/breach/route.ts`, 'nextjs-breach-route.ts', vars);
       }
+      if (selectedModules.includes('dpia')) {
+        generate(`${appDir}/api/dpia/route.ts`, 'nextjs-dpia-route.ts', vars);
+      }
+      if (selectedModules.includes('lawful-basis')) {
+        generate(`${appDir}/api/lawful-basis/route.ts`, 'nextjs-lawful-basis-route.ts', vars);
+      }
+      if (selectedModules.includes('cross-border')) {
+        generate(`${appDir}/api/cross-border/route.ts`, 'nextjs-cross-border-route.ts', vars);
+      }
     } else if (framework === 'nextjs-pages') {
       console.log(yellow('  Note: Pages Router API routes generated under pages/api/'));
       if (selectedModules.includes('consent')) {
@@ -428,10 +437,28 @@ async function main() {
       if (selectedModules.includes('breach')) {
         generate('pages/api/breach.ts', 'nextjs-breach-route.ts', vars);
       }
+      if (selectedModules.includes('dpia')) {
+        generate('pages/api/dpia.ts', 'nextjs-dpia-route.ts', vars);
+      }
+      if (selectedModules.includes('lawful-basis')) {
+        generate('pages/api/lawful-basis.ts', 'nextjs-lawful-basis-route.ts', vars);
+      }
+      if (selectedModules.includes('cross-border')) {
+        generate('pages/api/cross-border.ts', 'nextjs-cross-border-route.ts', vars);
+      }
     } else if (framework === 'express') {
       generate('src/ndpr/index.ts', 'express-setup.ts', vars);
       if (selectedModules.includes('consent')) {
         generate('src/ndpr/routes/consent.ts', 'express-consent-route.ts', vars);
+      }
+      if (selectedModules.includes('dpia')) {
+        generate('src/ndpr/routes/dpia.ts', 'express-dpia-route.ts', vars);
+      }
+      if (selectedModules.includes('lawful-basis')) {
+        generate('src/ndpr/routes/lawful-basis.ts', 'express-lawful-basis-route.ts', vars);
+      }
+      if (selectedModules.includes('cross-border')) {
+        generate('src/ndpr/routes/cross-border.ts', 'express-cross-border-route.ts', vars);
       }
     }
 

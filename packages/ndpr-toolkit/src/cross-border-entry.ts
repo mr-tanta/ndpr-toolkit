@@ -13,3 +13,5 @@ export { CrossBorderProvider } from './components/cross-border/Provider';
 export type { CrossBorderProviderProps } from './components/cross-border/Provider';
 export { useCrossBorderCompound } from './components/cross-border/context';
 export type { StorageAdapter } from './adapters/types';
+export { getCountryAdequacy, getAdequateCountries, requiresNDPCApproval, COUNTRY_ADEQUACY_MAP } from './utils/country-adequacy';
+export type { CountryAdequacy, CountryAdequacyStatus } from './utils/country-adequacy';

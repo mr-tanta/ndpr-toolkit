@@ -25,6 +25,9 @@ export type { NDPRConfig } from './components/NDPRProvider';
 // i18n locale support
 export type { NDPRLocale } from './types/locale';
 export { defaultLocale } from './locales/en';
+export { yorubaLocale } from './locales/yo';
+export { igboLocale } from './locales/ig';
+export { hausaLocale } from './locales/ha';
 export { mergeLocale } from './utils/locale';
 
 // All utility functions

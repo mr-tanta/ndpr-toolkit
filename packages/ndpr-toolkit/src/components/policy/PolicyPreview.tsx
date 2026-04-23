@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { resolveClass } from '../../utils/styling';
 import { PolicySection, PolicyVariable } from '../../types/privacy';
 
@@ -136,25 +136,30 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   classNames,
   unstyled = false
 }) => {
+  const instanceId = useId();
   const [activeTab, setActiveTab] = useState<'preview' | 'markdown'>('preview');
+  const previewTabId = `${instanceId}-tab-preview`;
+  const markdownTabId = `${instanceId}-tab-markdown`;
+  const previewPanelId = `${instanceId}-panel-preview`;
+  const markdownPanelId = `${instanceId}-panel-markdown`;
   
   // Parse the content to extract section titles for the table of contents
   const extractSectionTitles = (): { id: string, title: string, level: number }[] => {
     const lines = content.split('\n');
     const sectionTitles: { id: string, title: string, level: number }[] = [];
-    
+
     lines.forEach(line => {
       if (line.startsWith('## ')) {
         const title = line.substring(3).trim();
-        const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const id = `${instanceId}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
         sectionTitles.push({ id, title, level: 2 });
       } else if (line.startsWith('### ')) {
         const title = line.substring(4).trim();
-        const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const id = `${instanceId}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
         sectionTitles.push({ id, title, level: 3 });
       }
     });
-    
+
     return sectionTitles;
   };
   
@@ -186,13 +191,13 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
     }
     
     return (
-      <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+      <nav aria-label="Table of contents" className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
         <h3 className="text-lg font-medium mb-3">Table of Contents</h3>
         <ul className="space-y-1">
           {sectionTitles.map((section, index) => (
             <li key={index} style={{ marginLeft: `${(section.level - 2) * 1.5}rem` }}>
-              <a 
-                href={`#${section.id}`} 
+              <a
+                href={`#${section.id}`}
                 className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline"
               >
                 {section.title}
@@ -200,7 +205,7 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
             </li>
           ))}
         </ul>
-      </div>
+      </nav>
     );
   };
   
@@ -229,12 +234,12 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
         {content.split('\n').map((line, index) => {
           if (line.startsWith('## ')) {
             const sectionTitle = line.substring(3).trim();
-            const id = sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            return <h2 id={id} key={index} className={resolveClass('text-xl font-bold mt-6 mb-3', classNames?.sectionTitle, unstyled)}>{sectionTitle}</h2>;
+            const id = `${instanceId}-${sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+            return <h3 id={id} key={index} className={resolveClass('text-xl font-bold mt-6 mb-3', classNames?.sectionTitle, unstyled)}>{sectionTitle}</h3>;
           } else if (line.startsWith('### ')) {
             const sectionTitle = line.substring(4).trim();
-            const id = sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            return <h3 id={id} key={index} className={resolveClass('text-lg font-bold mt-4 mb-2', classNames?.sectionTitle, unstyled)}>{sectionTitle}</h3>;
+            const id = `${instanceId}-${sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+            return <h4 id={id} key={index} className={resolveClass('text-lg font-bold mt-4 mb-2', classNames?.sectionTitle, unstyled)}>{sectionTitle}</h4>;
           } else if (line === '') {
             return <br key={index} />;
           } else {
@@ -314,9 +319,13 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
       
       {/* Tabs */}
       <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
-        <ul className="flex flex-wrap -mb-px">
-          <li className="mr-2">
+        <div role="tablist" aria-label="Policy view options" className="flex flex-wrap -mb-px">
+          <div className="mr-2">
             <button
+              role="tab"
+              id={previewTabId}
+              aria-selected={activeTab === 'preview'}
+              aria-controls={previewPanelId}
               onClick={() => setActiveTab('preview')}
               className={`inline-block p-4 ${
                 activeTab === 'preview'
@@ -326,9 +335,13 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
             >
               Preview
             </button>
-          </li>
-          <li className="mr-2">
+          </div>
+          <div className="mr-2">
             <button
+              role="tab"
+              id={markdownTabId}
+              aria-selected={activeTab === 'markdown'}
+              aria-controls={markdownPanelId}
               onClick={() => setActiveTab('markdown')}
               className={`inline-block p-4 ${
                 activeTab === 'markdown'
@@ -338,14 +351,14 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
             >
               Markdown
             </button>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
-      
+
       {/* Content */}
       <div className={resolveClass('bg-white dark:bg-gray-800 p-4 rounded-md', classNames?.content, unstyled)}>
         {activeTab === 'preview' ? (
-          <div>
+          <div role="tabpanel" id={previewPanelId} aria-labelledby={previewTabId} aria-live="polite">
             {renderMetadata()}
             {renderTableOfContents()}
             <div className={resolveClass('bg-gray-50 dark:bg-gray-700 p-6 rounded-md', classNames?.section, unstyled)}>
@@ -353,7 +366,7 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
             </div>
           </div>
         ) : (
-          <div>
+          <div role="tabpanel" id={markdownPanelId} aria-labelledby={markdownTabId}>
             <pre className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md overflow-auto whitespace-pre-wrap font-mono text-sm text-gray-800 dark:text-gray-200">
               {content}
             </pre>

@@ -68,7 +68,7 @@ export const PolicyStepReview: React.FC<PolicyStepReviewProps> = ({
       </div>
 
       {/* Section list */}
-      <div className={resolveClass('space-y-3', classNames?.sectionList, unstyled)}>
+      <div className={resolveClass('space-y-3', classNames?.sectionList, unstyled)} aria-live="polite">
         {sections.map((section, index) => (
           <PolicySectionCard
             key={section.id}

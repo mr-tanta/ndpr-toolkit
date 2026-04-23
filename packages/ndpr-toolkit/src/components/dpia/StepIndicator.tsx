@@ -131,6 +131,8 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
 
   return (
     <div
+      role="navigation"
+      aria-label="Step progress"
       className={`${cx(
         isVertical
           ? 'flex flex-col space-y-4'
@@ -182,6 +184,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 'step',
               )}
               onClick={() => handleStepClick(step.id)}
+              aria-current={step.active ? 'step' : undefined}
             >
               <div className={`
                 flex items-center justify-center

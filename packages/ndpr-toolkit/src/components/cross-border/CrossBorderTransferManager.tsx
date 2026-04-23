@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   CrossBorderTransfer,
   CrossBorderSummary,
@@ -222,10 +222,8 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [mechanismFilter, setMechanismFilter] = useState<string>('all');
 
-  // Filtered transfers
-  const [filteredTransfers, setFilteredTransfers] = useState<CrossBorderTransfer[]>(transfers);
-
-  useEffect(() => {
+  // Filtered transfers – derived data, no need for separate state
+  const filteredTransfers = useMemo(() => {
     let filtered = [...transfers];
 
     if (statusFilter !== 'all') {
@@ -237,7 +235,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
     }
 
     filtered.sort((a, b) => b.updatedAt - a.updatedAt);
-    setFilteredTransfers(filtered);
+    return filtered;
   }, [transfers, statusFilter, mechanismFilter]);
 
   // Select first transfer if none selected
@@ -247,29 +245,30 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
     }
   }, [filteredTransfers, selectedTransferId]);
 
-  const selectedTransfer = selectedTransferId
-    ? transfers.find((t) => t.id === selectedTransferId)
-    : null;
+  const selectedTransfer = useMemo(
+    () => (selectedTransferId ? transfers.find((t) => t.id === selectedTransferId) ?? null : null),
+    [transfers, selectedTransferId],
+  );
 
-  const formatDate = (timestamp: number): string => {
+  const formatDate = useCallback((timestamp: number): string => {
     return new Date(timestamp).toLocaleDateString();
-  };
+  }, []);
 
   // Reset form
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setFormData(INITIAL_FORM_DATA);
     setEditingTransferId(null);
     setValidationResult(null);
-  };
+  }, []);
 
   // Open form for adding
-  const handleOpenAddForm = () => {
+  const handleOpenAddForm = useCallback(() => {
     resetForm();
     setIsFormOpen(true);
-  };
+  }, [resetForm]);
 
   // Open form for editing
-  const handleOpenEditForm = (transfer: CrossBorderTransfer) => {
+  const handleOpenEditForm = useCallback((transfer: CrossBorderTransfer) => {
     setEditingTransferId(transfer.id);
     setFormData({
       destinationCountry: transfer.destinationCountry,
@@ -297,18 +296,18 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
       ndpcApprovalReference: transfer.ndpcApproval?.referenceNumber || '',
     });
     setIsFormOpen(true);
-  };
+  }, []);
 
   // Handle form field changes
-  const handleFieldChange = (
-    field: keyof TransferFormData,
-    value: string | boolean
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const handleFieldChange = useCallback(
+    (field: keyof TransferFormData, value: string | boolean) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    },
+    [],
+  );
 
   // Build transfer object from form data
-  const buildTransferFromForm = (): Omit<CrossBorderTransfer, 'id' | 'createdAt' | 'updatedAt'> => {
+  const buildTransferFromForm = useCallback((): Omit<CrossBorderTransfer, 'id' | 'createdAt' | 'updatedAt'> => {
     const needsApproval = isNDPCApprovalRequired(formData.transferMechanism);
     const now = Date.now();
 
@@ -356,10 +355,10 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
       startDate: now,
       reviewDate: now + 365 * 24 * 60 * 60 * 1000, // Default review in 1 year
     };
-  };
+  }, [formData]);
 
   // Handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     const transferData = buildTransferFromForm();
 
     // Validate by constructing a temporary full object
@@ -389,20 +388,26 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
     resetForm();
     setIsFormOpen(false);
-  };
+  }, [buildTransferFromForm, editingTransferId, onUpdateTransfer, onAddTransfer, resetForm]);
+
+  // Handle cancel form
+  const handleCancelForm = useCallback(() => {
+    resetForm();
+    setIsFormOpen(false);
+  }, [resetForm]);
 
   // Handle remove
-  const handleRemove = (id: string) => {
+  const handleRemove = useCallback((id: string) => {
     if (onRemoveTransfer) {
       onRemoveTransfer(id);
     }
     if (selectedTransferId === id) {
       setSelectedTransferId(null);
     }
-  };
+  }, [onRemoveTransfer, selectedTransferId]);
 
   // Render risk badge
-  const renderRiskBadge = (riskLevel: 'low' | 'medium' | 'high') => {
+  const renderRiskBadge = useCallback((riskLevel: 'low' | 'medium' | 'high') => {
     const colorClasses = {
       low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
       medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
@@ -414,10 +419,10 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         {riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)} Risk
       </span>
     );
-  };
+  }, [classNames?.riskBadge, unstyled]);
 
   // Render status badge
-  const renderStatusBadge = (status: CrossBorderTransfer['status']) => {
+  const renderStatusBadge = useCallback((status: CrossBorderTransfer['status']) => {
     const colorClasses = {
       active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
       suspended: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
@@ -437,10 +442,10 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         {labels[status]}
       </span>
     );
-  };
+  }, [classNames?.statusBadge, unstyled]);
 
   // Render mechanism badge
-  const renderMechanismBadge = (mechanism: TransferMechanism) => {
+  const renderMechanismBadge = useCallback((mechanism: TransferMechanism) => {
     const approvalRequired = isNDPCApprovalRequired(mechanism);
     const label = MECHANISM_OPTIONS.find((o) => o.value === mechanism)?.label || mechanism;
 
@@ -455,11 +460,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         {label}
       </span>
     );
-  };
+  }, []);
 
-  // Render compliance summary
-  const renderSummary = () => {
-    const summaryData = summary || {
+  // Memoize expensive summary stats
+  const summaryData = useMemo(() => {
+    return summary || {
       totalActiveTransfers: transfers.filter((t) => t.status === 'active').length,
       pendingApproval: transfers.filter(
         (t) => t.status === 'pending_approval' || (t.ndpcApproval?.required && !t.ndpcApproval?.approved)
@@ -471,9 +476,12 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
       dueForReview: [] as CrossBorderTransfer[],
       lastUpdated: Date.now(),
     };
+  }, [summary, transfers]);
 
+  // Render compliance summary
+  const renderSummary = () => {
     return (
-      <div className={resolveClass('mb-6 grid grid-cols-2 md:grid-cols-4 gap-4', classNames?.summary, unstyled)}>
+      <div role="status" aria-label="Transfer compliance summary" className={resolveClass('mb-6 grid grid-cols-2 md:grid-cols-4 gap-4', classNames?.summary, unstyled)}>
         <div className={resolveClass('bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
           <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
             {summaryData.totalActiveTransfers}
@@ -513,10 +521,8 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             {editingTransferId ? 'Edit Transfer' : 'Add New Transfer'}
           </h3>
           <button
-            onClick={() => {
-              resetForm();
-              setIsFormOpen(false);
-            }}
+            onClick={handleCancelForm}
+            aria-label="Cancel form"
             className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             Cancel
@@ -525,7 +531,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
         {/* Validation errors */}
         {validationResult && !validationResult.isValid && (
-          <div className="mb-4 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
+          <div id="cb-form-errors" role="alert" className="mb-4 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
             <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-1">
               Please fix the following errors:
             </p>
@@ -538,7 +544,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         )}
 
         {validationResult && validationResult.warnings.length > 0 && (
-          <div className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
+          <div id="cb-form-warnings" role="alert" className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
             <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-1">Warnings:</p>
             <ul className="list-disc list-inside text-sm text-yellow-700 dark:text-yellow-300">
               {validationResult.warnings.map((warning, i) => (
@@ -551,55 +557,67 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Destination Country */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-destinationCountry" className="block text-sm font-medium mb-1">
               Destination Country <span className="text-red-500">*</span>
             </label>
             <input
+              id="cb-destinationCountry"
               type="text"
               value={formData.destinationCountry}
               onChange={(e) => handleFieldChange('destinationCountry', e.target.value)}
               placeholder="e.g. United Kingdom"
+              aria-required="true"
+              aria-describedby="cb-form-errors"
+              aria-label="Destination country"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Country Code */}
           <div>
-            <label className="block text-sm font-medium mb-1">Country Code (ISO)</label>
+            <label htmlFor="cb-destinationCountryCode" className="block text-sm font-medium mb-1">Country Code (ISO)</label>
             <input
+              id="cb-destinationCountryCode"
               type="text"
               value={formData.destinationCountryCode}
               onChange={(e) => handleFieldChange('destinationCountryCode', e.target.value)}
               placeholder="e.g. GB"
               maxLength={3}
+              aria-label="Country code in ISO format"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Recipient Organization */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-recipientOrganization" className="block text-sm font-medium mb-1">
               Recipient Organization <span className="text-red-500">*</span>
             </label>
             <input
+              id="cb-recipientOrganization"
               type="text"
               value={formData.recipientOrganization}
               onChange={(e) => handleFieldChange('recipientOrganization', e.target.value)}
               placeholder="Organization name"
+              aria-required="true"
+              aria-describedby="cb-form-errors"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Transfer Mechanism */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-transferMechanism" className="block text-sm font-medium mb-1">
               Transfer Mechanism <span className="text-red-500">*</span>
             </label>
             <select
+              id="cb-transferMechanism"
               value={formData.transferMechanism}
               onChange={(e) =>
                 handleFieldChange('transferMechanism', e.target.value)
               }
+              aria-required="true"
+              aria-describedby="cb-form-errors"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               {MECHANISM_OPTIONS.map((option) => (
@@ -612,10 +630,12 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Adequacy Status */}
           <div>
-            <label className="block text-sm font-medium mb-1">Adequacy Status</label>
+            <label htmlFor="cb-adequacyStatus" className="block text-sm font-medium mb-1">Adequacy Status</label>
             <select
+              id="cb-adequacyStatus"
               value={formData.adequacyStatus}
               onChange={(e) => handleFieldChange('adequacyStatus', e.target.value)}
+              aria-label="Select adequacy status of destination country"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
             >
               {ADEQUACY_OPTIONS.map((option) => (
@@ -642,16 +662,20 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Data Categories */}
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-dataCategories" className="block text-sm font-medium mb-1">
               Data Categories <span className="text-red-500">*</span>
             </label>
             <input
+              id="cb-dataCategories"
               type="text"
               value={formData.dataCategories}
               onChange={(e) => handleFieldChange('dataCategories', e.target.value)}
               placeholder="Comma-separated, e.g. Names, Email addresses, Phone numbers"
+              aria-required="true"
+              aria-describedby="cb-dataCategories-help"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
+            <p id="cb-dataCategories-help" className="text-xs text-gray-500 mt-1">Separate categories with commas</p>
           </div>
 
           {/* Sensitive Data */}
@@ -682,28 +706,34 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Recipient Contact Name */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-recipientContactName" className="block text-sm font-medium mb-1">
               Recipient Contact Name <span className="text-red-500">*</span>
             </label>
             <input
+              id="cb-recipientContactName"
               type="text"
               value={formData.recipientContactName}
               onChange={(e) => handleFieldChange('recipientContactName', e.target.value)}
               placeholder="Contact person name"
+              aria-required="true"
+              aria-describedby="cb-form-errors"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Recipient Contact Email */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-recipientContactEmail" className="block text-sm font-medium mb-1">
               Recipient Contact Email <span className="text-red-500">*</span>
             </label>
             <input
+              id="cb-recipientContactEmail"
               type="email"
               value={formData.recipientContactEmail}
               onChange={(e) => handleFieldChange('recipientContactEmail', e.target.value)}
               placeholder="contact@example.com"
+              aria-required="true"
+              aria-describedby="cb-form-errors"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -734,42 +764,52 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Purpose */}
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-purpose" className="block text-sm font-medium mb-1">
               Purpose of Transfer <span className="text-red-500">*</span>
             </label>
             <textarea
+              id="cb-purpose"
               value={formData.purpose}
               onChange={(e) => handleFieldChange('purpose', e.target.value)}
               placeholder="Describe the purpose of this data transfer"
               rows={2}
+              aria-required="true"
+              aria-describedby="cb-form-errors"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Safeguards */}
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-safeguards" className="block text-sm font-medium mb-1">
               Safeguards <span className="text-red-500">*</span>
             </label>
             <textarea
+              id="cb-safeguards"
               value={formData.safeguards}
               onChange={(e) => handleFieldChange('safeguards', e.target.value)}
               placeholder="One safeguard per line, e.g.&#10;End-to-end encryption&#10;Access control policies&#10;Regular security audits"
               rows={3}
+              aria-required="true"
+              aria-describedby="cb-safeguards-help"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
+            <p id="cb-safeguards-help" className="text-xs text-gray-500 mt-1">Enter one safeguard per line</p>
           </div>
 
           {/* Risk Assessment */}
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium mb-1">
+            <label htmlFor="cb-riskAssessment" className="block text-sm font-medium mb-1">
               Risk Assessment Summary <span className="text-red-500">*</span>
             </label>
             <textarea
+              id="cb-riskAssessment"
               value={formData.riskAssessment}
               onChange={(e) => handleFieldChange('riskAssessment', e.target.value)}
               placeholder="Summarize the risk assessment for this transfer"
               rows={2}
+              aria-required="true"
+              aria-describedby="cb-form-errors"
               className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
             />
           </div>
@@ -890,10 +930,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         {/* Submit Button */}
         <div className="mt-4 flex justify-end gap-3">
           <button
-            onClick={() => {
-              resetForm();
-              setIsFormOpen(false);
-            }}
+            onClick={handleCancelForm}
             className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
           >
             Cancel
@@ -915,7 +952,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
     const validation = validateTransfer(transfer);
 
     return (
-      <div className={resolveClass('', classNames?.detailPanel, unstyled)}>
+      <div role="status" aria-label="Transfer details" className={resolveClass('', classNames?.detailPanel, unstyled)}>
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-lg font-medium">
             {transfer.destinationCountry} — {transfer.recipientOrganization}
@@ -1051,7 +1088,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             <p className="text-sm text-gray-700 dark:text-gray-200 mb-2">
               {transfer.riskAssessment}
             </p>
-            <div className="mt-2">
+            <div className="mt-2" role="status" aria-label="Automated risk assessment result">
               <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
                 Automated Assessment (Score: {riskResult.riskScore})
               </p>
@@ -1147,12 +1184,14 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         <div className="flex gap-3 mt-6">
           <button
             onClick={() => handleOpenEditForm(transfer)}
+            aria-label={`Edit transfer to ${transfer.destinationCountry}`}
             className={`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`}
           >
             Edit
           </button>
           <button
             onClick={() => handleRemove(transfer.id)}
+            aria-label={`Remove transfer to ${transfer.destinationCountry}`}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
           >
             Remove
@@ -1195,6 +1234,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             id="cbStatusFilter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
+            aria-label="Filter transfers by status"
             className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
           >
             <option value="all">All Statuses</option>
@@ -1213,6 +1253,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             id="cbMechanismFilter"
             value={mechanismFilter}
             onChange={(e) => setMechanismFilter(e.target.value)}
+            aria-label="Filter transfers by mechanism"
             className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
           >
             <option value="all">All Mechanisms</option>
@@ -1245,7 +1286,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                       ? 'bg-[rgb(var(--ndpr-primary)/0.05)] dark:bg-[rgb(var(--ndpr-primary)/0.1)] border border-[rgb(var(--ndpr-primary)/0.2)] dark:border-[rgb(var(--ndpr-primary)/0.3)]'
                       : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
                   }`, classNames?.transferItem, unstyled)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View transfer to ${transfer.destinationCountry}`}
                   onClick={() => setSelectedTransferId(transfer.id)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedTransferId(transfer.id); } }}
                 >
                   <div className="flex justify-between items-start mb-1">
                     <h4 className="font-medium text-sm">{transfer.destinationCountry}</h4>

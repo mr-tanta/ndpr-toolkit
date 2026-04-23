@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import type { TemplateContext, ProcessingPurpose } from '../../types/policy-engine';
 import { resolveClass } from '../../utils/styling';
 
@@ -88,6 +88,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
   classNames,
   unstyled,
 }) => {
+  const instanceId = useId();
   const [processorForm, setProcessorForm] = useState({ name: '', purpose: '', country: '' });
   const [showProcessorForm, setShowProcessorForm] = useState(false);
 
@@ -130,9 +131,12 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
         <div className={resolveClass('space-y-3', classNames?.purposeList, unstyled)}>
           {PURPOSES.map((p) => {
             const checked = context.purposes.includes(p.value);
+            const purposeId = `${instanceId}-purpose-${p.value}`;
+            const purposeDescId = `${instanceId}-purpose-desc-${p.value}`;
             return (
               <label
                 key={p.value}
+                htmlFor={purposeId}
                 className={resolveClass(
                   'flex items-start gap-3 cursor-pointer group',
                   classNames?.purposeItem,
@@ -140,9 +144,11 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
                 )}
               >
                 <input
+                  id={purposeId}
                   type="checkbox"
                   checked={checked}
                   onChange={() => onTogglePurpose(p.value)}
+                  aria-describedby={purposeDescId}
                   className={resolveClass(
                     'mt-0.5 h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))] cursor-pointer',
                     classNames?.purposeCheckbox,
@@ -153,7 +159,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
                   <p className={resolveClass('text-sm font-medium text-gray-900 dark:text-gray-100', classNames?.purposeLabel, unstyled)}>
                     {p.label}
                   </p>
-                  <p className={resolveClass('text-xs text-gray-500 dark:text-gray-400', classNames?.purposeDescription, unstyled)}>
+                  <p id={purposeDescId} className={resolveClass('text-xs text-gray-500 dark:text-gray-400', classNames?.purposeDescription, unstyled)}>
                     {p.description}
                   </p>
                 </div>
@@ -176,7 +182,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
             Third-Party Data Sharing
           </h3>
           <Toggle
-            id="thirdparty-toggle"
+            id={`${instanceId}-thirdparty-toggle`}
             checked={context.thirdPartyProcessors.length > 0 || showProcessorForm}
             onChange={(val) => {
               if (!val) {
@@ -234,27 +240,42 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
             {/* Add processor form */}
             {showProcessorForm ? (
               <div className={resolveClass('grid grid-cols-1 sm:grid-cols-3 gap-3 items-end', classNames?.processorForm, unstyled)}>
-                <input
-                  type="text"
-                  placeholder="Processor name"
-                  value={processorForm.name}
-                  onChange={(e) => setProcessorForm((f) => ({ ...f, name: e.target.value }))}
-                  className={resolveClass(INPUT_CLASS, classNames?.input, unstyled)}
-                />
-                <input
-                  type="text"
-                  placeholder="Purpose"
-                  value={processorForm.purpose}
-                  onChange={(e) => setProcessorForm((f) => ({ ...f, purpose: e.target.value }))}
-                  className={resolveClass(INPUT_CLASS, classNames?.input, unstyled)}
-                />
-                <input
-                  type="text"
-                  placeholder="Country"
-                  value={processorForm.country}
-                  onChange={(e) => setProcessorForm((f) => ({ ...f, country: e.target.value }))}
-                  className={resolveClass(INPUT_CLASS, classNames?.input, unstyled)}
-                />
+                <div>
+                  <label htmlFor={`${instanceId}-proc-name`} className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Processor Name</label>
+                  <input
+                    id={`${instanceId}-proc-name`}
+                    type="text"
+                    placeholder="Processor name"
+                    value={processorForm.name}
+                    onChange={(e) => setProcessorForm((f) => ({ ...f, name: e.target.value }))}
+                    aria-required="true"
+                    className={resolveClass(INPUT_CLASS, classNames?.input, unstyled)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`${instanceId}-proc-purpose`} className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Purpose</label>
+                  <input
+                    id={`${instanceId}-proc-purpose`}
+                    type="text"
+                    placeholder="Purpose"
+                    value={processorForm.purpose}
+                    onChange={(e) => setProcessorForm((f) => ({ ...f, purpose: e.target.value }))}
+                    aria-required="true"
+                    className={resolveClass(INPUT_CLASS, classNames?.input, unstyled)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor={`${instanceId}-proc-country`} className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Country</label>
+                  <input
+                    id={`${instanceId}-proc-country`}
+                    type="text"
+                    placeholder="Country"
+                    value={processorForm.country}
+                    onChange={(e) => setProcessorForm((f) => ({ ...f, country: e.target.value }))}
+                    aria-required="true"
+                    className={resolveClass(INPUT_CLASS, classNames?.input, unstyled)}
+                  />
+                </div>
                 <div className="sm:col-span-3 flex gap-2">
                   <button
                     type="button"
@@ -313,15 +334,15 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
           {/* Cross-border transfer */}
           <div className={resolveClass('flex items-start justify-between gap-4', classNames?.disclosureItem, unstyled)}>
             <div>
-              <p className={resolveClass('text-sm font-medium text-gray-900 dark:text-gray-100', classNames?.disclosureLabel, unstyled)}>
+              <p id={`${instanceId}-cross-border-label`} className={resolveClass('text-sm font-medium text-gray-900 dark:text-gray-100', classNames?.disclosureLabel, unstyled)}>
                 Cross-border Data Transfers
               </p>
-              <p className={resolveClass('text-xs text-gray-500 dark:text-gray-400 mt-0.5', classNames?.disclosureDescription, unstyled)}>
+              <p id={`${instanceId}-cross-border-desc`} className={resolveClass('text-xs text-gray-500 dark:text-gray-400 mt-0.5', classNames?.disclosureDescription, unstyled)}>
                 Do you transfer personal data outside Nigeria? This triggers NDPA Chapter 6 obligations.
               </p>
             </div>
             <Toggle
-              id="cross-border-toggle"
+              id={`${instanceId}-cross-border-toggle`}
               checked={context.hasCrossBorderTransfer}
               onChange={(val) => onUpdateContext({ hasCrossBorderTransfer: val })}
             />
@@ -330,15 +351,15 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
           {/* Automated decisions */}
           <div className={resolveClass('flex items-start justify-between gap-4', classNames?.disclosureItem, unstyled)}>
             <div>
-              <p className={resolveClass('text-sm font-medium text-gray-900 dark:text-gray-100', classNames?.disclosureLabel, unstyled)}>
+              <p id={`${instanceId}-automated-label`} className={resolveClass('text-sm font-medium text-gray-900 dark:text-gray-100', classNames?.disclosureLabel, unstyled)}>
                 Automated Decision-Making / Profiling
               </p>
-              <p className={resolveClass('text-xs text-gray-500 dark:text-gray-400 mt-0.5', classNames?.disclosureDescription, unstyled)}>
+              <p id={`${instanceId}-automated-desc`} className={resolveClass('text-xs text-gray-500 dark:text-gray-400 mt-0.5', classNames?.disclosureDescription, unstyled)}>
                 Do you use algorithms or AI to make decisions about individuals? Requires disclosure under NDPA Section 37.
               </p>
             </div>
             <Toggle
-              id="automated-toggle"
+              id={`${instanceId}-automated-toggle`}
               checked={context.hasAutomatedDecisions}
               onChange={(val) => onUpdateContext({ hasAutomatedDecisions: val })}
             />

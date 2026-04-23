@@ -338,25 +338,20 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
     setShowCustomize(false);
   };
 
-  // Dismiss on Escape key
-  const dismiss = useCallback(() => {
-    fireAnalytics('dismissed');
-    setIsOpen(false);
-    setShowCustomize(false);
-  }, [fireAnalytics]);
-
+  // Escape key dismisses by rejecting all non-required consents
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        dismiss();
+        fireAnalytics('dismissed');
+        handleRejectAll();
       }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, dismiss]);
+  }, [isOpen, fireAnalytics, options, showCustomize]);
 
   // Fire the "shown" analytics event when the banner becomes visible
   useEffect(() => {
@@ -370,12 +365,57 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
     }
   }, [isOpen, fireAnalytics]);
 
-  // Move focus to the banner when it opens
+  // Focus trap: keep Tab cycling within the banner and auto-focus first interactive element
   useEffect(() => {
-    if (isOpen && bannerRef.current) {
-      bannerRef.current.focus();
-    }
-  }, [isOpen]);
+    if (!isOpen || !bannerRef.current) return;
+
+    const FOCUSABLE_SELECTOR =
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    // Auto-focus the first interactive element when the banner opens
+    const focusFirst = () => {
+      if (!bannerRef.current) return;
+      const focusable = bannerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      if (focusable.length > 0) {
+        focusable[0].focus();
+      } else {
+        bannerRef.current.focus();
+      }
+    };
+
+    // Small delay to ensure DOM is painted (especially for customize panel transitions)
+    const timerId = setTimeout(focusFirst, 0);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !bannerRef.current) return;
+
+      const focusable = bannerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        // Shift+Tab at first element -> wrap to last
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        // Tab at last element -> wrap to first
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(timerId);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, showCustomize]);
 
   // Animate the customize panel with a slide/fade transition
   useEffect(() => {
@@ -434,6 +474,7 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
       )}
       style={!isInline && !isCenter ? { zIndex } : undefined}
       role="dialog"
+      aria-modal={isCenter || undefined}
       aria-labelledby="consent-banner-title"
       aria-describedby="consent-banner-description"
     >

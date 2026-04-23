@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import type { TemplateContext } from '../../types/policy-engine';
 import { resolveClass } from '../../utils/styling';
 
@@ -15,16 +15,20 @@ const INPUT_CLASS =
 const LABEL_CLASS = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1';
 
 interface FieldProps {
+  id: string;
   label: string;
   required?: boolean;
+  description?: string;
   children: React.ReactNode;
   classNames?: Record<string, string>;
   unstyled?: boolean;
 }
 
-const Field: React.FC<FieldProps> = ({ label, required, children, classNames, unstyled }) => (
+const Field: React.FC<FieldProps> = ({ id, label, required, description, children, classNames, unstyled }) => {
+  const descId = description ? `${id}-desc` : undefined;
+  return (
   <div className={resolveClass('flex flex-col', classNames?.field, unstyled)}>
-    <label className={resolveClass(LABEL_CLASS, classNames?.label, unstyled)}>
+    <label htmlFor={id} className={resolveClass(LABEL_CLASS, classNames?.label, unstyled)}>
       {label}
       {required && (
         <span className="text-red-500 ml-0.5" aria-hidden="true">
@@ -32,9 +36,15 @@ const Field: React.FC<FieldProps> = ({ label, required, children, classNames, un
         </span>
       )}
     </label>
+    {description && (
+      <p id={descId} className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+        {description}
+      </p>
+    )}
     {children}
   </div>
-);
+  );
+};
 
 export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
   context,
@@ -42,6 +52,7 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
   classNames,
   unstyled,
 }) => {
+  const instanceId = useId();
   const org = context.org;
 
   return (
@@ -54,7 +65,7 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
           Organisation Details
         </h2>
         <p className={resolveClass('text-sm text-gray-500 dark:text-gray-400 mt-1', classNames?.subheading, unstyled)}>
-          Tell us about your organisation. Fields marked <span className="text-red-500">*</span> are required.
+          Tell us about your organisation. Fields marked <span className="text-red-500" aria-hidden="true">*</span> are required.
         </p>
       </div>
 
@@ -66,8 +77,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         )}
       >
         {/* Organisation Name */}
-        <Field label="Organisation Name" required classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-org-name`} label="Organisation Name" required classNames={classNames} unstyled={unstyled}>
           <input
+            id={`${instanceId}-org-name`}
             type="text"
             value={org.name}
             onChange={(e) => onUpdateOrg({ name: e.target.value })}
@@ -78,8 +90,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         </Field>
 
         {/* Website */}
-        <Field label="Website" required classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-website`} label="Website" required classNames={classNames} unstyled={unstyled}>
           <input
+            id={`${instanceId}-website`}
             type="url"
             value={org.website}
             onChange={(e) => onUpdateOrg({ website: e.target.value })}
@@ -90,8 +103,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         </Field>
 
         {/* Privacy Email */}
-        <Field label="Privacy Contact Email" required classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-privacy-email`} label="Privacy Contact Email" required classNames={classNames} unstyled={unstyled}>
           <input
+            id={`${instanceId}-privacy-email`}
             type="email"
             value={org.privacyEmail}
             onChange={(e) => onUpdateOrg({ privacyEmail: e.target.value })}
@@ -102,8 +116,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         </Field>
 
         {/* Industry */}
-        <Field label="Industry" classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-industry`} label="Industry" classNames={classNames} unstyled={unstyled}>
           <select
+            id={`${instanceId}-industry`}
             value={org.industry}
             onChange={(e) => onUpdateOrg({ industry: e.target.value as TemplateContext['org']['industry'] })}
             className={resolveClass(INPUT_CLASS, classNames?.select, unstyled)}
@@ -119,8 +134,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         </Field>
 
         {/* DPO Name */}
-        <Field label="Data Protection Officer (DPO) Name" classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-dpo-name`} label="Data Protection Officer (DPO) Name" classNames={classNames} unstyled={unstyled}>
           <input
+            id={`${instanceId}-dpo-name`}
             type="text"
             value={org.dpoName ?? ''}
             onChange={(e) => onUpdateOrg({ dpoName: e.target.value })}
@@ -130,8 +146,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         </Field>
 
         {/* DPO Email */}
-        <Field label="DPO Email" classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-dpo-email`} label="DPO Email" classNames={classNames} unstyled={unstyled}>
           <input
+            id={`${instanceId}-dpo-email`}
             type="email"
             value={org.dpoEmail ?? ''}
             onChange={(e) => onUpdateOrg({ dpoEmail: e.target.value })}
@@ -141,8 +158,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         </Field>
 
         {/* Address */}
-        <Field label="Registered Address" classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-address`} label="Registered Address" classNames={classNames} unstyled={unstyled}>
           <input
+            id={`${instanceId}-address`}
             type="text"
             value={org.address ?? ''}
             onChange={(e) => onUpdateOrg({ address: e.target.value })}
@@ -152,8 +170,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         </Field>
 
         {/* Org Size */}
-        <Field label="Organisation Size" classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-org-size`} label="Organisation Size" classNames={classNames} unstyled={unstyled}>
           <select
+            id={`${instanceId}-org-size`}
             value={org.orgSize}
             onChange={(e) => onUpdateOrg({ orgSize: e.target.value as TemplateContext['org']['orgSize'] })}
             className={resolveClass(INPUT_CLASS, classNames?.select, unstyled)}
@@ -165,8 +184,9 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
         </Field>
 
         {/* Country */}
-        <Field label="Country of Operation" classNames={classNames} unstyled={unstyled}>
+        <Field id={`${instanceId}-country`} label="Country of Operation" classNames={classNames} unstyled={unstyled}>
           <input
+            id={`${instanceId}-country`}
             type="text"
             value={org.country}
             onChange={(e) => onUpdateOrg({ country: e.target.value })}

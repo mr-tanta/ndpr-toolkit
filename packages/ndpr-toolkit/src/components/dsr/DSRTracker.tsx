@@ -521,7 +521,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
   // Render overdue requests
   const renderOverdueRequests = () => {
     return (
-      <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6">
+      <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6" aria-live="polite">
         <h3 className="text-lg font-medium mb-4">Overdue Requests</h3>
         
         {overdueRequests.length === 0 ? (
@@ -533,8 +533,12 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
             {overdueRequests.map(request => (
               <div
                 key={request.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`View overdue request from ${request.subject.name}`}
                 className={resolveClass("p-3 bg-red-50 dark:bg-red-900/20 rounded-md cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30", classNames?.tableRow, unstyled)}
                 onClick={() => handleSelectRequest(request.id)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelectRequest(request.id); } }}
               >
                 <div className="flex justify-between items-start mb-1">
                   <h4 className="font-medium text-sm">{request.subject.name}</h4>
@@ -562,7 +566,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
   // Render upcoming deadlines
   const renderUpcomingDeadlines = () => {
     return (
-      <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6">
+      <div className="bg-white dark:bg-gray-700 p-4 rounded-lg shadow mb-6" aria-live="polite">
         <h3 className="text-lg font-medium mb-4">Upcoming Deadlines</h3>
         
         {upcomingDeadlines.length === 0 ? (
@@ -577,8 +581,12 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
               return (
                 <div
                   key={request.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View upcoming deadline for ${request.subject.name}`}
                   className={resolveClass("p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-md cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-900/30", classNames?.tableRow, unstyled)}
                   onClick={() => handleSelectRequest(request.id)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelectRequest(request.id); } }}
                 >
                   <div className="flex justify-between items-start mb-1">
                     <h4 className="font-medium text-sm">{request.subject.name}</h4>

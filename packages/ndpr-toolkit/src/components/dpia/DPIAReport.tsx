@@ -261,7 +261,7 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
         </h2>
 
         <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md mb-4">
-          <div className="flex items-center mb-2">
+          <div className="flex items-center mb-2" role="status" aria-live="polite">
             <span className="font-medium mr-2">Overall Risk Level:</span>
             {renderRiskLevelBadge(result.overallRiskLevel)}
           </div>
@@ -270,7 +270,7 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
             <span className="font-medium">Conclusion:</span> {result.conclusion}
           </div>
 
-          <div>
+          <div role="status" aria-live="polite">
             <span className="font-medium">Can Proceed:</span> {result.canProceed ? 'Yes' : 'No'}
           </div>
         </div>

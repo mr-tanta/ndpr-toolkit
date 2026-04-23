@@ -4,11 +4,14 @@
  * DPO: {{DPO_EMAIL}}
  *
  * Covers:
- *   - consentRecords     — NDPA §25–26 (consent & withdrawal)
- *   - dsrRequests        — NDPA Part IV §34–38 (data subject rights)
- *   - breachReports      — NDPA §40 (72-hour breach notification)
- *   - processingRecords  — ROPA (accountability principle)
- *   - auditLog           — §44 audit trail
+ *   - consentRecords              — NDPA §25–26 (consent & withdrawal)
+ *   - dsrRequests                — NDPA Part IV §34–38 (data subject rights)
+ *   - breachReports              — NDPA §40 (72-hour breach notification)
+ *   - processingRecords          — ROPA (accountability principle)
+ *   - dpiaRecords                — NDPA §34(3) (impact assessments)
+ *   - lawfulBasisRecords         — NDPA §25 (lawful basis register)
+ *   - crossBorderTransferRecords — NDPA §41–42 (cross-border transfers)
+ *   - auditLog                   — §44 audit trail
  *
  * Prerequisites: drizzle-orm, @paralleldrive/cuid2
  * Run `drizzle-kit push` to apply.
@@ -129,6 +132,82 @@ export const processingRecords = pgTable('ndpr_processing_records', {
 });
 
 // ---------------------------------------------------------------------------
+// ndpr_dpia_records — NDPA §34(3)
+// ---------------------------------------------------------------------------
+
+export const dpiaRecords = pgTable(
+  'ndpr_dpia_records',
+  {
+    id:          text('id').primaryKey().$defaultFn(() => createId()),
+    projectName: text('project_name').notNull(),
+    description: text('description').notNull(),
+    dpiaData:    json('dpia_data').notNull(),
+    overallRisk: text('overall_risk').notNull(),
+    score:       integer('score').notNull(),
+    status:      text('status').notNull().default('draft'),
+    conductedBy: text('conducted_by').notNull(),
+    approvedBy:  text('approved_by'),
+    createdAt:   timestamp('created_at').defaultNow().notNull(),
+    updatedAt:   timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => ({
+    statusIdx:      index('dpia_status_idx').on(t.status),
+    conductedByIdx: index('dpia_conducted_by_idx').on(t.conductedBy),
+  }),
+);
+
+// ---------------------------------------------------------------------------
+// ndpr_lawful_basis_records — NDPA §25
+// ---------------------------------------------------------------------------
+
+export const lawfulBasisRecords = pgTable(
+  'ndpr_lawful_basis_records',
+  {
+    id:             text('id').primaryKey().$defaultFn(() => createId()),
+    activityName:   text('activity_name').notNull(),
+    lawfulBasis:    text('lawful_basis').notNull(),
+    justification:  text('justification').notNull(),
+    dataCategories: json('data_categories').notNull(),
+    purposes:       json('purposes').notNull(),
+    assessedBy:     text('assessed_by').notNull(),
+    assessedAt:     timestamp('assessed_at').defaultNow().notNull(),
+    reviewDate:     timestamp('review_date'),
+    createdAt:      timestamp('created_at').defaultNow().notNull(),
+    updatedAt:      timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => ({
+    lawfulBasisIdx: index('lawful_basis_idx').on(t.lawfulBasis),
+    assessedByIdx:  index('lawful_basis_assessed_by_idx').on(t.assessedBy),
+  }),
+);
+
+// ---------------------------------------------------------------------------
+// ndpr_cross_border_transfer_records — NDPA §41–42
+// ---------------------------------------------------------------------------
+
+export const crossBorderTransferRecords = pgTable(
+  'ndpr_cross_border_transfer_records',
+  {
+    id:                    text('id').primaryKey().$defaultFn(() => createId()),
+    destinationCountry:    text('destination_country').notNull(),
+    recipientName:         text('recipient_name').notNull(),
+    transferMechanism:     text('transfer_mechanism').notNull(),
+    safeguards:            text('safeguards').notNull(),
+    dataCategories:        json('data_categories').notNull(),
+    adequacyStatus:        text('adequacy_status').notNull(),
+    ndpcApprovalRequired:  boolean('ndpc_approval_required').notNull().default(false),
+    ndpcApprovalReference: text('ndpc_approval_reference'),
+    riskLevel:             text('risk_level').notNull(),
+    createdAt:             timestamp('created_at').defaultNow().notNull(),
+    updatedAt:             timestamp('updated_at').defaultNow().notNull(),
+  },
+  (t) => ({
+    destinationCountryIdx: index('cross_border_destination_idx').on(t.destinationCountry),
+    riskLevelIdx:          index('cross_border_risk_level_idx').on(t.riskLevel),
+  }),
+);
+
+// ---------------------------------------------------------------------------
 // ndpr_audit_log — §44 accountability
 // ---------------------------------------------------------------------------
 
@@ -159,5 +238,11 @@ export type DSRRequest       = typeof dsrRequests.$inferSelect;
 export type NewDSRRequest    = typeof dsrRequests.$inferInsert;
 export type BreachReport     = typeof breachReports.$inferSelect;
 export type NewBreachReport  = typeof breachReports.$inferInsert;
-export type ProcessingRecord = typeof processingRecords.$inferSelect;
-export type AuditLogEntry    = typeof auditLog.$inferSelect;
+export type ProcessingRecord         = typeof processingRecords.$inferSelect;
+export type DPIARecord               = typeof dpiaRecords.$inferSelect;
+export type NewDPIARecord            = typeof dpiaRecords.$inferInsert;
+export type LawfulBasisRecord        = typeof lawfulBasisRecords.$inferSelect;
+export type NewLawfulBasisRecord     = typeof lawfulBasisRecords.$inferInsert;
+export type CrossBorderTransfer      = typeof crossBorderTransferRecords.$inferSelect;
+export type NewCrossBorderTransfer   = typeof crossBorderTransferRecords.$inferInsert;
+export type AuditLogEntry            = typeof auditLog.$inferSelect;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import { resolveClass } from '../../utils/styling';
 
 export interface PolicyExporterClassNames {
@@ -138,6 +138,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   classNames,
   unstyled = false
 }) => {
+  const instanceId = useId();
   const [exportHistory, setExportHistory] = useState<ExportRecord[]>([]);
   const [selectedFormat, setSelectedFormat] = useState<string>('pdf');
   const [isExporting, setIsExporting] = useState<boolean>(false);
@@ -359,13 +360,14 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
       { value: 'markdown', label: 'Markdown (.md)' }
     ];
     
+    const formatId = `${instanceId}-export-format`;
     return (
       <div className={resolveClass('mb-6', classNames?.formatSelector, unstyled)}>
-        <label htmlFor="export-format" className="block text-sm font-medium mb-1">
+        <label htmlFor={formatId} className="block text-sm font-medium mb-1">
           Export Format
         </label>
         <select
-          id="export-format"
+          id={formatId}
           value={selectedFormat}
           onChange={e => setSelectedFormat(e.target.value)}
           className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.formatOption, unstyled)}
@@ -408,28 +410,29 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
         </div>
         
         <div>
-          <label htmlFor="custom-filename" className="block text-sm font-medium mb-1">
+          <label htmlFor={`${instanceId}-custom-filename`} className="block text-sm font-medium mb-1">
             Custom Filename
           </label>
           <input
             type="text"
-            id="custom-filename"
+            id={`${instanceId}-custom-filename`}
             value={customFilename}
             onChange={e => setCustomFilename(e.target.value)}
             placeholder={generateDefaultFilename(selectedFormat)}
+            aria-describedby={`${instanceId}-custom-filename-desc`}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           />
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+          <p id={`${instanceId}-custom-filename-desc`} className="text-xs text-gray-600 dark:text-gray-400 mt-1">
             Leave blank to use the default filename format.
           </p>
         </div>
-        
+
         <div>
-          <label htmlFor="custom-header" className="block text-sm font-medium mb-1">
+          <label htmlFor={`${instanceId}-custom-header`} className="block text-sm font-medium mb-1">
             Custom Header HTML (for HTML/PDF exports)
           </label>
           <textarea
-            id="custom-header"
+            id={`${instanceId}-custom-header`}
             value={customHeader}
             onChange={e => setCustomHeader(e.target.value)}
             rows={3}
@@ -437,13 +440,13 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           />
         </div>
-        
+
         <div>
-          <label htmlFor="custom-footer" className="block text-sm font-medium mb-1">
+          <label htmlFor={`${instanceId}-custom-footer`} className="block text-sm font-medium mb-1">
             Custom Footer HTML (for HTML/PDF exports)
           </label>
           <textarea
-            id="custom-footer"
+            id={`${instanceId}-custom-footer`}
             value={customFooter}
             onChange={e => setCustomFooter(e.target.value)}
             rows={3}
@@ -451,22 +454,23 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
           />
         </div>
-        
+
         <div className="flex items-start">
           <div className="flex items-center h-5">
             <input
-              id="include-compliance-notice"
+              id={`${instanceId}-include-compliance-notice`}
               type="checkbox"
               checked={includeComplianceNotice}
               onChange={e => setShowAdvancedOptions(e.target.checked)}
+              aria-describedby={`${instanceId}-compliance-notice-desc`}
               className="w-4 h-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))] dark:focus:ring-[rgb(var(--ndpr-ring))] dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
           </div>
           <div className="ml-3 text-sm">
-            <label htmlFor="include-compliance-notice" className="font-medium text-gray-900 dark:text-white">
+            <label htmlFor={`${instanceId}-include-compliance-notice`} className="font-medium text-gray-900 dark:text-white">
               Include NDPA Compliance Notice
             </label>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p id={`${instanceId}-compliance-notice-desc`} className="text-gray-600 dark:text-gray-400">
               Adds a notice explaining that this policy complies with NDPA requirements.
             </p>
           </div>

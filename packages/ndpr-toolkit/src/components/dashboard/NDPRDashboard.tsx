@@ -100,6 +100,8 @@ const ScoreCircle: React.FC<ScoreCircleProps> = ({ score, rating, classNames, un
         classNames?.scoreCircle,
         unstyled,
       )}
+      role="img"
+      aria-label={`Compliance score: ${score} out of 100, rated ${RATING_LABELS[rating]}`}
     >
       <svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true">
         {/* Track */}
@@ -160,6 +162,8 @@ const RatingBadge: React.FC<RatingBadgeProps> = ({ rating, className, unstyled }
         color,
         border: `1px solid ${color.replace('rgb(', 'rgba(').replace(')', ', 0.3)')}`,
       }}
+      role="status"
+      aria-live="polite"
     >
       {RATING_LABELS[rating]}
     </span>
@@ -220,6 +224,8 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ moduleKey, module, classNames, 
             unstyled,
           )}
           style={{ color }}
+          role="status"
+          aria-label={`${displayName} score: ${module.score}`}
         >
           {module.score}
         </span>
@@ -233,6 +239,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ moduleKey, module, classNames, 
         aria-valuenow={module.score}
         aria-valuemin={0}
         aria-valuemax={100}
+        aria-label={`${displayName} compliance score: ${module.score}%`}
       >
         <div
           className="h-full rounded-full transition-all"

@@ -326,3 +326,12 @@ function getTransferMechanismLabel(mechanism: TransferMechanism): string {
 
   return labels[mechanism];
 }
+
+// Re-export country adequacy utilities
+export {
+  getCountryAdequacy,
+  getAdequateCountries,
+  requiresNDPCApproval,
+  COUNTRY_ADEQUACY_MAP,
+} from './country-adequacy';
+export type { CountryAdequacy, CountryAdequacyStatus } from './country-adequacy';

@@ -11,7 +11,7 @@ export function mergeLocale(partial?: NDPRLocale): typeof defaultLocale {
   const result = { ...defaultLocale };
   for (const key of Object.keys(partial) as (keyof NDPRLocale)[]) {
     if (partial[key]) {
-      (result as any)[key] = { ...defaultLocale[key], ...partial[key] };
+      (result as Record<string, unknown>)[key] = { ...defaultLocale[key], ...partial[key] };
     }
   }
   return result as typeof defaultLocale;

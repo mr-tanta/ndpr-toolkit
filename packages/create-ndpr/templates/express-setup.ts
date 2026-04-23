@@ -15,9 +15,12 @@
  *   app.use('/api/ndpr', createNDPRRouter());
  *
  * Routes exposed:
- *   GET/POST/DELETE  /api/ndpr/consent   — NDPA §25–26
- *   GET/POST         /api/ndpr/dsr       — NDPA §34–38
- *   GET/POST         /api/ndpr/breach    — NDPA §40
+ *   GET/POST/DELETE  /api/ndpr/consent        — NDPA §25–26
+ *   GET/POST         /api/ndpr/dsr            — NDPA §34–38
+ *   GET/POST         /api/ndpr/breach         — NDPA §40
+ *   CRUD             /api/ndpr/dpia           — NDPA §34(3)
+ *   CRUD             /api/ndpr/lawful-basis   — NDPA §25
+ *   CRUD             /api/ndpr/cross-border   — NDPA §41–42
  */
 
 import { Router } from 'express';
@@ -232,6 +235,259 @@ function breachRouter(): Router {
 }
 
 // ---------------------------------------------------------------------------
+// DPIA router — NDPA §34(3)
+// ---------------------------------------------------------------------------
+
+function dpiaRouter(): Router {
+  const router = Router();
+
+  // GET /dpia?status=draft
+  router.get('/', async (req, res) => {
+    const { status } = req.query;
+    const records = await prisma.dPIARecord.findMany({
+      where: status && typeof status === 'string' ? { status } : undefined,
+      orderBy: { createdAt: 'desc' },
+    });
+    return res.json(records);
+  });
+
+  // GET /dpia/:id
+  router.get('/:id', async (req, res) => {
+    const record = await prisma.dPIARecord.findUnique({ where: { id: req.params.id } });
+    if (!record) return res.status(404).json({ error: 'DPIA record not found' });
+    return res.json(record);
+  });
+
+  // POST /dpia
+  router.post('/', async (req, res) => {
+    const { projectName, description, dpiaData, overallRisk, score, conductedBy, approvedBy } = req.body;
+    if (!projectName || !description || !dpiaData || !overallRisk || score == null || !conductedBy) {
+      return res.status(400).json({
+        error: 'projectName, description, dpiaData, overallRisk, score, and conductedBy are required',
+      });
+    }
+    const record = await prisma.dPIARecord.create({
+      data: {
+        projectName, description, dpiaData, overallRisk, score,
+        status: 'draft', conductedBy, approvedBy: approvedBy ?? null,
+      },
+    });
+    await prisma.complianceAuditLog.create({
+      data: {
+        module: 'dpia', action: 'created', entityId: record.id,
+        entityType: 'DPIARecord', changes: { projectName, overallRisk, score, status: 'draft' },
+      },
+    });
+    return res.status(201).json(record);
+  });
+
+  // PUT /dpia/:id
+  router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const existing = await prisma.dPIARecord.findUnique({ where: { id } });
+    if (!existing) return res.status(404).json({ error: 'DPIA record not found' });
+    const record = await prisma.dPIARecord.update({ where: { id }, data: req.body });
+    await prisma.complianceAuditLog.create({
+      data: { module: 'dpia', action: 'updated', entityId: record.id, entityType: 'DPIARecord', changes: req.body },
+    });
+    return res.json(record);
+  });
+
+  // DELETE /dpia/:id
+  router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    const existing = await prisma.dPIARecord.findUnique({ where: { id } });
+    if (!existing) return res.status(404).json({ error: 'DPIA record not found' });
+    await prisma.dPIARecord.delete({ where: { id } });
+    await prisma.complianceAuditLog.create({
+      data: {
+        module: 'dpia', action: 'deleted', entityId: id,
+        entityType: 'DPIARecord', changes: { projectName: existing.projectName },
+      },
+    });
+    return res.json({ success: true });
+  });
+
+  return router;
+}
+
+// ---------------------------------------------------------------------------
+// Lawful Basis router — NDPA §25
+// ---------------------------------------------------------------------------
+
+function lawfulBasisRouter(): Router {
+  const router = Router();
+
+  // GET /lawful-basis?lawfulBasis=consent
+  router.get('/', async (req, res) => {
+    const { lawfulBasis } = req.query;
+    const records = await prisma.lawfulBasisRecord.findMany({
+      where: lawfulBasis && typeof lawfulBasis === 'string' ? { lawfulBasis } : undefined,
+      orderBy: { createdAt: 'desc' },
+    });
+    return res.json(records);
+  });
+
+  // GET /lawful-basis/:id
+  router.get('/:id', async (req, res) => {
+    const record = await prisma.lawfulBasisRecord.findUnique({ where: { id: req.params.id } });
+    if (!record) return res.status(404).json({ error: 'Lawful basis record not found' });
+    return res.json(record);
+  });
+
+  // POST /lawful-basis
+  router.post('/', async (req, res) => {
+    const { activityName, lawfulBasis, justification, dataCategories, purposes, assessedBy, reviewDate } = req.body;
+    if (!activityName || !lawfulBasis || !justification || !dataCategories || !purposes || !assessedBy) {
+      return res.status(400).json({
+        error: 'activityName, lawfulBasis, justification, dataCategories, purposes, and assessedBy are required',
+      });
+    }
+    if (!Array.isArray(dataCategories) || !Array.isArray(purposes)) {
+      return res.status(400).json({ error: 'dataCategories and purposes must be arrays' });
+    }
+    const record = await prisma.lawfulBasisRecord.create({
+      data: {
+        activityName, lawfulBasis, justification, dataCategories, purposes,
+        assessedBy, reviewDate: reviewDate ? new Date(reviewDate) : null,
+      },
+    });
+    await prisma.complianceAuditLog.create({
+      data: {
+        module: 'lawful-basis', action: 'created', entityId: record.id,
+        entityType: 'LawfulBasisRecord', changes: { activityName, lawfulBasis, assessedBy },
+      },
+    });
+    return res.status(201).json(record);
+  });
+
+  // PUT /lawful-basis/:id
+  router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const existing = await prisma.lawfulBasisRecord.findUnique({ where: { id } });
+    if (!existing) return res.status(404).json({ error: 'Lawful basis record not found' });
+    const data = { ...req.body };
+    if (data.reviewDate) data.reviewDate = new Date(data.reviewDate);
+    const record = await prisma.lawfulBasisRecord.update({ where: { id }, data });
+    await prisma.complianceAuditLog.create({
+      data: {
+        module: 'lawful-basis', action: 'updated', entityId: record.id,
+        entityType: 'LawfulBasisRecord', changes: data,
+      },
+    });
+    return res.json(record);
+  });
+
+  // DELETE /lawful-basis/:id
+  router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    const existing = await prisma.lawfulBasisRecord.findUnique({ where: { id } });
+    if (!existing) return res.status(404).json({ error: 'Lawful basis record not found' });
+    await prisma.lawfulBasisRecord.delete({ where: { id } });
+    await prisma.complianceAuditLog.create({
+      data: {
+        module: 'lawful-basis', action: 'deleted', entityId: id,
+        entityType: 'LawfulBasisRecord', changes: { activityName: existing.activityName },
+      },
+    });
+    return res.json({ success: true });
+  });
+
+  return router;
+}
+
+// ---------------------------------------------------------------------------
+// Cross-Border Transfer router — NDPA §41–42
+// ---------------------------------------------------------------------------
+
+function crossBorderRouter(): Router {
+  const router = Router();
+
+  // GET /cross-border?riskLevel=high&destinationCountry=US
+  router.get('/', async (req, res) => {
+    const { riskLevel, destinationCountry } = req.query;
+    const where: Record<string, string> = {};
+    if (riskLevel && typeof riskLevel === 'string') where.riskLevel = riskLevel;
+    if (destinationCountry && typeof destinationCountry === 'string') where.destinationCountry = destinationCountry;
+    const records = await prisma.crossBorderTransferRecord.findMany({
+      where: Object.keys(where).length > 0 ? where : undefined,
+      orderBy: { createdAt: 'desc' },
+    });
+    return res.json(records);
+  });
+
+  // GET /cross-border/:id
+  router.get('/:id', async (req, res) => {
+    const record = await prisma.crossBorderTransferRecord.findUnique({ where: { id: req.params.id } });
+    if (!record) return res.status(404).json({ error: 'Cross-border transfer record not found' });
+    return res.json(record);
+  });
+
+  // POST /cross-border
+  router.post('/', async (req, res) => {
+    const {
+      destinationCountry, recipientName, transferMechanism, safeguards,
+      dataCategories, adequacyStatus, ndpcApprovalRequired, ndpcApprovalReference, riskLevel,
+    } = req.body;
+    if (!destinationCountry || !recipientName || !transferMechanism || !safeguards || !dataCategories || !adequacyStatus || !riskLevel) {
+      return res.status(400).json({
+        error: 'destinationCountry, recipientName, transferMechanism, safeguards, dataCategories, adequacyStatus, and riskLevel are required',
+      });
+    }
+    if (!Array.isArray(dataCategories)) {
+      return res.status(400).json({ error: 'dataCategories must be an array' });
+    }
+    const record = await prisma.crossBorderTransferRecord.create({
+      data: {
+        destinationCountry, recipientName, transferMechanism, safeguards, dataCategories,
+        adequacyStatus, ndpcApprovalRequired: ndpcApprovalRequired ?? false,
+        ndpcApprovalReference: ndpcApprovalReference ?? null, riskLevel,
+      },
+    });
+    await prisma.complianceAuditLog.create({
+      data: {
+        module: 'cross-border', action: 'created', entityId: record.id,
+        entityType: 'CrossBorderTransferRecord', changes: { destinationCountry, recipientName, riskLevel },
+      },
+    });
+    return res.status(201).json(record);
+  });
+
+  // PUT /cross-border/:id
+  router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const existing = await prisma.crossBorderTransferRecord.findUnique({ where: { id } });
+    if (!existing) return res.status(404).json({ error: 'Cross-border transfer record not found' });
+    const record = await prisma.crossBorderTransferRecord.update({ where: { id }, data: req.body });
+    await prisma.complianceAuditLog.create({
+      data: {
+        module: 'cross-border', action: 'updated', entityId: record.id,
+        entityType: 'CrossBorderTransferRecord', changes: req.body,
+      },
+    });
+    return res.json(record);
+  });
+
+  // DELETE /cross-border/:id
+  router.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    const existing = await prisma.crossBorderTransferRecord.findUnique({ where: { id } });
+    if (!existing) return res.status(404).json({ error: 'Cross-border transfer record not found' });
+    await prisma.crossBorderTransferRecord.delete({ where: { id } });
+    await prisma.complianceAuditLog.create({
+      data: {
+        module: 'cross-border', action: 'deleted', entityId: id,
+        entityType: 'CrossBorderTransferRecord',
+        changes: { destinationCountry: existing.destinationCountry, recipientName: existing.recipientName },
+      },
+    });
+    return res.json({ success: true });
+  });
+
+  return router;
+}
+
+// ---------------------------------------------------------------------------
 // Main factory
 // ---------------------------------------------------------------------------
 
@@ -246,5 +502,8 @@ export function createNDPRRouter(): Router {
   router.use('/consent', consentRouter());
   router.use('/dsr', dsrRouter());
   router.use('/breach', breachRouter());
+  router.use('/dpia', dpiaRouter());
+  router.use('/lawful-basis', lawfulBasisRouter());
+  router.use('/cross-border', crossBorderRouter());
   return router;
 }

@@ -25,7 +25,9 @@ export async function exportPDF(
     jsPDF = mod.jsPDF ?? mod.default;
   } catch {
     throw new Error(
-      'The "jspdf" package is required for PDF export. Install it with: pnpm add jspdf',
+      '[ndpr-toolkit] PDF export requires the "jspdf" package. Install it with:\n' +
+      '  pnpm add jspdf\n' +
+      'See: https://ndprtoolkit.com.ng/docs/guides/styling-customization',
     );
   }
 

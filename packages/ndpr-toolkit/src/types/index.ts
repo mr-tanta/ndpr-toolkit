@@ -29,7 +29,7 @@ export interface NDPRConfig {
 export interface ErrorResponse {
   error: string;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   timestamp: string;
 }
 

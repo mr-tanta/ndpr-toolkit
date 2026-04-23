@@ -25,7 +25,9 @@ export async function exportDOCX(
     docxLib = await import('docx');
   } catch {
     throw new Error(
-      'The "docx" package is required for Word export. Install it with: pnpm add docx',
+      '[ndpr-toolkit] Word export requires the "docx" package. Install it with:\n' +
+      '  pnpm add docx\n' +
+      'See: https://ndprtoolkit.com.ng/docs/guides/styling-customization',
     );
   }
 
