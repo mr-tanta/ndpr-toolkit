@@ -245,23 +245,23 @@ export function useDSR({
   }, [requests]);
 
   // Get the request type definition by ID
-  const getRequestType = (typeId: string): RequestType | undefined => {
+  const getRequestType = useCallback((typeId: string): RequestType | undefined => {
     return requestTypes.find(type => type.id === typeId);
-  };
+  }, [requestTypes]);
 
   // Format a request for display or submission
-  const formatRequest = (request: DSRRequest): Record<string, unknown> => {
+  const formatRequest = useCallback((request: DSRRequest): Record<string, unknown> => {
     const { formattedRequest } = formatDSRRequest(request);
     return formattedRequest;
-  };
+  }, []);
 
   // Clear all requests
-  const clearRequests = () => {
+  const clearRequests = useCallback(() => {
     setRequests([]);
     Promise.resolve(adapterRef.current.remove()).catch((err) => {
       console.warn('[ndpr-toolkit] Failed to remove DSR requests:', err);
     });
-  };
+  }, [adapterRef]);
 
   return {
     requests,

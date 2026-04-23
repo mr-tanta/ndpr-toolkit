@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { DPIAQuestion, DPIASection, DPIAResult, DPIARisk } from '../types/dpia';
 import { assessDPIARisk } from '../utils/dpia';
 import type { StorageAdapter } from '../adapters/types';
@@ -186,30 +186,30 @@ export function useDPIA({
   const currentSection = sections[currentSectionIndex] || null;
   
   // Persist answers whenever they change (fire-and-forget)
-  const persistAnswers = (updated: DPIAAnswerMap) => {
+  const persistAnswers = useCallback((updated: DPIAAnswerMap) => {
     Promise.resolve(adapterRef.current.save(updated)).catch((err) => {
       console.warn('[ndpr-toolkit] Failed to save DPIA answers:', err);
     });
-  };
+  }, []);
 
   // Update an answer
-  const updateAnswer = (questionId: string, value: string | number | boolean | string[]) => {
+  const updateAnswer = useCallback((questionId: string, value: string | number | boolean | string[]) => {
     setAnswers(prevAnswers => {
       const updated = { ...prevAnswers, [questionId]: value };
       persistAnswers(updated);
       return updated;
     });
-  };
+  }, [persistAnswers]);
   
   // Check if a question should be shown based on its conditions
-  const shouldShowQuestion = (question: DPIAQuestion): boolean => {
+  const shouldShowQuestion = useCallback((question: DPIAQuestion): boolean => {
     if (!question.showWhen) {
       return true;
     }
-    
+
     return question.showWhen.every(condition => {
       const answer = answers[condition.questionId];
-      
+
       switch (condition.operator) {
         case 'equals':
           return answer === condition.value;
@@ -223,65 +223,65 @@ export function useDPIA({
           return true;
       }
     });
-  };
+  }, [answers]);
   
   // Get the visible questions for the current section
-  const getVisibleQuestions = (): DPIAQuestion[] => {
+  const getVisibleQuestions = useCallback((): DPIAQuestion[] => {
     if (!currentSection) {
       return [];
     }
-    
+
     return currentSection.questions.filter(shouldShowQuestion);
-  };
+  }, [currentSection, shouldShowQuestion]);
   
   // Check if the current section is valid
-  const isCurrentSectionValid = (): boolean => {
+  const isCurrentSectionValid = useCallback((): boolean => {
     if (!currentSection) {
       return false;
     }
-    
+
     const visibleQuestions = getVisibleQuestions();
-    
+
     return visibleQuestions.every(question => {
       if (!question.required) {
         return true;
       }
-      
+
       const answer = answers[question.id];
-      
+
       if (answer === undefined || answer === null) {
         return false;
       }
-      
+
       if (typeof answer === 'string' && answer.trim() === '') {
         return false;
       }
-      
+
       if (Array.isArray(answer) && answer.length === 0) {
         return false;
       }
-      
+
       return true;
     });
-  };
+  }, [answers, currentSection, getVisibleQuestions]);
   
   // Get validation errors for the current section
-  const getCurrentSectionErrors = (): Record<string, string> => {
+  const getCurrentSectionErrors = useCallback((): Record<string, string> => {
     const errors: Record<string, string> = {};
-    
+
     if (!currentSection) {
       return errors;
     }
-    
+
     const visibleQuestions = getVisibleQuestions();
-    
+
     visibleQuestions.forEach(question => {
       if (!question.required) {
         return;
       }
-      
+
       const answer = answers[question.id];
-      
+
       if (answer === undefined || answer === null) {
         errors[question.id] = 'This question is required';
       } else if (typeof answer === 'string' && answer.trim() === '') {
@@ -290,46 +290,46 @@ export function useDPIA({
         errors[question.id] = 'At least one option must be selected';
       }
     });
-    
+
     return errors;
-  };
+  }, [answers, currentSection, getVisibleQuestions]);
   
   // Go to the next section
-  const nextSection = (): boolean => {
+  const nextSection = useCallback((): boolean => {
     if (!isCurrentSectionValid()) {
       return false;
     }
-    
+
     if (currentSectionIndex < sections.length - 1) {
       setCurrentSectionIndex(prevIndex => prevIndex + 1);
       return true;
     }
-    
+
     return false;
-  };
+  }, [currentSectionIndex, sections.length, isCurrentSectionValid]);
   
   // Go to the previous section
-  const prevSection = (): boolean => {
+  const prevSection = useCallback((): boolean => {
     if (currentSectionIndex > 0) {
       setCurrentSectionIndex(prevIndex => prevIndex - 1);
       return true;
     }
-    
+
     return false;
-  };
+  }, [currentSectionIndex]);
   
   // Go to a specific section
-  const goToSection = (index: number): boolean => {
+  const goToSection = useCallback((index: number): boolean => {
     if (index >= 0 && index < sections.length) {
       setCurrentSectionIndex(index);
       return true;
     }
-    
+
     return false;
-  };
+  }, [sections.length]);
   
   // Check if the DPIA is complete (pure read — no state mutation)
-  const isComplete = (): boolean => {
+  const isComplete = useCallback((): boolean => {
     return sections.every((section) => {
       const visibleQuestions = section.questions.filter(shouldShowQuestion);
 
@@ -342,10 +342,10 @@ export function useDPIA({
         return true;
       });
     });
-  };
+  }, [answers, sections, shouldShowQuestion]);
   
   // Identify risks based on answers
-  const identifyRisks = (): DPIARisk[] => {
+  const identifyRisks = useCallback((): DPIARisk[] => {
     const risks: DPIARisk[] = [];
     
     // Check each question for risk indicators
@@ -406,10 +406,10 @@ export function useDPIA({
     });
     
     return risks;
-  };
-  
+  }, [answers, sections]);
+
   // Complete the DPIA and generate a result
-  const completeDPIA = (
+  const completeDPIA = useCallback((
     assessorInfo: { name: string; role: string; email: string; },
     title: string,
     processingDescription: string
@@ -446,16 +446,16 @@ export function useDPIA({
     }
     
     return result;
-  };
-  
+  }, [answers, identifyRisks, onComplete]);
+
   // Reset the DPIA
-  const resetDPIA = () => {
+  const resetDPIA = useCallback(() => {
     setAnswers({});
     setCurrentSectionIndex(0);
     Promise.resolve(adapterRef.current.remove()).catch((err) => {
       console.warn('[ndpr-toolkit] Failed to remove DPIA data:', err);
     });
-  };
+  }, []);
   
   // Calculate progress percentage
   const progress = (() => {

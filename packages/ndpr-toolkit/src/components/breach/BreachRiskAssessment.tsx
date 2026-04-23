@@ -118,6 +118,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
   const [notificationDeadline, setNotificationDeadline] = useState<number>(0);
   const [hoursRemaining, setHoursRemaining] = useState<number>(0);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [assessedOn] = useState(() => Date.now());
   
   // Calculate risk score and level when inputs change
   useEffect(() => {
@@ -273,7 +274,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                   <span className="font-medium">Risk Score:</span> {overallRiskScore} / 5
                 </p>
                 <p className="text-sm">
-                  <span className="font-medium">Assessed On:</span> {formatDate(Date.now())}
+                  <span className="font-medium">Assessed On:</span> {formatDate(assessedOn)}
                 </p>
               </div>
               <div>

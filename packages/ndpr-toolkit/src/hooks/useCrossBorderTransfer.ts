@@ -84,7 +84,7 @@ export interface UseCrossBorderTransferReturn {
   /**
    * Remove a cross-border transfer
    */
-  removeTransfer: (id: string) => boolean;
+  removeTransfer: (id: string) => void;
 
   /**
    * Get a cross-border transfer by ID
@@ -229,7 +229,7 @@ export function useCrossBorderTransfer({
 
   // Remove a transfer
   const removeTransfer = useCallback(
-    (id: string): boolean => {
+    (id: string): void => {
       let found = false;
 
       setTransfers((prev) => {
@@ -246,8 +246,6 @@ export function useCrossBorderTransfer({
       if (found && onRemove) {
         onRemove(id);
       }
-
-      return found;
     },
     [onRemove, persistTransfers]
   );

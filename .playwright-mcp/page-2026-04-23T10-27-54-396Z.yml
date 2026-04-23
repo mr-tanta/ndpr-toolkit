@@ -1,0 +1,240 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "NDPA Toolkit v3" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+        - generic [ref=e8]: NDPA Toolkit
+        - generic [ref=e9]: v3
+      - navigation [ref=e10]:
+        - link "Docs" [ref=e11] [cursor=pointer]:
+          - /url: /docs
+        - link "Demos" [ref=e12] [cursor=pointer]:
+          - /url: /ndpr-demos
+        - link "Blog" [ref=e13] [cursor=pointer]:
+          - /url: /blog
+      - generic [ref=e14]:
+        - link "GitHub" [ref=e15] [cursor=pointer]:
+          - /url: https://github.com/mr-tanta/ndpr-toolkit
+          - img [ref=e16]
+        - link "Get Started" [ref=e18] [cursor=pointer]:
+          - /url: /docs
+          - text: Get Started
+          - img [ref=e19]
+  - main [ref=e21]:
+    - generic [ref=e22]:
+      - generic [ref=e25]:
+        - generic [ref=e27]: Interactive — zero setup
+        - heading "Live Demos" [level=1] [ref=e29]
+        - paragraph [ref=e30]: See every module in action — interactive, zero-config. Click any card to explore consent flows, data subject rights, breach management, and more.
+        - generic [ref=e31]:
+          - link "Start with Consent" [ref=e32] [cursor=pointer]:
+            - /url: /ndpr-demos/consent
+          - link "Read the Docs" [ref=e33] [cursor=pointer]:
+            - /url: /docs
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]: "8"
+          - generic [ref=e39]: Live demos
+        - generic [ref=e40]:
+          - generic [ref=e41]: 194+
+          - generic [ref=e42]: Tests passing
+        - generic [ref=e43]:
+          - generic [ref=e44]: Zero
+          - generic [ref=e45]: Config required
+        - generic [ref=e46]:
+          - generic [ref=e47]: "2023"
+          - generic [ref=e48]: NDPA aligned
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - generic [ref=e52]: All Modules
+          - heading "8 compliance modules, live and interactive" [level=2] [ref=e53]
+          - paragraph [ref=e54]: Each demo is a fully functional component powered by ndpr-toolkit. No mocks, no stubs — real compliance logic running in your browser.
+        - generic [ref=e56]:
+          - link "NDPA S.25–26 Consent Management Interactive consent banners, preference modals, and audit-ready storage — aligned with NDPA S.25–26. Explore" [ref=e57] [cursor=pointer]:
+            - /url: /ndpr-demos/consent
+            - generic [ref=e58]:
+              - img [ref=e60]
+              - generic [ref=e62]: NDPA S.25–26
+            - generic [ref=e63]:
+              - heading "Consent Management" [level=3] [ref=e64]
+              - paragraph [ref=e65]: Interactive consent banners, preference modals, and audit-ready storage — aligned with NDPA S.25–26.
+            - generic [ref=e66]:
+              - text: Explore
+              - img [ref=e67]
+          - link "NDPA S.34–40 Data Subject Rights DSR request forms, real-time dashboards, and request tracking for access, rectification, and erasure. Explore" [ref=e69] [cursor=pointer]:
+            - /url: /ndpr-demos/dsr
+            - generic [ref=e70]:
+              - img [ref=e72]
+              - generic [ref=e77]: NDPA S.34–40
+            - generic [ref=e78]:
+              - heading "Data Subject Rights" [level=3] [ref=e79]
+              - paragraph [ref=e80]: DSR request forms, real-time dashboards, and request tracking for access, rectification, and erasure.
+            - generic [ref=e81]:
+              - text: Explore
+              - img [ref=e82]
+          - link "NDPA S.28–30 DPIA Tools Data Protection Impact Assessments with live risk scoring, guided templates, and regulatory guidance. Explore" [ref=e84] [cursor=pointer]:
+            - /url: /ndpr-demos/dpia
+            - generic [ref=e85]:
+              - img [ref=e87]
+              - generic [ref=e90]: NDPA S.28–30
+            - generic [ref=e91]:
+              - heading "DPIA Tools" [level=3] [ref=e92]
+              - paragraph [ref=e93]: Data Protection Impact Assessments with live risk scoring, guided templates, and regulatory guidance.
+            - generic [ref=e94]:
+              - text: Explore
+              - img [ref=e95]
+          - link "NDPA S.40–41 Breach Management Breach notification workflows, severity assessment, and NDPC 72-hour reporting timeline tracking. Explore" [ref=e97] [cursor=pointer]:
+            - /url: /ndpr-demos/breach
+            - generic [ref=e98]:
+              - img [ref=e100]
+              - generic [ref=e102]: NDPA S.40–41
+            - generic [ref=e103]:
+              - heading "Breach Management" [level=3] [ref=e104]
+              - paragraph [ref=e105]: Breach notification workflows, severity assessment, and NDPC 72-hour reporting timeline tracking.
+            - generic [ref=e106]:
+              - text: Explore
+              - img [ref=e107]
+          - link "NDPA S.24 Privacy Policy Generate, preview, and manage NDPA-compliant privacy policies with full clause coverage. Explore" [ref=e109] [cursor=pointer]:
+            - /url: /ndpr-demos/policy
+            - generic [ref=e110]:
+              - img [ref=e112]
+              - generic [ref=e115]: NDPA S.24
+            - generic [ref=e116]:
+              - heading "Privacy Policy" [level=3] [ref=e117]
+              - paragraph [ref=e118]: Generate, preview, and manage NDPA-compliant privacy policies with full clause coverage.
+            - generic [ref=e119]:
+              - text: Explore
+              - img [ref=e120]
+          - link "NDPA S.25 Lawful Basis Tracker Document and track the lawful basis for every processing activity with full audit trails. Explore" [ref=e122] [cursor=pointer]:
+            - /url: /ndpr-demos/lawful-basis
+            - generic [ref=e123]:
+              - img [ref=e125]
+              - generic [ref=e127]: NDPA S.25
+            - generic [ref=e128]:
+              - heading "Lawful Basis Tracker" [level=3] [ref=e129]
+              - paragraph [ref=e130]: Document and track the lawful basis for every processing activity with full audit trails.
+            - generic [ref=e131]:
+              - text: Explore
+              - img [ref=e132]
+          - link "NDPA S.41–45 Cross-Border Transfers Assess international data transfers with adequacy checks and safeguard recommendations. Explore" [ref=e134] [cursor=pointer]:
+            - /url: /ndpr-demos/cross-border
+            - generic [ref=e135]:
+              - img [ref=e137]
+              - generic [ref=e140]: NDPA S.41–45
+            - generic [ref=e141]:
+              - heading "Cross-Border Transfers" [level=3] [ref=e142]
+              - paragraph [ref=e143]: Assess international data transfers with adequacy checks and safeguard recommendations.
+            - generic [ref=e144]:
+              - text: Explore
+              - img [ref=e145]
+          - link "NDPA S.29 ROPA Maintain Records of Processing Activities with categorization, filtering, and export capabilities. Explore" [ref=e147] [cursor=pointer]:
+            - /url: /ndpr-demos/ropa
+            - generic [ref=e148]:
+              - img [ref=e150]
+              - generic [ref=e153]: NDPA S.29
+            - generic [ref=e154]:
+              - heading "ROPA" [level=3] [ref=e155]
+              - paragraph [ref=e156]: Maintain Records of Processing Activities with categorization, filtering, and export capabilities.
+            - generic [ref=e157]:
+              - text: Explore
+              - img [ref=e158]
+      - generic [ref=e164]:
+        - generic [ref=e165]: Ready to use in production
+        - heading "Add NDPA compliance to your app today" [level=2] [ref=e167]:
+          - generic [ref=e168]: Add NDPA compliance to your app
+          - text: today
+        - paragraph [ref=e169]: One package, 8 modules, zero configuration required. Covers all major NDPA 2023 obligations out of the box.
+        - generic [ref=e170]:
+          - generic [ref=e171]: $
+          - generic [ref=e172]: pnpm add
+          - generic [ref=e173]: "@tantainnovative/ndpr-toolkit"
+        - generic [ref=e174]:
+          - link "Read the Docs" [ref=e175] [cursor=pointer]:
+            - /url: /docs
+            - text: Read the Docs
+            - img [ref=e176]
+          - link "View on npm" [ref=e178] [cursor=pointer]:
+            - /url: https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit
+            - img [ref=e180]
+            - text: View on npm
+  - contentinfo [ref=e182]:
+    - generic [ref=e184]:
+      - generic [ref=e185]:
+        - generic [ref=e186]:
+          - link "N NDPA Toolkit" [ref=e187] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e188]: "N"
+            - generic [ref=e189]: NDPA Toolkit
+          - paragraph [ref=e190]: Enterprise-grade compliance components for the Nigeria Data Protection Act 2023. Built for Nigerian developers.
+          - generic [ref=e191]:
+            - link "GitHub" [ref=e192] [cursor=pointer]:
+              - /url: https://github.com/mr-tanta
+              - img [ref=e193]
+            - link "LinkedIn" [ref=e195] [cursor=pointer]:
+              - /url: https://linkedin.com/in/mr-tanta
+              - img [ref=e196]
+            - link "Website" [ref=e198] [cursor=pointer]:
+              - /url: https://tantainnovatives.com
+              - img [ref=e199]
+        - generic [ref=e202]:
+          - heading "Product" [level=4] [ref=e203]
+          - list [ref=e204]:
+            - listitem [ref=e205]:
+              - link "Documentation" [ref=e206] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e207]:
+              - link "Interactive Demos" [ref=e208] [cursor=pointer]:
+                - /url: /ndpr-demos
+            - listitem [ref=e209]:
+              - link "Components" [ref=e210] [cursor=pointer]:
+                - /url: /docs/components
+            - listitem [ref=e211]:
+              - link "Guides" [ref=e212] [cursor=pointer]:
+                - /url: /docs/guides
+            - listitem [ref=e213]:
+              - link "npm Package" [ref=e214] [cursor=pointer]:
+                - /url: https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit
+        - generic [ref=e215]:
+          - heading "Resources" [level=4] [ref=e216]
+          - list [ref=e217]:
+            - listitem [ref=e218]:
+              - link "Getting Started" [ref=e219] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e220]:
+              - link "Styling Guide" [ref=e221] [cursor=pointer]:
+                - /url: /docs/guides/styling-customization
+            - listitem [ref=e222]:
+              - link "Storage Adapters" [ref=e223] [cursor=pointer]:
+                - /url: /docs/guides/adapters
+            - listitem [ref=e224]:
+              - link "Blog" [ref=e225] [cursor=pointer]:
+                - /url: /blog
+            - listitem [ref=e226]:
+              - link "Changelog" [ref=e227] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/releases
+        - generic [ref=e228]:
+          - heading "Community" [level=4] [ref=e229]
+          - list [ref=e230]:
+            - listitem [ref=e231]:
+              - link "GitHub" [ref=e232] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+            - listitem [ref=e233]:
+              - link "Issues" [ref=e234] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/issues
+            - listitem [ref=e235]:
+              - link "Discussions" [ref=e236] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/discussions
+        - generic [ref=e237]:
+          - heading "Legal" [level=4] [ref=e238]
+          - list [ref=e239]:
+            - listitem [ref=e240]:
+              - link "MIT License" [ref=e241] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/blob/main/LICENSE
+            - listitem [ref=e242]:
+              - link "NDPA 2023 Text" [ref=e243] [cursor=pointer]:
+                - /url: https://ndpc.gov.ng
+      - generic [ref=e244]:
+        - paragraph [ref=e245]: © 2026 Abraham Esandayinze Tanta. MIT License.
+        - paragraph [ref=e246]: Built for Nigerian developers, open to the world.
+  - alert [ref=e247]

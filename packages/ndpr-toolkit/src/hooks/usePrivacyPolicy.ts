@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { PolicySection, PolicyTemplate, OrganizationInfo, PrivacyPolicy } from '../types/privacy';
 import { generatePolicyText } from '../utils/privacy';
 import type { StorageAdapter } from '../adapters/types';
@@ -91,7 +91,7 @@ export interface UsePrivacyPolicyReturn {
   /**
    * Generate the policy
    */
-  generatePolicy: () => PrivacyPolicy;
+  generatePolicy: () => PrivacyPolicy | null;
   
   /**
    * Get the generated policy text
@@ -206,13 +206,13 @@ export function usePrivacyPolicy({
   };
   
   // Select a template
-  const selectTemplate = (templateId: string): boolean => {
+  const selectTemplate = useCallback((templateId: string): boolean => {
     const template = templates.find(t => t.id === templateId);
-    
+
     if (!template) {
       return false;
     }
-    
+
     setSelectedTemplate(template);
 
     // Initialize sections from the template
@@ -242,29 +242,29 @@ export function usePrivacyPolicy({
     });
 
     return true;
-  };
+  }, [templates, organizationInfo]);
   
   // Update organization information
-  const updateOrganizationInfo = (updates: Partial<OrganizationInfo>) => {
+  const updateOrganizationInfo = useCallback((updates: Partial<OrganizationInfo>) => {
     setOrganizationInfo(prev => ({
       ...prev,
       ...updates
     }));
-  };
+  }, []);
   
   // Toggle whether a section is included in the policy
-  const toggleSection = (sectionId: string, included: boolean) => {
+  const toggleSection = useCallback((sectionId: string, included: boolean) => {
     if (!selectedTemplate) {
       return;
     }
-    
+
     if (policy) {
       setPolicy(prev => {
         if (!prev) return prev;
-        
+
         return {
           ...prev,
-          sections: prev.sections.map(section => 
+          sections: prev.sections.map(section =>
             section.id === sectionId ? { ...section, included } : section
           )
         };
@@ -273,30 +273,30 @@ export function usePrivacyPolicy({
       // If no policy exists yet, update the template sections
       setSelectedTemplate(prev => {
         if (!prev) return prev;
-        
+
         return {
           ...prev,
-          sections: prev.sections.map(section => 
+          sections: prev.sections.map(section =>
             section.id === sectionId ? { ...section, included } : section
           )
         };
       });
     }
-  };
+  }, [selectedTemplate, policy]);
   
   // Update section content
-  const updateSectionContent = (sectionId: string, content: string) => {
+  const updateSectionContent = useCallback((sectionId: string, content: string) => {
     if (!selectedTemplate) {
       return;
     }
-    
+
     if (policy) {
       setPolicy(prev => {
         if (!prev) return prev;
-        
+
         return {
           ...prev,
-          sections: prev.sections.map(section => 
+          sections: prev.sections.map(section =>
             section.id === sectionId ? { ...section, customContent: content } : section
           )
         };
@@ -305,26 +305,26 @@ export function usePrivacyPolicy({
       // If no policy exists yet, update the template sections
       setSelectedTemplate(prev => {
         if (!prev) return prev;
-        
+
         return {
           ...prev,
-          sections: prev.sections.map(section => 
+          sections: prev.sections.map(section =>
             section.id === sectionId ? { ...section, customContent: content } : section
           )
         };
       });
     }
-  };
+  }, [selectedTemplate, policy]);
   
   // Update variable values
-  const updateVariableValue = (variable: string, value: string) => {
+  const updateVariableValue = useCallback((variable: string, value: string) => {
     if (!policy) {
       return;
     }
-    
+
     setPolicy(prev => {
       if (!prev) return prev;
-      
+
       return {
         ...prev,
         variableValues: {
@@ -333,7 +333,7 @@ export function usePrivacyPolicy({
         }
       };
     });
-  };
+  }, [policy]);
   
   // Generate a unique ID
   const generateId = (): string => {
@@ -341,9 +341,9 @@ export function usePrivacyPolicy({
   };
   
   // Generate the policy
-  const generatePolicy = (): PrivacyPolicy => {
+  const generatePolicy = useCallback((): PrivacyPolicy | null => {
     if (!selectedTemplate) {
-      throw new Error('No template selected');
+      return null;
     }
 
     const now = Date.now();
@@ -371,10 +371,10 @@ export function usePrivacyPolicy({
     }
 
     return newPolicy;
-  };
+  }, [selectedTemplate, policy, organizationInfo, onGenerate]);
   
   // Get the generated policy text
-  const getPolicyText = () => {
+  const getPolicyText = useCallback(() => {
     if (!policy) {
       return {
         fullText: '',
@@ -382,9 +382,9 @@ export function usePrivacyPolicy({
         missingVariables: []
       };
     }
-    
+
     const result = generatePolicyText(policy.sections, policy.organizationInfo);
-    
+
     // Handle both string and object return types from generatePolicyText
     if (typeof result === 'string') {
       return {
@@ -393,12 +393,12 @@ export function usePrivacyPolicy({
         missingVariables: []
       };
     }
-    
+
     return result;
-  };
+  }, [policy]);
   
   // Reset the policy
-  const resetPolicy = () => {
+  const resetPolicy = useCallback(() => {
     setPolicy(null);
     setSelectedTemplate(null);
     setOrganizationInfo({
@@ -414,40 +414,40 @@ export function usePrivacyPolicy({
     Promise.resolve(adapterRef.current.remove()).catch((err) => {
       console.warn('[ndpr-toolkit] Failed to remove policy:', err);
     });
-  };
+  }, []);
   
   // Check if the policy is valid
-  const isValid = () => {
+  const isValid = useCallback(() => {
     const errors: string[] = [];
-    
+
     if (!selectedTemplate) {
       errors.push('No template selected');
     }
-    
+
     if (!organizationInfo.name) {
       errors.push('Organization name is required');
     }
-    
+
     if (!organizationInfo.website) {
       errors.push('Organization website is required');
     }
-    
+
     if (!organizationInfo.privacyEmail) {
       errors.push('Privacy contact email is required');
     }
-    
+
     // Check if all required sections are included
     if (selectedTemplate) {
       const requiredSections = selectedTemplate.sections.filter(section => section.required);
       const includedSections = policy?.sections.filter(section => section.included) || [];
-      
+
       requiredSections.forEach(section => {
         if (!includedSections.some(s => s.id === section.id)) {
           errors.push(`Required section "${section.title}" must be included`);
         }
       });
     }
-    
+
     // Check if all required variables have values
     if (selectedTemplate && policy) {
       Object.entries(selectedTemplate.variables).forEach(([variable, info]) => {
@@ -456,12 +456,12 @@ export function usePrivacyPolicy({
         }
       });
     }
-    
+
     return {
       valid: errors.length === 0,
       errors
     };
-  };
+  }, [selectedTemplate, organizationInfo, policy]);
   
   return {
     policy,

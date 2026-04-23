@@ -111,7 +111,7 @@ export const ConsentStorage = ({
         onLoad(loadedSettings);
       }
     } catch (error) {
-      console.error('Error loading consent settings:', error);
+      console.error('[ndpr-toolkit] Error loading consent settings:', error);
       setLoaded(true);
 
       if (onLoad) {
@@ -164,7 +164,7 @@ export const ConsentStorage = ({
 
       return true;
     } catch (error) {
-      console.error('Error saving consent settings:', error);
+      console.error('[ndpr-toolkit] Error saving consent settings:', error);
       return false;
     }
   }, [storageType, storageKey, cookieOptions, onSave]);
@@ -190,7 +190,7 @@ export const ConsentStorage = ({
 
       return true;
     } catch (error) {
-      console.error('Error clearing consent settings:', error);
+      console.error('[ndpr-toolkit] Error clearing consent settings:', error);
       return false;
     }
   }, [storageType, storageKey, cookieOptions]);

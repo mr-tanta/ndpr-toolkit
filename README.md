@@ -194,7 +194,7 @@ import { composeAdapters, apiAdapter, localStorageAdapter } from '@tantainnovati
 
 **Cookie (server-readable, for SSR consent gating):**
 ```tsx
-<NDPRConsent adapter={cookieAdapter({ name: 'ndpr_consent', maxAge: 365 * 24 * 60 * 60 })} />
+<NDPRConsent adapter={cookieAdapter('ndpr_consent', { expires: 365 })} />
 ```
 
 ---
@@ -221,7 +221,7 @@ const report = getComplianceScore({
     supportsErasure: false,
     supportsPortability: false,
     supportsObjection: false,
-    maxResponseDays: 30,
+    responseTimelineDays: 30,
   },
   // ... other modules
 });
@@ -344,7 +344,7 @@ Every component supports three modes:
 />
 ```
 
-Each component exports its `ClassNames` TypeScript interface for autocomplete. Full reference in the [docs](https://ndprtoolkit.com.ng/docs/styling).
+Each component exports its `ClassNames` TypeScript interface for autocomplete. Full reference in the [docs](https://ndprtoolkit.com.ng/docs/guides/styling-customization).
 
 ---
 

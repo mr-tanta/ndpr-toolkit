@@ -106,11 +106,14 @@ export function useROPA({
   adapterRef.current = adapter;
 
   const [ropa, setROPA] = useState<RecordOfProcessingActivities>(initialData);
-  const [isLoading, setIsLoading] = useState<boolean>(adapter !== undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // When adapter is provided, load initial state on mount (falling back to initialData)
   useEffect(() => {
-    if (!adapterRef.current) return;
+    if (!adapterRef.current) {
+      setIsLoading(false);
+      return;
+    }
 
     let cancelled = false;
 

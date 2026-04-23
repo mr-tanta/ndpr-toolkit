@@ -630,9 +630,9 @@ export default function DPIADemoPage() {
       title="Data Protection Impact Assessment"
       description="Conduct a structured impact assessment for processing activities likely to result in high risk to data subjects. Where residual risk remains high, prior consultation with the NDPC is mandatory."
       ndpaSection="Sections 38-39"
-      code={`import { DPIAForm } from '@tantainnovative/ndpr-toolkit/dpia';
+      code={`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
 
-<DPIAForm
+<DPIAQuestionnaire
   onComplete={(report) => {
     console.log('DPIA completed:', report);
     // report.requiresNdpcConsultation indicates

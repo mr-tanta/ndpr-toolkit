@@ -1,6 +1,7 @@
 import { usePrivacyPolicy } from './usePrivacyPolicy';
 import { createBusinessPolicyTemplate } from '../utils/policy-templates';
-import { PolicyTemplate } from '../types/privacy';
+import { PolicyTemplate, PrivacyPolicy } from '../types/privacy';
+import type { StorageAdapter } from '../adapters/types';
 
 interface UseDefaultPrivacyPolicyOptions {
   /**
@@ -26,6 +27,11 @@ interface UseDefaultPrivacyPolicyOptions {
    * @default true
    */
   useLocalStorage?: boolean;
+
+  /**
+   * Pluggable storage adapter. When provided, takes precedence over storageKey/useLocalStorage.
+   */
+  adapter?: StorageAdapter<PrivacyPolicy>;
 }
 
 /**
@@ -41,7 +47,7 @@ interface UseDefaultPrivacyPolicyOptions {
  * ```
  */
 export function useDefaultPrivacyPolicy(options: UseDefaultPrivacyPolicyOptions = {}) {
-  const { orgInfo, storageKey, useLocalStorage } = options;
+  const { orgInfo, storageKey, useLocalStorage, adapter } = options;
   const { sections, variables } = createBusinessPolicyTemplate();
 
   // Build overrides from orgInfo without mutating the source variables
@@ -77,6 +83,7 @@ export function useDefaultPrivacyPolicy(options: UseDefaultPrivacyPolicyOptions 
 
   return usePrivacyPolicy({
     templates: [template],
+    adapter,
     storageKey,
     useLocalStorage,
   });

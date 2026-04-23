@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { DPIAResult, DPIASection, DPIARisk } from '../../types/dpia';
 import { resolveClass } from '../../utils/styling';
 
@@ -100,6 +100,8 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
   classNames = {},
   unstyled = false,
 }) => {
+  const generatedDate = useMemo(() => new Date().toLocaleDateString(), []);
+
   const cx = (defaultClass: string, key?: keyof DPIAReportClassNames) => {
     let override = key ? classNames[key] : undefined;
     if (!override && key === 'printButton') override = classNames.primaryButton;
@@ -416,7 +418,7 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
       <div className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
         <p>This DPIA was conducted in accordance with the Nigeria Data Protection Act (NDPA) 2023.</p>
         <p>DPIA Report Version: {result.version}</p>
-        <p>Generated on: {new Date().toLocaleDateString()}</p>
+        <p>Generated on: {generatedDate}</p>
       </div>
     </div>
   );

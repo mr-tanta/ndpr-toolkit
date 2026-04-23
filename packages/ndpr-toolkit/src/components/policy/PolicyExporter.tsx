@@ -124,7 +124,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   content,
   title = "Privacy Policy",
   organizationName,
-  lastUpdated = new Date(),
+  lastUpdated,
   onExportComplete,
   componentTitle = "Export Privacy Policy",
   description = "Export your NDPA-compliant privacy policy in various formats.",
@@ -175,7 +175,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   // Generate HTML content for export
   const generateHTMLContent = (): string => {
     const fullTitle = organizationName ? `${organizationName} ${title}` : title;
-    const dateStr = lastUpdated.toLocaleDateString();
+    const dateStr = lastUpdated ? lastUpdated.toLocaleDateString() : 'N/A';
     
     let html = `<!DOCTYPE html>
 <html lang="en">
@@ -344,7 +344,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
         onExportComplete(format, url);
       }
     } catch (error) {
-      console.error('Export error:', error);
+      console.error('[ndpr-toolkit] Export error:', error);
       setExportError('An error occurred during export. Please try again.');
     } finally {
       setIsExporting(false);

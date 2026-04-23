@@ -1,0 +1,426 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "NDPA Toolkit v3" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+        - generic [ref=e8]: NDPA Toolkit
+        - generic [ref=e9]: v3
+      - navigation [ref=e10]:
+        - link "Docs" [ref=e11] [cursor=pointer]:
+          - /url: /docs
+        - link "Demos" [ref=e12] [cursor=pointer]:
+          - /url: /ndpr-demos
+        - link "Blog" [ref=e13] [cursor=pointer]:
+          - /url: /blog
+      - generic [ref=e14]:
+        - link "GitHub" [ref=e15] [cursor=pointer]:
+          - /url: https://github.com/mr-tanta/ndpr-toolkit
+          - img [ref=e16]
+        - link "Get Started" [ref=e18] [cursor=pointer]:
+          - /url: /docs
+          - text: Get Started
+          - img [ref=e19]
+  - main [ref=e21]:
+    - generic [ref=e23]:
+      - link "All Demos" [ref=e24] [cursor=pointer]:
+        - /url: /ndpr-demos
+        - img [ref=e25]
+        - text: All Demos
+      - generic [ref=e27]:
+        - complementary [ref=e28]:
+          - generic [ref=e29]:
+            - heading "Data Subject Rights" [level=1] [ref=e30]
+            - paragraph [ref=e31]: Exercise and manage the eight fundamental rights granted to data subjects under the Nigeria Data Protection Act. Submit requests, track progress, and ensure compliance within the 30-day window.
+            - generic [ref=e32]:
+              - generic [ref=e33]:
+                - img [ref=e34]
+                - generic [ref=e37]: NDPA Reference
+              - paragraph [ref=e38]: Part IV — Sections 29–36
+            - button "View code" [ref=e39] [cursor=pointer]:
+              - img [ref=e40]
+              - text: View code
+            - generic [ref=e42]:
+              - link "Documentation" [ref=e43] [cursor=pointer]:
+                - /url: /docs
+                - img [ref=e44]
+                - text: Documentation
+              - link "Source Code" [ref=e47] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+                - img [ref=e48]
+                - text: Source Code
+        - main [ref=e50]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]: 3 Pending
+              - generic [ref=e56]: 2 In Progress
+              - generic [ref=e58]: 2 Completed
+            - generic [ref=e60]:
+              - heading "Your Rights Under the NDPA" [level=2] [ref=e61]
+              - paragraph [ref=e62]: The Nigeria Data Protection Act grants data subjects eight core rights. Select any right below to submit a request.
+              - generic [ref=e63]:
+                - generic [ref=e65] [cursor=pointer]:
+                  - generic [ref=e66]: 📋
+                  - heading "Right to be Informed" [level=3] [ref=e67]
+                  - paragraph [ref=e68]: Section 29
+                  - paragraph [ref=e69]: Know what personal data is collected and how it is processed.
+                  - button "Try it" [ref=e70]
+                - generic [ref=e72] [cursor=pointer]:
+                  - generic [ref=e73]: 🔍
+                  - heading "Right of Access" [level=3] [ref=e74]
+                  - paragraph [ref=e75]: Section 30
+                  - paragraph [ref=e76]: Obtain a copy of your personal data held by a controller.
+                  - button "Try it" [ref=e77]
+                - generic [ref=e79] [cursor=pointer]:
+                  - generic [ref=e80]: ✏️
+                  - heading "Right to Rectification" [level=3] [ref=e81]
+                  - paragraph [ref=e82]: Section 31
+                  - paragraph [ref=e83]: Correct inaccurate or incomplete personal data.
+                  - button "Try it" [ref=e84]
+                - generic [ref=e86] [cursor=pointer]:
+                  - generic [ref=e87]: 🗑️
+                  - heading "Right to Erasure" [level=3] [ref=e88]
+                  - paragraph [ref=e89]: Section 32
+                  - paragraph [ref=e90]: Request deletion of personal data when no longer necessary.
+                  - button "Try it" [ref=e91]
+                - generic [ref=e93] [cursor=pointer]:
+                  - generic [ref=e94]: 🛑
+                  - heading "Right to Restriction" [level=3] [ref=e95]
+                  - paragraph [ref=e96]: Section 33
+                  - paragraph [ref=e97]: Restrict processing of personal data in certain circumstances.
+                  - button "Try it" [ref=e98]
+                - generic [ref=e100] [cursor=pointer]:
+                  - generic [ref=e101]: 📦
+                  - heading "Right to Data Portability" [level=3] [ref=e102]
+                  - paragraph [ref=e103]: Section 34
+                  - paragraph [ref=e104]: Receive personal data in a structured, machine-readable format.
+                  - button "Try it" [ref=e105]
+                - generic [ref=e107] [cursor=pointer]:
+                  - generic [ref=e108]: ✋
+                  - heading "Right to Object" [level=3] [ref=e109]
+                  - paragraph [ref=e110]: Section 35
+                  - paragraph [ref=e111]: Object to the processing of personal data for specific purposes.
+                  - button "Try it" [ref=e112]
+                - generic [ref=e114] [cursor=pointer]:
+                  - generic [ref=e115]: 🤖
+                  - heading "Automated Decision-Making" [level=3] [ref=e116]
+                  - paragraph [ref=e117]: Section 36
+                  - paragraph [ref=e118]: Not be subject to decisions based solely on automated processing.
+                  - button "Try it" [ref=e119]
+            - generic [ref=e120]:
+              - heading "Submit a Request" [level=2] [ref=e121]
+              - paragraph [ref=e122]: Fill out the form below to exercise your data subject rights. All requests are tracked against a 30-day compliance deadline.
+              - generic [ref=e125]:
+                - generic [ref=e126]:
+                  - generic [ref=e127]: Right Type
+                  - generic [ref=e128]:
+                    - button "📋 Right to be Informed" [ref=e129]:
+                      - generic [ref=e130]: 📋
+                      - generic [ref=e131]: Right to be Informed
+                    - button "🔍 Right of Access" [ref=e132]:
+                      - generic [ref=e133]: 🔍
+                      - generic [ref=e134]: Right of Access
+                    - button "✏️ Right to Rectification" [ref=e135]:
+                      - generic [ref=e136]: ✏️
+                      - generic [ref=e137]: Right to Rectification
+                    - button "🗑️ Right to Erasure" [ref=e138]:
+                      - generic [ref=e139]: 🗑️
+                      - generic [ref=e140]: Right to Erasure
+                    - button "🛑 Right to Restriction" [ref=e141]:
+                      - generic [ref=e142]: 🛑
+                      - generic [ref=e143]: Right to Restriction
+                    - button "📦 Right to Data Portability" [ref=e144]:
+                      - generic [ref=e145]: 📦
+                      - generic [ref=e146]: Right to Data Portability
+                    - button "✋ Right to Object" [ref=e147]:
+                      - generic [ref=e148]: ✋
+                      - generic [ref=e149]: Right to Object
+                    - button "🤖 Automated Decision-Making" [ref=e150]:
+                      - generic [ref=e151]: 🤖
+                      - generic [ref=e152]: Automated Decision-Making
+                - generic [ref=e153]:
+                  - generic [ref=e154]:
+                    - generic [ref=e155]: Full Name *
+                    - textbox "Full Name *" [ref=e156]:
+                      - /placeholder: e.g. Adebayo Ogunlesi
+                  - generic [ref=e157]:
+                    - generic [ref=e158]: Email Address *
+                    - textbox "Email Address *" [ref=e159]:
+                      - /placeholder: e.g. adebayo@example.com
+                - generic [ref=e160]:
+                  - generic [ref=e161]: Description
+                  - textbox "Description" [ref=e162]:
+                    - /placeholder: Describe your request in detail...
+                - generic [ref=e163]:
+                  - generic [ref=e164]: Supporting Documents
+                  - generic [ref=e165]:
+                    - generic [ref=e166]: 📎
+                    - paragraph [ref=e167]: Click to upload or drag and drop
+                    - paragraph [ref=e168]: PDF, DOC, PNG, JPG up to 10MB
+                    - button "Upload supporting documents" [ref=e169] [cursor=pointer]
+                - button "Submit Request" [ref=e170]
+            - generic [ref=e171]:
+              - generic [ref=e172]:
+                - generic [ref=e173]:
+                  - heading "Request Tracker" [level=2] [ref=e174]
+                  - paragraph [ref=e175]: 8 requests found
+                - generic [ref=e176]:
+                  - combobox [ref=e178]:
+                    - option "All Statuses" [selected]
+                    - option "Pending"
+                    - option "In Progress"
+                    - option "Completed"
+                    - option "Rejected"
+                  - combobox [ref=e180]:
+                    - option "All Types" [selected]
+                    - option "Right to be Informed"
+                    - option "Right of Access"
+                    - option "Right to Rectification"
+                    - option "Right to Erasure"
+                    - option "Right to Restriction"
+                    - option "Right to Data Portability"
+                    - option "Right to Object"
+                    - option "Automated Decision-Making"
+              - generic [ref=e181]:
+                - 'button "🔍 DSR-0BDAE264 Right of Access Adebayo Ogunlesi adebayo@example.com Pending Submitted: 20 Apr 2026 Due: 20 May 2026 27d remaining 3/30d" [ref=e183]':
+                  - generic [ref=e185]:
+                    - generic [ref=e186]:
+                      - generic [ref=e187]: 🔍
+                      - generic [ref=e188]:
+                        - paragraph [ref=e189]: DSR-0BDAE264
+                        - paragraph [ref=e190]: Right of Access
+                    - generic [ref=e191]:
+                      - paragraph [ref=e192]: Adebayo Ogunlesi
+                      - paragraph [ref=e193]: adebayo@example.com
+                    - generic [ref=e195]: Pending
+                    - generic [ref=e196]:
+                      - paragraph [ref=e197]: "Submitted: 20 Apr 2026"
+                      - paragraph [ref=e198]: "Due: 20 May 2026"
+                    - generic [ref=e200]:
+                      - generic [ref=e201]: 27d remaining
+                      - generic [ref=e202]: 3/30d
+                    - generic [ref=e205]: ▼
+                - 'button "🗑️ DSR-2D1B0386 Right to Erasure Funke Adeyemi funke@example.com In Progress Submitted: 11 Apr 2026 Due: 11 May 2026 18d remaining 12/30d" [ref=e207]':
+                  - generic [ref=e209]:
+                    - generic [ref=e210]:
+                      - generic [ref=e211]: 🗑️
+                      - generic [ref=e212]:
+                        - paragraph [ref=e213]: DSR-2D1B0386
+                        - paragraph [ref=e214]: Right to Erasure
+                    - generic [ref=e215]:
+                      - paragraph [ref=e216]: Funke Adeyemi
+                      - paragraph [ref=e217]: funke@example.com
+                    - generic [ref=e219]: In Progress
+                    - generic [ref=e220]:
+                      - paragraph [ref=e221]: "Submitted: 11 Apr 2026"
+                      - paragraph [ref=e222]: "Due: 11 May 2026"
+                    - generic [ref=e224]:
+                      - generic [ref=e225]: 18d remaining
+                      - generic [ref=e226]: 12/30d
+                    - generic [ref=e229]: ▼
+                - 'button "✏️ DSR-CD092D52 Right to Rectification Chidi Eze chidi@example.com Completed Submitted: 3 Apr 2026 Due: 3 May 2026 Done 20/30d" [ref=e231]':
+                  - generic [ref=e233]:
+                    - generic [ref=e234]:
+                      - generic [ref=e235]: ✏️
+                      - generic [ref=e236]:
+                        - paragraph [ref=e237]: DSR-CD092D52
+                        - paragraph [ref=e238]: Right to Rectification
+                    - generic [ref=e239]:
+                      - paragraph [ref=e240]: Chidi Eze
+                      - paragraph [ref=e241]: chidi@example.com
+                    - generic [ref=e243]: Completed
+                    - generic [ref=e244]:
+                      - paragraph [ref=e245]: "Submitted: 3 Apr 2026"
+                      - paragraph [ref=e246]: "Due: 3 May 2026"
+                    - generic [ref=e248]:
+                      - generic [ref=e249]: Done
+                      - generic [ref=e250]: 20/30d
+                    - generic [ref=e253]: ▼
+                - 'button "🛑 DSR-335F3D0B Right to Restriction Ngozi Okonkwo ngozi@example.com Pending Submitted: 29 Mar 2026 Due: 28 Apr 2026 5d remaining 25/30d" [ref=e255]':
+                  - generic [ref=e257]:
+                    - generic [ref=e258]:
+                      - generic [ref=e259]: 🛑
+                      - generic [ref=e260]:
+                        - paragraph [ref=e261]: DSR-335F3D0B
+                        - paragraph [ref=e262]: Right to Restriction
+                    - generic [ref=e263]:
+                      - paragraph [ref=e264]: Ngozi Okonkwo
+                      - paragraph [ref=e265]: ngozi@example.com
+                    - generic [ref=e267]: Pending
+                    - generic [ref=e268]:
+                      - paragraph [ref=e269]: "Submitted: 29 Mar 2026"
+                      - paragraph [ref=e270]: "Due: 28 Apr 2026"
+                    - generic [ref=e272]:
+                      - generic [ref=e273]: 5d remaining
+                      - generic [ref=e274]: 25/30d
+                    - generic [ref=e277]: ▼
+                - 'button "📋 DSR-40DEB2F9 Right to be Informed David Okafor david@example.com Pending Submitted: 21 Apr 2026 Due: 21 May 2026 28d remaining 2/30d" [ref=e279]':
+                  - generic [ref=e281]:
+                    - generic [ref=e282]:
+                      - generic [ref=e283]: 📋
+                      - generic [ref=e284]:
+                        - paragraph [ref=e285]: DSR-40DEB2F9
+                        - paragraph [ref=e286]: Right to be Informed
+                    - generic [ref=e287]:
+                      - paragraph [ref=e288]: David Okafor
+                      - paragraph [ref=e289]: david@example.com
+                    - generic [ref=e291]: Pending
+                    - generic [ref=e292]:
+                      - paragraph [ref=e293]: "Submitted: 21 Apr 2026"
+                      - paragraph [ref=e294]: "Due: 21 May 2026"
+                    - generic [ref=e296]:
+                      - generic [ref=e297]: 28d remaining
+                      - generic [ref=e298]: 2/30d
+                    - generic [ref=e301]: ▼
+                - 'button "🤖 DSR-4741415E Automated Decision-Making Grace Adeyemi grace@example.com In Progress Submitted: 16 Apr 2026 Due: 16 May 2026 23d remaining 7/30d" [ref=e303]':
+                  - generic [ref=e305]:
+                    - generic [ref=e306]:
+                      - generic [ref=e307]: 🤖
+                      - generic [ref=e308]:
+                        - paragraph [ref=e309]: DSR-4741415E
+                        - paragraph [ref=e310]: Automated Decision-Making
+                    - generic [ref=e311]:
+                      - paragraph [ref=e312]: Grace Adeyemi
+                      - paragraph [ref=e313]: grace@example.com
+                    - generic [ref=e315]: In Progress
+                    - generic [ref=e316]:
+                      - paragraph [ref=e317]: "Submitted: 16 Apr 2026"
+                      - paragraph [ref=e318]: "Due: 16 May 2026"
+                    - generic [ref=e320]:
+                      - generic [ref=e321]: 23d remaining
+                      - generic [ref=e322]: 7/30d
+                    - generic [ref=e325]: ▼
+                - 'button "📦 DSR-B336ACED Right to Data Portability Emeka Nwankwo emeka@example.com Completed Submitted: 5 Apr 2026 Due: 5 May 2026 Done 18/30d" [ref=e327]':
+                  - generic [ref=e329]:
+                    - generic [ref=e330]:
+                      - generic [ref=e331]: 📦
+                      - generic [ref=e332]:
+                        - paragraph [ref=e333]: DSR-B336ACED
+                        - paragraph [ref=e334]: Right to Data Portability
+                    - generic [ref=e335]:
+                      - paragraph [ref=e336]: Emeka Nwankwo
+                      - paragraph [ref=e337]: emeka@example.com
+                    - generic [ref=e339]: Completed
+                    - generic [ref=e340]:
+                      - paragraph [ref=e341]: "Submitted: 5 Apr 2026"
+                      - paragraph [ref=e342]: "Due: 5 May 2026"
+                    - generic [ref=e344]:
+                      - generic [ref=e345]: Done
+                      - generic [ref=e346]: 18/30d
+                    - generic [ref=e349]: ▼
+                - 'button "✋ DSR-7A1A1285 Right to Object Amina Bello amina@example.com Rejected Submitted: 9 Apr 2026 Due: 9 May 2026 Closed 14/30d" [ref=e351]':
+                  - generic [ref=e353]:
+                    - generic [ref=e354]:
+                      - generic [ref=e355]: ✋
+                      - generic [ref=e356]:
+                        - paragraph [ref=e357]: DSR-7A1A1285
+                        - paragraph [ref=e358]: Right to Object
+                    - generic [ref=e359]:
+                      - paragraph [ref=e360]: Amina Bello
+                      - paragraph [ref=e361]: amina@example.com
+                    - generic [ref=e363]: Rejected
+                    - generic [ref=e364]:
+                      - paragraph [ref=e365]: "Submitted: 9 Apr 2026"
+                      - paragraph [ref=e366]: "Due: 9 May 2026"
+                    - generic [ref=e368]:
+                      - generic [ref=e369]: Closed
+                      - generic [ref=e370]: 14/30d
+                    - generic [ref=e373]: ▼
+            - generic [ref=e375]:
+              - heading "About This Demo" [level=3] [ref=e376]
+              - paragraph [ref=e377]: This interactive demo showcases the Data Subject Rights management components from the NDPR Toolkit. All data is generated in-browser for demonstration purposes only — no actual personal data is collected or transmitted.
+              - generic [ref=e378]:
+                - generic [ref=e379]:
+                  - paragraph [ref=e380]: Request Submission
+                  - paragraph [ref=e381]: Submit DSR requests with type selection, subject details, and file attachments.
+                - generic [ref=e382]:
+                  - paragraph [ref=e383]: Request Tracking
+                  - paragraph [ref=e384]: Filter, expand, and manage requests with status updates and deadline monitoring.
+                - generic [ref=e385]:
+                  - paragraph [ref=e386]: Compliance Timeline
+                  - paragraph [ref=e387]: Track the full lifecycle with a 30-day compliance meter per NDPA requirements.
+              - paragraph [ref=e388]:
+                - text: For detailed documentation, see the
+                - link "DSR documentation" [ref=e389] [cursor=pointer]:
+                  - /url: /docs/components/data-subject-rights
+                - text: .
+  - contentinfo [ref=e390]:
+    - generic [ref=e392]:
+      - generic [ref=e393]:
+        - generic [ref=e394]:
+          - link "N NDPA Toolkit" [ref=e395] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e396]: "N"
+            - generic [ref=e397]: NDPA Toolkit
+          - paragraph [ref=e398]: Enterprise-grade compliance components for the Nigeria Data Protection Act 2023. Built for Nigerian developers.
+          - generic [ref=e399]:
+            - link "GitHub" [ref=e400] [cursor=pointer]:
+              - /url: https://github.com/mr-tanta
+              - img [ref=e401]
+            - link "LinkedIn" [ref=e403] [cursor=pointer]:
+              - /url: https://linkedin.com/in/mr-tanta
+              - img [ref=e404]
+            - link "Website" [ref=e406] [cursor=pointer]:
+              - /url: https://tantainnovatives.com
+              - img [ref=e407]
+        - generic [ref=e410]:
+          - heading "Product" [level=4] [ref=e411]
+          - list [ref=e412]:
+            - listitem [ref=e413]:
+              - link "Documentation" [ref=e414] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e415]:
+              - link "Interactive Demos" [ref=e416] [cursor=pointer]:
+                - /url: /ndpr-demos
+            - listitem [ref=e417]:
+              - link "Components" [ref=e418] [cursor=pointer]:
+                - /url: /docs/components
+            - listitem [ref=e419]:
+              - link "Guides" [ref=e420] [cursor=pointer]:
+                - /url: /docs/guides
+            - listitem [ref=e421]:
+              - link "npm Package" [ref=e422] [cursor=pointer]:
+                - /url: https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit
+        - generic [ref=e423]:
+          - heading "Resources" [level=4] [ref=e424]
+          - list [ref=e425]:
+            - listitem [ref=e426]:
+              - link "Getting Started" [ref=e427] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e428]:
+              - link "Styling Guide" [ref=e429] [cursor=pointer]:
+                - /url: /docs/guides/styling-customization
+            - listitem [ref=e430]:
+              - link "Storage Adapters" [ref=e431] [cursor=pointer]:
+                - /url: /docs/guides/adapters
+            - listitem [ref=e432]:
+              - link "Blog" [ref=e433] [cursor=pointer]:
+                - /url: /blog
+            - listitem [ref=e434]:
+              - link "Changelog" [ref=e435] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/releases
+        - generic [ref=e436]:
+          - heading "Community" [level=4] [ref=e437]
+          - list [ref=e438]:
+            - listitem [ref=e439]:
+              - link "GitHub" [ref=e440] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+            - listitem [ref=e441]:
+              - link "Issues" [ref=e442] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/issues
+            - listitem [ref=e443]:
+              - link "Discussions" [ref=e444] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/discussions
+        - generic [ref=e445]:
+          - heading "Legal" [level=4] [ref=e446]
+          - list [ref=e447]:
+            - listitem [ref=e448]:
+              - link "MIT License" [ref=e449] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/blob/main/LICENSE
+            - listitem [ref=e450]:
+              - link "NDPA 2023 Text" [ref=e451] [cursor=pointer]:
+                - /url: https://ndpc.gov.ng
+      - generic [ref=e452]:
+        - paragraph [ref=e453]: © 2026 Abraham Esandayinze Tanta. MIT License.
+        - paragraph [ref=e454]: Built for Nigerian developers, open to the world.
+  - alert [ref=e455]

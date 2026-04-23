@@ -1,0 +1,194 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "NDPA Toolkit v3" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+        - generic [ref=e8]: NDPA Toolkit
+        - generic [ref=e9]: v3
+      - navigation [ref=e10]:
+        - link "Docs" [ref=e11] [cursor=pointer]:
+          - /url: /docs
+        - link "Demos" [ref=e12] [cursor=pointer]:
+          - /url: /ndpr-demos
+        - link "Blog" [ref=e13] [cursor=pointer]:
+          - /url: /blog
+      - generic [ref=e14]:
+        - link "GitHub" [ref=e15] [cursor=pointer]:
+          - /url: https://github.com/mr-tanta/ndpr-toolkit
+          - img [ref=e16]
+        - link "Get Started" [ref=e18] [cursor=pointer]:
+          - /url: /docs
+          - text: Get Started
+          - img [ref=e19]
+  - main [ref=e21]:
+    - generic [ref=e23]:
+      - link "All Demos" [ref=e24] [cursor=pointer]:
+        - /url: /ndpr-demos
+        - img [ref=e25]
+        - text: All Demos
+      - generic [ref=e27]:
+        - complementary [ref=e28]:
+          - generic [ref=e29]:
+            - heading "Data Protection Impact Assessment" [level=1] [ref=e30]
+            - paragraph [ref=e31]: Conduct a structured impact assessment for processing activities likely to result in high risk to data subjects. Where residual risk remains high, prior consultation with the NDPC is mandatory.
+            - generic [ref=e32]:
+              - generic [ref=e33]:
+                - img [ref=e34]
+                - generic [ref=e37]: NDPA Reference
+              - paragraph [ref=e38]: Sections 38-39
+            - button "View code" [ref=e39] [cursor=pointer]:
+              - img [ref=e40]
+              - text: View code
+            - generic [ref=e42]:
+              - link "Documentation" [ref=e43] [cursor=pointer]:
+                - /url: /docs
+                - img [ref=e44]
+                - text: Documentation
+              - link "Source Code" [ref=e47] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+                - img [ref=e48]
+                - text: Source Code
+        - main [ref=e50]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e54]:
+                - button "1" [disabled] [ref=e55]
+                - generic [ref=e56]: Project Details
+              - generic [ref=e58]:
+                - button "2" [disabled] [ref=e59]
+                - generic [ref=e60]: Risk Assessment
+              - generic [ref=e62]:
+                - button "3" [disabled] [ref=e63]
+                - generic [ref=e64]: Mitigation
+              - generic [ref=e66]:
+                - button "4" [disabled] [ref=e67]
+                - generic [ref=e68]: Report
+            - generic [ref=e69]:
+              - generic [ref=e70]:
+                - generic [ref=e71]: "Step 1: Project Details"
+                - generic [ref=e72]: Describe the data processing activity you are assessing. This forms the foundation of your DPIA.
+              - generic [ref=e74]:
+                - generic [ref=e75]:
+                  - generic [ref=e76]: Project / Processing Activity Name *
+                  - textbox "e.g. Customer Onboarding Platform" [ref=e77]
+                - generic [ref=e78]:
+                  - generic [ref=e79]: Description *
+                  - textbox "Describe the processing activity, including its scope and objectives..." [ref=e80]
+                - generic [ref=e81]:
+                  - generic [ref=e82]: Types of Personal Data Involved *
+                  - generic [ref=e83]:
+                    - generic [ref=e84] [cursor=pointer]:
+                      - checkbox "Basic personal information (name, email, phone)" [ref=e85]
+                      - generic [ref=e86]: Basic personal information (name, email, phone)
+                    - generic [ref=e87] [cursor=pointer]:
+                      - checkbox "Government-issued identification (NIN, BVN, passport)" [ref=e88]
+                      - generic [ref=e89]: Government-issued identification (NIN, BVN, passport)
+                    - generic [ref=e90] [cursor=pointer]:
+                      - checkbox "Financial data (bank details, payment cards, income)" [ref=e91]
+                      - generic [ref=e92]: Financial data (bank details, payment cards, income)
+                    - generic [ref=e93] [cursor=pointer]:
+                      - checkbox "Location and geolocation data" [ref=e94]
+                      - generic [ref=e95]: Location and geolocation data
+                    - generic [ref=e96] [cursor=pointer]:
+                      - checkbox "Health and medical records" [ref=e97]
+                      - generic [ref=e98]: Health and medical records
+                    - generic [ref=e99] [cursor=pointer]:
+                      - checkbox "Biometric data (fingerprints, facial recognition)" [ref=e100]
+                      - generic [ref=e101]: Biometric data (fingerprints, facial recognition)
+                    - generic [ref=e102] [cursor=pointer]:
+                      - checkbox "Children's personal data (under 18)" [ref=e103]
+                      - generic [ref=e104]: Children's personal data (under 18)
+                    - generic [ref=e105] [cursor=pointer]:
+                      - checkbox "Communication content (emails, messages, call logs)" [ref=e106]
+                      - generic [ref=e107]: Communication content (emails, messages, call logs)
+                    - generic [ref=e108] [cursor=pointer]:
+                      - checkbox "Behavioural and profiling data" [ref=e109]
+                      - generic [ref=e110]: Behavioural and profiling data
+                - generic [ref=e111]:
+                  - generic [ref=e112]: Processing Purpose *
+                  - textbox "What is the lawful basis and business purpose for processing this data?" [ref=e113]
+                - generic [ref=e114]:
+                  - button "Continue to Risk Assessment" [disabled]:
+                    - text: Continue to Risk Assessment
+                    - img
+  - contentinfo [ref=e115]:
+    - generic [ref=e117]:
+      - generic [ref=e118]:
+        - generic [ref=e119]:
+          - link "N NDPA Toolkit" [ref=e120] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e121]: "N"
+            - generic [ref=e122]: NDPA Toolkit
+          - paragraph [ref=e123]: Enterprise-grade compliance components for the Nigeria Data Protection Act 2023. Built for Nigerian developers.
+          - generic [ref=e124]:
+            - link "GitHub" [ref=e125] [cursor=pointer]:
+              - /url: https://github.com/mr-tanta
+              - img [ref=e126]
+            - link "LinkedIn" [ref=e128] [cursor=pointer]:
+              - /url: https://linkedin.com/in/mr-tanta
+              - img [ref=e129]
+            - link "Website" [ref=e131] [cursor=pointer]:
+              - /url: https://tantainnovatives.com
+              - img [ref=e132]
+        - generic [ref=e135]:
+          - heading "Product" [level=4] [ref=e136]
+          - list [ref=e137]:
+            - listitem [ref=e138]:
+              - link "Documentation" [ref=e139] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e140]:
+              - link "Interactive Demos" [ref=e141] [cursor=pointer]:
+                - /url: /ndpr-demos
+            - listitem [ref=e142]:
+              - link "Components" [ref=e143] [cursor=pointer]:
+                - /url: /docs/components
+            - listitem [ref=e144]:
+              - link "Guides" [ref=e145] [cursor=pointer]:
+                - /url: /docs/guides
+            - listitem [ref=e146]:
+              - link "npm Package" [ref=e147] [cursor=pointer]:
+                - /url: https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit
+        - generic [ref=e148]:
+          - heading "Resources" [level=4] [ref=e149]
+          - list [ref=e150]:
+            - listitem [ref=e151]:
+              - link "Getting Started" [ref=e152] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e153]:
+              - link "Styling Guide" [ref=e154] [cursor=pointer]:
+                - /url: /docs/guides/styling-customization
+            - listitem [ref=e155]:
+              - link "Storage Adapters" [ref=e156] [cursor=pointer]:
+                - /url: /docs/guides/adapters
+            - listitem [ref=e157]:
+              - link "Blog" [ref=e158] [cursor=pointer]:
+                - /url: /blog
+            - listitem [ref=e159]:
+              - link "Changelog" [ref=e160] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/releases
+        - generic [ref=e161]:
+          - heading "Community" [level=4] [ref=e162]
+          - list [ref=e163]:
+            - listitem [ref=e164]:
+              - link "GitHub" [ref=e165] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+            - listitem [ref=e166]:
+              - link "Issues" [ref=e167] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/issues
+            - listitem [ref=e168]:
+              - link "Discussions" [ref=e169] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/discussions
+        - generic [ref=e170]:
+          - heading "Legal" [level=4] [ref=e171]
+          - list [ref=e172]:
+            - listitem [ref=e173]:
+              - link "MIT License" [ref=e174] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/blob/main/LICENSE
+            - listitem [ref=e175]:
+              - link "NDPA 2023 Text" [ref=e176] [cursor=pointer]:
+                - /url: https://ndpc.gov.ng
+      - generic [ref=e177]:
+        - paragraph [ref=e178]: © 2026 Abraham Esandayinze Tanta. MIT License.
+        - paragraph [ref=e179]: Built for Nigerian developers, open to the world.
+  - alert [ref=e180]

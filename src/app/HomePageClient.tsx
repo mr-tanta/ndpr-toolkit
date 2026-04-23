@@ -68,11 +68,11 @@ export default function PrivacyPage() {
 }`;
 
 const DSR_PAGE_CODE = `// app/data-request/page.tsx
-import { DSRPortal } from '@tantainnovative/ndpr-toolkit';
+import { DSRRequestForm } from '@tantainnovative/ndpr-toolkit';
 
 export default function DataRequestPage() {
   return (
-    <DSRPortal
+    <DSRRequestForm
       onSubmit={async (request) => {
         await fetch('/api/dsr', {
           method: 'POST',

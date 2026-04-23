@@ -21,10 +21,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      '@phosphor-icons/react':
-        specifier: ^2.1.10
-        version: 2.1.10(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     devDependencies:
       '@mdx-js/loader':
         specifier: ^3.1.1
@@ -51,8 +47,8 @@ importers:
         specifier: ^4.1.13
         version: 4.1.13
       '@tantainnovative/ndpr-toolkit':
-        specifier: 3.2.0
-        version: 3.2.0(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(jspdf@4.2.1)(lucide-react@0.507.0(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)
+        specifier: 3.3.0
+        version: 3.3.0(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(jspdf@4.2.1)(lucide-react@0.507.0(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)
       '@testing-library/dom':
         specifier: ^10.4.1
         version: 10.4.1
@@ -1558,8 +1554,8 @@ packages:
   '@tailwindcss/postcss@4.1.13':
     resolution: {integrity: sha512-HLgx6YSFKJT7rJqh9oJs/TkBFhxuMOfUKSBEPYwV+t78POOBsdQ7crhZLzwcH3T0UyUuOzU/GK5pk5eKr3wCiQ==}
 
-  '@tantainnovative/ndpr-toolkit@3.2.0':
-    resolution: {integrity: sha512-3a7tKloUukhCDE+dmeNW2/pJ4ILcK+HHF3VnxOI5USNR6U8UfKbGhKM9nYePuUkNFEC+ZCFyOr3HvUwI7I8kXg==}
+  '@tantainnovative/ndpr-toolkit@3.3.0':
+    resolution: {integrity: sha512-minpBT0/khQDmNJ25kDgwga15pcaDqwresRAR+gP8ac9/G5gbIgWJc+nYi8MbETjh5bVKaPFwHWeI5p9plhjvw==}
     peerDependencies:
       '@radix-ui/react-label': ^2.1.4
       '@radix-ui/react-slot': ^1.2.0
@@ -6151,7 +6147,7 @@ snapshots:
       postcss: 8.5.6
       tailwindcss: 4.1.13
 
-  '@tantainnovative/ndpr-toolkit@3.2.0(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(jspdf@4.2.1)(lucide-react@0.507.0(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)':
+  '@tantainnovative/ndpr-toolkit@3.3.0(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(jspdf@4.2.1)(lucide-react@0.507.0(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)':
     dependencies:
       '@phosphor-icons/react': 2.1.10(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react: 19.1.1

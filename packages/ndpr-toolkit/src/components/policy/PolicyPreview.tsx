@@ -132,7 +132,7 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   showTableOfContents = true,
   showMetadata = true,
   organizationName,
-  lastUpdated = new Date(),
+  lastUpdated,
   classNames,
   unstyled = false
 }) => {
@@ -221,7 +221,7 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
           {organizationName ? `${organizationName} Privacy Policy` : 'Privacy Policy'}
         </h1>
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Last Updated: {lastUpdated.toLocaleDateString()}
+          Last Updated: {lastUpdated ? lastUpdated.toLocaleDateString() : 'N/A'}
         </p>
       </div>
     );

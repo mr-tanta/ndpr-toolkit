@@ -1,0 +1,314 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "NDPA Toolkit v3" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+        - generic [ref=e8]: NDPA Toolkit
+        - generic [ref=e9]: v3
+      - navigation [ref=e10]:
+        - link "Docs" [ref=e11] [cursor=pointer]:
+          - /url: /docs
+        - link "Demos" [ref=e12] [cursor=pointer]:
+          - /url: /ndpr-demos
+        - link "Blog" [ref=e13] [cursor=pointer]:
+          - /url: /blog
+      - generic [ref=e14]:
+        - link "GitHub" [ref=e15] [cursor=pointer]:
+          - /url: https://github.com/mr-tanta/ndpr-toolkit
+          - img [ref=e16]
+        - link "Get Started" [ref=e18] [cursor=pointer]:
+          - /url: /docs
+          - text: Get Started
+          - img [ref=e19]
+  - main [ref=e21]:
+    - generic [ref=e23]:
+      - link "All Demos" [ref=e24] [cursor=pointer]:
+        - /url: /ndpr-demos
+        - img [ref=e25]
+        - text: All Demos
+      - generic [ref=e27]:
+        - complementary [ref=e28]:
+          - generic [ref=e29]:
+            - heading "Breach Notification" [level=1] [ref=e30]
+            - paragraph [ref=e31]: Report, assess, and notify the NDPC of personal data breaches within the statutory 72-hour window. Walk through the complete breach response lifecycle — from incident report to resolution.
+            - generic [ref=e32]:
+              - generic [ref=e33]:
+                - img [ref=e34]
+                - generic [ref=e37]: NDPA Reference
+              - paragraph [ref=e38]: Section 40
+            - button "View code" [ref=e39] [cursor=pointer]:
+              - img [ref=e40]
+              - text: View code
+            - generic [ref=e42]:
+              - link "Documentation" [ref=e43] [cursor=pointer]:
+                - /url: /docs
+                - img [ref=e44]
+                - text: Documentation
+              - link "Source Code" [ref=e47] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+                - img [ref=e48]
+                - text: Source Code
+        - main [ref=e50]:
+          - generic [ref=e52]:
+            - generic [ref=e54]:
+              - button "1 Report Breach" [ref=e55] [cursor=pointer]:
+                - generic [ref=e56]: "1"
+                - generic [ref=e57]: Report Breach
+              - button "2 Risk Assessment" [disabled] [ref=e60]:
+                - generic [ref=e61]: "2"
+                - generic [ref=e62]: Risk Assessment
+              - button "3 NDPC Notification" [disabled] [ref=e65]:
+                - generic [ref=e66]: "3"
+                - generic [ref=e67]: NDPC Notification
+              - button "4 Resolution" [disabled] [ref=e70]:
+                - generic [ref=e71]: "4"
+                - generic [ref=e72]: Resolution
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - heading "72-Hour NDPC Notification Deadline" [level=3] [ref=e77]
+                - paragraph [ref=e78]: Time remaining to notify the Nigeria Data Protection Commission
+              - generic [ref=e79]:
+                - generic [ref=e80]:
+                  - generic [ref=e81]: "72"
+                  - generic [ref=e82]: hrs
+                - generic [ref=e83]: ":"
+                - generic [ref=e84]:
+                  - generic [ref=e85]: "00"
+                  - generic [ref=e86]: min
+                - generic [ref=e87]: ":"
+                - generic [ref=e88]:
+                  - generic [ref=e89]: "00"
+                  - generic [ref=e90]: sec
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - generic [ref=e94]: Report a Data Breach
+                - generic [ref=e95]: Document the breach details as soon as it is discovered. This information will be used for the risk assessment and regulatory notification.
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - generic [ref=e99]: Breach Title *
+                  - textbox "Breach Title *" [ref=e100]:
+                    - /placeholder: e.g., Customer Database Unauthorized Access
+                - generic [ref=e101]:
+                  - generic [ref=e102]: Description *
+                  - textbox "Description *" [ref=e103]:
+                    - /placeholder: Describe what happened, how it was discovered, and the initial scope of the breach...
+                - generic [ref=e104]:
+                  - generic [ref=e105]: Breach Category *
+                  - combobox "Breach Category *" [ref=e106]:
+                    - option "Select category..." [selected]
+                    - option "Unauthorized Access"
+                    - option "Data Leak / Exposure"
+                    - option "Phishing Attack"
+                    - option "Ransomware / Malware"
+                    - option "Lost / Stolen Device"
+                    - option "Insider Threat"
+                    - option "System Compromise"
+                    - option "Other"
+                - generic [ref=e107]:
+                  - generic [ref=e108]: Affected Systems
+                  - generic [ref=e109]:
+                    - generic [ref=e110]:
+                      - checkbox "Customer Database" [ref=e112]
+                      - generic [ref=e113]: Customer Database
+                    - generic [ref=e114]:
+                      - checkbox "Employee Records" [ref=e116]
+                      - generic [ref=e117]: Employee Records
+                    - generic [ref=e118]:
+                      - checkbox "Email System" [ref=e120]
+                      - generic [ref=e121]: Email System
+                    - generic [ref=e122]:
+                      - checkbox "Financial Systems" [ref=e124]
+                      - generic [ref=e125]: Financial Systems
+                    - generic [ref=e126]:
+                      - checkbox "Website / Web App" [ref=e128]
+                      - generic [ref=e129]: Website / Web App
+                    - generic [ref=e130]:
+                      - checkbox "Mobile Application" [ref=e132]
+                      - generic [ref=e133]: Mobile Application
+                    - generic [ref=e134]:
+                      - checkbox "Cloud Storage" [ref=e136]
+                      - generic [ref=e137]: Cloud Storage
+                    - generic [ref=e138]:
+                      - checkbox "Internal Network" [ref=e140]
+                      - generic [ref=e141]: Internal Network
+                - generic [ref=e142]:
+                  - generic [ref=e143]: Data Types Involved
+                  - generic [ref=e144]:
+                    - generic [ref=e145]:
+                      - checkbox "Full Names" [ref=e147]
+                      - generic [ref=e148]: Full Names
+                    - generic [ref=e149]:
+                      - checkbox "Email Addresses" [ref=e151]
+                      - generic [ref=e152]: Email Addresses
+                    - generic [ref=e153]:
+                      - checkbox "Phone Numbers" [ref=e155]
+                      - generic [ref=e156]: Phone Numbers
+                    - generic [ref=e157]:
+                      - checkbox "Physical Addresses" [ref=e159]
+                      - generic [ref=e160]: Physical Addresses
+                    - generic [ref=e161]:
+                      - checkbox "National ID (NIN)" [ref=e163]
+                      - generic [ref=e164]: National ID (NIN)
+                    - generic [ref=e165]:
+                      - checkbox "Financial / Banking Data" [ref=e167]
+                      - generic [ref=e168]: Financial / Banking Data
+                    - generic [ref=e169]:
+                      - checkbox "Health Records" [ref=e171]
+                      - generic [ref=e172]: Health Records
+                    - generic [ref=e173]:
+                      - checkbox "Biometric Data" [ref=e175]
+                      - generic [ref=e176]: Biometric Data
+                    - generic [ref=e177]:
+                      - checkbox "Login Credentials" [ref=e179]
+                      - generic [ref=e180]: Login Credentials
+                    - generic [ref=e181]:
+                      - checkbox "IP Addresses" [ref=e183]
+                      - generic [ref=e184]: IP Addresses
+                - generic [ref=e185]:
+                  - generic [ref=e186]: Estimated Affected Data Subjects
+                  - spinbutton "Estimated Affected Data Subjects" [ref=e187]
+                - generic [ref=e188]:
+                  - heading "Reporter Information" [level=3] [ref=e189]
+                  - generic [ref=e190]:
+                    - generic [ref=e191]:
+                      - generic [ref=e192]: Name *
+                      - textbox "Name *" [ref=e193]:
+                        - /placeholder: Full name
+                    - generic [ref=e194]:
+                      - generic [ref=e195]: Email *
+                      - textbox "Email *" [ref=e196]:
+                        - /placeholder: email@example.com
+                    - generic [ref=e197]:
+                      - generic [ref=e198]: Department
+                      - textbox "Department" [ref=e199]:
+                        - /placeholder: e.g., IT Security
+                - button "Continue to Risk Assessment" [ref=e201]:
+                  - text: Continue to Risk Assessment
+                  - img
+            - generic [ref=e202]:
+              - generic [ref=e203]:
+                - generic [ref=e204]: Breach Statistics
+                - generic [ref=e205]: Sample organizational breach metrics for compliance monitoring
+              - generic [ref=e207]:
+                - generic [ref=e208]:
+                  - paragraph [ref=e209]: Total Breaches
+                  - paragraph [ref=e210]: "12"
+                  - paragraph [ref=e211]: Last 12 months
+                - generic [ref=e212]:
+                  - paragraph [ref=e213]: Avg. Resolution
+                  - paragraph [ref=e214]: 4.2d
+                  - paragraph [ref=e215]: Mean time to resolve
+                - generic [ref=e216]:
+                  - paragraph [ref=e217]: Compliance Rate
+                  - paragraph [ref=e218]: 91.7%
+                  - paragraph [ref=e219]: 72-hour notification
+                - generic [ref=e220]:
+                  - paragraph [ref=e221]: By Severity
+                  - generic [ref=e222]:
+                    - generic [ref=e223]:
+                      - generic [ref=e224]: Low
+                      - generic [ref=e227]: "3"
+                    - generic [ref=e228]:
+                      - generic [ref=e229]: Medium
+                      - generic [ref=e232]: "5"
+                    - generic [ref=e233]:
+                      - generic [ref=e234]: High
+                      - generic [ref=e237]: "3"
+                    - generic [ref=e238]:
+                      - generic [ref=e239]: Critical
+                      - generic [ref=e242]: "1"
+            - generic [ref=e244]:
+              - img [ref=e246]
+              - generic [ref=e248]:
+                - heading "NDPA Section 40 — Notification of Personal Data Breach" [level=3] [ref=e249]
+                - paragraph [ref=e250]:
+                  - text: Under the Nigeria Data Protection Act, data controllers are required to notify the Nigeria Data Protection Commission (NDPC) of a personal data breach within
+                  - strong [ref=e251]: 72 hours
+                  - text: "of becoming aware of it. The notification must include:"
+                - list [ref=e252]:
+                  - listitem [ref=e253]: The nature of the personal data breach including categories and approximate number of data subjects affected
+                  - listitem [ref=e254]: The name and contact details of the Data Protection Officer or other contact point
+                  - listitem [ref=e255]: A description of the likely consequences of the breach
+                  - listitem [ref=e256]: A description of the measures taken or proposed to address the breach and mitigate its effects
+                - paragraph [ref=e257]: Where the breach is likely to result in a high risk to the rights and freedoms of data subjects, the controller must also communicate the breach to the affected data subjects without undue delay.
+  - contentinfo [ref=e258]:
+    - generic [ref=e260]:
+      - generic [ref=e261]:
+        - generic [ref=e262]:
+          - link "N NDPA Toolkit" [ref=e263] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e264]: "N"
+            - generic [ref=e265]: NDPA Toolkit
+          - paragraph [ref=e266]: Enterprise-grade compliance components for the Nigeria Data Protection Act 2023. Built for Nigerian developers.
+          - generic [ref=e267]:
+            - link "GitHub" [ref=e268] [cursor=pointer]:
+              - /url: https://github.com/mr-tanta
+              - img [ref=e269]
+            - link "LinkedIn" [ref=e271] [cursor=pointer]:
+              - /url: https://linkedin.com/in/mr-tanta
+              - img [ref=e272]
+            - link "Website" [ref=e274] [cursor=pointer]:
+              - /url: https://tantainnovatives.com
+              - img [ref=e275]
+        - generic [ref=e278]:
+          - heading "Product" [level=4] [ref=e279]
+          - list [ref=e280]:
+            - listitem [ref=e281]:
+              - link "Documentation" [ref=e282] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e283]:
+              - link "Interactive Demos" [ref=e284] [cursor=pointer]:
+                - /url: /ndpr-demos
+            - listitem [ref=e285]:
+              - link "Components" [ref=e286] [cursor=pointer]:
+                - /url: /docs/components
+            - listitem [ref=e287]:
+              - link "Guides" [ref=e288] [cursor=pointer]:
+                - /url: /docs/guides
+            - listitem [ref=e289]:
+              - link "npm Package" [ref=e290] [cursor=pointer]:
+                - /url: https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit
+        - generic [ref=e291]:
+          - heading "Resources" [level=4] [ref=e292]
+          - list [ref=e293]:
+            - listitem [ref=e294]:
+              - link "Getting Started" [ref=e295] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e296]:
+              - link "Styling Guide" [ref=e297] [cursor=pointer]:
+                - /url: /docs/guides/styling-customization
+            - listitem [ref=e298]:
+              - link "Storage Adapters" [ref=e299] [cursor=pointer]:
+                - /url: /docs/guides/adapters
+            - listitem [ref=e300]:
+              - link "Blog" [ref=e301] [cursor=pointer]:
+                - /url: /blog
+            - listitem [ref=e302]:
+              - link "Changelog" [ref=e303] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/releases
+        - generic [ref=e304]:
+          - heading "Community" [level=4] [ref=e305]
+          - list [ref=e306]:
+            - listitem [ref=e307]:
+              - link "GitHub" [ref=e308] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+            - listitem [ref=e309]:
+              - link "Issues" [ref=e310] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/issues
+            - listitem [ref=e311]:
+              - link "Discussions" [ref=e312] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/discussions
+        - generic [ref=e313]:
+          - heading "Legal" [level=4] [ref=e314]
+          - list [ref=e315]:
+            - listitem [ref=e316]:
+              - link "MIT License" [ref=e317] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/blob/main/LICENSE
+            - listitem [ref=e318]:
+              - link "NDPA 2023 Text" [ref=e319] [cursor=pointer]:
+                - /url: https://ndpc.gov.ng
+      - generic [ref=e320]:
+        - paragraph [ref=e321]: © 2026 Abraham Esandayinze Tanta. MIT License.
+        - paragraph [ref=e322]: Built for Nigerian developers, open to the world.
+  - alert [ref=e323]

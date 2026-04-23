@@ -71,10 +71,10 @@ feat(consent): add ability to customize consent banner colors
 ## Development Setup
 
 1. Clone your fork of the repository
-2. Install dependencies: `npm install`
-3. Start the development server: `npm run dev`
+2. Install dependencies: `pnpm install`
+3. Start the development server: `pnpm dev`
 4. Make your changes
-5. Run tests: `npm test`
+5. Run tests: `pnpm test`
 
 ## Release Process
 

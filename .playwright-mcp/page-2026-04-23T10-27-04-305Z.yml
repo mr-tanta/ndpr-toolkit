@@ -1,0 +1,270 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "NDPA Toolkit v3" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img [ref=e5]
+        - generic [ref=e8]: NDPA Toolkit
+        - generic [ref=e9]: v3
+      - navigation [ref=e10]:
+        - link "Docs" [ref=e11] [cursor=pointer]:
+          - /url: /docs
+        - link "Demos" [ref=e12] [cursor=pointer]:
+          - /url: /ndpr-demos
+        - link "Blog" [ref=e13] [cursor=pointer]:
+          - /url: /blog
+      - generic [ref=e14]:
+        - link "GitHub" [ref=e15] [cursor=pointer]:
+          - /url: https://github.com/mr-tanta/ndpr-toolkit
+          - img [ref=e16]
+        - link "Get Started" [ref=e18] [cursor=pointer]:
+          - /url: /docs
+          - text: Get Started
+          - img [ref=e19]
+  - main [ref=e21]:
+    - generic [ref=e23]:
+      - link "All Demos" [ref=e24] [cursor=pointer]:
+        - /url: /ndpr-demos
+        - img [ref=e25]
+        - text: All Demos
+      - generic [ref=e27]:
+        - complementary [ref=e28]:
+          - generic [ref=e29]:
+            - heading "Consent Management" [level=1] [ref=e30]
+            - paragraph [ref=e31]: Collect, store, and manage user consent for personal data processing. Complete consent lifecycle — from banner display to preference management — fully aligned with the Nigeria Data Protection Act.
+            - generic [ref=e32]:
+              - generic [ref=e33]:
+                - img [ref=e34]
+                - generic [ref=e37]: NDPA Reference
+              - paragraph [ref=e38]: Sections 25-26
+            - button "View code" [ref=e39] [cursor=pointer]:
+              - img [ref=e40]
+              - text: View code
+            - generic [ref=e42]:
+              - link "Documentation" [ref=e43] [cursor=pointer]:
+                - /url: /docs
+                - img [ref=e44]
+                - text: Documentation
+              - link "Source Code" [ref=e47] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+                - img [ref=e48]
+                - text: Source Code
+        - main [ref=e50]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - heading "Live Demo" [level=2] [ref=e54]: Live Demo
+              - generic [ref=e58]:
+                - generic [ref=e59]:
+                  - generic [ref=e60]: Position
+                  - generic [ref=e61]:
+                    - button "Top" [ref=e62]
+                    - button "Bottom" [ref=e63]
+                - generic [ref=e64]:
+                  - generic [ref=e65]: Theme
+                  - generic [ref=e66]:
+                    - button "Light" [ref=e67]
+                    - button "Dark" [ref=e68]
+                - generic [ref=e69]:
+                  - generic [ref=e70]: Storage
+                  - generic [ref=e71]:
+                    - button "Local" [ref=e72]
+                    - button "Session" [ref=e73]
+                    - button "Cookies" [ref=e74]
+                - button "Reset Demo" [ref=e75]
+              - generic [ref=e76]:
+                - generic [ref=e78]:
+                  - generic [ref=e85]: https://your-app.com
+                  - generic [ref=e86]:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic: YourApp
+                        - generic:
+                          - generic: Products
+                          - generic: Pricing
+                          - generic: About
+                    - generic [ref=e89]:
+                      - generic [ref=e90]:
+                        - paragraph [ref=e91]: We value your privacy
+                        - paragraph [ref=e92]: We use cookies and similar technologies to enhance your browsing experience, serve personalized content, and analyze our traffic. Under the Nigeria Data Protection Act (NDPA), we need your consent before processing your personal data.
+                      - generic [ref=e93]:
+                        - button "Accept All" [ref=e94]
+                        - button "Decline All" [ref=e95]
+                        - button "Customize" [ref=e96]
+                - generic [ref=e98]:
+                  - generic [ref=e99]:
+                    - generic [ref=e100]:
+                      - img [ref=e101]
+                      - text: State Inspector
+                    - generic [ref=e103]: Real-time consent state and event log
+                  - generic [ref=e105]:
+                    - generic [ref=e106]:
+                      - heading "Consent State" [level=4] [ref=e107]
+                      - generic [ref=e109]: "{ \"status\": \"pending\", \"draft\": { \"necessary\": true, \"analytics\": false, \"marketing\": false, \"preferences\": false } }"
+                    - generic [ref=e110]:
+                      - heading "Storage" [level=4] [ref=e111]
+                      - generic [ref=e112]:
+                        - generic [ref=e113]: localStorage
+                        - generic [ref=e114]: sessionStorage
+                        - generic [ref=e115]: cookies
+                    - generic [ref=e116]:
+                      - heading "Event Log" [level=4] [ref=e117]
+                      - generic [ref=e118]: // Interact with the banner to see events
+            - generic [ref=e119]:
+              - heading "Implementation" [level=2] [ref=e120]
+              - generic [ref=e121]:
+                - tablist [ref=e122]:
+                  - tab "Consent Banner" [selected] [ref=e123]
+                  - tab "Consent Manager" [ref=e124]
+                  - tab "Storage" [ref=e125]
+                - tabpanel "Consent Banner" [ref=e126]:
+                  - generic [ref=e127]:
+                    - generic [ref=e128]:
+                      - generic [ref=e129]: Consent Banner
+                      - generic [ref=e130]: Display a consent banner to visitors. Supports custom positioning, theming, and callbacks for accept, decline, and customize actions.
+                    - code [ref=e134]: "import { ConsentBanner } from '@tantainnovative/ndpr-toolkit'; <ConsentBanner position=\"bottom\" options={[ { id: 'necessary', label: 'Necessary', description: 'Required for site functionality', purpose: 'Essential operations', required: true }, { id: 'analytics', label: 'Analytics', description: 'Usage tracking', purpose: 'Measure site usage', required: false }, { id: 'marketing', label: 'Marketing', description: 'Targeted advertising', purpose: 'Deliver relevant ads', required: false }, { id: 'preferences', label: 'Preferences', description: 'Remember your settings', purpose: 'Personalisation', required: false }, ]} onSave={(settings) => { // Called with full ConsentSettings when the user accepts, declines, or customises console.log('Consent saved:', settings); }} />"
+            - generic [ref=e135]:
+              - heading "Features" [level=2] [ref=e136]
+              - generic [ref=e137]:
+                - generic [ref=e138]:
+                  - generic [ref=e139]:
+                    - img [ref=e141]
+                    - generic [ref=e143]: Storage Options
+                  - paragraph [ref=e145]: Flexible persistence via localStorage, sessionStorage, or cookies. Choose the strategy that fits your application and regulatory requirements.
+                - generic [ref=e146]:
+                  - generic [ref=e147]:
+                    - img [ref=e149]
+                    - generic [ref=e151]: Consent Validation
+                  - paragraph [ref=e153]: Built-in validation ensures consent is freely given, specific, informed, and unambiguous — the four pillars required by NDPA Section 26.
+                - generic [ref=e154]:
+                  - generic [ref=e155]:
+                    - img [ref=e157]
+                    - generic [ref=e159]: Event System
+                  - paragraph [ref=e161]: Subscribe to consent lifecycle events — accept, decline, toggle, save, and refresh — to trigger side effects and keep analytics in sync.
+                - generic [ref=e162]:
+                  - generic [ref=e163]:
+                    - img [ref=e165]
+                    - generic [ref=e167]: 13-Month Auto-Refresh
+                  - paragraph [ref=e169]: Consent automatically expires and prompts re-confirmation after 13 months, ensuring ongoing compliance with NDPA requirements.
+            - generic [ref=e170]:
+              - heading "NDPA Compliance Reference" [level=2] [ref=e171]
+              - generic [ref=e172]:
+                - generic [ref=e173]:
+                  - generic [ref=e174]:
+                    - generic [ref=e175]: Section 25
+                    - generic [ref=e176]: Lawful Basis for Processing
+                  - list [ref=e178]:
+                    - listitem [ref=e179]: Processing must be based on at least one lawful basis, including consent
+                    - listitem [ref=e181]: The controller must be able to demonstrate that consent was obtained
+                    - listitem [ref=e183]: Consent must be obtained before processing begins
+                    - listitem [ref=e185]: Records of consent must be maintained by the data controller
+                - generic [ref=e187]:
+                  - generic [ref=e188]:
+                    - generic [ref=e189]: Section 26
+                    - generic [ref=e190]: Conditions for Valid Consent
+                  - list [ref=e192]:
+                    - listitem [ref=e193]:
+                      - generic [ref=e195]:
+                        - strong [ref=e196]: Freely given
+                        - text: — no coercion or undue pressure on the data subject
+                    - listitem [ref=e197]:
+                      - generic [ref=e199]:
+                        - strong [ref=e200]: Specific
+                        - text: — consent is tied to a clearly defined processing purpose
+                    - listitem [ref=e201]:
+                      - generic [ref=e203]:
+                        - strong [ref=e204]: Informed
+                        - text: — the data subject understands what they are consenting to
+                    - listitem [ref=e205]:
+                      - generic [ref=e207]:
+                        - strong [ref=e208]: Unambiguous
+                        - text: — a clear affirmative action indicates agreement
+              - paragraph [ref=e210]:
+                - text: The consent management module in this toolkit is designed in accordance with the
+                - strong [ref=e211]: Nigeria Data Protection Act (NDPA)
+                - text: ", Sections 25–26. The"
+                - strong [ref=e212]: Nigeria Data Protection Commission (NDPC)
+                - text: is the supervisory authority responsible for enforcing these provisions. For detailed documentation, see the
+                - link "Consent Management documentation" [ref=e213] [cursor=pointer]:
+                  - /url: /docs/components/consent-management
+                - text: .
+  - contentinfo [ref=e214]:
+    - generic [ref=e216]:
+      - generic [ref=e217]:
+        - generic [ref=e218]:
+          - link "N NDPA Toolkit" [ref=e219] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e220]: "N"
+            - generic [ref=e221]: NDPA Toolkit
+          - paragraph [ref=e222]: Enterprise-grade compliance components for the Nigeria Data Protection Act 2023. Built for Nigerian developers.
+          - generic [ref=e223]:
+            - link "GitHub" [ref=e224] [cursor=pointer]:
+              - /url: https://github.com/mr-tanta
+              - img [ref=e225]
+            - link "LinkedIn" [ref=e227] [cursor=pointer]:
+              - /url: https://linkedin.com/in/mr-tanta
+              - img [ref=e228]
+            - link "Website" [ref=e230] [cursor=pointer]:
+              - /url: https://tantainnovatives.com
+              - img [ref=e231]
+        - generic [ref=e234]:
+          - heading "Product" [level=4] [ref=e235]
+          - list [ref=e236]:
+            - listitem [ref=e237]:
+              - link "Documentation" [ref=e238] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e239]:
+              - link "Interactive Demos" [ref=e240] [cursor=pointer]:
+                - /url: /ndpr-demos
+            - listitem [ref=e241]:
+              - link "Components" [ref=e242] [cursor=pointer]:
+                - /url: /docs/components
+            - listitem [ref=e243]:
+              - link "Guides" [ref=e244] [cursor=pointer]:
+                - /url: /docs/guides
+            - listitem [ref=e245]:
+              - link "npm Package" [ref=e246] [cursor=pointer]:
+                - /url: https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit
+        - generic [ref=e247]:
+          - heading "Resources" [level=4] [ref=e248]
+          - list [ref=e249]:
+            - listitem [ref=e250]:
+              - link "Getting Started" [ref=e251] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e252]:
+              - link "Styling Guide" [ref=e253] [cursor=pointer]:
+                - /url: /docs/guides/styling-customization
+            - listitem [ref=e254]:
+              - link "Storage Adapters" [ref=e255] [cursor=pointer]:
+                - /url: /docs/guides/adapters
+            - listitem [ref=e256]:
+              - link "Blog" [ref=e257] [cursor=pointer]:
+                - /url: /blog
+            - listitem [ref=e258]:
+              - link "Changelog" [ref=e259] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/releases
+        - generic [ref=e260]:
+          - heading "Community" [level=4] [ref=e261]
+          - list [ref=e262]:
+            - listitem [ref=e263]:
+              - link "GitHub" [ref=e264] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit
+            - listitem [ref=e265]:
+              - link "Issues" [ref=e266] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/issues
+            - listitem [ref=e267]:
+              - link "Discussions" [ref=e268] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/discussions
+        - generic [ref=e269]:
+          - heading "Legal" [level=4] [ref=e270]
+          - list [ref=e271]:
+            - listitem [ref=e272]:
+              - link "MIT License" [ref=e273] [cursor=pointer]:
+                - /url: https://github.com/mr-tanta/ndpr-toolkit/blob/main/LICENSE
+            - listitem [ref=e274]:
+              - link "NDPA 2023 Text" [ref=e275] [cursor=pointer]:
+                - /url: https://ndpc.gov.ng
+      - generic [ref=e276]:
+        - paragraph [ref=e277]: © 2026 Abraham Esandayinze Tanta. MIT License.
+        - paragraph [ref=e278]: Built for Nigerian developers, open to the world.
+  - alert [ref=e279]
