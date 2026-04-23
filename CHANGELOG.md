@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.3.1](https://github.com/tantainnovative/ndpr-toolkit/compare/v3.3.0...v3.3.1) (2026-04-23)
+
+
+### Features
+
+* add Next.js App Router example project ([8772478](https://github.com/tantainnovative/ndpr-toolkit/commit/8772478e6cf642bc5da278ca771824f0a1d44825)), closes [#13](https://github.com/mr-tanta/ndpr-toolkit/issues/13)
+* add Nigerian Pidgin (pcm) locale support ([dc31a10](https://github.com/tantainnovative/ndpr-toolkit/commit/dc31a102853c6206f86d990663ea1318e41f0297)), closes [#12](https://github.com/mr-tanta/ndpr-toolkit/issues/12)
+
+
+### Bug Fixes
+
+* patch 6 Dependabot vulnerabilities via pnpm overrides ([51695a6](https://github.com/tantainnovative/ndpr-toolkit/commit/51695a6dbe257826f5ff6c45a68d76920c9987b2))
+* resolve all audit findings — docs, hydration, hooks, DX, and tests ([a0fa3a5](https://github.com/tantainnovative/ndpr-toolkit/commit/a0fa3a50a78b249e64d4e604890b4ca7c0da48e0))
+* resolve type errors in DSR test files after any-to-unknown migration ([6412195](https://github.com/tantainnovative/ndpr-toolkit/commit/64121956635c65e588351b8249497a4b8aa2f56e))
+* update outdated test counts and stats across docs and marketing ([b8d3845](https://github.com/tantainnovative/ndpr-toolkit/commit/b8d38453a0347d01fa79cbe4a83d87c05a98a4f2))
+
 ## [3.3.0](https://github.com/tantainnovative/ndpr-toolkit/compare/v3.2.1...v3.3.0) (2026-04-23)
 
 
