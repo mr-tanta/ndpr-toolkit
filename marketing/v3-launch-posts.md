@@ -37,7 +37,7 @@ But v3 isn't just presets. It's a layered architecture:
 
 The numbers:
 - 8 compliance modules
-- 427 tests
+- 788 tests
 - 14 entry points (tree-shakeable)
 - Zero runtime dependencies
 - React 16-19 compatible
@@ -140,8 +140,8 @@ Weighted scoring across all 8 NDPA modules. Tells you exactly what to fix.
 v3 by the numbers:
 
 - 8 compliance modules
-- 427 passing tests
-- 46 test suites
+- 788 passing tests
+- 56 test suites
 - 14 tree-shakeable entry points
 - 0 runtime dependencies
 - React 16-19 support
@@ -228,7 +228,7 @@ Or run `npx @tantainnovative/create-ndpr` — it detects your stack (Next.js, Ex
 ### The Numbers
 
 - 8 compliance modules covering the full NDPA
-- 427 tests across 46 test suites
+- 788 tests across 56 test suites
 - 14 tree-shakeable entry points
 - Zero runtime dependencies
 - React 16, 17, 18, and 19 compatible

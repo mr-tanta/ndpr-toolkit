@@ -45,7 +45,7 @@ Consent and breach notification are weighted highest because the NDPC enforces t
 - 14 tree-shakeable entry points
 - Works with ANY CSS framework
 - Pluggable storage (localStorage, cookies, API, compose)
-- 584 tests, full TypeScript
+- 788 tests, full TypeScript
 - React 16.8 through 19
 
 Import only what you need. Your bundle stays small.
@@ -100,7 +100,7 @@ The NDPA Toolkit handles all 8 compliance areas:
 - Cross-border transfer manager (Sections 43-44)
 - Record of Processing Activities (Section 30)
 
-It's a React component library with 14 tree-shakeable entry points, 584 tests, full TypeScript support, pluggable storage adapters, and zero-config presets for teams that need to move fast.
+It's a React component library with 14 tree-shakeable entry points, 788 tests, full TypeScript support, pluggable storage adapters, and zero-config presets for teams that need to move fast.
 
 The compliance score engine evaluates your posture across all 8 modules and tells you exactly what to fix, sorted by NDPC enforcement risk.
 

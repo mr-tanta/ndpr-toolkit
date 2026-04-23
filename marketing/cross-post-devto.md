@@ -77,7 +77,7 @@ console.log(report.recommendations); // Sorted by priority, linked to NDPA secti
 - 14 tree-shakeable entry points (only import what you use)
 - Works with any CSS framework (Tailwind, Bootstrap, vanilla, or unstyled mode)
 - Pluggable storage adapters (localStorage, cookies, REST API, compose multiple)
-- 584 tests, full TypeScript, React 16.8-19 support
+- 788 tests, full TypeScript, React 16.8-19 support
 - Zero-config presets OR full hook-level control — your choice
 
 ## Links

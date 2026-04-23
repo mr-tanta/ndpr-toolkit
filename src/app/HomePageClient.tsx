@@ -486,7 +486,7 @@ export function HomePageClient() {
           <Container>
             <Grid cols={4} gap="md">
               <StatCard value="8" label="Compliance Modules" />
-              <StatCard value="316" label="Passing Tests" />
+              <StatCard value="788" label="Passing Tests" />
               <StatCard value="0" label="Peer Dependencies" />
               <StatCard value="16–19" label="React Versions" />
             </Grid>
