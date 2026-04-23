@@ -3,13 +3,19 @@
 **Compliance infrastructure for the Nigeria Data Protection Act (NDPA) 2023**
 
 [![npm version](https://img.shields.io/npm/v/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
+[![npm downloads](https://img.shields.io/npm/dm/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-3178C6.svg)](https://www.typescriptlang.org/)
+[![Tests](https://img.shields.io/badge/tests-584%20passing-brightgreen.svg)](#)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
 v3 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, and a **compliance score engine** — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
 
-**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)**
+**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)**
+
+<p align="center">
+  <img src="public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
+</p>
 
 ---
 
@@ -55,6 +61,12 @@ import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 ```
 
 That's it. NDPA-compliant consent with server-side persistence in under 20 lines.
+
+<p align="center">
+  <img src="public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
+  <br />
+  <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
+</p>
 
 ---
 
@@ -259,6 +271,27 @@ Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (P
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 
 Copy the files you need into your project. [Browse the recipes →](https://github.com/tantainnovative/ndpr-toolkit/tree/main/packages/ndpr-recipes)
+
+---
+
+## Live Demos
+
+Every module has an interactive demo. No signup, no setup — try them instantly.
+
+<p align="center">
+  <a href="https://ndprtoolkit.com.ng/ndpr-demos">
+    <img src="public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
+  </a>
+</p>
+
+<p align="center">
+  <img src="public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
+  <img src="public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
+</p>
+
+<p align="center">
+  <em>Left: Data Subject Rights portal with 8 NDPA rights. Right: Breach notification with 72-hour NDPC deadline countdown.</em>
+</p>
 
 ---
 
