@@ -1,0 +1,172 @@
+---
+title: "v3.2.1: 42 Bug Fixes, 157 New Tests, and a Security Hardening Pass"
+description: "The most thorough quality release in NDPA Toolkit history — fixing XSS vulnerabilities, stale closures, data corruption bugs, and SSR hydration issues across every module."
+date: "2026-04-16"
+author: "Abraham Esandayinze Tanta"
+tags: ["release", "security", "quality", "testing"]
+image: "/blog/v3-2-1-release.png"
+---
+
+# v3.2.1: 42 Bug Fixes, 157 New Tests, and a Security Hardening Pass
+
+We just shipped the most thorough quality release in NDPA Toolkit history. Every module — adapters, hooks, components, and utilities — went through a deep QA audit. The result: **42 bugs fixed**, **157 new test cases**, and a test suite that now covers **584 assertions** across 55 test suites.
+
+This post breaks down what was found, what was fixed, and what it means for your application.
+
+## Why This Release Matters
+
+If you are using NDPA Toolkit in production, some of these bugs could affect you right now:
+
+- **The cookie adapter was silently truncating stored data** if your consent settings contained certain characters
+- **The sanitise function had an XSS bypass** that could allow entity-encoded script injection
+- **The CSV export was vulnerable to formula injection** — opening an exported ROPA in Excel could execute arbitrary commands
+- **Several hooks had stale closure bugs** that could cause data loss when multiple operations happened in the same render cycle
+
+None of these were theoretical. They were all reproducible with normal usage patterns.
+
+## Update
+
+```bash
+pnpm add @tantainnovative/ndpr-toolkit@3.2.1
+```
+
+The update is fully backwards-compatible. No API changes, no migration needed.
+
+## Security Fixes (4)
+
+### XSS in sanitizeInput
+
+The `sanitizeInput()` utility escaped `<`, `>`, `"`, `'`, and `/` — but not `&`. This meant pre-encoded entity attacks like `&lt;script&gt;alert(1)&lt;/script&gt;` would pass through unchanged. When rendered as HTML, the browser would decode the entities and execute the script.
+
+**Fixed:** `&` is now escaped to `&amp;` as the first replacement in the chain, preventing entity decode attacks.
+
+### CSV Formula Injection in ROPA Export
+
+The `exportROPAToCSV()` function properly quoted values containing commas and newlines, but did not guard against spreadsheet formula injection. A ROPA record with a name like `=cmd|'/C calc'!A0` would be executed as a formula when the CSV was opened in Excel or Google Sheets.
+
+ROPA exports are compliance artifacts that are routinely opened in spreadsheet software — this was a real attack vector for any field populated from user input.
+
+**Fixed:** Values starting with `=`, `+`, `-`, `@`, tab, or carriage return are now prefixed with a single quote to neutralise formula execution.
+
+### RegExp Injection in Privacy Policy Generator
+
+The `generatePolicyText()` function interpolated variable names directly into `new RegExp()`. If a variable name contained regex special characters (`.`, `*`, `+`, `(`, `)`, etc.), the regex would either match wrong text or throw an uncaught `SyntaxError`.
+
+**Fixed:** Variable names are now escaped with a `escapeRegExp` helper before interpolation.
+
+### Custom CSS Injection in HTML Export
+
+The `exportHTML()` function accepted a `customCSS` option that was embedded directly into a `<style>` block. A value containing `</style><script>...</script>` could break out of the style context and inject arbitrary JavaScript.
+
+**Fixed:** `</style>` is now stripped from custom CSS before embedding.
+
+## Adapter Fixes (6)
+
+### Cookie Adapter — Data Corruption
+
+The cookie adapter used `match.split('=')[1]` to extract cookie values. This splits on ALL `=` characters and takes only the second segment — silently truncating any value that contains `=` after URL encoding. JSON values frequently contain `=`, so this was a common data corruption bug.
+
+**Also fixed:** SameSite=None now enforces the Secure flag (Chrome 80+ silently drops cookies without it), cookie keys are URL-encoded to prevent header corruption, and `expires: 0` now creates a session cookie instead of an immediately-expired one.
+
+### API Adapter — Silent Failures
+
+The API adapter's `save()` and `remove()` methods did not check the HTTP response status. A 400, 403, or 500 from your backend was silently swallowed — the user would think their consent was saved when the server had rejected it.
+
+**Fixed:** Both methods now check `res.ok` and log a warning on failure.
+
+### localStorage / sessionStorage — Unhandled Exceptions
+
+Neither adapter had try/catch around `save()` or `remove()`. When storage is full (`QuotaExceededError`) or blocked by privacy mode (`SecurityError`), the exception would propagate unhandled up to the calling component.
+
+**Fixed:** Both adapters now catch storage exceptions, matching the error handling pattern already used by `load()`.
+
+### Compose Adapter — Broken Sync Contract
+
+When composing two synchronous adapters (e.g., two memory adapters), the `save()` and `remove()` methods always returned a `Promise` because the secondary dispatch function was `async`. Hooks that used `result instanceof Promise` to choose sync vs async code paths would incorrectly treat composed sync adapters as async.
+
+**Fixed:** The secondary dispatch is now synchronous when all adapters are synchronous.
+
+## Hook Fixes (9)
+
+### useBreach — Stale Closure Data Loss
+
+This was the most critical hook bug. The `reportBreach`, `assessRisk`, and `sendNotification` functions all closed over separate state arrays. When two were called in the same render cycle, `persistState()` would write stale data for the non-mutated arrays, silently losing the most recent update.
+
+**Fixed:** The hook was rewritten to use `useReducer` with a single composite state object. All mutator functions now read from a ref that always reflects the latest state, and all returned functions are wrapped in `useCallback` for stable references.
+
+### useDPIA — Invisible Required Questions
+
+`shouldShowQuestion` used `.every()` (AND logic) to evaluate visibility conditions, but `isComplete` used `.some()` (OR logic). A question could be hidden from the user but still required for completion — or visible but not counted. Users could be permanently blocked by questions they could not see.
+
+**Fixed:** Both functions now share the same visibility predicate.
+
+### usePrivacyPolicy — Dead Code in selectTemplate
+
+Calling `selectTemplate()` computed sections and variable defaults — then threw them away. The variables were never stored in state, so `updateVariableValue()` was always a no-op, and template defaults were permanently lost.
+
+**Fixed:** `selectTemplate` now initialises the policy state with the template's variable defaults.
+
+### useAdaptivePolicyWizard — onComplete Request Storm
+
+The `onComplete` callback fired on every state change while on step 4 — every keystroke, every toggle. If `onComplete` sent an API request, this created a request storm.
+
+**Fixed:** `onComplete` now fires exactly once when step 4 is first reached, with a ref-based guard that resets when navigating back.
+
+### Other Hook Fixes
+
+- **useDefaultPrivacyPolicy** — stopped mutating shared template arrays from `createBusinessPolicyTemplate()`
+- **useDSR** — wrapped all returned functions in `useCallback` for stable references
+- **useComplianceScore** — fixed `useMemo` cache miss when `input` is an inline object
+- **usePrivacyPolicy** — removed unstable `templates` array from effect dependencies
+
+## Component Fixes (8)
+
+- **ConsentManager** — `setTimeout` now cleared on unmount (prevented state-update-after-unmount warnings), added `aria-live="polite"` to success message for screen reader accessibility
+- **ConsentStorage** — `useEffect` dependencies now include the memoised `loadSettings`/`saveSettings` functions, so prop changes correctly trigger re-runs
+- **ConsentBanner** — SSR hydration mismatch fixed with `isMounted` state pattern (server renders `null`, client mounts portal after hydration)
+- **RegulatoryReportGenerator** — report content now regenerates when `breachData` or `organizationInfo` props change; `downloadFormat` prop now produces correct MIME type and file extension
+- **BreachReportForm** — valid files are no longer silently dropped when a multi-file selection includes an invalid file; "Types of Data Involved" checkbox group now uses `<fieldset>` with `<legend>` for accessibility
+- **DSRDashboard / BreachNotificationManager** — selected item now syncs with filter changes (previously, filtering could leave the detail pane showing a record no longer in the filtered list)
+
+## Utility Fixes (6)
+
+- **breach.ts** — severity justification now reflects actual factors instead of hardcoded "sensitive financial data" text
+- **compliance-score.ts** — `monthsDiff` handles future dates (clamped to 0) and invalid dates (treated as infinitely old) instead of silently producing wrong results
+- **consent.ts** — staleness check now uses proper calendar month arithmetic instead of a 390-day approximation (off by 6 days)
+- **dpia.ts** — `assessDPIARisk` no longer crashes when `risks` is undefined
+- **dsr.ts** — `formatDSRRequest` no longer crashes when `request.subject` is null
+- **markdown.ts** — HTML entities replaced with Unicode characters for correct rendering in Markdown
+
+## Testing
+
+The test suite grew from **427 to 584 test cases** across **55 test suites** (up from 46). Every one of the 42 fixes has at least one dedicated test that would have caught the original bug.
+
+New test files cover:
+- XSS entity attack vectors and replacement ordering
+- Cookie value round-tripping with special characters
+- CSV formula injection for all trigger characters
+- DPIA visibility logic consistency
+- Concurrent mutation safety in useBreach
+- SSR hydration behaviour for ConsentBanner
+- Null/undefined guard coverage for DSR and DPIA utilities
+- Adapter error handling for QuotaExceeded, SecurityError, and HTTP failures
+
+The Jest coverage configuration was also fixed — it was previously measuring coverage for the documentation site instead of the library source code. Coverage now targets `packages/ndpr-toolkit/src/`.
+
+## Config Fixes
+
+- **jest.config.js** — `collectCoverageFrom` now points to library source
+- **package.json** — `next lint` updated for Next.js 16 compatibility
+
+## Full Changelog
+
+See the [GitHub release notes](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.2.1) for the complete changelog, or run:
+
+```bash
+npm view @tantainnovative/ndpr-toolkit version
+# 3.2.1
+```
+
+---
+
+*If you find a bug or have a feature request, [open an issue](https://github.com/mr-tanta/ndpr-toolkit/issues). If the toolkit helps your project, [star it on GitHub](https://github.com/mr-tanta/ndpr-toolkit) — it helps other Nigerian developers find it.*
