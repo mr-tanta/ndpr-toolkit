@@ -11,7 +11,14 @@
     {"type": "build", "hidden": true},
     {"type": "ci", "hidden": true}
   ],
-  "commitUrlFormat": "https://github.com/tantainnovative/ndpr-toolkit/commit/{{hash}}",
-  "compareUrlFormat": "https://github.com/tantainnovative/ndpr-toolkit/compare/{{previousTag}}...{{currentTag}}",
-  "releaseCommitMessageFormat": "chore(release): {{currentTag}}"
+  "commitUrlFormat": "https://github.com/mr-tanta/ndpr-toolkit/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/mr-tanta/ndpr-toolkit/compare/{{previousTag}}...{{currentTag}}",
+  "releaseCommitMessageFormat": "chore(release): {{currentTag}}",
+  "bumpFiles": [
+    { "filename": "package.json", "type": "json" },
+    { "filename": "packages/ndpr-toolkit/package.json", "type": "json" }
+  ],
+  "packageFiles": [
+    { "filename": "packages/ndpr-toolkit/package.json", "type": "json" }
+  ]
 }
