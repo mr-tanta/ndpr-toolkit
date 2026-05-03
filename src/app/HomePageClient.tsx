@@ -19,11 +19,13 @@ import {
 
 // ─── Code samples ──────────────────────────────────────────────────────────────
 
-const HERO_CODE = `import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
+const HERO_CODE = `// app/layout.tsx
+import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
+import '@tantainnovative/ndpr-toolkit/styles';
 
 export default function RootLayout({ children }) {
   return (
-    <NDPRProvider config={{ appName: 'MyApp' }}>
+    <NDPRProvider organizationName="MyApp">
       {children}
     </NDPRProvider>
   );
@@ -31,16 +33,16 @@ export default function RootLayout({ children }) {
 
 const LAYOUT_CODE = `// app/layout.tsx
 import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
+import '@tantainnovative/ndpr-toolkit/styles';
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
         <NDPRProvider
-          config={{
-            appName: 'Acme Corp',
-            contactEmail: 'privacy@acme.ng',
-          }}
+          organizationName="Acme Corp"
+          dpoEmail="privacy@acme.ng"
+          ndpcRegistrationNumber="NDPC-2026-12345"
         >
           {children}
         </NDPRProvider>
@@ -50,37 +52,52 @@ export default function RootLayout({ children }) {
 }`;
 
 const PRIVACY_PAGE_CODE = `// app/privacy/page.tsx
-import { ConsentBanner, PrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
+import { useDefaultPrivacyPolicy, PolicyPage } from '@tantainnovative/ndpr-toolkit';
 
 export default function PrivacyPage() {
-  return (
-    <>
-      <ConsentBanner
-        onAccept={() => console.log('Accepted')}
-        onDecline={() => console.log('Declined')}
-      />
-      <PrivacyPolicy
-        companyName="Acme Corp"
-        lastUpdated="2024-01-01"
-      />
-    </>
-  );
+  const { policy } = useDefaultPrivacyPolicy({
+    orgInfo: {
+      name: 'Acme Corp',
+      email: 'privacy@acme.ng',
+      website: 'https://acme.ng',
+    },
+  });
+
+  return policy ? <PolicyPage policy={policy} /> : null;
 }`;
 
 const DSR_PAGE_CODE = `// app/data-request/page.tsx
 import { DSRRequestForm } from '@tantainnovative/ndpr-toolkit';
 
+const REQUEST_TYPES = [
+  { id: 'access', name: 'Access', description: 'Get a copy of my data',
+    estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'erasure', name: 'Erasure', description: 'Delete my data',
+    estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+];
+
 export default function DataRequestPage() {
   return (
     <DSRRequestForm
-      onSubmit={async (request) => {
+      requestTypes={REQUEST_TYPES}
+      onSubmit={async (submission) => {
         await fetch('/api/dsr', {
           method: 'POST',
-          body: JSON.stringify(request),
+          body: JSON.stringify(submission),
         });
       }}
     />
   );
+}
+
+// app/api/dsr/route.ts (server-side, RSC-safe)
+import { validateDsrSubmission } from '@tantainnovative/ndpr-toolkit/server';
+
+export async function POST(req: Request) {
+  const result = validateDsrSubmission(await req.json());
+  if (!result.valid) return Response.json({ errors: result.errors }, { status: 422 });
+  // result.data is the typed DsrSubmissionPayload
+  return Response.json({ ok: true }, { status: 201 });
 }`;
 
 const SCORE_CODE = `import { getComplianceScore } from '@tantainnovative/ndpr-toolkit';

@@ -113,7 +113,7 @@ const quickStartSteps = [
 
 export default function RootLayout({ children }) {
   return (
-    <NDPRProvider config={{ organizationName: 'Acme Corp' }}>
+    <NDPRProvider organizationName="Acme Corp">
       {children}
     </NDPRProvider>
   );
