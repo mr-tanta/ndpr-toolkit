@@ -160,7 +160,33 @@ export function useDefaultPrivacyPolicy(
     if (!autoGenerate) return;
     if (result.isLoading) return;
     if (seededRef.current) return;
-    // If a policy was rehydrated from storage, don't clobber it.
+
+    // Bypass the React state race for rehydration detection by checking
+    // the storage source directly. usePrivacyPolicy may have set
+    // isLoading=false in the same commit as setPolicy(rehydrated), but
+    // depending on the React/jsdom version the two state updates may
+    // not arrive in our closure together. Reading localStorage is
+    // synchronous and authoritative — if a saved policy exists, the
+    // rehydration is either complete or imminent and we must not
+    // generate a competing one.
+    const usingDefaultLocalStorage =
+      !adapter &&
+      useLocalStorage !== false &&
+      typeof window !== 'undefined' &&
+      typeof window.localStorage !== 'undefined';
+    if (usingDefaultLocalStorage) {
+      try {
+        if (window.localStorage.getItem(storageKey ?? 'ndpr_privacy_policy')) {
+          seededRef.current = true;
+          generatedRef.current = true;
+          return;
+        }
+      } catch {
+        /* storage access blocked — fall through to the React-state check */
+      }
+    }
+
+    // If a policy was rehydrated and already committed, don't clobber it.
     if (result.policy) {
       seededRef.current = true;
       generatedRef.current = true;
