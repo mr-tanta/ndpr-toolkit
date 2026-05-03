@@ -25,10 +25,16 @@ export default defineConfig([
     onSuccess: async () => {
       const fs = await import('fs');
       const path = await import('path');
-      const animationsSource = path.join('src', 'styles', 'animations.css');
-      const animationsDest = path.join('dist', 'styles.css');
-      if (fs.existsSync(animationsSource)) {
-        fs.copyFileSync(animationsSource, animationsDest);
+      // Prefer the new consolidated stylesheet; fall back to the legacy
+      // animations.css if a future refactor removes the new file. Single
+      // dist/styles.css keeps the consumer import surface tiny:
+      //   import "@tantainnovative/ndpr-toolkit/styles";
+      const newSource = path.join('src', 'styles', 'styles.css');
+      const legacySource = path.join('src', 'styles', 'animations.css');
+      const dest = path.join('dist', 'styles.css');
+      const source = fs.existsSync(newSource) ? newSource : legacySource;
+      if (fs.existsSync(source)) {
+        fs.copyFileSync(source, dest);
       }
     },
   },
@@ -48,6 +54,7 @@ export default defineConfig([
       'cross-border-entry': 'src/cross-border-entry.ts',
       'ropa-entry': 'src/ropa-entry.ts',
       presets: 'src/presets-entry.ts',
+      unstyled: 'src/unstyled.ts',
     },
     clean: false,
     banner: { js: '"use client";' },

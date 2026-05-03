@@ -24,28 +24,27 @@ export const OptionList: React.FC<OptionListProps> = ({ classNames, unstyled }) 
   });
 
   return (
-    <div className={resolveClass('space-y-3', classNames?.root, unstyled)} data-ndpr-component="consent-option-list">
+    <div
+      className={resolveClass('ndpr-consent-banner__options-list', classNames?.root, unstyled)}
+      data-ndpr-component="consent-option-list"
+    >
       {options.map(option => (
-        <div key={option.id} className={resolveClass('flex items-start', classNames?.optionItem, unstyled)}>
-          <div className="flex items-center h-5">
-            <input
-              id={`consent-${option.id}`}
-              type="checkbox"
-              checked={localConsents[option.id] || false}
-              onChange={e => setLocalConsents(prev => ({ ...prev, [option.id]: e.target.checked }))}
-              disabled={option.required}
-              className={resolveClass(
-                'h-4 w-4 rounded border-gray-300 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]',
-                classNames?.optionCheckbox, unstyled
-              )}
-              aria-label={option.label}
-            />
-          </div>
-          <div className="ml-3 text-sm">
-            <label htmlFor={`consent-${option.id}`} className={resolveClass('font-medium', classNames?.optionLabel, unstyled)}>
-              {option.label} {option.required && <span className="text-red-500">*</span>}
+        <div key={option.id} className={resolveClass('ndpr-consent-banner__option', classNames?.optionItem, unstyled)}>
+          <input
+            id={`consent-${option.id}`}
+            type="checkbox"
+            checked={localConsents[option.id] || false}
+            onChange={e => setLocalConsents(prev => ({ ...prev, [option.id]: e.target.checked }))}
+            disabled={option.required}
+            className={resolveClass('ndpr-consent-banner__option-checkbox', classNames?.optionCheckbox, unstyled)}
+            aria-label={option.label}
+          />
+          <div className={unstyled ? '' : 'ndpr-consent-banner__option-text'}>
+            <label htmlFor={`consent-${option.id}`} className={resolveClass('ndpr-consent-banner__option-label', classNames?.optionLabel, unstyled)}>
+              {option.label}
+              {option.required && <span className={unstyled ? '' : 'ndpr-consent-banner__required-marker'}> *</span>}
             </label>
-            <p className={resolveClass('text-gray-600 dark:text-gray-400', classNames?.optionDescription, unstyled)}>
+            <p className={resolveClass('ndpr-consent-banner__option-description', classNames?.optionDescription, unstyled)}>
               {option.description}
             </p>
           </div>

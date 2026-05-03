@@ -197,52 +197,62 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
     setConsents(defaultConsents);
   };
   
-  const resolvedSaveButton = classNames?.primaryButton || classNames?.saveButton
-    || `px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName} ${primaryButtonClassName}`;
-  const resolvedResetButton = classNames?.secondaryButton || classNames?.resetButton
-    || `px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${buttonClassName} ${secondaryButtonClassName}`;
+  // 3.5: semantic class composition. Defaults map to .ndpr-consent-manager
+  // BEM tokens backed by dist/styles.css; consumer overrides via classNames
+  // continue to REPLACE defaults for backward compat with resolveClass.
+  const defaultPrimaryButton =
+    `ndpr-consent-manager__button ndpr-consent-manager__button--primary ${buttonClassName} ${primaryButtonClassName}`.trim();
+  const defaultSecondaryButton =
+    `ndpr-consent-manager__button ndpr-consent-manager__button--secondary ${buttonClassName} ${secondaryButtonClassName}`.trim();
+
+  const resolvedSaveButton = classNames?.primaryButton || classNames?.saveButton || defaultPrimaryButton;
+  const resolvedResetButton = classNames?.secondaryButton || classNames?.resetButton || defaultSecondaryButton;
+
+  const rootClass = `ndpr-consent-manager${className ? ` ${className}` : ''}`;
 
   return (
-    <div className={resolveClass(`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 ${className}`, classNames?.root, unstyled)}>
-      <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
-      <p className={resolveClass('mb-6 text-gray-600 dark:text-gray-300', classNames?.description, unstyled)}>{description}</p>
+    <div
+      data-ndpr-component="consent-manager"
+      className={resolveClass(rootClass, classNames?.root, unstyled)}
+    >
+      <h2 className={resolveClass('ndpr-consent-manager__title', classNames?.title, unstyled)}>{title}</h2>
+      <p className={resolveClass('ndpr-consent-manager__description', classNames?.description, unstyled)}>{description}</p>
 
-      <div className={resolveClass('space-y-6', classNames?.optionsList, unstyled)}>
-        {options.map(option => (
-          <div key={option.id} className={resolveClass('border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0', classNames?.optionItem, unstyled)}>
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="font-medium text-gray-900 dark:text-white">{option.label}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{option.description}</p>
+      <div className={resolveClass('ndpr-consent-manager__options-list', classNames?.optionsList, unstyled)}>
+        {options.map(option => {
+          const inputId = `consent-manager-${option.id}`;
+          return (
+            <div key={option.id} className={resolveClass('ndpr-consent-manager__option', classNames?.optionItem, unstyled)}>
+              <div className={unstyled ? '' : 'ndpr-consent-manager__option-info'}>
+                <h3 className={unstyled ? '' : 'ndpr-consent-manager__option-label'}>{option.label}</h3>
+                <p className={unstyled ? '' : 'ndpr-consent-manager__option-description'}>{option.description}</p>
               </div>
-              <div className="ml-4 flex-shrink-0">
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={consents[option.id] || false}
-                    onChange={e => handleToggleConsent(option.id, e.target.checked)}
-                    disabled={option.required}
-                  />
-                  <div className={resolveClass(
-                    `w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[rgb(var(--ndpr-ring)/0.3)] rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[rgb(var(--ndpr-primary))] ${option.required ? 'opacity-60' : ''}`,
-                    classNames?.toggle,
-                    unstyled
-                  )}></div>
-                  <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                    {consents[option.id] ? 'Enabled' : 'Disabled'}
-                    {option.required && <span className="text-xs text-red-500 ml-1">(Required)</span>}
-                  </span>
-                </label>
-              </div>
+              <label htmlFor={inputId} className={unstyled ? '' : 'ndpr-consent-manager__toggle-wrapper'}>
+                <input
+                  id={inputId}
+                  type="checkbox"
+                  className={unstyled ? '' : 'ndpr-consent-manager__toggle-input'}
+                  checked={consents[option.id] || false}
+                  onChange={e => handleToggleConsent(option.id, e.target.checked)}
+                  disabled={option.required}
+                />
+                <span
+                  aria-hidden="true"
+                  className={resolveClass('ndpr-consent-manager__toggle', classNames?.toggle, unstyled)}
+                />
+                <span className={unstyled ? '' : 'ndpr-consent-manager__toggle-status'}>
+                  {consents[option.id] ? 'Enabled' : 'Disabled'}
+                  {option.required && <span className={unstyled ? '' : 'ndpr-consent-manager__required-marker'}>(Required)</span>}
+                </span>
+              </label>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {showSuccess && (
         <div
-          className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 rounded-md"
+          className={unstyled ? '' : 'ndpr-consent-manager__success'}
           aria-live="polite"
           role="status"
         >
@@ -250,7 +260,7 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
         </div>
       )}
 
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className={unstyled ? '' : 'ndpr-consent-manager__buttons'}>
         <button
           onClick={handleSave}
           className={resolveClass(resolvedSaveButton, classNames?.saveButton, unstyled)}
@@ -265,7 +275,7 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
         </button>
       </div>
 
-      <div className="mt-4 text-xs text-gray-600 dark:text-gray-400">
+      <div className={unstyled ? '' : 'ndpr-consent-manager__meta'}>
         <p>Last updated: {settings ? new Date(settings.timestamp).toLocaleString() : 'Never'}</p>
         <p>Version: {version}</p>
       </div>

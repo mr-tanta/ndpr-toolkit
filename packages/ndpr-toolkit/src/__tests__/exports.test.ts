@@ -394,9 +394,14 @@ describe('Entry point: presets', () => {
 });
 
 describe('Entry point: unstyled', () => {
-  // The unstyled entry point is declared in package.json exports but has no
-  // source file yet — skip until the module is implemented.
-  it.skip('not yet implemented — no source file exists', () => {
-    // placeholder
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const mod = require('../../src/unstyled');
+
+  it.each([
+    'ConsentBanner',
+    'ConsentManager',
+    'DSRRequestForm',
+  ])('exports %s', (name) => {
+    expect(mod[name]).toBeDefined();
   });
 });

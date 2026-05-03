@@ -90,6 +90,17 @@ export interface ConsentBannerProps {
   position?: 'top' | 'bottom' | 'center' | 'inline';
 
   /**
+   * Visual treatment.
+   * - 'bar'   (default): full-width strip pinned to the edge.
+   * - 'card'  : bounded floating card with rounded corners and a margin
+   *             from the screen edges. Pairs well with `position="bottom"`.
+   * - 'modal' : centered card with a backdrop overlay. Forces center
+   *             placement regardless of `position`.
+   * @default "bar"
+   */
+  variant?: 'bar' | 'card' | 'modal';
+
+  /**
    * z-index applied to the fixed-position banner.
    * Ignored when position is 'inline'.
    * @default 9999
@@ -176,6 +187,7 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   customizeButtonText = "Customize",
   saveButtonText = "Save Preferences",
   position = "bottom",
+  variant = "bar",
   zIndex = 9999,
   version = "1.0",
   show,
@@ -436,72 +448,75 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
     return null;
   }
 
-  const resolvedAcceptButton = classNames?.primaryButton || classNames?.acceptButton
-    || `px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName} ${primaryButtonClassName}`;
-  const resolvedRejectButton = classNames?.secondaryButton || classNames?.rejectButton
-    || `px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 ${buttonClassName} ${secondaryButtonClassName}`;
-  const resolvedCustomizeButton = classNames?.customizeButton
-    || `px-4 py-2 bg-transparent text-gray-800 dark:text-white hover:underline ${buttonClassName}`;
-  const resolvedSaveButton = classNames?.saveButton
-    || `px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName} ${primaryButtonClassName}`;
+  // ---------------------------------------------------------------------
+  // Class composition
+  //
+  // We assemble the default class list from semantic BEM-ish tokens that
+  // are backed by `dist/styles.css`. Consumers who provide overrides via
+  // `classNames` REPLACE the default for that slot (existing behaviour
+  // preserved by `resolveClass`). `unstyled={true}` strips every default,
+  // letting the consumer build their own visual system.
+  // ---------------------------------------------------------------------
 
-  // Build position classes for the root element
-  const isInline = position === 'inline';
-  const isCenter = position === 'center';
+  // Modal forces center placement regardless of `position`.
+  const effectivePosition = variant === 'modal' ? 'center' : position;
+  const isInline = effectivePosition === 'inline';
+  const isCenter = effectivePosition === 'center';
 
-  let rootPositionClass: string;
-  if (isInline) {
-    rootPositionClass = '';
-  } else if (isCenter) {
-    // Full-screen overlay wrapper is used for center; the inner banner has no extra position class
-    rootPositionClass = '';
-  } else if (position === 'top') {
-    rootPositionClass = 'fixed inset-x-0 top-0';
-  } else {
-    // bottom (default)
-    rootPositionClass = 'fixed inset-x-0 bottom-0';
-  }
+  const rootClassParts = ['ndpr-consent-banner'];
+  if (variant !== 'bar') rootClassParts.push(`ndpr-consent-banner--${variant}`);
+  if (effectivePosition === 'top') rootClassParts.push('ndpr-consent-banner--top');
+  else if (effectivePosition === 'bottom') rootClassParts.push('ndpr-consent-banner--bottom');
+  else if (effectivePosition === 'inline') rootClassParts.push('ndpr-consent-banner--inline');
+  if (className) rootClassParts.push(className);
+  const defaultRootClass = rootClassParts.join(' ');
+
+  const defaultPrimaryButton = `ndpr-consent-banner__button ndpr-consent-banner__button--primary ${buttonClassName} ${primaryButtonClassName}`.trim();
+  const defaultSecondaryButton = `ndpr-consent-banner__button ndpr-consent-banner__button--secondary ${buttonClassName} ${secondaryButtonClassName}`.trim();
+  const defaultGhostButton = `ndpr-consent-banner__button ndpr-consent-banner__button--ghost ${buttonClassName}`.trim();
+
+  const resolvedAcceptButton = classNames?.primaryButton || classNames?.acceptButton || defaultPrimaryButton;
+  const resolvedRejectButton = classNames?.secondaryButton || classNames?.rejectButton || defaultSecondaryButton;
+  const resolvedCustomizeButton = classNames?.customizeButton || defaultGhostButton;
+  const resolvedSaveButton = classNames?.saveButton || defaultPrimaryButton;
 
   const bannerContent = (
     <div
       ref={bannerRef}
       tabIndex={-1}
       data-ndpr-component="consent-banner"
-      className={resolveClass(
-        `${isInline ? '' : rootPositionClass} bg-white dark:bg-gray-800 shadow-lg p-3 sm:p-4 border border-gray-200 dark:border-gray-700 ${isCenter ? 'max-w-lg w-full' : ''} ${className}`,
-        classNames?.root,
-        unstyled
-      )}
-      style={!isInline && !isCenter ? { zIndex } : undefined}
+      data-ndpr-variant={variant}
+      data-ndpr-position={effectivePosition}
+      className={resolveClass(defaultRootClass, classNames?.root, unstyled)}
+      style={
+        // Only apply z-index for non-modal fixed positions; modal uses its
+        // own overlay wrapper which carries the z-index instead.
+        !isInline && !isCenter ? { zIndex } : undefined
+      }
       role="dialog"
       aria-modal={isCenter || undefined}
       aria-labelledby="consent-banner-title"
       aria-describedby="consent-banner-description"
     >
-      <div className={resolveClass('max-w-6xl mx-auto', classNames?.container, unstyled)}>
-        <h2 id="consent-banner-title" className={resolveClass('text-lg font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
-        <p id="consent-banner-description" className={resolveClass('text-sm sm:text-base mb-4', classNames?.description, unstyled)}>{description}</p>
+      <div className={resolveClass('ndpr-consent-banner__container', classNames?.container, unstyled)}>
+        <h2 id="consent-banner-title" className={resolveClass('ndpr-consent-banner__title', classNames?.title, unstyled)}>{title}</h2>
+        <p id="consent-banner-description" className={resolveClass('ndpr-consent-banner__description', classNames?.description, unstyled)}>{description}</p>
 
         {showCustomize && (
           <div
             ref={customizePanelRef}
             className={resolveClass(
-              'mb-4 p-3 sm:p-4 rounded-md border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50',
+              'ndpr-consent-banner__customize-panel',
               classNames?.customizePanel,
               unstyled
             )}
-            style={{
-              overflow: 'hidden',
-              transition: 'max-height 0.3s ease-out, opacity 0.3s ease-out',
-            }}
           >
-            {/* Select All / Deselect All toggle */}
-            <div className="mb-3 flex items-center justify-end">
+            <div className={unstyled ? '' : 'ndpr-consent-banner__select-all-row'}>
               <button
                 type="button"
                 onClick={allSelected ? handleDeselectAll : handleSelectAll}
                 className={resolveClass(
-                  'text-sm font-medium text-[rgb(var(--ndpr-primary))] hover:underline',
+                  'ndpr-consent-banner__select-all-button',
                   classNames?.selectAllButton,
                   unstyled
                 )}
@@ -510,30 +525,29 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
               </button>
             </div>
 
-            <div className={resolveClass('space-y-3', classNames?.optionsList, unstyled)}>
+            <div className={resolveClass('ndpr-consent-banner__options-list', classNames?.optionsList, unstyled)}>
               {options.map(option => (
-                <div key={option.id} className={resolveClass('flex items-start', classNames?.optionItem, unstyled)}>
-                  <div className="flex items-center h-5">
-                    <input
-                      id={`consent-${option.id}`}
-                      type="checkbox"
-                      checked={consents[option.id] || false}
-                      onChange={e => handleToggleConsent(option.id, e.target.checked)}
-                      disabled={option.required}
-                      className={resolveClass('h-4 w-4 rounded border-gray-300 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]', classNames?.optionCheckbox, unstyled)}
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor={`consent-${option.id}`} className={resolveClass('font-medium', classNames?.optionLabel, unstyled)}>
-                      {option.label} {option.required && <span className="text-red-500">*</span>}
+                <div key={option.id} className={resolveClass('ndpr-consent-banner__option', classNames?.optionItem, unstyled)}>
+                  <input
+                    id={`consent-${option.id}`}
+                    type="checkbox"
+                    checked={consents[option.id] || false}
+                    onChange={e => handleToggleConsent(option.id, e.target.checked)}
+                    disabled={option.required}
+                    className={resolveClass('ndpr-consent-banner__option-checkbox', classNames?.optionCheckbox, unstyled)}
+                  />
+                  <div className={unstyled ? '' : 'ndpr-consent-banner__option-text'}>
+                    <label htmlFor={`consent-${option.id}`} className={resolveClass('ndpr-consent-banner__option-label', classNames?.optionLabel, unstyled)}>
+                      {option.label}
+                      {option.required && <span className={unstyled ? '' : 'ndpr-consent-banner__required-marker'}> *</span>}
                     </label>
-                    <p className={resolveClass('text-gray-600 dark:text-gray-400', classNames?.optionDescription, unstyled)}>{option.description}</p>
+                    <p className={resolveClass('ndpr-consent-banner__option-description', classNames?.optionDescription, unstyled)}>{option.description}</p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className={resolveClass('mt-4 flex flex-col sm:flex-row flex-wrap gap-2', classNames?.buttonGroup, unstyled)}>
+            <div className={resolveClass('ndpr-consent-banner__buttons', classNames?.buttonGroup, unstyled)}>
               <button
                 onClick={handleSavePreferences}
                 className={resolveClass(resolvedSaveButton, classNames?.saveButton, unstyled)}
@@ -551,7 +565,7 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
         )}
 
         {!showCustomize && (
-          <div className={resolveClass('flex flex-col sm:flex-row flex-wrap gap-2', classNames?.buttonGroup, unstyled)}>
+          <div className={resolveClass('ndpr-consent-banner__buttons', classNames?.buttonGroup, unstyled)}>
             <button
               onClick={handleAcceptAll}
               className={resolveClass(resolvedAcceptButton, classNames?.acceptButton, unstyled)}
@@ -573,7 +587,7 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
           </div>
         )}
 
-        <div className={resolveClass('mt-2 text-xs text-gray-600 dark:text-gray-400', undefined, unstyled)}>
+        <div className={resolveClass('ndpr-consent-banner__footer-text', undefined, unstyled)}>
           By clicking &quot;Accept All&quot;, you agree to the use of ALL cookies. Visit our Cookie Policy to learn more.
         </div>
       </div>
@@ -585,27 +599,19 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
     return bannerContent;
   }
 
-  // Center position: wrap in a full-screen backdrop overlay
+  // Center position (also forced by variant="modal"): wrap in a backdrop.
   if (isCenter) {
-    const centerOverlay = (
+    const overlay = (
       <div
-        className="fixed inset-0 flex items-center justify-center"
+        className={unstyled ? '' : 'ndpr-consent-banner__overlay'}
         style={{ zIndex }}
       >
-        {/* Backdrop */}
-        <div
-          className="absolute inset-0 bg-black/50"
-          aria-hidden="true"
-        />
-        {/* Banner (relative to escape the absolute backdrop) */}
-        <div className="relative">
-          {bannerContent}
-        </div>
+        {bannerContent}
       </div>
     );
 
     if (!isMounted) return null;
-    return createPortal(centerOverlay, document.body);
+    return createPortal(overlay, document.body);
   }
 
   // Top / Bottom positions: portal to document.body with fixed positioning

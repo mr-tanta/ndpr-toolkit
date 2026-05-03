@@ -206,4 +206,35 @@ describe('ConsentManager (NDPA Privacy Settings)', () => {
       expect(screen.queryByText('Your preferences have been saved.')).not.toBeInTheDocument();
     });
   });
+
+  describe('3.5 styling: semantic class names + no Tailwind dependency', () => {
+    it('emits .ndpr-consent-manager root with no Tailwind utility leakage', () => {
+      const { container } = render(
+        <ConsentManager options={consentOptions} onSave={jest.fn()} />,
+      );
+      const root = container.querySelector('[data-ndpr-component="consent-manager"]');
+      expect(root).not.toBeNull();
+      expect(root).toHaveClass('ndpr-consent-manager');
+      expect(root!.className).not.toMatch(/\bbg-white\b|\bdark:bg-/);
+    });
+
+    it('exposes the title, description, options-list, and toggle slots', () => {
+      const { container } = render(
+        <ConsentManager options={consentOptions} onSave={jest.fn()} />,
+      );
+      expect(container.querySelector('.ndpr-consent-manager__title')).not.toBeNull();
+      expect(container.querySelector('.ndpr-consent-manager__description')).not.toBeNull();
+      expect(container.querySelector('.ndpr-consent-manager__options-list')).not.toBeNull();
+      expect(container.querySelector('.ndpr-consent-manager__toggle')).not.toBeNull();
+    });
+
+    it('unstyled={true} strips every default class', () => {
+      const { container } = render(
+        <ConsentManager options={consentOptions} onSave={jest.fn()} unstyled />,
+      );
+      const root = container.querySelector('[data-ndpr-component="consent-manager"]');
+      expect(root).not.toBeNull();
+      expect(root!.className).not.toMatch(/ndpr-consent-manager/);
+    });
+  });
 });

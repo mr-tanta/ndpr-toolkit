@@ -157,8 +157,13 @@ describe('ConsentBanner (NDPA Consent Management)', () => {
     renderComponent({ position: 'top' });
 
     const banner = screen.getByRole('dialog');
-    expect(banner).toHaveClass('top-0');
-    expect(banner).not.toHaveClass('bottom-0');
+    // 3.5: position is encoded as a semantic modifier class + a data attribute
+    // for CSS targeting and analytics. Tailwind utility classes (top-0,
+    // bottom-0) were replaced with `.ndpr-consent-banner--{top,bottom}`.
+    expect(banner).toHaveClass('ndpr-consent-banner');
+    expect(banner).toHaveClass('ndpr-consent-banner--top');
+    expect(banner).not.toHaveClass('ndpr-consent-banner--bottom');
+    expect(banner).toHaveAttribute('data-ndpr-position', 'top');
   });
 
   describe('SSR hydration safety (isMounted pattern)', () => {
@@ -260,6 +265,72 @@ describe('ConsentBanner (NDPA Consent Management)', () => {
       );
 
       expect(html).toBe('');
+    });
+  });
+
+  describe('3.5 styling: semantic class names + variants', () => {
+    it('emits the BEM-ish ndpr-consent-banner root class with no Tailwind utility leakage', () => {
+      renderComponent({ position: 'inline' });
+      const banner = screen.getByRole('dialog');
+
+      expect(banner).toHaveClass('ndpr-consent-banner');
+      expect(banner).toHaveAttribute('data-ndpr-component', 'consent-banner');
+      // Make sure the old Tailwind defaults are gone — they would only show
+      // up if a regression reverts to baked-in utility classes that
+      // require Tailwind to be configured in the consumer app.
+      expect(banner.className).not.toMatch(/\bbg-white\b|\bdark:bg-/);
+    });
+
+    it('exposes container, title, description, and footer as named slots', () => {
+      const { container } = renderComponent({ position: 'inline' });
+      expect(container.querySelector('.ndpr-consent-banner__container')).not.toBeNull();
+      expect(container.querySelector('.ndpr-consent-banner__title')).not.toBeNull();
+      expect(container.querySelector('.ndpr-consent-banner__description')).not.toBeNull();
+      expect(container.querySelector('.ndpr-consent-banner__footer-text')).not.toBeNull();
+    });
+
+    it('renders primary / secondary / ghost button modifiers', () => {
+      const { container } = renderComponent({ position: 'inline' });
+      const primary = container.querySelector('.ndpr-consent-banner__button--primary');
+      const secondary = container.querySelector('.ndpr-consent-banner__button--secondary');
+      const ghost = container.querySelector('.ndpr-consent-banner__button--ghost');
+
+      expect(primary).not.toBeNull();
+      expect(secondary).not.toBeNull();
+      expect(ghost).not.toBeNull();
+      // All three carry the shared base button class.
+      [primary, secondary, ghost].forEach((b) => {
+        expect(b).toHaveClass('ndpr-consent-banner__button');
+      });
+    });
+
+    it('variant="card" adds the card modifier and exposes the data attribute', () => {
+      renderComponent({ position: 'inline', variant: 'card' });
+      const banner = screen.getByRole('dialog');
+      expect(banner).toHaveClass('ndpr-consent-banner--card');
+      expect(banner).toHaveAttribute('data-ndpr-variant', 'card');
+    });
+
+    it('variant="modal" forces center placement and renders an overlay', () => {
+      renderComponent({ position: 'bottom', variant: 'modal' });
+      const banner = screen.getByRole('dialog');
+      expect(banner).toHaveClass('ndpr-consent-banner--modal');
+      expect(banner).toHaveAttribute('data-ndpr-position', 'center');
+      expect(banner).toHaveAttribute('aria-modal', 'true');
+      // The overlay wrapper is rendered into document.body via portal; query
+      // there rather than the test container.
+      expect(document.querySelector('.ndpr-consent-banner__overlay')).not.toBeNull();
+    });
+
+    it('unstyled={true} strips every default class while preserving role', () => {
+      renderComponent({ position: 'inline', unstyled: true });
+      const banner = screen.getByRole('dialog');
+      // Root element should have no ndpr- default classes; consumer is
+      // responsible for styling via classNames or external CSS.
+      expect(banner.className).not.toMatch(/ndpr-consent-banner/);
+      // ARIA + data attributes are part of the contract, not styling, and
+      // must survive unstyled mode.
+      expect(banner).toHaveAttribute('data-ndpr-component', 'consent-banner');
     });
   });
 });

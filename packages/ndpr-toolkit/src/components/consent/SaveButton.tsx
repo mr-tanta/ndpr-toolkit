@@ -24,7 +24,7 @@ export const SaveButton: React.FC<SaveButtonProps> = ({ children, className, uns
     <button
       onClick={handleClick}
       className={resolveClass(
-        'px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded hover:bg-[rgb(var(--ndpr-primary-hover))]',
+        'ndpr-consent-banner__button ndpr-consent-banner__button--primary',
         className, unstyled
       )}
       data-ndpr-component="consent-save-button"

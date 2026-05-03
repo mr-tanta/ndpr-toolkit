@@ -22,7 +22,7 @@ Effort: **S** = <1 day. **M** = 1–3 days. **L** = >3 days, may need design dis
 |---|-------|-------|--------|-------|
 | B2 | `useDefaultPrivacyPolicy` returns `policy: null` on first render; consumer has to chain `selectTemplate` → `generatePolicy` in effects | `src/hooks/policy/useDefaultPrivacyPolicy.ts` | S | When `orgInfo` is provided, auto-select default template and auto-generate. Or add sibling `useReadyPrivacyPolicy({ orgInfo })`. |
 | B5 | `./styles` export has no `style` condition → Tailwind v4 / PostCSS `@import` fails | `packages/ndpr-toolkit/package.json` | XS | Add `"style": "./dist/styles.css"` to `./styles` export. One-line. |
-| B4 | `ConsentBanner` has no default panel/background styles — banner is unreadable on a dark site | `src/styles/animations.css` (currently the only CSS), `src/components/consent/ConsentBanner.tsx` | M | Decide UI strategy first (see S1 below). Minimum: ship `dist/styles.css` rules driven by existing `--ndpr-*` tokens for `.ndpr-consent-banner` (background, padding, max-width, button styling). Document `unstyled` subpath if intentional. |
+| B4 | ~~`ConsentBanner` has no default panel/background styles~~ **DONE** in 3.5.0 — replaced inline Tailwind utilities with `.ndpr-consent-banner__*` BEM classes backed by a real `dist/styles.css`. Added `variant: 'bar'\|'card'\|'modal'` prop. Same treatment applied to ConsentManager, DSRRequestForm, and the consent compound primitives (Accept/Reject/Save/OptionList). | ~~M~~ | |
 
 ## P2 — should land in 3.4.x (DX / docs)
 
@@ -42,7 +42,7 @@ Effort: **S** = <1 day. **M** = 1–3 days. **L** = >3 days, may need design dis
 
 | # | Suggestion | Effort | Notes |
 |---|-----------|--------|-------|
-| S1 | **Pick a UI strategy.** Today: logic kit with React wrappers but no real default styles. Choose: (A) shadcn-style `npx ndpr-kit add consent-banner` copy-into-repo, or (B) genuinely styled drop-in driven by `--ndpr-*` tokens. Right now we have neither — and `./unstyled` + `./presets` subpaths suggest the split is half-built. | L | Needs product decision before B4 fix. |
+| S1 | **Pick a UI strategy.** ~~Today: logic kit with React wrappers but no real default styles.~~ **DONE (option B)** in 3.5.0 — fully-styled drop-in via `dist/styles.css`. ConsentBanner, ConsentManager, DSRRequestForm, and the consent compound primitives migrated from Tailwind utility classes to semantic BEM tokens backed by a real stylesheet. `./unstyled` subpath shipped as the opt-out for consumers using their own design system. Option A (shadcn-style copy CLI) deferred to 4.0 as documented. Admin-facing components (DPIA, Breach, ROPA, etc.) migrate in 3.5.x patches. | ~~L~~ | |
 | S2 | Server companion package: `@tantainnovative/ndpr-toolkit/next`, `/nest`, `/express` with typed DSR route handlers, storage adapter, mailer adapter, 30-day SLA scheduler | L | Biggest market gap — every consumer rebuilds this. |
 | S3 | Compliance Console admin app (separate package or hosted SaaS): DSR queue with SLA countdown, DPIA dashboard, breach 72-hour timer, ROPA editor, audit log | XL | The upsell. OSS toolkit drives adoption; console pays bills. |
 | S4 | `npx @tantainnovative/ndpr-audit <url>` — crawls a site, scores compliance, outputs fix list | M | Marketing surface + lead gen. |

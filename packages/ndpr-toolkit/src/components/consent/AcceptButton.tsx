@@ -14,7 +14,7 @@ export const AcceptButton: React.FC<AcceptButtonProps> = ({ children, className,
     <button
       onClick={acceptAll}
       className={resolveClass(
-        'px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded hover:bg-[rgb(var(--ndpr-primary-hover))]',
+        'ndpr-consent-banner__button ndpr-consent-banner__button--primary',
         className, unstyled
       )}
       data-ndpr-component="consent-accept-button"

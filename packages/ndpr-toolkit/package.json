@@ -103,7 +103,8 @@
       "cross-border": ["./dist/cross-border-entry.d.ts"],
       "ropa": ["./dist/ropa-entry.d.ts"],
       "adapters": ["./dist/adapters.d.ts"],
-      "presets": ["./dist/presets.d.ts"]
+      "presets": ["./dist/presets.d.ts"],
+      "unstyled": ["./dist/unstyled.d.ts"]
     }
   },
   "files": [

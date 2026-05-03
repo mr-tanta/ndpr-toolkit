@@ -1,0 +1,908 @@
+/* ==========================================================================
+ * @tantainnovative/ndpr-toolkit — default component styles
+ *
+ * One stylesheet, no Tailwind dependency. Driven by --ndpr-* CSS custom
+ * properties so consumers can theme by overriding tokens at any level
+ * (`:root`, `[data-theme="dark"]`, or scoped to a wrapper).
+ *
+ * Import once in your app root:
+ *
+ *     // app/layout.tsx (Next.js) or src/main.tsx (Vite/CRA)
+ *     import "@tantainnovative/ndpr-toolkit/styles";
+ *
+ * Naming convention (BEM-ish, prefixed with `ndpr-`):
+ *   .ndpr-{component}                 — component root
+ *   .ndpr-{component}__{element}      — child part
+ *   .ndpr-{component}--{modifier}     — variant or state
+ *
+ * If you want to opt out completely (build your own design system), import
+ * `@tantainnovative/ndpr-toolkit/unstyled` instead — components render with
+ * no class names so your CSS rules apply unfiltered.
+ * ========================================================================== */
+
+/* ── Design tokens ─────────────────────────────────────────────────────── */
+
+:root {
+  /* Colors — light theme */
+  --ndpr-primary: 37 99 235;            /* blue-600 RGB */
+  --ndpr-primary-hover: 29 78 216;      /* blue-700 RGB */
+  --ndpr-primary-foreground: 255 255 255;
+  --ndpr-background: 255 255 255;
+  --ndpr-surface: 249 250 251;          /* gray-50 RGB */
+  --ndpr-foreground: 17 24 39;          /* gray-900 RGB */
+  --ndpr-muted: 243 244 246;            /* gray-100 RGB */
+  --ndpr-muted-foreground: 107 114 128; /* gray-500 RGB */
+  --ndpr-border: 229 231 235;           /* gray-200 RGB */
+  --ndpr-input: 229 231 235;
+  --ndpr-ring: 37 99 235;
+  --ndpr-success: 22 163 74;            /* green-600 RGB */
+  --ndpr-destructive: 220 38 38;        /* red-600 RGB */
+  --ndpr-warning: 217 119 6;            /* amber-600 RGB */
+
+  /* Spacing scale */
+  --ndpr-space-1: 0.25rem;
+  --ndpr-space-2: 0.5rem;
+  --ndpr-space-3: 0.75rem;
+  --ndpr-space-4: 1rem;
+  --ndpr-space-5: 1.25rem;
+  --ndpr-space-6: 1.5rem;
+  --ndpr-space-8: 2rem;
+
+  /* Radii */
+  --ndpr-radius-sm: 0.25rem;
+  --ndpr-radius: 0.5rem;
+  --ndpr-radius-lg: 0.75rem;
+  --ndpr-radius-full: 9999px;
+
+  /* Shadows */
+  --ndpr-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --ndpr-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --ndpr-shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.10), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+  /* Typography */
+  --ndpr-font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --ndpr-font-size-xs: 0.75rem;
+  --ndpr-font-size-sm: 0.875rem;
+  --ndpr-font-size-base: 1rem;
+  --ndpr-font-size-lg: 1.125rem;
+  --ndpr-font-size-xl: 1.25rem;
+  --ndpr-line-height: 1.5;
+  --ndpr-line-height-tight: 1.25;
+
+  /* Motion */
+  --ndpr-transition: 150ms ease-out;
+  --ndpr-transition-slow: 300ms ease-out;
+
+  /* Z-index */
+  --ndpr-z-banner: 9999;
+  --ndpr-z-modal: 10000;
+
+  /* Layout */
+  --ndpr-max-width: 72rem;
+}
+
+/* Dark theme — both `prefers-color-scheme: dark` and explicit opt-in via
+ * the `data-theme="dark"` attribute or `.dark` class are supported. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ndpr-primary: 96 165 250;
+    --ndpr-primary-hover: 147 197 253;
+    --ndpr-background: 17 24 39;
+    --ndpr-surface: 31 41 55;
+    --ndpr-foreground: 243 244 246;
+    --ndpr-muted: 55 65 81;
+    --ndpr-muted-foreground: 156 163 175;
+    --ndpr-border: 75 85 99;
+    --ndpr-input: 75 85 99;
+    --ndpr-ring: 96 165 250;
+  }
+}
+
+[data-theme="dark"],
+.dark {
+  --ndpr-primary: 96 165 250;
+  --ndpr-primary-hover: 147 197 253;
+  --ndpr-background: 17 24 39;
+  --ndpr-surface: 31 41 55;
+  --ndpr-foreground: 243 244 246;
+  --ndpr-muted: 55 65 81;
+  --ndpr-muted-foreground: 156 163 175;
+  --ndpr-border: 75 85 99;
+  --ndpr-input: 75 85 99;
+  --ndpr-ring: 96 165 250;
+}
+
+[data-theme="light"] {
+  --ndpr-primary: 37 99 235;
+  --ndpr-primary-hover: 29 78 216;
+  --ndpr-background: 255 255 255;
+  --ndpr-surface: 249 250 251;
+  --ndpr-foreground: 17 24 39;
+  --ndpr-muted: 243 244 246;
+  --ndpr-muted-foreground: 107 114 128;
+  --ndpr-border: 229 231 235;
+  --ndpr-input: 229 231 235;
+  --ndpr-ring: 37 99 235;
+}
+
+/* ── Base / cross-cutting ──────────────────────────────────────────────── */
+
+[data-ndpr-component] {
+  font-family: var(--ndpr-font-sans);
+  font-size: var(--ndpr-font-size-base);
+  line-height: var(--ndpr-line-height);
+  color: rgb(var(--ndpr-foreground));
+  box-sizing: border-box;
+}
+
+[data-ndpr-component] *,
+[data-ndpr-component] *::before,
+[data-ndpr-component] *::after {
+  box-sizing: border-box;
+}
+
+[data-ndpr-component] :focus-visible {
+  outline: 2px solid rgb(var(--ndpr-ring));
+  outline-offset: 2px;
+  border-radius: var(--ndpr-radius-sm);
+}
+
+/* ── Animations ────────────────────────────────────────────────────────── */
+
+@keyframes ndpr-slide-in-bottom {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes ndpr-slide-in-top {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+@keyframes ndpr-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ndpr-scale-in {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+/* Legacy alias — kept for backward compat with any consumer relying on the
+ * pre-3.5 animation classes shipped via animations.css. */
+.animate-slide-in     { animation: ndpr-slide-in-bottom var(--ndpr-transition-slow); }
+.animate-slide-in-top { animation: ndpr-slide-in-top    var(--ndpr-transition-slow); }
+.animate-fade-in      { animation: ndpr-fade-in         var(--ndpr-transition-slow); }
+
+/* ── ConsentBanner ─────────────────────────────────────────────────────── */
+
+.ndpr-consent-banner {
+  background: rgb(var(--ndpr-background));
+  color: rgb(var(--ndpr-foreground));
+  border: 1px solid rgb(var(--ndpr-border));
+  box-shadow: var(--ndpr-shadow-lg);
+  padding: var(--ndpr-space-4);
+  animation: ndpr-fade-in var(--ndpr-transition-slow);
+}
+
+@media (min-width: 640px) {
+  .ndpr-consent-banner {
+    padding: var(--ndpr-space-6);
+  }
+}
+
+/* Position modifiers */
+.ndpr-consent-banner--bottom,
+.ndpr-consent-banner--top {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: var(--ndpr-z-banner);
+  border-radius: 0;
+}
+
+.ndpr-consent-banner--bottom {
+  bottom: 0;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  animation: ndpr-slide-in-bottom var(--ndpr-transition-slow);
+}
+
+.ndpr-consent-banner--top {
+  top: 0;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  animation: ndpr-slide-in-top var(--ndpr-transition-slow);
+}
+
+.ndpr-consent-banner--inline {
+  border-radius: var(--ndpr-radius-lg);
+}
+
+/* Variant modifiers */
+.ndpr-consent-banner--card {
+  border-radius: var(--ndpr-radius-lg);
+  margin: var(--ndpr-space-4);
+  max-width: 32rem;
+}
+
+.ndpr-consent-banner--card.ndpr-consent-banner--bottom {
+  bottom: var(--ndpr-space-4);
+  left: auto;
+  right: var(--ndpr-space-4);
+}
+
+.ndpr-consent-banner--card.ndpr-consent-banner--top {
+  top: var(--ndpr-space-4);
+  left: auto;
+  right: var(--ndpr-space-4);
+}
+
+.ndpr-consent-banner--modal {
+  border-radius: var(--ndpr-radius-lg);
+  max-width: 32rem;
+  margin: 0;
+  animation: ndpr-scale-in var(--ndpr-transition-slow);
+}
+
+.ndpr-consent-banner__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: var(--ndpr-z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ndpr-space-4);
+  animation: ndpr-fade-in var(--ndpr-transition);
+}
+
+.ndpr-consent-banner__container {
+  max-width: var(--ndpr-max-width);
+  margin: 0 auto;
+}
+
+.ndpr-consent-banner__title {
+  margin: 0 0 var(--ndpr-space-2);
+  font-size: var(--ndpr-font-size-lg);
+  font-weight: 700;
+  line-height: var(--ndpr-line-height-tight);
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-consent-banner__description {
+  margin: 0 0 var(--ndpr-space-4);
+  font-size: var(--ndpr-font-size-sm);
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+@media (min-width: 640px) {
+  .ndpr-consent-banner__description {
+    font-size: var(--ndpr-font-size-base);
+  }
+}
+
+.ndpr-consent-banner__customize-panel {
+  margin-bottom: var(--ndpr-space-4);
+  padding: var(--ndpr-space-4);
+  background: rgb(var(--ndpr-surface));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius);
+  overflow: hidden;
+  transition: max-height var(--ndpr-transition-slow), opacity var(--ndpr-transition-slow);
+}
+
+.ndpr-consent-banner__select-all-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--ndpr-space-3);
+}
+
+.ndpr-consent-banner__select-all-button {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 600;
+  color: rgb(var(--ndpr-primary));
+  cursor: pointer;
+}
+
+.ndpr-consent-banner__select-all-button:hover {
+  text-decoration: underline;
+}
+
+.ndpr-consent-banner__options-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ndpr-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ndpr-consent-banner__option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ndpr-space-3);
+}
+
+.ndpr-consent-banner__option-checkbox {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.2rem;
+  accent-color: rgb(var(--ndpr-primary));
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.ndpr-consent-banner__option-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ndpr-consent-banner__option-text {
+  flex: 1;
+  font-size: var(--ndpr-font-size-sm);
+}
+
+.ndpr-consent-banner__option-label {
+  display: block;
+  font-weight: 600;
+  color: rgb(var(--ndpr-foreground));
+  cursor: pointer;
+}
+
+.ndpr-consent-banner__required-marker {
+  color: rgb(var(--ndpr-destructive));
+  margin-left: var(--ndpr-space-1);
+}
+
+.ndpr-consent-banner__option-description {
+  margin: var(--ndpr-space-1) 0 0;
+  color: rgb(var(--ndpr-muted-foreground));
+  font-size: var(--ndpr-font-size-sm);
+  line-height: var(--ndpr-line-height);
+}
+
+.ndpr-consent-banner__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ndpr-space-2);
+  margin-top: var(--ndpr-space-4);
+}
+
+@media (min-width: 640px) {
+  .ndpr-consent-banner__buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.ndpr-consent-banner__button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ndpr-space-2) var(--ndpr-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--ndpr-radius);
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background var(--ndpr-transition), border-color var(--ndpr-transition), color var(--ndpr-transition);
+  user-select: none;
+}
+
+.ndpr-consent-banner__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ndpr-consent-banner__button--primary {
+  background: rgb(var(--ndpr-primary));
+  color: rgb(var(--ndpr-primary-foreground));
+}
+
+.ndpr-consent-banner__button--primary:hover:not(:disabled) {
+  background: rgb(var(--ndpr-primary-hover));
+}
+
+.ndpr-consent-banner__button--secondary {
+  background: rgb(var(--ndpr-muted));
+  color: rgb(var(--ndpr-foreground));
+  border-color: rgb(var(--ndpr-border));
+}
+
+.ndpr-consent-banner__button--secondary:hover:not(:disabled) {
+  background: rgb(var(--ndpr-border));
+}
+
+.ndpr-consent-banner__button--ghost {
+  background: transparent;
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-consent-banner__button--ghost:hover:not(:disabled) {
+  background: rgb(var(--ndpr-muted));
+}
+
+.ndpr-consent-banner__footer-text {
+  margin-top: var(--ndpr-space-2);
+  font-size: var(--ndpr-font-size-xs);
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+/* ── ConsentManager (settings-page surface) ────────────────────────────── */
+
+.ndpr-consent-manager {
+  background: rgb(var(--ndpr-background));
+  color: rgb(var(--ndpr-foreground));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius-lg);
+  box-shadow: var(--ndpr-shadow);
+  padding: var(--ndpr-space-6);
+}
+
+.ndpr-consent-manager__title {
+  margin: 0 0 var(--ndpr-space-2);
+  font-size: var(--ndpr-font-size-xl);
+  font-weight: 700;
+  line-height: var(--ndpr-line-height-tight);
+}
+
+.ndpr-consent-manager__description {
+  margin: 0 0 var(--ndpr-space-6);
+  color: rgb(var(--ndpr-muted-foreground));
+  font-size: var(--ndpr-font-size-sm);
+}
+
+.ndpr-consent-manager__options-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ndpr-consent-manager__option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ndpr-space-4);
+  padding: var(--ndpr-space-4) 0;
+  border-bottom: 1px solid rgb(var(--ndpr-border));
+}
+
+.ndpr-consent-manager__option:last-child {
+  border-bottom: 0;
+}
+
+.ndpr-consent-manager__option-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ndpr-consent-manager__option-label {
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--ndpr-font-size-base);
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-consent-manager__option-description {
+  margin: var(--ndpr-space-1) 0 0;
+  color: rgb(var(--ndpr-muted-foreground));
+  font-size: var(--ndpr-font-size-sm);
+}
+
+.ndpr-consent-manager__toggle-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ndpr-space-3);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Pure-CSS switch — checkbox visually hidden, label fakes the toggle. */
+.ndpr-consent-manager__toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ndpr-consent-manager__toggle {
+  position: relative;
+  width: 2.75rem;
+  height: 1.5rem;
+  background: rgb(var(--ndpr-muted));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius-full);
+  transition: background var(--ndpr-transition);
+  flex-shrink: 0;
+}
+
+.ndpr-consent-manager__toggle::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: rgb(var(--ndpr-background));
+  border-radius: 50%;
+  box-shadow: var(--ndpr-shadow-sm);
+  transition: transform var(--ndpr-transition);
+}
+
+.ndpr-consent-manager__toggle-input:checked + .ndpr-consent-manager__toggle {
+  background: rgb(var(--ndpr-primary));
+  border-color: rgb(var(--ndpr-primary));
+}
+
+.ndpr-consent-manager__toggle-input:checked + .ndpr-consent-manager__toggle::after {
+  transform: translateX(1.25rem);
+}
+
+.ndpr-consent-manager__toggle-input:focus-visible + .ndpr-consent-manager__toggle {
+  outline: 2px solid rgb(var(--ndpr-ring));
+  outline-offset: 2px;
+}
+
+.ndpr-consent-manager__toggle-input:disabled + .ndpr-consent-manager__toggle {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ndpr-consent-manager__toggle-status {
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 500;
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-consent-manager__required-marker {
+  margin-left: var(--ndpr-space-1);
+  font-size: var(--ndpr-font-size-xs);
+  color: rgb(var(--ndpr-destructive));
+}
+
+.ndpr-consent-manager__success {
+  margin-top: var(--ndpr-space-4);
+  padding: var(--ndpr-space-3) var(--ndpr-space-4);
+  background: rgb(var(--ndpr-success) / 0.12);
+  color: rgb(var(--ndpr-success));
+  border: 1px solid rgb(var(--ndpr-success) / 0.3);
+  border-radius: var(--ndpr-radius);
+  font-size: var(--ndpr-font-size-sm);
+}
+
+.ndpr-consent-manager__buttons {
+  margin-top: var(--ndpr-space-6);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ndpr-space-3);
+}
+
+.ndpr-consent-manager__button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ndpr-space-2) var(--ndpr-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--ndpr-radius);
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background var(--ndpr-transition), border-color var(--ndpr-transition);
+}
+
+.ndpr-consent-manager__button--primary {
+  background: rgb(var(--ndpr-primary));
+  color: rgb(var(--ndpr-primary-foreground));
+}
+
+.ndpr-consent-manager__button--primary:hover:not(:disabled) {
+  background: rgb(var(--ndpr-primary-hover));
+}
+
+.ndpr-consent-manager__button--secondary {
+  background: rgb(var(--ndpr-muted));
+  color: rgb(var(--ndpr-foreground));
+  border-color: rgb(var(--ndpr-border));
+}
+
+.ndpr-consent-manager__button--secondary:hover:not(:disabled) {
+  background: rgb(var(--ndpr-border));
+}
+
+.ndpr-consent-manager__meta {
+  margin-top: var(--ndpr-space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ndpr-space-1) var(--ndpr-space-4);
+  font-size: var(--ndpr-font-size-xs);
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-consent-manager__meta p {
+  margin: 0;
+}
+
+/* ── Form primitives (shared by DSR / Breach / DPIA / ROPA forms) ──────── */
+
+.ndpr-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ndpr-space-1);
+}
+
+.ndpr-form-field__label {
+  display: block;
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 500;
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-form-field__required {
+  margin-left: var(--ndpr-space-1);
+  color: rgb(var(--ndpr-destructive));
+}
+
+.ndpr-form-field__input,
+.ndpr-form-field__select,
+.ndpr-form-field__textarea {
+  width: 100%;
+  padding: var(--ndpr-space-2) var(--ndpr-space-3);
+  font-size: var(--ndpr-font-size-base);
+  font-family: inherit;
+  color: rgb(var(--ndpr-foreground));
+  background: rgb(var(--ndpr-background));
+  border: 1px solid rgb(var(--ndpr-input));
+  border-radius: var(--ndpr-radius);
+  transition: border-color var(--ndpr-transition), box-shadow var(--ndpr-transition);
+  outline: none;
+  appearance: none;
+}
+
+.ndpr-form-field__textarea {
+  min-height: 6rem;
+  resize: vertical;
+  line-height: var(--ndpr-line-height);
+}
+
+.ndpr-form-field__input:focus,
+.ndpr-form-field__select:focus,
+.ndpr-form-field__textarea:focus {
+  border-color: rgb(var(--ndpr-primary));
+  box-shadow: 0 0 0 3px rgb(var(--ndpr-ring) / 0.25);
+}
+
+.ndpr-form-field__input:disabled,
+.ndpr-form-field__select:disabled,
+.ndpr-form-field__textarea:disabled {
+  background: rgb(var(--ndpr-muted));
+  cursor: not-allowed;
+}
+
+.ndpr-form-field__input[aria-invalid="true"],
+.ndpr-form-field__select[aria-invalid="true"],
+.ndpr-form-field__textarea[aria-invalid="true"] {
+  border-color: rgb(var(--ndpr-destructive));
+}
+
+.ndpr-form-field__input[aria-invalid="true"]:focus,
+.ndpr-form-field__select[aria-invalid="true"]:focus,
+.ndpr-form-field__textarea[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgb(var(--ndpr-destructive) / 0.25);
+}
+
+.ndpr-form-field__error {
+  margin: var(--ndpr-space-1) 0 0;
+  font-size: var(--ndpr-font-size-sm);
+  color: rgb(var(--ndpr-destructive));
+}
+
+.ndpr-form-field__hint {
+  margin: var(--ndpr-space-1) 0 0;
+  font-size: var(--ndpr-font-size-sm);
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-form-field__checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ndpr-space-3);
+}
+
+.ndpr-form-field__checkbox {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.2rem;
+  accent-color: rgb(var(--ndpr-primary));
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.ndpr-form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ndpr-space-4);
+}
+
+.ndpr-form-section__heading {
+  margin: 0 0 var(--ndpr-space-3);
+  font-size: var(--ndpr-font-size-lg);
+  font-weight: 600;
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-form-section__hint {
+  margin: 0 0 var(--ndpr-space-3);
+  font-size: var(--ndpr-font-size-sm);
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ndpr-space-4);
+}
+
+@media (min-width: 640px) {
+  .ndpr-form-grid--2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── DSRRequestForm ────────────────────────────────────────────────────── */
+
+.ndpr-dsr-form {
+  background: rgb(var(--ndpr-background));
+  color: rgb(var(--ndpr-foreground));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius-lg);
+  box-shadow: var(--ndpr-shadow);
+  padding: var(--ndpr-space-6);
+}
+
+.ndpr-dsr-form__title {
+  margin: 0 0 var(--ndpr-space-2);
+  font-size: var(--ndpr-font-size-xl);
+  font-weight: 700;
+  line-height: var(--ndpr-line-height-tight);
+}
+
+.ndpr-dsr-form__description {
+  margin: 0 0 var(--ndpr-space-6);
+  color: rgb(var(--ndpr-muted-foreground));
+  font-size: var(--ndpr-font-size-sm);
+}
+
+.ndpr-dsr-form__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ndpr-space-6);
+}
+
+.ndpr-dsr-form__type-info {
+  margin: var(--ndpr-space-3) 0;
+  padding: var(--ndpr-space-3) var(--ndpr-space-4);
+  background: rgb(var(--ndpr-surface));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius);
+  font-size: var(--ndpr-font-size-sm);
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-dsr-form__type-info p {
+  margin: 0;
+}
+
+.ndpr-dsr-form__type-info p + p {
+  margin-top: var(--ndpr-space-1);
+}
+
+.ndpr-dsr-form__notice {
+  margin-top: var(--ndpr-space-2);
+  padding: var(--ndpr-space-4);
+  background: rgb(var(--ndpr-surface));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius);
+}
+
+.ndpr-dsr-form__notice-title {
+  margin: 0 0 var(--ndpr-space-2);
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 600;
+}
+
+.ndpr-dsr-form__notice-body {
+  margin: 0;
+  font-size: var(--ndpr-font-size-xs);
+  color: rgb(var(--ndpr-muted-foreground));
+  line-height: var(--ndpr-line-height);
+}
+
+.ndpr-dsr-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ndpr-space-3);
+  margin-top: var(--ndpr-space-2);
+  position: relative;
+}
+
+.ndpr-dsr-form__button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ndpr-space-3) var(--ndpr-space-6);
+  border: 1px solid transparent;
+  border-radius: var(--ndpr-radius);
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background var(--ndpr-transition), border-color var(--ndpr-transition);
+}
+
+.ndpr-dsr-form__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ndpr-dsr-form__button--primary {
+  background: rgb(var(--ndpr-primary));
+  color: rgb(var(--ndpr-primary-foreground));
+}
+
+.ndpr-dsr-form__button--primary:hover:not(:disabled) {
+  background: rgb(var(--ndpr-primary-hover));
+}
+
+.ndpr-dsr-form__button--secondary {
+  background: rgb(var(--ndpr-muted));
+  color: rgb(var(--ndpr-foreground));
+  border-color: rgb(var(--ndpr-border));
+}
+
+.ndpr-dsr-form__button--secondary:hover:not(:disabled) {
+  background: rgb(var(--ndpr-border));
+}
+
+.ndpr-dsr-form__success {
+  background: rgb(var(--ndpr-success) / 0.08);
+  color: rgb(var(--ndpr-foreground));
+  border: 1px solid rgb(var(--ndpr-success) / 0.4);
+  border-radius: var(--ndpr-radius);
+  padding: var(--ndpr-space-6);
+}
+
+.ndpr-dsr-form__success-title {
+  margin: 0 0 var(--ndpr-space-2);
+  font-size: var(--ndpr-font-size-lg);
+  font-weight: 700;
+  color: rgb(var(--ndpr-success));
+}
+
+.ndpr-dsr-form__success-body {
+  margin: 0 0 var(--ndpr-space-4);
+  color: rgb(var(--ndpr-foreground));
+  font-size: var(--ndpr-font-size-sm);
+}

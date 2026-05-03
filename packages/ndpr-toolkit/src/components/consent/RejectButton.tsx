@@ -14,7 +14,7 @@ export const RejectButton: React.FC<RejectButtonProps> = ({ children, className,
     <button
       onClick={rejectAll}
       className={resolveClass(
-        'px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600',
+        'ndpr-consent-banner__button ndpr-consent-banner__button--secondary',
         className, unstyled
       )}
       data-ndpr-component="consent-reject-button"
