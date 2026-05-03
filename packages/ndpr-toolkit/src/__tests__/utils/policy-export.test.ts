@@ -432,3 +432,160 @@ describe('exportDOCX', () => {
     await expect(exportDOCX(policy)).resolves.toBeDefined();
   });
 });
+
+// ────────────────────────────────────────────────────────────────────────────
+// v3.4.1 regression guards — would have caught the v3.4.0 ship bugs
+// ────────────────────────────────────────────────────────────────────────────
+
+describe('exportHTML — {{var}} substitution (v3.4.1 regression guard)', () => {
+  // v3.4.0 shipped exportHTML rendering raw `section.template` strings, so the
+  // recommended hook + PolicyPage flow shipped policies with literal
+  // `{{orgName}}`, `{{address}}`, etc. visible to visitors. These tests lock
+  // in that the substitution actually runs end-to-end.
+
+  function makeFixture(): PrivacyPolicy {
+    return {
+      id: 'fixture',
+      title: 'Privacy Policy',
+      templateId: 'default-business',
+      organizationInfo: {
+        name: 'Acme Nigeria Ltd',
+        website: 'https://acme.ng',
+        privacyEmail: 'privacy@acme.ng',
+        address: '12 Marina, Lagos',
+        privacyPhone: '',
+        dpoName: 'Jane Doe',
+        dpoEmail: 'dpo@acme.ng',
+        industry: 'fintech',
+      },
+      sections: [
+        {
+          id: 'intro',
+          title: 'Introduction',
+          required: true,
+          included: true,
+          template:
+            'This Privacy Policy explains how {{orgName}} processes your data at {{website}}. ' +
+            'Contact {{privacyEmail}} for questions.',
+        },
+        {
+          id: 'contact',
+          title: 'Contact',
+          required: true,
+          included: true,
+          template:
+            'Address: {{address}}\nDPO: {{dpoName}} ({{dpoEmail}})\nIndustry: {{industry}}',
+        },
+      ],
+      variableValues: {
+        orgName: 'Acme Nigeria Ltd',
+        website: 'https://acme.ng',
+        privacyEmail: 'privacy@acme.ng',
+        address: '12 Marina, Lagos',
+        dpoName: 'Jane Doe',
+        dpoEmail: 'dpo@acme.ng',
+        industry: 'fintech',
+      },
+      effectiveDate: 1_700_000_000_000,
+      lastUpdated: 1_700_000_000_000,
+      version: '1.0',
+    };
+  }
+
+  it('substitutes {{var}} placeholders end-to-end — no token survives in rendered HTML', () => {
+    const html = exportHTML(makeFixture());
+    // The literal {{anything}} pattern must not appear in the rendered DOM.
+    expect(html).not.toMatch(/\{\{[a-zA-Z_][a-zA-Z0-9_]*\}\}/);
+  });
+
+  it('renders the actual variable values inside the section markup', () => {
+    const html = exportHTML(makeFixture());
+    expect(html).toContain('Acme Nigeria Ltd');
+    expect(html).toContain('https://acme.ng');
+    expect(html).toContain('privacy@acme.ng');
+    expect(html).toContain('12 Marina, Lagos');
+    expect(html).toContain('Jane Doe');
+    expect(html).toContain('dpo@acme.ng');
+  });
+
+  it('falls back to organizationInfo when variableValues is missing', () => {
+    const policy = makeFixture();
+    delete (policy as { variableValues?: unknown }).variableValues;
+    const html = exportHTML(policy);
+    // organizationInfo.name should fill {{orgName}}; website / email fill theirs.
+    expect(html).toContain('Acme Nigeria Ltd');
+    expect(html).toContain('https://acme.ng');
+    expect(html).toContain('privacy@acme.ng');
+    expect(html).not.toMatch(/\{\{(orgName|website|privacyEmail)\}\}/);
+  });
+
+  it('leaves unknown tokens intact so findUnfilledTokens can surface them', () => {
+    const policy = makeFixture();
+    policy.sections[0].template = 'See {{nonexistentVariable}} for details.';
+    const html = exportHTML(policy);
+    expect(html).toContain('{{nonexistentVariable}}');
+  });
+
+  it('handles whitespace inside the token: {{ orgName }} renders the same as {{orgName}}', () => {
+    const policy = makeFixture();
+    policy.sections[0].template = 'Hello {{ orgName }} and {{orgName}}.';
+    const html = exportHTML(policy);
+    expect(html).toContain('Hello Acme Nigeria Ltd and Acme Nigeria Ltd.');
+    expect(html).not.toMatch(/\{\{\s*orgName\s*\}\}/);
+  });
+});
+
+describe('exportHTML — theme option (v3.4.1 dark-mode-leak regression guard)', () => {
+  // v3.4.0 emitted an unconditional `@media (prefers-color-scheme: dark)`
+  // block that bled dark colours through Shadow DOM on macOS / iOS / Android
+  // dark mode for any consumer with a light-only host site. v3.4.1 makes it
+  // opt-in via `theme: 'auto' | 'light' | 'dark'`, defaulting to `'light'`.
+
+  function makeMinimal(): PrivacyPolicy {
+    return {
+      id: 'p',
+      title: 'P',
+      templateId: 't',
+      organizationInfo: { name: 'Acme', website: '', privacyEmail: '', address: '' },
+      sections: [{ id: 's1', title: 'S1', required: true, included: true, template: 'Body.' }],
+      variableValues: {},
+      effectiveDate: 1,
+      lastUpdated: 1,
+      version: '1.0',
+    };
+  }
+
+  it('default (no theme option) emits NO prefers-color-scheme dark block', () => {
+    const html = exportHTML(makeMinimal());
+    expect(html).not.toMatch(/@media\s*\(prefers-color-scheme:\s*dark\)/);
+  });
+
+  it('default pins color-scheme: light on :root', () => {
+    const html = exportHTML(makeMinimal());
+    expect(html).toMatch(/color-scheme:\s*light/);
+  });
+
+  it('theme="light" emits the light token palette', () => {
+    const html = exportHTML(makeMinimal(), { theme: 'light' });
+    expect(html).toContain('--color-bg: #ffffff');
+    expect(html).not.toContain('--color-bg: #0f172a');
+    expect(html).not.toMatch(/@media\s*\(prefers-color-scheme:\s*dark\)/);
+  });
+
+  it('theme="dark" emits the dark token palette as primary, no @media', () => {
+    const html = exportHTML(makeMinimal(), { theme: 'dark' });
+    expect(html).toContain('--color-bg: #0f172a');
+    expect(html).not.toContain('--color-bg: #ffffff');
+    expect(html).not.toMatch(/@media\s*\(prefers-color-scheme:\s*dark\)/);
+    expect(html).toMatch(/color-scheme:\s*dark/);
+  });
+
+  it('theme="auto" preserves the OS-driven prefers-color-scheme block', () => {
+    const html = exportHTML(makeMinimal(), { theme: 'auto' });
+    expect(html).toMatch(/@media\s*\(prefers-color-scheme:\s*dark\)/);
+    // Light tokens are still the primary; dark only inside the @media block.
+    expect(html).toContain('--color-bg: #ffffff');
+    expect(html).toContain('--color-bg: #0f172a');
+    expect(html).toMatch(/color-scheme:\s*light dark/);
+  });
+});

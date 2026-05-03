@@ -57,6 +57,18 @@ interface UseDefaultPrivacyPolicyOptions {
 
 const DEFAULT_TEMPLATE_ID = 'default-business';
 
+/**
+ * Format a Date for the contact-info section's `{{effectiveDate}}` token.
+ * Uses the en-NG locale to match the rest of the toolkit's date rendering.
+ */
+function formatEffectiveDate(date: Date): string {
+  return date.toLocaleDateString('en-NG', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
 function buildTemplate(
   orgInfo: UseDefaultPrivacyPolicyOptions['orgInfo'],
 ): PolicyTemplate {
@@ -73,6 +85,13 @@ function buildTemplate(
     if (orgInfo.industry) variableOverrides.industry = orgInfo.industry;
     if (orgInfo.dpoName) variableOverrides.dpoName = orgInfo.dpoName;
     if (orgInfo.dpoEmail) variableOverrides.dpoEmail = orgInfo.dpoEmail;
+  }
+  // v3.4.1: auto-default effectiveDate so the contact-info section's
+  // `This policy is effective as of {{effectiveDate}}` line renders today's
+  // date instead of an empty string. Consumers who want a different date
+  // can still override via updateVariableValue('effectiveDate', '...').
+  if (!variableOverrides.effectiveDate) {
+    variableOverrides.effectiveDate = formatEffectiveDate(new Date());
   }
 
   return {

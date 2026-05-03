@@ -7,6 +7,26 @@ const PKG = "packages/ndpr-toolkit/src";
 // import directly from a Server Component file without a wrapper.
 const RSC_SAFE_ENTRIES = ["core", "server"];
 
+// Entries that DO need the "use client" directive — components and hooks.
+// We re-inject the directive in onSuccess because esbuild's minify pass
+// strips bare directive expressions from the start of files, which is why
+// the v3.4.0 build set `esbuildOptions.banner = '"use client"'` but
+// shipped zero occurrences in the published bundle.
+const CLIENT_ENTRIES = [
+  "index",
+  "hooks",
+  "consent",
+  "dsr",
+  "dpia",
+  "breach",
+  "policy",
+  "lawful-basis",
+  "cross-border",
+  "ropa",
+  "presets",
+  "unstyled",
+];
+
 export default defineConfig({
   entry: {
     index: `${PKG}/index.ts`,
@@ -76,26 +96,45 @@ export default defineConfig({
       fs.copyFileSync(stylesSource, stylesDest);
     }
 
-    // ── Strip the "use client" banner from RSC-safe entries so they can
-    //    be imported from a Server Component / Edge Function / Worker
-    //    without dragging the importing file into the client bundle.
+    // ── "use client" handling (v3.4.1 fix)
+    //
+    // esbuild's minify pass strips bare directive expressions from the
+    // start of files. The `esbuildOptions.banner` we set above therefore
+    // gets removed for every entry. To get the directive into the
+    // published bundle we strip it (idempotent) then re-inject ONLY for
+    // client entries, post-minify.
+
     const stripUseClient = (filePath: string) => {
       if (!fs.existsSync(filePath)) return;
       const original = fs.readFileSync(filePath, "utf8");
-      // tsup's banner is a bare directive — match either quoted form, with
-      // or without trailing semicolon, only at the very start of the file.
-      const stripped = original.replace(
-        /^["']use client["'];?\s*\n?/,
-        "",
-      );
+      const stripped = original.replace(/^["']use client["'];?\s*\n?/, "");
       if (stripped !== original) {
         fs.writeFileSync(filePath, stripped, "utf8");
       }
     };
 
+    const injectUseClient = (filePath: string) => {
+      if (!fs.existsSync(filePath)) return;
+      const original = fs.readFileSync(filePath, "utf8");
+      // Idempotent: don't double-prepend if a previous build (or the
+      // banner that did survive on this entry by accident) already left
+      // the directive in place.
+      if (/^["']use client["']/.test(original)) return;
+      fs.writeFileSync(filePath, `"use client";\n${original}`, "utf8");
+    };
+
+    // RSC-safe entries: ensure no directive — strip if present.
     for (const entry of RSC_SAFE_ENTRIES) {
       stripUseClient(path.join("dist", `${entry}.mjs`));
       stripUseClient(path.join("dist", `${entry}.js`));
+    }
+
+    // Client entries: ensure the directive IS present so consumers can
+    // import these from a Server Component file without wrapping their
+    // own client boundary.
+    for (const entry of CLIENT_ENTRIES) {
+      injectUseClient(path.join("dist", `${entry}.mjs`));
+      injectUseClient(path.join("dist", `${entry}.js`));
     }
   },
 });

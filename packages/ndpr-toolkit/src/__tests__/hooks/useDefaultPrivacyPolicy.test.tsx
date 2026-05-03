@@ -258,4 +258,30 @@ describe('useDefaultPrivacyPolicy', () => {
       expect(result.current.policy?.organizationInfo.name).toBe('Existing Corp');
     });
   });
+
+  describe('effectiveDate auto-default (v3.4.1 regression guard)', () => {
+    // v3.4.0 left `policy.variableValues.effectiveDate` as `""` after
+    // auto-init, so the contact-info section rendered "This policy is
+    // effective as of " with a trailing empty string. v3.4.1 defaults it
+    // to today's date in en-NG long format.
+    it('writes a non-empty effectiveDate variable value', async () => {
+      const { result } = renderHook(() =>
+        useDefaultPrivacyPolicy({
+          orgInfo: { name: 'Acme Ltd', email: 'privacy@acme.ng' },
+          useLocalStorage: false,
+        }),
+      );
+
+      await waitFor(() => {
+        expect(result.current.policy).not.toBeNull();
+      });
+
+      const tpl = result.current.selectedTemplate;
+      expect(tpl).not.toBeNull();
+      const effectiveDateDefault = tpl!.variables.effectiveDate?.defaultValue;
+      expect(effectiveDateDefault).toBeTruthy();
+      // Format: "3 May 2026" — number, month name, four-digit year (en-NG)
+      expect(effectiveDateDefault).toMatch(/\d+\s+\w+\s+\d{4}/);
+    });
+  });
 });

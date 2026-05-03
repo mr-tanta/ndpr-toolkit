@@ -187,6 +187,26 @@ export interface HTMLExportOptions {
   includeStyles?: boolean;
   includePrintCSS?: boolean;
   customCSS?: string;
+  /**
+   * Theme controlling the embedded design tokens.
+   *
+   * - `'light'` (default): emits the light token palette only. No
+   *   `prefers-color-scheme: dark` block is included, so a visitor's OS
+   *   dark-mode setting will NOT recolour the policy. This is the right
+   *   default for an embedded compliance widget — most consumer host sites
+   *   are single-theme and Shadow DOM does not isolate `prefers-color-scheme`.
+   * - `'dark'`: emits the dark token palette as the primary style.
+   * - `'auto'`: emits light tokens plus a `@media (prefers-color-scheme: dark)`
+   *   block that swaps to dark on the user's OS preference. Use this when
+   *   your host site genuinely follows OS dark mode and you want the policy
+   *   to match.
+   *
+   * Pre-3.4.1 the export effectively behaved like `'auto'` unconditionally,
+   * which leaked dark colours into light-only host sites via Shadow DOM.
+   *
+   * @default 'light'
+   */
+  theme?: 'light' | 'dark' | 'auto';
 }
 
 // ---------------------------------------------------------------------------

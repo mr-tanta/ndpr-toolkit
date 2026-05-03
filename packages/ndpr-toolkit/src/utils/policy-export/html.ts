@@ -11,6 +11,47 @@ function escapeHtml(text: string): string {
     .replace(/'/g, '&#39;');
 }
 
+/**
+ * Substitute `{{var}}` placeholders in raw section text.
+ *
+ * Source-of-truth precedence: `policy.variableValues` first (this is what
+ * `useDefaultPrivacyPolicy` populates), then `policy.organizationInfo` for
+ * the canonical org-info fields the default templates reference. Tokens
+ * that resolve to a non-empty string are replaced; tokens that don't are
+ * left intact for `findUnfilledTokens` (or a CI guard) to surface.
+ *
+ * Escapes regex specials in keys so a variable like `user.name` or
+ * `arr[0]` doesn't blow up the matcher.
+ */
+function substituteVariables(
+  text: string,
+  policy: { variableValues?: Record<string, string>; organizationInfo?: Record<string, unknown> | undefined },
+): string {
+  if (!text) return '';
+
+  // Build the lookup table once. variableValues wins; organizationInfo fills
+  // gaps for default-template tokens like {{orgName}} → organizationInfo.name.
+  const vars: Record<string, string> = {};
+  const org = policy.organizationInfo ?? {};
+  // Map {{orgName}} → organizationInfo.name (this is the canonical default
+  // template's naming convention; doesn't override an explicit
+  // variableValues.orgName).
+  if (typeof (org as { name?: unknown }).name === 'string' && (org as { name: string }).name) {
+    vars.orgName = (org as { name: string }).name;
+  }
+  for (const [key, value] of Object.entries(org)) {
+    if (typeof value === 'string' && value && !(key in vars)) vars[key] = value;
+  }
+  for (const [key, value] of Object.entries(policy.variableValues ?? {})) {
+    if (typeof value === 'string' && value) vars[key] = value;
+  }
+
+  return text.replace(/\{\{\s*([^}\s]+)\s*\}\}/g, (whole, rawKey: string) => {
+    const key = String(rawKey).trim();
+    return Object.prototype.hasOwnProperty.call(vars, key) ? vars[key] : whole;
+  });
+}
+
 /** Convert a section title to a URL-safe anchor slug. */
 function slugify(title: string): string {
   return title
@@ -57,12 +98,8 @@ function contentToHtml(content: string): string {
 }
 
 /** Embedded CSS — responsive, print-friendly, dark/light via prefers-color-scheme. */
-const BASE_STYLES = `
-  /* ── Reset & Base ─────────────────────────── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  /* ── Design tokens ────────────────────────── */
-  :root {
+/** Light-theme color tokens (the default + safe fallback). */
+const LIGHT_TOKENS = `
     --color-bg: #ffffff;
     --color-surface: #f9fafb;
     --color-border: #e5e7eb;
@@ -72,29 +109,71 @@ const BASE_STYLES = `
     --color-accent-light: #dcfce7;
     --color-heading: #064e3b;
     --color-link: #15803d;
-    --color-link-hover: #166534;
+    --color-link-hover: #166534;`;
+
+/** Dark-theme color tokens (only emitted when consumer opts in). */
+const DARK_TOKENS = `
+    --color-bg: #0f172a;
+    --color-surface: #1e293b;
+    --color-border: #334155;
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-accent: #22c55e;
+    --color-accent-light: #14532d;
+    --color-heading: #86efac;
+    --color-link: #4ade80;
+    --color-link-hover: #86efac;`;
+
+/** Build the design-token block based on the consumer-selected theme. */
+function buildTokenBlock(theme: 'light' | 'dark' | 'auto'): string {
+  // `color-scheme` tells the UA to render native UI (scrollbars, form controls)
+  // matching the chosen theme. For `auto` we declare both so the browser can
+  // adapt; for `light`/`dark` we pin so consumers get the deterministic
+  // rendering they asked for.
+  const colorSchemeDecl =
+    theme === 'auto' ? '    color-scheme: light dark;' :
+    theme === 'dark' ? '    color-scheme: dark;' :
+                       '    color-scheme: light;';
+
+  // Primary token block uses light by default. When the consumer pins
+  // `theme: 'dark'`, dark becomes the primary and we omit the prefers-* media
+  // query entirely (otherwise it would never match anyway, but cleaner output).
+  const primaryTokens = theme === 'dark' ? DARK_TOKENS : LIGHT_TOKENS;
+
+  // The prefers-color-scheme override is only emitted for `theme: 'auto'`.
+  // CRITICAL: prior to v3.4.1 this block was emitted unconditionally, which
+  // caused dark colors to bleed through Shadow DOM on macOS / iOS / Android
+  // dark mode for consumers whose host site is light-only. Shadow DOM does
+  // NOT isolate prefers-color-scheme — the media query evaluates against
+  // the user agent's setting globally regardless of scope.
+  const autoOverride =
+    theme === 'auto'
+      ? `
+
+  @media (prefers-color-scheme: dark) {
+    :root {${DARK_TOKENS}
+    }
+  }`
+      : '';
+
+  return `
+  :root {
+${colorSchemeDecl}${primaryTokens}
     --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
     --radius: 8px;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
     --max-width: 860px;
-  }
+  }${autoOverride}`;
+}
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-bg: #0f172a;
-      --color-surface: #1e293b;
-      --color-border: #334155;
-      --color-text: #f1f5f9;
-      --color-text-muted: #94a3b8;
-      --color-accent: #22c55e;
-      --color-accent-light: #14532d;
-      --color-heading: #86efac;
-      --color-link: #4ade80;
-      --color-link-hover: #86efac;
-    }
-  }
+const BASE_STYLES_HEAD = `
+  /* ── Reset & Base ─────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ── Design tokens ────────────────────────── */`;
+
+const BASE_STYLES_TAIL = `
   /* ── Layout ───────────────────────────────── */
   html { font-size: 16px; scroll-behavior: smooth; }
 
@@ -300,7 +379,12 @@ const BASE_STYLES = `
 
     a { color: inherit; text-decoration: none; }
   }
-`.trim();
+`;
+
+/** Compose the full embedded stylesheet for the chosen theme. */
+function buildBaseStyles(theme: 'light' | 'dark' | 'auto'): string {
+  return `${BASE_STYLES_HEAD}${buildTokenBlock(theme)}${BASE_STYLES_TAIL}`.trim();
+}
 
 /**
  * Export a PrivacyPolicy as a self-contained HTML string.
@@ -316,6 +400,13 @@ const BASE_STYLES = `
 export function exportHTML(policy: PrivacyPolicy, options?: HTMLExportOptions): string {
   const includeStyles = options?.includeStyles !== false;
   const customCSS = options?.customCSS ?? '';
+
+  // Theme defaults to 'light' so the embedded `@media (prefers-color-scheme:
+  // dark)` block is opt-in rather than OS-driven. Prior to v3.4.1 this was
+  // unconditional and bled dark colors through Shadow DOM (which doesn't
+  // isolate prefers-color-scheme) for any visitor on macOS / iOS / Android
+  // dark mode — even when the host site was light-only.
+  const theme: 'light' | 'dark' | 'auto' = options?.theme ?? 'light';
 
   const includedSections = policy.sections.filter((s) => s.included);
 
@@ -363,11 +454,19 @@ ${tocItems}
   </nav>`;
 
   // ── Sections ─────────────────────────────────────────────────────────────
+  // CRITICAL (v3.4.1): substitute `{{var}}` placeholders before rendering.
+  // Prior to this fix, exportHTML rendered raw template strings, so
+  // consumers using the recommended hook + PolicyPage flow shipped policies
+  // with literal `{{orgName}}`, `{{address}}`, etc. visible to visitors.
   const sectionsHtml = includedSections
     .map((section, i) => {
       const anchor = slugify(section.title);
-      const content = section.template || section.defaultContent || '';
-      const contentHtml = contentToHtml(content);
+      const rawContent = section.template || section.defaultContent || '';
+      const substituted = substituteVariables(rawContent, {
+        variableValues: policy.variableValues,
+        organizationInfo: policy.organizationInfo as unknown as Record<string, unknown>,
+      });
+      const contentHtml = contentToHtml(substituted);
       return `  <section class="policy-section" id="${anchor}" aria-labelledby="section-heading-${anchor}">
     <h2 id="section-heading-${anchor}">
       <span class="section-number" aria-hidden="true">${i + 1}</span>
@@ -382,7 +481,7 @@ ${tocItems}
   const safeCSS = customCSS ? customCSS.replace(/<\/style>/gi, '') : '';
   const styleBlock = includeStyles
     ? `<style>
-${BASE_STYLES}
+${buildBaseStyles(theme)}
 ${safeCSS ? `\n/* ── Custom styles ──────────────────────────────────────── */\n${safeCSS}` : ''}
 </style>`
     : safeCSS
