@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.5.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.4.1...v3.5.0) (2026-05-03)
+
+
+### Features
+
+* **ndpr-toolkit:** persist alias, validateDsrSubmission, hooks plugin v7, dts rollup ([f1fd29d](https://github.com/mr-tanta/ndpr-toolkit/commit/f1fd29d7ccd3fc6002ddd762d9dbc4c483e1952c))
+
+
+### Documentation
+
+* **site:** fix homepage + docs code snippets to match published API ([0ed4b13](https://github.com/mr-tanta/ndpr-toolkit/commit/0ed4b1305e57603a20bb08004479e1862740d14d))
+
 ## [3.4.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.4.0...v3.4.1) (2026-05-03)
 
 
