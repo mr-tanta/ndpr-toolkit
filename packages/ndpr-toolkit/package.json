@@ -118,7 +118,7 @@
     "build:types": "tsc -p tsconfig.lib.json",
     "dev": "tsup --watch",
     "test": "jest",
-    "lint": "eslint src --ext .ts,.tsx",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "sync:changelog": "node -e \"require('node:fs').copyFileSync('../../CHANGELOG.md','./CHANGELOG.md')\"",
     "prepublishOnly": "pnpm sync:changelog && pnpm build"
   },
