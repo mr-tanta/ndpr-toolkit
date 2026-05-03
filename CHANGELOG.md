@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.4.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.4.0...v3.4.1) (2026-05-03)
+
+
+### Bug Fixes
+
+* **ndpr-toolkit:** {{var}} substitution + dark-mode opt-in + use-client + effectiveDate ([d8deab0](https://github.com/mr-tanta/ndpr-toolkit/commit/d8deab0876e308dd0a8fc9aef3b5dcc757c32884))
+
+
+### Documentation
+
+* **phase1:** annotate triage doc with v3.4.0 ship status ([9fb1744](https://github.com/mr-tanta/ndpr-toolkit/commit/9fb17449413ff418f263c9ac3bfbf153db438fb4))
+* **readme:** sync to v3.4.0 — styled defaults, /server entry, real logo ([bf7f632](https://github.com/mr-tanta/ndpr-toolkit/commit/bf7f63239ebac623868f20d69c7d2229303d5869))
+
 ## [3.4.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.3.1...v3.4.0) (2026-05-03)
 
 
