@@ -194,7 +194,7 @@ describe('findUnfilledTokens', () => {
 describe('assemblePolicy: canonical fixture renders without unfilled tokens', () => {
   // CI guard: a fully-populated org info should never produce {{...}} or
   // «TODO: ...» markers in the rendered output. This is the test that would
-  // have caught the FINLAB v3.3.1 issue where DEFAULT placeholders shipped
+  // have caught the v3.3.1 integration issue where DEFAULT placeholders shipped
   // to production privacy pages.
   it('renders cleanly when all required org info is provided', () => {
     const ctx = createDefaultContext();

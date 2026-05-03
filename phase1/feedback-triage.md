@@ -1,6 +1,6 @@
-# FINLAB Feedback Triage — v3.3.1
+# v3.3.1 Integration Feedback Triage
 
-Source: FINLAB Nigeria integration team, 2026-05-03
+Source: external integration team, 2026-05-03
 Stack hit: Next 16 App Router + Turbopack + Tailwind v4
 
 Severity scale: **P0** = ships broken policies/UI to end users. **P1** = blocks integration without a workaround. **P2** = costs hours of integrator time. **P3** = polish, strategy, future product.
@@ -74,10 +74,10 @@ Pick **one** of:
 - **(A)** S1 = decide + implement UI strategy → fix B4 properly → land styled defaults.
 - **(B)** S2 = ship server companion package as `@tantainnovative/ndpr-toolkit/next` first; this unlocks the largest amount of consumer time-saved per LOC of toolkit code.
 
-My take: do **B first**. Server integration is the half that's universally missing; styling is the half consumers can hack around (as FINLAB did). Server companion also opens the door to S3 (console).
+My take: do **B first**. Server integration is the half that's universally missing; styling is the half consumers can hack around (as the integration team did). Server companion also opens the door to S3 (console).
 
 ## Open questions for the team
 
 1. UI strategy: A (shadcn copy-paste) or B (fully-styled drop-in)? Or keep both via `./unstyled` and a new `./styled`?
 2. Is there appetite to ship a server companion now, or wait?
-3. Do we want to invite FINLAB's video walkthrough? Could double as a recorded reproduction of every blocker.
+3. Do we want to invite the integration team's video walkthrough? Could double as a recorded reproduction of every blocker.
