@@ -25,6 +25,24 @@ export const metadata: Metadata = {
     "v3 — Production-ready React components and adapters for NDPA 2023 compliance. Consent management, DSR portal, DPIA, breach notification, compliance score, and presets for Nigerian applications.",
   keywords:
     "NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, compliance toolkit, React, Next.js, open source, compliance score, adapters, presets, DSR portal",
+  applicationName: "NDPA Toolkit",
+  manifest: "/favicon/site.webmanifest",
+  icons: {
+    // /src/app/favicon.ico is the Next.js convention pickup; the explicit
+    // list below covers older agents and the high-density PNG sizes
+    // generated alongside it (and points at the /favicon/ directory where
+    // the platform PNGs actually live).
+    icon: [
+      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/favicon/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: ["/favicon.ico"],
+    apple: [
+      { url: "/favicon/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   other: {
     "theme-color": "#1d4ed8",
   },

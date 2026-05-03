@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 const navLinks = [
@@ -32,17 +33,15 @@ export function SiteHeader() {
       <header className="ndpr-header" data-scrolled={scrolled}>
         <div className="ndpr-header-inner">
           {/* Logo — left */}
-          <Link href="/" className="ndpr-logo">
-            <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="8" fill="url(#logo-grad)" />
-              <path d="M10 22V10h3.5l4.5 7.5V10H21v12h-3.5L13 14.5V22H10z" fill="white" />
-              <defs>
-                <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32">
-                  <stop stopColor="#1d4ed8" />
-                  <stop offset="1" stopColor="#3b82f6" />
-                </linearGradient>
-              </defs>
-            </svg>
+          <Link href="/" className="ndpr-logo" aria-label="NDPA Toolkit — home">
+            <Image
+              src="/icon-transparent-blue.webp"
+              alt=""
+              width={28}
+              height={28}
+              priority
+              className="ndpr-logo-mark"
+            />
             <span className="ndpr-logo-text">NDPA Toolkit</span>
             <span className="ndpr-version-tag">v3</span>
           </Link>
@@ -152,6 +151,15 @@ export function SiteHeader() {
           color: var(--text-primary);
           flex-shrink: 0;
           min-width: 0;
+        }
+        .ndpr-logo-mark {
+          /* Use object-fit so the 2508×2508 source renders crisp at 28px on
+           * any DPR. The image is intrinsically square; height/width props
+           * already lock the box. */
+          height: 28px;
+          width: 28px;
+          object-fit: contain;
+          display: block;
         }
         .ndpr-logo-text {
           font-weight: 700;

@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 type NavItem = {
@@ -486,6 +487,7 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
         >
           <Link
             href="/"
+            aria-label="NDPA Toolkit — home"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -494,22 +496,14 @@ export function DocLayout({ children, title, description }: DocLayoutProps) {
               color: 'var(--text-primary)',
             }}
           >
-            <div
-              style={{
-                width: '1.5rem',
-                height: '1.5rem',
-                borderRadius: 'var(--radius-sm)',
-                background: 'var(--gradient-primary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                fontSize: '0.625rem',
-                color: '#fff',
-              }}
-            >
-              N
-            </div>
+            <Image
+              src="/icon-transparent-blue.webp"
+              alt=""
+              width={24}
+              height={24}
+              priority
+              style={{ display: 'block', objectFit: 'contain' }}
+            />
             <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>
               NDPA Toolkit
             </span>

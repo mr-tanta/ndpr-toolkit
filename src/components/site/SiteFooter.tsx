@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const footerColumns = [
   {
@@ -75,6 +76,7 @@ export function SiteFooter() {
           <div>
             <Link
               href="/"
+              aria-label="NDPA Toolkit — home"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -84,22 +86,13 @@ export function SiteFooter() {
                 marginBottom: 'var(--space-4)',
               }}
             >
-              <div
-                style={{
-                  width: '1.75rem',
-                  height: '1.75rem',
-                  borderRadius: 'var(--radius-md)',
-                  background: 'linear-gradient(135deg, #1d4ed8, #3b82f6)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 700,
-                  fontSize: '0.75rem',
-                  color: '#fff',
-                }}
-              >
-                N
-              </div>
+              <Image
+                src="/icon-transparent-blue.webp"
+                alt=""
+                width={28}
+                height={28}
+                style={{ display: 'block', objectFit: 'contain' }}
+              />
               <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)' }}>
                 NDPA Toolkit
               </span>
