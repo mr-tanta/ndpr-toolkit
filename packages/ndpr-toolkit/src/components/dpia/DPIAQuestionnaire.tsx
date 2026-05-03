@@ -191,14 +191,9 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
     });
   };
 
-  // Shared input class (text, textarea, select)
-  const inputClass = (error?: string) =>
-    cx(
-      `w-full px-3 py-2 border rounded-md ${
-        error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-      } focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100`,
-      'input',
-    );
+  // Shared input class (text, textarea, select). aria-invalid drives the
+  // error styling via the [aria-invalid="true"] selector in the BEM stylesheet.
+  const inputClass = (_error?: string) => cx('ndpr-form-field__input', 'input');
 
   // Render a question based on its type
   const renderQuestion = (question: DPIAQuestion) => {
@@ -215,16 +210,14 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
     const describedBy = [guidanceId, errorId].filter(Boolean).join(' ') || undefined;
 
     return (
-      <div key={question.id} className={cx('mb-6', 'question')}>
-        <div className="mb-2">
-          <label htmlFor={question.id} className={cx('block text-sm font-medium text-gray-900 dark:text-gray-100', 'questionText')}>
-            {question.text}
-            {question.required && <span className="text-red-500 ml-1">*</span>}
-          </label>
-          {question.guidance && (
-            <p id={guidanceId} className={cx('mt-1 text-sm text-gray-600 dark:text-gray-400', 'guidance')}>{question.guidance}</p>
-          )}
-        </div>
+      <div key={question.id} className={cx('ndpr-form-field', 'question')}>
+        <label htmlFor={question.id} className={cx('ndpr-form-field__label', 'questionText')}>
+          {question.text}
+          {question.required && <span className="ndpr-form-field__required">*</span>}
+        </label>
+        {question.guidance && (
+          <p id={guidanceId} className={cx('ndpr-form-field__hint', 'guidance')}>{question.guidance}</p>
+        )}
 
         {question.type === 'text' && (
           <input
@@ -276,14 +269,14 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
 
         {question.type === 'radio' && question.options && (
           <div
-            className={cx('space-y-2', 'radioGroup')}
+            className={cx('ndpr-form-field__option-group', 'radioGroup')}
             role="radiogroup"
             aria-required={question.required || undefined}
             aria-describedby={describedBy}
             aria-invalid={error ? true : undefined}
           >
             {question.options.map(option => (
-              <div key={option.value} className={cx('flex items-center', 'radioOption')}>
+              <div key={option.value} className={cx('ndpr-form-field__checkbox-row', 'radioOption')}>
                 <input
                   type="radio"
                   id={`${question.id}_${option.value}`}
@@ -292,19 +285,19 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
                   checked={value === option.value}
                   onChange={() => onAnswerChange(question.id, option.value)}
                   disabled={readOnly}
-                  className="h-4 w-4 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))] border-gray-300 dark:border-gray-600"
+                  className="ndpr-form-field__radio"
                 />
                 <label
                   htmlFor={`${question.id}_${option.value}`}
-                  className="ml-2 block text-sm text-gray-900 dark:text-gray-100"
+                  className="ndpr-form-field__label"
                 >
                   {option.label}
                   {option.riskLevel && (
-                    <span className={`ml-2 text-xs px-2 py-1 rounded ${
-                      option.riskLevel === 'low' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                      option.riskLevel === 'medium' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                      'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                    }`}>
+                    <span className={
+                      option.riskLevel === 'low' ? 'ndpr-badge ndpr-badge--success' :
+                      option.riskLevel === 'medium' ? 'ndpr-badge ndpr-badge--warning' :
+                      'ndpr-badge ndpr-badge--destructive'
+                    }>
                       {option.riskLevel.charAt(0).toUpperCase() + option.riskLevel.slice(1)} Risk
                     </span>
                   )}
@@ -316,14 +309,14 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
 
         {question.type === 'checkbox' && question.options && (
           <div
-            className="space-y-2"
+            className="ndpr-form-field__option-group"
             role="group"
             aria-label={question.text}
             aria-describedby={describedBy}
             aria-invalid={error ? true : undefined}
           >
             {question.options.map(option => (
-              <div key={option.value} className="flex items-center">
+              <div key={option.value} className="ndpr-form-field__checkbox-row">
                 <input
                   type="checkbox"
                   id={`${question.id}_${option.value}`}
@@ -338,11 +331,11 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
                     }
                   }}
                   disabled={readOnly}
-                  className="h-4 w-4 rounded text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))] border-gray-300 dark:border-gray-600"
+                  className="ndpr-form-field__checkbox"
                 />
                 <label
                   htmlFor={`${question.id}_${option.value}`}
-                  className="ml-2 block text-sm text-gray-900 dark:text-gray-100"
+                  className="ndpr-form-field__label"
                 >
                   {option.label}
                 </label>
@@ -352,12 +345,12 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
         )}
 
         {question.type === 'scale' && (
-          <div>
-            <div className="flex justify-between mb-2">
+          <div className="ndpr-form-field">
+            <div className="ndpr-form-field__hint" style={{ display: 'flex', justifyContent: 'space-between' }}>
               {question.scaleLabels && Object.entries(question.scaleLabels).map(([scaleValue, label]) => (
-                <div key={scaleValue} className="text-xs text-gray-600 dark:text-gray-400 text-center" style={{ width: `${100 / Object.keys(question.scaleLabels || {}).length}%` }}>
+                <span key={scaleValue} style={{ width: `${100 / Object.keys(question.scaleLabels || {}).length}%`, textAlign: 'center' }}>
                   {label}
-                </div>
+                </span>
               ))}
             </div>
             <input
@@ -368,18 +361,18 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
               value={typeof value === 'number' ? value : (question.minValue || 1)}
               onChange={e => onAnswerChange(question.id, parseInt(e.target.value, 10))}
               disabled={readOnly}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+              className='ndpr-form-field__range'
               aria-required={question.required || undefined}
               aria-describedby={describedBy}
               aria-invalid={error ? true : undefined}
             />
-            <div className="mt-1 text-sm text-gray-600 dark:text-gray-400 text-center">
+            <div className="ndpr-form-field__hint" style={{ textAlign: 'center' }}>
               Selected value: {value || (question.minValue || 1)}
             </div>
           </div>
         )}
 
-        {error && <p id={errorId} className="mt-1 text-sm text-red-500" role="alert">{error}</p>}
+        {error && <p id={errorId} className="ndpr-form-field__error" role="alert">{error}</p>}
       </div>
     );
   };
@@ -389,15 +382,15 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
   }
 
   return (
-    <div className={`${cx('bg-white dark:bg-gray-800 rounded-lg shadow-md p-6', 'root')} ${className}`}>
+    <div data-ndpr-component="dpia-questionnaire" className={`${cx('ndpr-card', 'root')} ${className}`}>
       {showProgress && (
-        <div className={cx('mb-6', 'header')}>
-          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
+        <div className={cx('ndpr-card__header', 'header')} style={{ flexDirection: 'column', alignItems: 'stretch', gap: 'var(--ndpr-space-2)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--ndpr-font-size-sm)', color: 'rgb(var(--ndpr-muted-foreground))' }}>
             <span>Section {currentSectionIndex + 1} of {sections.length}</span>
             <span>{progress !== undefined ? `${progress}% Complete` : ''}</span>
           </div>
           <div
-            className={cx('w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700', 'progressBar')}
+            className={cx('ndpr-progress', 'progressBar')}
             role="progressbar"
             aria-valuenow={progress !== undefined ? progress : Math.round(((currentSectionIndex + 1) / sections.length) * 100)}
             aria-valuemin={0}
@@ -405,28 +398,28 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
             aria-label="Questionnaire progress"
           >
             <div
-              className="bg-[rgb(var(--ndpr-primary))] h-2.5 rounded-full"
+              className="ndpr-progress__bar"
               style={{ width: `${progress !== undefined ? progress : ((currentSectionIndex + 1) / sections.length) * 100}%` }}
             ></div>
           </div>
         </div>
       )}
 
-      <h2 className={cx('text-xl font-bold mb-2 text-gray-900 dark:text-white', 'title')}>{currentSection.title}</h2>
+      <h2 className={cx('ndpr-card__title', 'title')}>{currentSection.title}</h2>
       {currentSection.description && (
-        <p className={cx('mb-6 text-gray-600 dark:text-gray-300', 'sectionTitle')}>{currentSection.description}</p>
+        <p className={cx('ndpr-card__subtitle', 'sectionTitle')}>{currentSection.description}</p>
       )}
 
-      <div className={cx('space-y-6', 'section')}>
+      <div className={cx('ndpr-card__body', 'section')}>
         {currentSection.questions.map(question => renderQuestion(question))}
       </div>
 
-      <div className={cx('mt-8 flex justify-between', 'navigation')}>
+      <div className={cx('ndpr-card__footer', 'navigation')} style={{ justifyContent: 'space-between' }}>
         <button
           type="button"
           onClick={onPrevSection}
           disabled={currentSectionIndex === 0 || readOnly}
-          className={`${cx('px-4 py-2 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed', 'prevButton')} ${buttonClassName}`}
+          className={`${cx('ndpr-button ndpr-button--secondary', 'prevButton')} ${buttonClassName}`}
         >
           {prevButtonText}
         </button>
@@ -435,7 +428,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
           type="button"
           onClick={onNextSection}
           disabled={readOnly}
-          className={`${cx('px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] disabled:opacity-50 disabled:cursor-not-allowed', 'nextButton')} ${buttonClassName}`}
+          className={`${cx('ndpr-button ndpr-button--primary', 'nextButton')} ${buttonClassName}`}
         >
           {isLastSection ? submitButtonText : nextButtonText}
         </button>

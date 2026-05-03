@@ -10,9 +10,9 @@ export interface PolicyStepAboutProps {
 }
 
 const INPUT_CLASS =
-  'w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] text-sm';
+  'w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 ndpr-text-foreground focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] text-sm';
 
-const LABEL_CLASS = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1';
+const LABEL_CLASS = 'block text-sm font-medium ndpr-text-muted mb-1';
 
 interface FieldProps {
   id: string;
@@ -37,7 +37,7 @@ const Field: React.FC<FieldProps> = ({ id, label, required, description, childre
       )}
     </label>
     {description && (
-      <p id={descId} className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+      <p id={descId} className="text-xs ndpr-text-muted mb-1">
         {description}
       </p>
     )}
@@ -58,13 +58,13 @@ export const PolicyStepAbout: React.FC<PolicyStepAboutProps> = ({
   return (
     <div
       data-ndpr-component="policy-step-about"
-      className={resolveClass('space-y-6', classNames?.root, unstyled)}
+      className={resolveClass('ndpr-form-section', classNames?.root, unstyled)}
     >
       <div>
-        <h2 className={resolveClass('text-xl font-semibold text-gray-900 dark:text-gray-100', classNames?.heading, unstyled)}>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.heading, unstyled)}>
           Organisation Details
         </h2>
-        <p className={resolveClass('text-sm text-gray-500 dark:text-gray-400 mt-1', classNames?.subheading, unstyled)}>
+        <p className={resolveClass('ndpr-form-field__hint', classNames?.subheading, unstyled)}>
           Tell us about your organisation. Fields marked <span className="text-red-500" aria-hidden="true">*</span> are required.
         </p>
       </div>

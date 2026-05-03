@@ -120,7 +120,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a10 10 0 100 10l-1.73-3A8 8 0 014 12z" />
         </svg>
-        <span className="text-sm">Loading…</span>
+        <span className='ndpr-text-sm'>Loading…</span>
       </div>
     );
   }
@@ -152,7 +152,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
         >
           <h1
             className={resolveClass(
-              'text-2xl font-bold text-gray-900 dark:text-gray-100',
+              'text-2xl font-bold ndpr-text-foreground',
               classNames?.wizardTitle,
               unstyled,
             )}
@@ -259,7 +259,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
                 onClick={prevStep}
                 disabled={currentStep === 1}
                 className={resolveClass(
-                  'px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors',
+                  'px-4 py-2 bg-gray-200 dark:bg-gray-700 ndpr-text-foreground rounded-md text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors',
                   classNames?.backButton,
                   unstyled,
                 )}
@@ -270,7 +270,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
               <div className="flex items-center gap-2">
                 <span
                   className={resolveClass(
-                    'text-xs text-gray-400 dark:text-gray-500',
+                    'ndpr-form-field__hint',
                     classNames?.stepCounter,
                     unstyled,
                   )}

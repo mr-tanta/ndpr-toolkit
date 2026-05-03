@@ -46,10 +46,10 @@ const PURPOSES: { value: ProcessingPurpose; label: string; description: string }
 ];
 
 const INPUT_CLASS =
-  'w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] text-sm';
+  'w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 ndpr-text-foreground focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] text-sm';
 
 const SECTION_CLASS =
-  'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4';
+  'ndpr-card ndpr-card--compact';
 
 type ToggleProps = {
   id: string;
@@ -103,13 +103,13 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
   return (
     <div
       data-ndpr-component="policy-step-processing"
-      className={resolveClass('space-y-6', classNames?.root, unstyled)}
+      className={resolveClass('ndpr-form-section', classNames?.root, unstyled)}
     >
       <div>
-        <h2 className={resolveClass('text-xl font-semibold text-gray-900 dark:text-gray-100', classNames?.heading, unstyled)}>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.heading, unstyled)}>
           Processing Details
         </h2>
-        <p className={resolveClass('text-sm text-gray-500 dark:text-gray-400 mt-1', classNames?.subheading, unstyled)}>
+        <p className={resolveClass('ndpr-form-field__hint', classNames?.subheading, unstyled)}>
           Define how and why you process personal data.
         </p>
       </div>
@@ -121,11 +121,11 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
       >
         <h3
           id="purposes-heading"
-          className={resolveClass('text-base font-semibold text-gray-900 dark:text-gray-100', classNames?.sectionTitle, unstyled)}
+          className={resolveClass('text-base font-semibold ndpr-text-foreground', classNames?.sectionTitle, unstyled)}
         >
           Processing Purposes
         </h3>
-        <p className={resolveClass('text-sm text-gray-500 dark:text-gray-400', classNames?.sectionDescription, unstyled)}>
+        <p className={resolveClass('ndpr-form-field__hint', classNames?.sectionDescription, unstyled)}>
           Select all purposes for which you process personal data. At least one is required.
         </p>
         <div className={resolveClass('space-y-3', classNames?.purposeList, unstyled)}>
@@ -156,10 +156,10 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
                   )}
                 />
                 <div>
-                  <p className={resolveClass('text-sm font-medium text-gray-900 dark:text-gray-100', classNames?.purposeLabel, unstyled)}>
+                  <p className={resolveClass('text-sm font-medium ndpr-text-foreground', classNames?.purposeLabel, unstyled)}>
                     {p.label}
                   </p>
-                  <p id={purposeDescId} className={resolveClass('text-xs text-gray-500 dark:text-gray-400', classNames?.purposeDescription, unstyled)}>
+                  <p id={purposeDescId} className={resolveClass('ndpr-form-field__hint', classNames?.purposeDescription, unstyled)}>
                     {p.description}
                   </p>
                 </div>
@@ -177,7 +177,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
         <div className="flex items-center justify-between">
           <h3
             id="thirdparty-heading"
-            className={resolveClass('text-base font-semibold text-gray-900 dark:text-gray-100', classNames?.sectionTitle, unstyled)}
+            className={resolveClass('text-base font-semibold ndpr-text-foreground', classNames?.sectionTitle, unstyled)}
           >
             Third-Party Data Sharing
           </h3>
@@ -197,13 +197,13 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
         </div>
 
         {(context.thirdPartyProcessors.length > 0 || showProcessorForm) && (
-          <div className={resolveClass('space-y-4', classNames?.processorSection, unstyled)}>
+          <div className={resolveClass('ndpr-form-section', classNames?.processorSection, unstyled)}>
             {/* Processor table */}
             {context.thirdPartyProcessors.length > 0 && (
               <div className={resolveClass('overflow-x-auto', classNames?.processorTable, unstyled)}>
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className={resolveClass('text-left text-xs font-medium text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700', classNames?.tableHeader, unstyled)}>
+                    <tr className={resolveClass('text-left text-xs font-medium ndpr-text-muted border-b border-gray-200 dark:border-gray-700', classNames?.tableHeader, unstyled)}>
                       <th className="pb-2 pr-4">Name</th>
                       <th className="pb-2 pr-4">Purpose</th>
                       <th className="pb-2 pr-4">Country</th>
@@ -213,15 +213,15 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
                   <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                     {context.thirdPartyProcessors.map((proc, idx) => (
                       <tr key={idx}>
-                        <td className={resolveClass('py-2 pr-4 text-gray-900 dark:text-gray-100', classNames?.tableCell, unstyled)}>{proc.name}</td>
-                        <td className={resolveClass('py-2 pr-4 text-gray-700 dark:text-gray-300', classNames?.tableCell, unstyled)}>{proc.purpose}</td>
-                        <td className={resolveClass('py-2 pr-4 text-gray-700 dark:text-gray-300', classNames?.tableCell, unstyled)}>{proc.country}</td>
+                        <td className={resolveClass('py-2 pr-4 ndpr-text-foreground', classNames?.tableCell, unstyled)}>{proc.name}</td>
+                        <td className={resolveClass('py-2 pr-4 ndpr-text-muted', classNames?.tableCell, unstyled)}>{proc.purpose}</td>
+                        <td className={resolveClass('py-2 pr-4 ndpr-text-muted', classNames?.tableCell, unstyled)}>{proc.country}</td>
                         <td className="py-2">
                           <button
                             type="button"
                             onClick={() => onRemoveProcessor(idx)}
                             className={resolveClass(
-                              'text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 text-xs font-medium',
+                              'text-red-500 hover:ndpr-text-destructive dark:hover:text-red-300 text-xs font-medium',
                               classNames?.removeButton,
                               unstyled,
                             )}
@@ -241,7 +241,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
             {showProcessorForm ? (
               <div className={resolveClass('grid grid-cols-1 sm:grid-cols-3 gap-3 items-end', classNames?.processorForm, unstyled)}>
                 <div>
-                  <label htmlFor={`${instanceId}-proc-name`} className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Processor Name</label>
+                  <label htmlFor={`${instanceId}-proc-name`} className="block text-xs font-medium ndpr-text-muted mb-1">Processor Name</label>
                   <input
                     id={`${instanceId}-proc-name`}
                     type="text"
@@ -253,7 +253,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor={`${instanceId}-proc-purpose`} className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Purpose</label>
+                  <label htmlFor={`${instanceId}-proc-purpose`} className="block text-xs font-medium ndpr-text-muted mb-1">Purpose</label>
                   <input
                     id={`${instanceId}-proc-purpose`}
                     type="text"
@@ -265,7 +265,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
                   />
                 </div>
                 <div>
-                  <label htmlFor={`${instanceId}-proc-country`} className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Country</label>
+                  <label htmlFor={`${instanceId}-proc-country`} className="block text-xs font-medium ndpr-text-muted mb-1">Country</label>
                   <input
                     id={`${instanceId}-proc-country`}
                     type="text"
@@ -281,7 +281,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
                     type="button"
                     onClick={handleAddProcessor}
                     className={resolveClass(
-                      'px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] text-sm font-medium',
+                      'ndpr-button ndpr-button--primary ndpr-button--sm',
                       classNames?.addButton,
                       unstyled,
                     )}
@@ -292,7 +292,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
                     type="button"
                     onClick={() => setShowProcessorForm(false)}
                     className={resolveClass(
-                      'px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md text-sm',
+                      'ndpr-button ndpr-button--secondary ndpr-button--sm',
                       classNames?.cancelButton,
                       unstyled,
                     )}
@@ -325,19 +325,19 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
       >
         <h3
           id="disclosures-heading"
-          className={resolveClass('text-base font-semibold text-gray-900 dark:text-gray-100', classNames?.sectionTitle, unstyled)}
+          className={resolveClass('text-base font-semibold ndpr-text-foreground', classNames?.sectionTitle, unstyled)}
         >
           Additional Disclosures
         </h3>
 
-        <div className={resolveClass('space-y-4', classNames?.disclosureList, unstyled)}>
+        <div className={resolveClass('ndpr-form-section', classNames?.disclosureList, unstyled)}>
           {/* Cross-border transfer */}
           <div className={resolveClass('flex items-start justify-between gap-4', classNames?.disclosureItem, unstyled)}>
             <div>
-              <p id={`${instanceId}-cross-border-label`} className={resolveClass('text-sm font-medium text-gray-900 dark:text-gray-100', classNames?.disclosureLabel, unstyled)}>
+              <p id={`${instanceId}-cross-border-label`} className={resolveClass('text-sm font-medium ndpr-text-foreground', classNames?.disclosureLabel, unstyled)}>
                 Cross-border Data Transfers
               </p>
-              <p id={`${instanceId}-cross-border-desc`} className={resolveClass('text-xs text-gray-500 dark:text-gray-400 mt-0.5', classNames?.disclosureDescription, unstyled)}>
+              <p id={`${instanceId}-cross-border-desc`} className={resolveClass('text-xs ndpr-text-muted mt-0.5', classNames?.disclosureDescription, unstyled)}>
                 Do you transfer personal data outside Nigeria? This triggers NDPA Chapter 6 obligations.
               </p>
             </div>
@@ -351,11 +351,11 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
           {/* Automated decisions */}
           <div className={resolveClass('flex items-start justify-between gap-4', classNames?.disclosureItem, unstyled)}>
             <div>
-              <p id={`${instanceId}-automated-label`} className={resolveClass('text-sm font-medium text-gray-900 dark:text-gray-100', classNames?.disclosureLabel, unstyled)}>
+              <p id={`${instanceId}-automated-label`} className={resolveClass('text-sm font-medium ndpr-text-foreground', classNames?.disclosureLabel, unstyled)}>
                 Automated Decision-Making / Profiling
               </p>
-              <p id={`${instanceId}-automated-desc`} className={resolveClass('text-xs text-gray-500 dark:text-gray-400 mt-0.5', classNames?.disclosureDescription, unstyled)}>
-                Do you use algorithms or AI to make decisions about individuals? Requires disclosure under NDPA Section 37.
+              <p id={`${instanceId}-automated-desc`} className={resolveClass('text-xs ndpr-text-muted mt-0.5', classNames?.disclosureDescription, unstyled)}>
+                Do you use algorithms or automated systems to make decisions about individuals? Requires disclosure under NDPA Section 37.
               </p>
             </div>
             <Toggle

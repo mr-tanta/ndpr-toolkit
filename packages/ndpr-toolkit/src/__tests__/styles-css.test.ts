@@ -113,9 +113,107 @@ describe('dist/styles.css — published stylesheet contract', () => {
       '.ndpr-form-field__error',
       '.ndpr-form-field__required',
       '.ndpr-form-field__checkbox',
+      '.ndpr-form-field__radio',
+      '.ndpr-form-field__option-group',
+      '.ndpr-form-field__hint',
+      '.ndpr-form-field__range',
+      '.ndpr-form-field__input--mono',
       '.ndpr-form-section',
       '.ndpr-form-section__heading',
       '.ndpr-form-grid',
+    ])('defines %s', (selector) => {
+      const re = new RegExp(`\\${selector}\\b`);
+      expect(css).toMatch(re);
+    });
+  });
+
+  describe('Shared layout primitives (3.5.x rollout)', () => {
+    it.each([
+      // Cards
+      '.ndpr-card',
+      '.ndpr-card--compact',
+      '.ndpr-card--flat',
+      '.ndpr-card--subtle',
+      '.ndpr-card__header',
+      '.ndpr-card__title',
+      '.ndpr-card__subtitle',
+      '.ndpr-card__body',
+      '.ndpr-card__footer',
+      '.ndpr-panel',
+      // Badges
+      '.ndpr-badge',
+      '.ndpr-badge--success',
+      '.ndpr-badge--warning',
+      '.ndpr-badge--destructive',
+      '.ndpr-badge--info',
+      '.ndpr-badge--neutral',
+      // Alerts
+      '.ndpr-alert',
+      '.ndpr-alert__title',
+      '.ndpr-alert__body',
+      '.ndpr-alert--info',
+      '.ndpr-alert--success',
+      '.ndpr-alert--warning',
+      '.ndpr-alert--destructive',
+      // Tables
+      '.ndpr-table',
+      '.ndpr-table__head',
+      '.ndpr-table__row',
+      '.ndpr-table__cell',
+      '.ndpr-table__cell--muted',
+      '.ndpr-table__cell--actions',
+      '.ndpr-table__heading',
+      '.ndpr-table-wrapper',
+      // Empty state
+      '.ndpr-empty-state',
+      '.ndpr-empty-state__title',
+      '.ndpr-empty-state__body',
+      // Generic button family
+      '.ndpr-button',
+      '.ndpr-button--primary',
+      '.ndpr-button--secondary',
+      '.ndpr-button--ghost',
+      '.ndpr-button--destructive',
+      '.ndpr-button--sm',
+      '.ndpr-button--lg',
+      '.ndpr-button--icon',
+      // Step indicator (DPIA / Policy wizards)
+      '.ndpr-step-indicator',
+      '.ndpr-step-indicator__item',
+      '.ndpr-step-indicator__bullet',
+      '.ndpr-step-indicator__label',
+      '.ndpr-step-indicator__item--current',
+      '.ndpr-step-indicator__item--complete',
+      // Progress bar
+      '.ndpr-progress',
+      '.ndpr-progress__bar',
+      '.ndpr-progress__bar--success',
+      '.ndpr-progress__bar--warning',
+      '.ndpr-progress__bar--destructive',
+      // Stat / dashboard
+      '.ndpr-stat-grid',
+      '.ndpr-stat',
+      '.ndpr-stat__label',
+      '.ndpr-stat__value',
+      // Section heading + divider
+      '.ndpr-section-heading',
+      '.ndpr-section-divider',
+      // Text utilities
+      '.ndpr-text-muted',
+      '.ndpr-text-foreground',
+      '.ndpr-text-primary',
+      '.ndpr-text-success',
+      '.ndpr-text-warning',
+      '.ndpr-text-destructive',
+      '.ndpr-text-info',
+      '.ndpr-text-xs',
+      '.ndpr-text-sm',
+      '.ndpr-text-base',
+      '.ndpr-text-lg',
+      '.ndpr-text-xl',
+      '.ndpr-font-medium',
+      '.ndpr-font-semibold',
+      '.ndpr-font-bold',
     ])('defines %s', (selector) => {
       const re = new RegExp(`\\${selector}\\b`);
       expect(css).toMatch(re);

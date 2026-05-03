@@ -222,10 +222,10 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
   // Render risk level badge
   const renderRiskLevelBadge = (level: 'low' | 'medium' | 'high' | 'critical') => {
     const colorClasses = {
-      low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      low: 'ndpr-badge ndpr-badge--success',
+      medium: 'ndpr-badge ndpr-badge--warning',
+      high: 'ndpr-badge ndpr-badge--warning',
+      critical: 'ndpr-badge ndpr-badge--destructive'
     };
     
     return (
@@ -236,24 +236,24 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
   };
 
   return (
-    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
-      <h2 className={resolveClass("text-xl font-bold mb-2", cn.title, unstyled)}>{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+    <div data-ndpr-component="breach-risk-assessment" className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
+      <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{title}</h2>
+      <p className='ndpr-card__subtitle'>{description}</p>
       
       {/* Breach Summary */}
       {showBreachSummary && (
-        <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+        <div className='ndpr-panel'>
           <h3 className="text-lg font-medium mb-2">Breach Summary</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <div>
-              <p className="text-sm"><span className="font-medium">Title:</span> {breachData.title}</p>
-              <p className="text-sm"><span className="font-medium">Discovered:</span> {formatDate(breachData.discoveredAt)}</p>
-              <p className="text-sm"><span className="font-medium">Status:</span> {breachData.status.charAt(0).toUpperCase() + breachData.status.slice(1)}</p>
+              <p className='ndpr-text-sm'><span className="font-medium">Title:</span> {breachData.title}</p>
+              <p className='ndpr-text-sm'><span className="font-medium">Discovered:</span> {formatDate(breachData.discoveredAt)}</p>
+              <p className='ndpr-text-sm'><span className="font-medium">Status:</span> {breachData.status.charAt(0).toUpperCase() + breachData.status.slice(1)}</p>
             </div>
             <div>
-              <p className="text-sm"><span className="font-medium">Data Types:</span> {breachData.dataTypes.join(', ')}</p>
-              <p className="text-sm"><span className="font-medium">Affected Systems:</span> {breachData.affectedSystems.join(', ')}</p>
-              <p className="text-sm"><span className="font-medium">Affected Subjects:</span> {breachData.estimatedAffectedSubjects || 'Unknown'}</p>
+              <p className='ndpr-text-sm'><span className="font-medium">Data Types:</span> {breachData.dataTypes.join(', ')}</p>
+              <p className='ndpr-text-sm'><span className="font-medium">Affected Systems:</span> {breachData.affectedSystems.join(', ')}</p>
+              <p className='ndpr-text-sm'><span className="font-medium">Affected Subjects:</span> {breachData.estimatedAffectedSubjects || 'Unknown'}</p>
             </div>
           </div>
         </div>
@@ -262,9 +262,9 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
       {isSubmitted ? (
         <div>
           {/* Assessment Results */}
-          <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+          <div className='ndpr-alert ndpr-alert--info'>
             <h3 className="text-lg font-medium mb-3">Assessment Results</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div>
                 <p className="text-sm mb-2">
                   <span className="font-medium">Overall Risk Level:</span>{' '}
@@ -273,7 +273,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 <p className="text-sm mb-2">
                   <span className="font-medium">Risk Score:</span> {overallRiskScore} / 5
                 </p>
-                <p className="text-sm">
+                <p className='ndpr-text-sm'>
                   <span className="font-medium">Assessed On:</span> {formatDate(assessedOn)}
                 </p>
               </div>
@@ -299,9 +299,9 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
             <div className={resolveClass(`mb-6 p-4 rounded-md ${
               notificationRequired
                 ? hoursRemaining > 24
-                  ? 'bg-yellow-50 dark:bg-yellow-900/20'
-                  : 'bg-red-50 dark:bg-red-900/20'
-                : 'bg-green-50 dark:bg-green-900/20'
+                  ? 'ndpr-alert ndpr-alert--warning'
+                  : 'ndpr-alert ndpr-alert--destructive'
+                : 'ndpr-alert ndpr-alert--success'
             }`, cn.notificationStatus, unstyled)}>
               <h3 className="text-lg font-medium mb-3">Notification Requirements</h3>
               
@@ -309,8 +309,8 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 <div>
                   <p className={`text-sm font-bold mb-2 ${
                     hoursRemaining > 24
-                      ? 'text-yellow-800 dark:text-yellow-200'
-                      : 'text-red-800 dark:text-red-200'
+                      ? 'ndpr-text-warning'
+                      : 'ndpr-text-destructive'
                   }`}>
                     NDPC Notification Required
                   </p>
@@ -322,7 +322,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                   </p>
                   <p className="text-sm mb-2">
                     <span className="font-medium">Time Remaining:</span>{' '}
-                    <span className={hoursRemaining < 24 ? 'text-red-600 dark:text-red-400 font-bold' : ''}>
+                    <span className={hoursRemaining < 24 ? 'ndpr-text-destructive font-bold' : ''}>
                       {hoursRemaining > 0 ? `${hoursRemaining} hours` : 'Deadline passed'}
                     </span>
                   </p>
@@ -333,7 +333,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 </div>
               ) : (
                 <div>
-                  <p className="text-sm font-bold mb-2 text-green-800 dark:text-green-200">
+                  <p className="text-sm font-bold mb-2 ndpr-text-success">
                     NDPC Notification Not Required
                   </p>
                   <p className="text-sm mb-2">
@@ -376,15 +376,15 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
-          <div className="space-y-6">
+          <div className='ndpr-form-section'>
             {/* Impact Assessment */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">Impact Assessment</h3>
+              <h3 className='ndpr-section-heading'>Impact Assessment</h3>
               
-              <div className="mb-4">
-                <label htmlFor="confidentialityImpact" className="block text-sm font-medium mb-1">
+              <div className='ndpr-form-field'>
+                <label htmlFor="confidentialityImpact" className='ndpr-form-field__label'>
                   Confidentiality Impact (1-5)
-                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span className="ml-2 text-sm ndpr-text-muted">
                     How much has the confidentiality of data been compromised?
                   </span>
                 </label>
@@ -397,7 +397,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={confidentialityImpact}
                     onChange={e => setConfidentialityImpact(parseInt(e.target.value))}
-                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
+                    className={resolveClass('ndpr-form-field__range', cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(confidentialityImpact)} ({confidentialityImpact})
@@ -405,10 +405,10 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 </div>
               </div>
               
-              <div className="mb-4">
-                <label htmlFor="integrityImpact" className="block text-sm font-medium mb-1">
+              <div className='ndpr-form-field'>
+                <label htmlFor="integrityImpact" className='ndpr-form-field__label'>
                   Integrity Impact (1-5)
-                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span className="ml-2 text-sm ndpr-text-muted">
                     How much has the integrity of data been compromised?
                   </span>
                 </label>
@@ -421,7 +421,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={integrityImpact}
                     onChange={e => setIntegrityImpact(parseInt(e.target.value))}
-                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
+                    className={resolveClass('ndpr-form-field__range', cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(integrityImpact)} ({integrityImpact})
@@ -429,10 +429,10 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 </div>
               </div>
               
-              <div className="mb-4">
-                <label htmlFor="availabilityImpact" className="block text-sm font-medium mb-1">
+              <div className='ndpr-form-field'>
+                <label htmlFor="availabilityImpact" className='ndpr-form-field__label'>
                   Availability Impact (1-5)
-                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span className="ml-2 text-sm ndpr-text-muted">
                     How much has the availability of data or systems been compromised?
                   </span>
                 </label>
@@ -445,7 +445,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={availabilityImpact}
                     onChange={e => setAvailabilityImpact(parseInt(e.target.value))}
-                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
+                    className={resolveClass('ndpr-form-field__range', cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(availabilityImpact)} ({availabilityImpact})
@@ -456,12 +456,12 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
             
             {/* Risk to Data Subjects */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">Risk to Data Subjects</h3>
+              <h3 className='ndpr-section-heading'>Risk to Data Subjects</h3>
               
-              <div className="mb-4">
-                <label htmlFor="harmLikelihood" className="block text-sm font-medium mb-1">
+              <div className='ndpr-form-field'>
+                <label htmlFor="harmLikelihood" className='ndpr-form-field__label'>
                   Likelihood of Harm (1-5)
-                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span className="ml-2 text-sm ndpr-text-muted">
                     How likely is it that data subjects will experience harm?
                   </span>
                 </label>
@@ -474,7 +474,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={harmLikelihood}
                     onChange={e => setHarmLikelihood(parseInt(e.target.value))}
-                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
+                    className={resolveClass('ndpr-form-field__range', cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(harmLikelihood)} ({harmLikelihood})
@@ -482,10 +482,10 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 </div>
               </div>
               
-              <div className="mb-4">
-                <label htmlFor="harmSeverity" className="block text-sm font-medium mb-1">
+              <div className='ndpr-form-field'>
+                <label htmlFor="harmSeverity" className='ndpr-form-field__label'>
                   Severity of Harm (1-5)
-                  <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                  <span className="ml-2 text-sm ndpr-text-muted">
                     How severe would the harm be to affected data subjects?
                   </span>
                 </label>
@@ -498,7 +498,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     step="1"
                     value={harmSeverity}
                     onChange={e => setHarmSeverity(parseInt(e.target.value))}
-                    className={resolveClass("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700", cn.slider, unstyled)}
+                    className={resolveClass('ndpr-form-field__range', cn.slider, unstyled)}
                   />
                   <span className="ml-3 w-24 text-sm">
                     {renderImpactDescription(harmSeverity)} ({harmSeverity})
@@ -506,7 +506,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 </div>
               </div>
               
-              <div className="mb-4">
+              <div className='ndpr-form-field'>
                 <div className="flex items-center mb-2">
                   <input
                     type="checkbox"
@@ -519,12 +519,12 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     This breach poses a risk to the rights and freedoms of data subjects
                   </label>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 ml-6">
+                <p className="text-xs ndpr-text-muted ml-6">
                   Under the NDPA (Section 40), breaches that pose a risk to rights and freedoms must be reported to the NDPC within 72 hours.
                 </p>
               </div>
               
-              <div className="mb-4">
+              <div className='ndpr-form-field'>
                 <div className="flex items-center mb-2">
                   <input
                     type="checkbox"
@@ -537,7 +537,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                     This breach poses a high risk to the rights and freedoms of data subjects
                   </label>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 ml-6">
+                <p className="text-xs ndpr-text-muted ml-6">
                   Under the NDPA (Section 40(4)), breaches that pose a high risk to rights and freedoms also require notification to affected data subjects without undue delay.
                 </p>
               </div>
@@ -545,9 +545,9 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
             
             {/* Overall Assessment */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">Overall Assessment</h3>
+              <h3 className='ndpr-section-heading'>Overall Assessment</h3>
               
-              <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+              <div className='ndpr-panel'>
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium">Overall Risk Score:</span>
                   <span className={resolveClass("", cn.riskScore, unstyled)}>{overallRiskScore} / 5</span>
@@ -558,9 +558,9 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 </div>
               </div>
               
-              <div className="mb-4">
-                <label htmlFor="justification" className="block text-sm font-medium mb-1">
-                  Justification for Assessment <span className="text-red-500">*</span>
+              <div className='ndpr-form-field'>
+                <label htmlFor="justification" className='ndpr-form-field__label'>
+                  Justification for Assessment <span className="ndpr-form-field__required">*</span>
                 </label>
                 <textarea
                   id="justification"
@@ -568,16 +568,16 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                   onChange={e => setJustification(e.target.value)}
                   rows={4}
                   placeholder="Explain the reasoning behind your assessment, including any factors that influenced your decision."
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+                  className='ndpr-form-field__input'
                   required
                 />
               </div>
             </div>
             
             {/* NDPA Notice */}
-            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-              <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Breach Notification Requirements</h3>
-              <p className="text-blue-700 dark:text-blue-300 text-sm">
+            <div className='ndpr-alert ndpr-alert--info'>
+              <h3 className="text-sm font-bold ndpr-text-info mb-2">NDPA Breach Notification Requirements</h3>
+              <p className="ndpr-text-info text-sm">
                 Under the Nigeria Data Protection Act (NDPA), Section 40, data breaches that pose a risk to the rights and freedoms of data subjects must be reported to the NDPC within 72 hours of discovery.
                 This assessment will determine if notification is required for this breach.
               </p>

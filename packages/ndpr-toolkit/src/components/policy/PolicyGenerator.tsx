@@ -223,7 +223,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   // Render section list
   const renderSectionList = () => {
     return (
-      <div className={resolveClass('space-y-4', classNames?.sectionList, unstyled)} role="group" aria-labelledby={`${instanceId}-sections-heading`}>
+      <div data-ndpr-component="policy-generator" className={resolveClass('ndpr-form-section', classNames?.sectionList, unstyled)} role="group" aria-labelledby={`${instanceId}-sections-heading`}>
         <h3 id={`${instanceId}-sections-heading`} className="text-lg font-medium mb-4">Select Policy Sections</h3>
 
         {sections.map(section => {
@@ -244,12 +244,12 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                 />
               </div>
               <div className="ml-3 text-sm">
-                <label htmlFor={sectionInputId} className="font-medium text-gray-900 dark:text-white">
+                <label htmlFor={sectionInputId} className="font-medium ndpr-text-foreground">
                   {section.title} {section.required && <span className="text-red-500" aria-hidden="true">*</span>}
                   {section.required && <span className="sr-only"> (required)</span>}
                 </label>
                 {section.description && (
-                  <p id={sectionDescId} className="text-gray-600 dark:text-gray-400 mt-1">{section.description}</p>
+                  <p id={sectionDescId} className="ndpr-text-muted mt-1">{section.description}</p>
                 )}
               </div>
             </div>
@@ -286,7 +286,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
       <div className={resolveClass('', classNames?.form, unstyled)}>
         <h3 className="text-lg font-medium mb-4">Fill Policy Variables</h3>
 
-        <div className="space-y-6">
+        <div className='ndpr-form-section'>
           {Object.entries(variablesBySection).map(([sectionId, sectionVariables]) => {
             const section = sections.find(s => s.id === sectionId);
 
@@ -301,7 +301,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                   {section ? section.title : 'General Information'}
                 </h4>
 
-                <div className="space-y-4">
+                <div className='ndpr-form-section'>
                   {sectionVariables.map(variable => {
                     const varInputId = `${instanceId}-var-${variable.id}`;
                     const varDescId = variable.description ? `${instanceId}-var-desc-${variable.id}` : undefined;
@@ -309,12 +309,12 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                     const ariaDescribedBy = [varDescId, varErrorId].filter(Boolean).join(' ') || undefined;
                     return (
                     <div key={variable.id}>
-                      <label htmlFor={varInputId} className="block text-sm font-medium mb-1">
+                      <label htmlFor={varInputId} className='ndpr-form-field__label'>
                         {variable.name} {variable.required && <span className="text-red-500" aria-hidden="true">*</span>}
                       </label>
 
                       {variable.description && (
-                        <p id={varDescId} className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                        <p id={varDescId} className="text-xs ndpr-text-muted mb-2">
                           {variable.description}
                         </p>
                       )}
@@ -374,7 +374,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
                       )}
 
                       {errors[variable.id] && (
-                        <p id={varErrorId} role="alert" className="mt-1 text-sm text-red-600 dark:text-red-500">
+                        <p id={varErrorId} role="alert" className="mt-1 text-sm ndpr-text-destructive dark:text-red-500">
                           {errors[variable.id]}
                         </p>
                       )}
@@ -413,8 +413,8 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
         <h3 className="text-lg font-medium mb-4">Preview Generated Policy</h3>
 
         {allowEditing ? (
-          <div className="mb-4">
-            <label htmlFor={policyContentId} className="block text-sm font-medium mb-1">
+          <div className='ndpr-form-field'>
+            <label htmlFor={policyContentId} className='ndpr-form-field__label'>
               Edit Policy Content
             </label>
             <textarea
@@ -422,11 +422,11 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
               value={editedPolicy}
               onChange={e => setEditedPolicy(e.target.value)}
               rows={20}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] font-mono text-sm"
+              className='ndpr-form-field__input ndpr-form-field__input--mono'
             />
           </div>
         ) : (
-          <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md mb-4" aria-live="polite">
+          <div className='ndpr-panel' aria-live="polite">
             <div className="prose dark:prose-invert max-w-none">
               {generatedPolicy.split('\n').map((line, index) => {
                 if (line.startsWith('## ')) {
@@ -478,29 +478,29 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass('mb-6', classNames?.header, unstyled)}>
-        <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
-        <p className={resolveClass('text-gray-600 dark:text-gray-300', classNames?.description, unstyled)}>{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
+        <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{description}</p>
       </div>
       
       {/* Steps Indicator */}
       <nav aria-label="Policy generation steps" className="mb-8">
         <ol className="flex items-center w-full">
-          <li className={`flex w-full items-center ${activeStep === 'sections' ? 'text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]' : 'text-gray-600 dark:text-gray-400'} after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}>
-            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'sections' ? 'bg-[rgb(var(--ndpr-primary)/0.1)] dark:bg-[rgb(var(--ndpr-primary)/0.2)]' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`} aria-current={activeStep === 'sections' ? 'step' : undefined}>
+          <li className={`flex w-full items-center ${activeStep === 'sections' ? 'ndpr-text-primary' : 'ndpr-card__subtitle'} after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}>
+            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'sections' ? 'ndpr-alert ndpr-alert--info' : 'ndpr-panel'} rounded-full shrink-0`} aria-current={activeStep === 'sections' ? 'step' : undefined}>
               1
             </span>
             <span className="hidden sm:inline-flex sm:ml-2">Sections</span>
             <span className="sr-only">{activeStep === 'sections' ? ' (current step)' : ''}</span>
           </li>
-          <li className={`flex w-full items-center ${activeStep === 'variables' ? 'text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]' : 'text-gray-600 dark:text-gray-400'} after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}>
-            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'variables' ? 'bg-[rgb(var(--ndpr-primary)/0.1)] dark:bg-[rgb(var(--ndpr-primary)/0.2)]' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`} aria-current={activeStep === 'variables' ? 'step' : undefined}>
+          <li className={`flex w-full items-center ${activeStep === 'variables' ? 'ndpr-text-primary' : 'ndpr-card__subtitle'} after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10`}>
+            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'variables' ? 'ndpr-alert ndpr-alert--info' : 'ndpr-panel'} rounded-full shrink-0`} aria-current={activeStep === 'variables' ? 'step' : undefined}>
               2
             </span>
             <span className="hidden sm:inline-flex sm:ml-2">Variables</span>
             <span className="sr-only">{activeStep === 'variables' ? ' (current step)' : ''}</span>
           </li>
-          <li className={`flex items-center ${activeStep === 'preview' ? 'text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]' : 'text-gray-600 dark:text-gray-400'}`}>
-            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'preview' ? 'bg-[rgb(var(--ndpr-primary)/0.1)] dark:bg-[rgb(var(--ndpr-primary)/0.2)]' : 'bg-gray-100 dark:bg-gray-700'} rounded-full shrink-0`} aria-current={activeStep === 'preview' ? 'step' : undefined}>
+          <li className={`flex items-center ${activeStep === 'preview' ? 'ndpr-text-primary' : 'ndpr-card__subtitle'}`}>
+            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'preview' ? 'ndpr-alert ndpr-alert--info' : 'ndpr-panel'} rounded-full shrink-0`} aria-current={activeStep === 'preview' ? 'step' : undefined}>
               3
             </span>
             <span className="hidden sm:inline-flex sm:ml-2">Preview</span>
@@ -510,9 +510,9 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
       </nav>
       
       {/* NDPA Notice */}
-      <div className={resolveClass('mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md', classNames?.complianceNotice, unstyled)}>
-        <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Compliance Notice</h3>
-        <p className="text-blue-700 dark:text-blue-300 text-sm">
+      <div className={resolveClass('ndpr-alert ndpr-alert--info', classNames?.complianceNotice, unstyled)}>
+        <h3 className="text-sm font-bold ndpr-text-info mb-2">NDPA Compliance Notice</h3>
+        <p className="ndpr-text-info text-sm">
           This tool helps you generate a privacy policy that aligns with the Nigeria Data Protection Act (NDPA) 2023.
           While we strive to ensure compliance, we recommend having the final policy reviewed by a legal professional
           familiar with NDPA requirements.

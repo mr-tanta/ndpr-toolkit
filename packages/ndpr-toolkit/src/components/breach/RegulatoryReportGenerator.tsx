@@ -358,43 +358,43 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
   };
   
   return (
-    <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
+    <div data-ndpr-component="regulatory-report-generator" className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
       <div className={resolveClass("", cn.header, unstyled)}>
-        <h2 className={resolveClass("text-xl font-bold mb-2", cn.title, unstyled)}>{title}</h2>
-        <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{title}</h2>
+        <p className='ndpr-card__subtitle'>{description}</p>
       </div>
       
       {isSubmitted ? (
         <div>
-          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-md">
-            <h3 className="text-lg font-bold text-green-800 dark:text-green-200 mb-2">Report Generated Successfully</h3>
-            <p className="text-green-700 dark:text-green-300">
+          <div className='ndpr-alert ndpr-alert--success'>
+            <h3 className="text-lg font-bold ndpr-text-success mb-2">Report Generated Successfully</h3>
+            <p className="ndpr-text-success">
               Your NDPC notification report has been generated and is ready for submission.
               Please review the report carefully before submitting it to the NDPC.
             </p>
           </div>
           
           <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-3">Submission Details</h3>
+            <h3 className='ndpr-section-heading'>Submission Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Method:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{method.charAt(0).toUpperCase() + method.slice(1)}</span></p>
-                {contactName && <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Name:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactName}</span></p>}
-                {contactEmail && <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Email:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactEmail}</span></p>}
-                {contactPhone && <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Phone:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactPhone}</span></p>}
+                <p className={resolveClass('ndpr-text-sm', cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Method:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{method.charAt(0).toUpperCase() + method.slice(1)}</span></p>
+                {contactName && <p className={resolveClass('ndpr-text-sm', cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Name:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactName}</span></p>}
+                {contactEmail && <p className={resolveClass('ndpr-text-sm', cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Email:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactEmail}</span></p>}
+                {contactPhone && <p className={resolveClass('ndpr-text-sm', cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Contact Phone:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{contactPhone}</span></p>}
               </div>
               <div>
-                <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Date Generated:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{formatDate(Date.now())}</span></p>
-                <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Breach ID:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{breachData.id}</span></p>
-                {referenceNumber && <p className={resolveClass("text-sm", cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Reference Number:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{referenceNumber}</span></p>}
+                <p className={resolveClass('ndpr-text-sm', cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Date Generated:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{formatDate(Date.now())}</span></p>
+                <p className={resolveClass('ndpr-text-sm', cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Breach ID:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{breachData.id}</span></p>
+                {referenceNumber && <p className={resolveClass('ndpr-text-sm', cn.field, unstyled)}><span className={resolveClass("font-medium", cn.fieldLabel, unstyled)}>Reference Number:</span> <span className={resolveClass("", cn.fieldValue, unstyled)}>{referenceNumber}</span></p>}
               </div>
             </div>
           </div>
           
           {showPreview && (
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-3">Report Preview</h3>
-              <div className={resolveClass("bg-gray-50 dark:bg-gray-700 p-4 rounded-md", cn.reportPreview, unstyled)}>
+              <h3 className='ndpr-section-heading'>Report Preview</h3>
+              <div className={resolveClass('ndpr-panel', cn.reportPreview, unstyled)}>
                 <pre className="whitespace-pre-wrap text-sm font-mono text-gray-800 dark:text-gray-200">
                   {reportContent}
                 </pre>
@@ -402,7 +402,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             </div>
           )}
           
-          <div className="flex flex-wrap gap-3">
+          <div className='ndpr-card__footer'>
             {allowDownload && (
               <button
                 onClick={handleDownload}
@@ -421,20 +421,20 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
-          <div className="space-y-6">
+          <div className='ndpr-form-section'>
             {/* Notification Method */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">Notification Method</h3>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <h3 className='ndpr-section-heading'>Notification Method</h3>
+              <div className='ndpr-form-grid ndpr-form-grid--2'>
                 <div>
-                  <label htmlFor="method" className="block text-sm font-medium mb-1">
-                    Method of Submission <span className="text-red-500">*</span>
+                  <label htmlFor="method" className='ndpr-form-field__label'>
+                    Method of Submission <span className="ndpr-form-field__required">*</span>
                   </label>
                   <select
                     id="method"
                     value={method}
                     onChange={e => setMethod(e.target.value as 'email' | 'portal' | 'letter' | 'other')}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+                    className='ndpr-form-field__input'
                     required
                   >
                     {renderMethodOptions()}
@@ -442,7 +442,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                 </div>
                 
                 <div>
-                  <label htmlFor="referenceNumber" className="block text-sm font-medium mb-1">
+                  <label htmlFor="referenceNumber" className='ndpr-form-field__label'>
                     Reference Number (if available)
                   </label>
                   <input
@@ -451,7 +451,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     value={referenceNumber}
                     onChange={e => setReferenceNumber(e.target.value)}
                     placeholder="e.g. NDPC/BR/2024/001"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+                    className='ndpr-form-field__input'
                   />
                 </div>
               </div>
@@ -459,10 +459,10 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             
             {/* NDPC Contact */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">NDPC Contact (if known)</h3>
+              <h3 className='ndpr-section-heading'>NDPC Contact (if known)</h3>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
-                  <label htmlFor="contactName" className="block text-sm font-medium mb-1">
+                  <label htmlFor="contactName" className='ndpr-form-field__label'>
                     Contact Name
                   </label>
                   <input
@@ -470,12 +470,12 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     id="contactName"
                     value={contactName}
                     onChange={e => setContactName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+                    className='ndpr-form-field__input'
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="contactEmail" className="block text-sm font-medium mb-1">
+                  <label htmlFor="contactEmail" className='ndpr-form-field__label'>
                     Contact Email
                   </label>
                   <input
@@ -483,12 +483,12 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     id="contactEmail"
                     value={contactEmail}
                     onChange={e => setContactEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+                    className='ndpr-form-field__input'
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="contactPhone" className="block text-sm font-medium mb-1">
+                  <label htmlFor="contactPhone" className='ndpr-form-field__label'>
                     Contact Phone
                   </label>
                   <input
@@ -496,7 +496,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                     id="contactPhone"
                     value={contactPhone}
                     onChange={e => setContactPhone(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+                    className='ndpr-form-field__input'
                   />
                 </div>
               </div>
@@ -504,9 +504,9 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             
             {/* Additional Information */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">Additional Information</h3>
+              <h3 className='ndpr-section-heading'>Additional Information</h3>
               <div>
-                <label htmlFor="additionalInfo" className="block text-sm font-medium mb-1">
+                <label htmlFor="additionalInfo" className='ndpr-form-field__label'>
                   Additional Information to Include
                 </label>
                 <textarea
@@ -515,7 +515,7 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                   onChange={e => setAdditionalInfo(e.target.value)}
                   rows={3}
                   placeholder="Any additional information you want to include in the report"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+                  className='ndpr-form-field__input'
                 />
               </div>
             </div>
@@ -523,17 +523,17 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             {/* Report Content */}
             {allowEditing && (
               <div>
-                <h3 className="text-lg font-semibold mb-3">Report Content</h3>
+                <h3 className='ndpr-section-heading'>Report Content</h3>
                 <div>
-                  <label htmlFor="reportContent" className="block text-sm font-medium mb-1">
-                    Edit Report Content <span className="text-red-500">*</span>
+                  <label htmlFor="reportContent" className='ndpr-form-field__label'>
+                    Edit Report Content <span className="ndpr-form-field__required">*</span>
                   </label>
                   <textarea
                     id="reportContent"
                     value={reportContent}
                     onChange={e => setReportContent(e.target.value)}
                     rows={20}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] font-mono text-sm"
+                    className='ndpr-form-field__input ndpr-form-field__input--mono'
                     required
                   />
                 </div>
@@ -541,9 +541,9 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
             )}
             
             {/* NDPA Notice */}
-            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-              <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Breach Notification Requirements</h3>
-              <p className="text-blue-700 dark:text-blue-300 text-sm">
+            <div className='ndpr-alert ndpr-alert--info'>
+              <h3 className="text-sm font-bold ndpr-text-info mb-2">NDPA Breach Notification Requirements</h3>
+              <p className="ndpr-text-info text-sm">
                 Under the Nigeria Data Protection Act (NDPA), Section 40, data breaches that pose a risk to the rights and freedoms of data subjects must be reported to the NDPC within 72 hours of discovery.
                 This report will help you comply with this requirement.
               </p>

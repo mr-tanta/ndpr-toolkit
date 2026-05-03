@@ -250,7 +250,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ moduleKey, module, classNames, 
       {gapCount > 0 && (
         <p
           className={resolveClass(
-            'text-xs text-gray-500 dark:text-gray-400',
+            'ndpr-form-field__hint',
             classNames?.moduleGaps,
             unstyled,
           )}
@@ -307,14 +307,14 @@ const RecommendationItem: React.FC<RecommendationItemProps> = ({ rec, classNames
       <div className="min-w-0 flex-1">
         <p
           className={resolveClass(
-            'text-sm font-medium text-gray-900 dark:text-gray-100',
+            'text-sm font-medium ndpr-text-foreground',
             classNames?.recommendationTitle,
             unstyled,
           )}
         >
           {rec.label}
         </p>
-        <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+        <p className="mt-0.5 text-xs ndpr-text-muted leading-relaxed">
           {rec.recommendation}
         </p>
         <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
@@ -369,7 +369,7 @@ export const NDPRDashboard: React.FC<NDPRDashboardProps> = ({
         />
 
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+          <h2 className="text-xl font-bold ndpr-text-foreground leading-tight">
             {title}
           </h2>
           <RatingBadge
@@ -377,7 +377,7 @@ export const NDPRDashboard: React.FC<NDPRDashboardProps> = ({
             className={classNames?.ratingBadge}
             unstyled={unstyled}
           />
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className='ndpr-form-field__hint'>
             Generated on{' '}
             {new Date(report.generatedAt).toLocaleDateString(undefined, {
               year: 'numeric',
@@ -421,7 +421,7 @@ export const NDPRDashboard: React.FC<NDPRDashboardProps> = ({
             unstyled,
           )}
         >
-          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+          <h3 className="text-base font-semibold ndpr-text-foreground">
             Recommendations
           </h3>
           {visibleRecommendations.map((rec) => (

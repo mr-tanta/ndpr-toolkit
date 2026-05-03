@@ -45,10 +45,10 @@ export const PolicyStepData: React.FC<PolicyStepDataProps> = ({
       className={resolveClass('space-y-8', classNames?.root, unstyled)}
     >
       <div>
-        <h2 className={resolveClass('text-xl font-semibold text-gray-900 dark:text-gray-100', classNames?.heading, unstyled)}>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.heading, unstyled)}>
           Data Categories
         </h2>
-        <p id="data-categories-desc" className={resolveClass('text-sm text-gray-500 dark:text-gray-400 mt-1', classNames?.subheading, unstyled)}>
+        <p id="data-categories-desc" className={resolveClass('ndpr-form-field__hint', classNames?.subheading, unstyled)}>
           Select the categories of personal data your organisation collects. You must select at least one.
         </p>
       </div>
@@ -62,7 +62,7 @@ export const PolicyStepData: React.FC<PolicyStepDataProps> = ({
             <div className={resolveClass('flex items-center gap-2', classNames?.groupHeader, unstyled)}>
               <h3
                 className={resolveClass(
-                  'text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400',
+                  'text-sm font-semibold uppercase tracking-wide ndpr-text-muted',
                   classNames?.groupTitle,
                   unstyled,
                 )}
@@ -72,7 +72,7 @@ export const PolicyStepData: React.FC<PolicyStepDataProps> = ({
               {isSensitive && (
                 <span
                   className={resolveClass(
-                    'text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-full',
+                    'text-xs font-medium ndpr-text-warning bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-full',
                     classNames?.sensitiveTag,
                     unstyled,
                   )}
@@ -85,7 +85,7 @@ export const PolicyStepData: React.FC<PolicyStepDataProps> = ({
             {isSensitive && (
               <p
                 className={resolveClass(
-                  'text-xs text-amber-700 dark:text-amber-400',
+                  'text-xs ndpr-text-warning',
                   classNames?.sensitiveWarning,
                   unstyled,
                 )}
@@ -152,7 +152,7 @@ export const PolicyStepData: React.FC<PolicyStepDataProps> = ({
                     <div className="min-w-0">
                       <p
                         className={resolveClass(
-                          'text-sm font-medium text-gray-900 dark:text-gray-100',
+                          'text-sm font-medium ndpr-text-foreground',
                           classNames?.cardLabel,
                           unstyled,
                         )}
@@ -161,7 +161,7 @@ export const PolicyStepData: React.FC<PolicyStepDataProps> = ({
                       </p>
                       <p
                         className={resolveClass(
-                          'text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed',
+                          'text-xs ndpr-text-muted mt-1 leading-relaxed',
                           classNames?.cardDataPoints,
                           unstyled,
                         )}

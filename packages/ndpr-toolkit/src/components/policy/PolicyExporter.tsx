@@ -362,15 +362,15 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
     
     const formatId = `${instanceId}-export-format`;
     return (
-      <div className={resolveClass('mb-6', classNames?.formatSelector, unstyled)}>
-        <label htmlFor={formatId} className="block text-sm font-medium mb-1">
+      <div data-ndpr-component="policy-exporter" className={resolveClass('mb-6', classNames?.formatSelector, unstyled)}>
+        <label htmlFor={formatId} className='ndpr-form-field__label'>
           Export Format
         </label>
         <select
           id={formatId}
           value={selectedFormat}
           onChange={e => setSelectedFormat(e.target.value)}
-          className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.formatOption, unstyled)}
+          className={resolveClass('ndpr-form-field__input', classNames?.formatOption, unstyled)}
         >
           {formats.map(format => (
             <option key={format.value} value={format.value}>
@@ -389,7 +389,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
         <button
           type="button"
           onClick={() => setShowAdvancedOptions(true)}
-          className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] text-sm mb-6"
+          className="ndpr-text-primary text-sm mb-6"
         >
           Show Advanced Options
         </button>
@@ -403,14 +403,14 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
           <button
             type="button"
             onClick={() => setShowAdvancedOptions(false)}
-            className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] text-sm"
+            className="ndpr-text-primary text-sm"
           >
             Hide Advanced Options
           </button>
         </div>
         
         <div>
-          <label htmlFor={`${instanceId}-custom-filename`} className="block text-sm font-medium mb-1">
+          <label htmlFor={`${instanceId}-custom-filename`} className='ndpr-form-field__label'>
             Custom Filename
           </label>
           <input
@@ -420,15 +420,15 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             onChange={e => setCustomFilename(e.target.value)}
             placeholder={generateDefaultFilename(selectedFormat)}
             aria-describedby={`${instanceId}-custom-filename-desc`}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+            className='ndpr-form-field__input'
           />
-          <p id={`${instanceId}-custom-filename-desc`} className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+          <p id={`${instanceId}-custom-filename-desc`} className='ndpr-form-field__hint'>
             Leave blank to use the default filename format.
           </p>
         </div>
 
         <div>
-          <label htmlFor={`${instanceId}-custom-header`} className="block text-sm font-medium mb-1">
+          <label htmlFor={`${instanceId}-custom-header`} className='ndpr-form-field__label'>
             Custom Header HTML (for HTML/PDF exports)
           </label>
           <textarea
@@ -437,12 +437,12 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             onChange={e => setCustomHeader(e.target.value)}
             rows={3}
             placeholder="<div>Custom header content</div>"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+            className='ndpr-form-field__input'
           />
         </div>
 
         <div>
-          <label htmlFor={`${instanceId}-custom-footer`} className="block text-sm font-medium mb-1">
+          <label htmlFor={`${instanceId}-custom-footer`} className='ndpr-form-field__label'>
             Custom Footer HTML (for HTML/PDF exports)
           </label>
           <textarea
@@ -451,7 +451,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             onChange={e => setCustomFooter(e.target.value)}
             rows={3}
             placeholder="<div>Custom footer content</div>"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+            className='ndpr-form-field__input'
           />
         </div>
 
@@ -467,10 +467,10 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             />
           </div>
           <div className="ml-3 text-sm">
-            <label htmlFor={`${instanceId}-include-compliance-notice`} className="font-medium text-gray-900 dark:text-white">
+            <label htmlFor={`${instanceId}-include-compliance-notice`} className="font-medium ndpr-text-foreground">
               Include NDPA Compliance Notice
             </label>
-            <p id={`${instanceId}-compliance-notice-desc`} className="text-gray-600 dark:text-gray-400">
+            <p id={`${instanceId}-compliance-notice-desc`} className='ndpr-card__subtitle'>
               Adds a notice explaining that this policy complies with NDPA requirements.
             </p>
           </div>
@@ -492,16 +492,16 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
             <thead className="bg-gray-100 dark:bg-gray-800">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                   Date
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                   Format
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                   Filename
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -509,20 +509,20 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
             <tbody className="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-600">
               {exportHistory.map(record => (
                 <tr key={record.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                  <td className='ndpr-table__cell'>
                     {new Date(record.timestamp).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                  <td className='ndpr-table__cell'>
                     {record.format.toUpperCase()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-300">
+                  <td className='ndpr-table__cell'>
                     {record.filename}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <a 
                       href={record.url} 
                       download={record.filename}
-                      className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:text-[rgb(var(--ndpr-primary-hover))] dark:hover:text-[rgb(var(--ndpr-primary-hover))] mr-4"
+                      className="ndpr-text-primary hover:text-[rgb(var(--ndpr-primary-hover))] dark:hover:text-[rgb(var(--ndpr-primary-hover))] mr-4"
                     >
                       Download
                     </a>
@@ -539,8 +539,8 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass('mb-6', classNames?.header, unstyled)}>
-        <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{componentTitle}</h2>
-        <p className={resolveClass('text-gray-600 dark:text-gray-300', classNames?.description, unstyled)}>{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{componentTitle}</h2>
+        <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{description}</p>
       </div>
       
       {/* Format Selection */}
@@ -560,16 +560,16 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
         </button>
         
         {exportError && (
-          <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+          <p className="mt-2 text-sm ndpr-text-destructive dark:text-red-500">
             {exportError}
           </p>
         )}
       </div>
       
       {/* Export Tips */}
-      <div className={resolveClass('mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md', classNames?.complianceNotice, unstyled)}>
-        <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">Export Tips</h3>
-        <ul className="text-blue-700 dark:text-blue-300 text-sm list-disc list-inside space-y-1">
+      <div className={resolveClass('ndpr-alert ndpr-alert--info', classNames?.complianceNotice, unstyled)}>
+        <h3 className="text-sm font-bold ndpr-text-info mb-2">Export Tips</h3>
+        <ul className="ndpr-text-info text-sm list-disc list-inside space-y-1">
           <li>PDF format is recommended for printing or sharing with stakeholders.</li>
           <li>HTML format is ideal for publishing on your website.</li>
           <li>DOCX format allows for further editing in Microsoft Word or similar applications.</li>

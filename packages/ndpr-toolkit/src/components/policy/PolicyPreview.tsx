@@ -191,14 +191,14 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
     }
     
     return (
-      <nav aria-label="Table of contents" className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md">
+      <nav aria-label="Table of contents" className='ndpr-panel'>
         <h3 className="text-lg font-medium mb-3">Table of Contents</h3>
         <ul className="space-y-1">
           {sectionTitles.map((section, index) => (
             <li key={index} style={{ marginLeft: `${(section.level - 2) * 1.5}rem` }}>
               <a
                 href={`#${section.id}`}
-                className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline"
+                className="ndpr-text-primary hover:underline"
               >
                 {section.title}
               </a>
@@ -216,11 +216,11 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
     }
     
     return (
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">
+      <div data-ndpr-component="policy-preview" className="mb-6">
+        <h1 className='ndpr-card__title'>
           {organizationName ? `${organizationName} Privacy Policy` : 'Privacy Policy'}
         </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className='ndpr-form-field__hint'>
           Last Updated: {lastUpdated ? lastUpdated.toLocaleDateString() : 'N/A'}
         </p>
       </div>
@@ -259,7 +259,7 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
     return (
       <div className="mt-6">
         <h3 className="text-lg font-medium mb-3">Export Options</h3>
-        <div className="flex flex-wrap gap-3">
+        <div className='ndpr-card__footer'>
           <button
             onClick={() => handleExport('pdf')}
             className={`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`}
@@ -293,8 +293,8 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass('flex justify-between items-start mb-6', classNames?.header, unstyled)}>
         <div>
-          <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
-          <p className={resolveClass('text-gray-600 dark:text-gray-300', classNames?.description, unstyled)}>{description}</p>
+          <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
+          <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{description}</p>
         </div>
         
         {showEditButton && onEdit && (
@@ -308,9 +308,9 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
       </div>
       
       {/* NDPA Notice */}
-      <div className={resolveClass('mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md', classNames?.complianceNotice, unstyled)}>
-        <h3 className="text-sm font-bold text-blue-800 dark:text-blue-200 mb-2">NDPA Compliance Notice</h3>
-        <p className="text-blue-700 dark:text-blue-300 text-sm">
+      <div className={resolveClass('ndpr-alert ndpr-alert--info', classNames?.complianceNotice, unstyled)}>
+        <h3 className="text-sm font-bold ndpr-text-info mb-2">NDPA Compliance Notice</h3>
+        <p className="ndpr-text-info text-sm">
           This privacy policy has been generated to align with the Nigeria Data Protection Act (NDPA) 2023.
           We recommend having the final policy reviewed by a legal professional familiar with NDPA requirements
           before publishing it on your website or sharing it with your users.

@@ -12,15 +12,15 @@ export interface ComplianceScoreRingProps {
 const RATING_COLORS: Record<string, { stroke: string; text: string }> = {
   compliant: {
     stroke: 'stroke-green-500 dark:stroke-green-400',
-    text: 'text-green-600 dark:text-green-400',
+    text: 'ndpr-text-success',
   },
   nearly_compliant: {
     stroke: 'stroke-amber-500 dark:stroke-amber-400',
-    text: 'text-amber-600 dark:text-amber-400',
+    text: 'ndpr-text-warning',
   },
   not_compliant: {
     stroke: 'stroke-red-500 dark:stroke-red-400',
-    text: 'text-red-600 dark:text-red-400',
+    text: 'ndpr-text-destructive',
   },
 };
 
@@ -117,7 +117,7 @@ export const ComplianceScoreRing: React.FC<ComplianceScoreRingProps> = ({
 
       <p
         className={resolveClass(
-          'text-xs text-gray-500 dark:text-gray-400 text-center',
+          'text-xs ndpr-text-muted text-center',
           classNames?.scoreDetail,
           unstyled,
         )}

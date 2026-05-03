@@ -47,8 +47,8 @@ export const DraftSaveIndicator: React.FC<DraftSaveIndicatorProps> = ({
     status === 'error'
       ? 'text-red-500 dark:text-red-400'
       : status === 'saving'
-        ? 'text-gray-400 dark:text-gray-500'
-        : 'text-green-600 dark:text-green-400';
+        ? 'ndpr-card__subtitle'
+        : 'ndpr-text-success';
 
   return (
     <div

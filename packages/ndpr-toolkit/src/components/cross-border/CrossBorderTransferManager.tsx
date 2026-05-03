@@ -409,9 +409,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   // Render risk badge
   const renderRiskBadge = useCallback((riskLevel: 'low' | 'medium' | 'high') => {
     const colorClasses = {
-      low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      low: 'ndpr-badge ndpr-badge--success',
+      medium: 'ndpr-badge ndpr-badge--warning',
+      high: 'ndpr-badge ndpr-badge--destructive',
     };
 
     return (
@@ -424,10 +424,10 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   // Render status badge
   const renderStatusBadge = useCallback((status: CrossBorderTransfer['status']) => {
     const colorClasses = {
-      active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      suspended: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      terminated: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
-      pending_approval: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      active: 'ndpr-badge ndpr-badge--success',
+      suspended: 'ndpr-badge ndpr-badge--warning',
+      terminated: 'ndpr-badge ndpr-badge--neutral',
+      pending_approval: 'ndpr-badge ndpr-badge--info',
     };
 
     const labels = {
@@ -453,8 +453,8 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
       <span
         className={`px-2 py-1 rounded text-xs font-medium ${
           approvalRequired
-            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-            : 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200'
+            ? 'ndpr-badge ndpr-badge--info'
+            : 'ndpr-badge ndpr-badge--info'
         }`}
       >
         {label}
@@ -481,30 +481,30 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   // Render compliance summary
   const renderSummary = () => {
     return (
-      <div role="status" aria-label="Transfer compliance summary" className={resolveClass('mb-6 grid grid-cols-2 md:grid-cols-4 gap-4', classNames?.summary, unstyled)}>
-        <div className={resolveClass('bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
+      <div data-ndpr-component="cross-border-transfer-manager" role="status" aria-label="Transfer compliance summary" className={resolveClass('mb-6 grid grid-cols-2 md:grid-cols-4 gap-4', classNames?.summary, unstyled)}>
+        <div className={resolveClass('ndpr-alert ndpr-alert--info', classNames?.summaryCard, unstyled)}>
+          <p className='ndpr-stat__value ndpr-text-info'>
             {summaryData.totalActiveTransfers}
           </p>
-          <p className="text-sm text-blue-600 dark:text-blue-300">Active Transfers</p>
+          <p className="text-sm ndpr-text-info">Active Transfers</p>
         </div>
-        <div className={resolveClass('bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-purple-800 dark:text-purple-200">
+        <div className={resolveClass('ndpr-alert ndpr-alert--info', classNames?.summaryCard, unstyled)}>
+          <p className='ndpr-stat__value ndpr-text-info'>
             {summaryData.pendingApproval.length}
           </p>
-          <p className="text-sm text-purple-600 dark:text-purple-300">Pending Approval</p>
+          <p className="text-sm ndpr-text-info">Pending Approval</p>
         </div>
-        <div className={resolveClass('bg-red-50 dark:bg-red-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-red-800 dark:text-red-200">
+        <div className={resolveClass('ndpr-alert ndpr-alert--destructive', classNames?.summaryCard, unstyled)}>
+          <p className='ndpr-stat__value ndpr-text-destructive'>
             {summaryData.highRiskTransfers.length}
           </p>
-          <p className="text-sm text-red-600 dark:text-red-300">High Risk</p>
+          <p className="text-sm ndpr-text-destructive">High Risk</p>
         </div>
-        <div className={resolveClass('bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-yellow-800 dark:text-yellow-200">
+        <div className={resolveClass('ndpr-alert ndpr-alert--warning', classNames?.summaryCard, unstyled)}>
+          <p className='ndpr-stat__value ndpr-text-warning'>
             {summaryData.missingTIA.length}
           </p>
-          <p className="text-sm text-yellow-600 dark:text-yellow-300">Missing TIA</p>
+          <p className="text-sm ndpr-text-warning">Missing TIA</p>
         </div>
       </div>
     );
@@ -517,13 +517,13 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
     return (
       <div className={resolveClass('bg-gray-50 dark:bg-gray-700 p-6 rounded-lg mb-6', classNames?.form, unstyled)}>
         <div className={resolveClass('flex justify-between items-center mb-4', classNames?.header, unstyled)}>
-          <h3 className="text-lg font-medium">
+          <h3 className='ndpr-section-heading'>
             {editingTransferId ? 'Edit Transfer' : 'Add New Transfer'}
           </h3>
           <button
             onClick={handleCancelForm}
             aria-label="Cancel form"
-            className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="text-gray-600 hover:ndpr-text-muted dark:hover:text-gray-200"
           >
             Cancel
           </button>
@@ -531,11 +531,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
         {/* Validation errors */}
         {validationResult && !validationResult.isValid && (
-          <div id="cb-form-errors" role="alert" className="mb-4 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-            <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-1">
+          <div id="cb-form-errors" role="alert" className='ndpr-alert ndpr-alert--destructive'>
+            <p className="text-sm font-medium ndpr-text-destructive mb-1">
               Please fix the following errors:
             </p>
-            <ul className="list-disc list-inside text-sm text-red-700 dark:text-red-300">
+            <ul className="list-disc list-inside text-sm ndpr-text-destructive">
               {validationResult.errors.map((error, i) => (
                 <li key={i}>{error}</li>
               ))}
@@ -544,9 +544,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         )}
 
         {validationResult && validationResult.warnings.length > 0 && (
-          <div id="cb-form-warnings" role="alert" className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
-            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-1">Warnings:</p>
-            <ul className="list-disc list-inside text-sm text-yellow-700 dark:text-yellow-300">
+          <div id="cb-form-warnings" role="alert" className='ndpr-alert ndpr-alert--warning'>
+            <p className="text-sm font-medium ndpr-text-warning mb-1">Warnings:</p>
+            <ul className="list-disc list-inside text-sm ndpr-text-warning">
               {validationResult.warnings.map((warning, i) => (
                 <li key={i}>{warning}</li>
               ))}
@@ -554,11 +554,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className='ndpr-form-grid ndpr-form-grid--2'>
           {/* Destination Country */}
           <div>
-            <label htmlFor="cb-destinationCountry" className="block text-sm font-medium mb-1">
-              Destination Country <span className="text-red-500">*</span>
+            <label htmlFor="cb-destinationCountry" className='ndpr-form-field__label'>
+              Destination Country <span className="ndpr-form-field__required">*</span>
             </label>
             <input
               id="cb-destinationCountry"
@@ -569,13 +569,13 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               aria-required="true"
               aria-describedby="cb-form-errors"
               aria-label="Destination country"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Country Code */}
           <div>
-            <label htmlFor="cb-destinationCountryCode" className="block text-sm font-medium mb-1">Country Code (ISO)</label>
+            <label htmlFor="cb-destinationCountryCode" className='ndpr-form-field__label'>Country Code (ISO)</label>
             <input
               id="cb-destinationCountryCode"
               type="text"
@@ -584,14 +584,14 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               placeholder="e.g. GB"
               maxLength={3}
               aria-label="Country code in ISO format"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Recipient Organization */}
           <div>
-            <label htmlFor="cb-recipientOrganization" className="block text-sm font-medium mb-1">
-              Recipient Organization <span className="text-red-500">*</span>
+            <label htmlFor="cb-recipientOrganization" className='ndpr-form-field__label'>
+              Recipient Organization <span className="ndpr-form-field__required">*</span>
             </label>
             <input
               id="cb-recipientOrganization"
@@ -601,14 +601,14 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               placeholder="Organization name"
               aria-required="true"
               aria-describedby="cb-form-errors"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Transfer Mechanism */}
           <div>
-            <label htmlFor="cb-transferMechanism" className="block text-sm font-medium mb-1">
-              Transfer Mechanism <span className="text-red-500">*</span>
+            <label htmlFor="cb-transferMechanism" className='ndpr-form-field__label'>
+              Transfer Mechanism <span className="ndpr-form-field__required">*</span>
             </label>
             <select
               id="cb-transferMechanism"
@@ -618,7 +618,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               }
               aria-required="true"
               aria-describedby="cb-form-errors"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
             >
               {MECHANISM_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -630,13 +630,13 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Adequacy Status */}
           <div>
-            <label htmlFor="cb-adequacyStatus" className="block text-sm font-medium mb-1">Adequacy Status</label>
+            <label htmlFor="cb-adequacyStatus" className='ndpr-form-field__label'>Adequacy Status</label>
             <select
               id="cb-adequacyStatus"
               value={formData.adequacyStatus}
               onChange={(e) => handleFieldChange('adequacyStatus', e.target.value)}
               aria-label="Select adequacy status of destination country"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
             >
               {ADEQUACY_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -648,11 +648,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Risk Level */}
           <div>
-            <label className="block text-sm font-medium mb-1">Risk Level</label>
+            <label className='ndpr-form-field__label'>Risk Level</label>
             <select
               value={formData.riskLevel}
               onChange={(e) => handleFieldChange('riskLevel', e.target.value)}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -662,8 +662,8 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Data Categories */}
           <div className="md:col-span-2">
-            <label htmlFor="cb-dataCategories" className="block text-sm font-medium mb-1">
-              Data Categories <span className="text-red-500">*</span>
+            <label htmlFor="cb-dataCategories" className='ndpr-form-field__label'>
+              Data Categories <span className="ndpr-form-field__required">*</span>
             </label>
             <input
               id="cb-dataCategories"
@@ -673,7 +673,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               placeholder="Comma-separated, e.g. Names, Email addresses, Phone numbers"
               aria-required="true"
               aria-describedby="cb-dataCategories-help"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
             <p id="cb-dataCategories-help" className="text-xs text-gray-500 mt-1">Separate categories with commas</p>
           </div>
@@ -685,29 +685,29 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               id="includesSensitiveData"
               checked={formData.includesSensitiveData}
               onChange={(e) => handleFieldChange('includesSensitiveData', e.target.checked)}
-              className="h-4 w-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))]"
+              className='ndpr-form-field__checkbox'
             />
-            <label htmlFor="includesSensitiveData" className="text-sm font-medium">
+            <label htmlFor="includesSensitiveData" className='ndpr-text-sm ndpr-font-medium'>
               Includes sensitive personal data
             </label>
           </div>
 
           {/* Estimated Data Subjects */}
           <div>
-            <label className="block text-sm font-medium mb-1">Estimated Data Subjects</label>
+            <label className='ndpr-form-field__label'>Estimated Data Subjects</label>
             <input
               type="number"
               value={formData.estimatedDataSubjects}
               onChange={(e) => handleFieldChange('estimatedDataSubjects', e.target.value)}
               placeholder="Number of data subjects"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Recipient Contact Name */}
           <div>
-            <label htmlFor="cb-recipientContactName" className="block text-sm font-medium mb-1">
-              Recipient Contact Name <span className="text-red-500">*</span>
+            <label htmlFor="cb-recipientContactName" className='ndpr-form-field__label'>
+              Recipient Contact Name <span className="ndpr-form-field__required">*</span>
             </label>
             <input
               id="cb-recipientContactName"
@@ -717,14 +717,14 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               placeholder="Contact person name"
               aria-required="true"
               aria-describedby="cb-form-errors"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Recipient Contact Email */}
           <div>
-            <label htmlFor="cb-recipientContactEmail" className="block text-sm font-medium mb-1">
-              Recipient Contact Email <span className="text-red-500">*</span>
+            <label htmlFor="cb-recipientContactEmail" className='ndpr-form-field__label'>
+              Recipient Contact Email <span className="ndpr-form-field__required">*</span>
             </label>
             <input
               id="cb-recipientContactEmail"
@@ -734,38 +734,38 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               placeholder="contact@example.com"
               aria-required="true"
               aria-describedby="cb-form-errors"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Recipient Contact Phone */}
           <div>
-            <label className="block text-sm font-medium mb-1">Recipient Contact Phone</label>
+            <label className='ndpr-form-field__label'>Recipient Contact Phone</label>
             <input
               type="text"
               value={formData.recipientContactPhone}
               onChange={(e) => handleFieldChange('recipientContactPhone', e.target.value)}
               placeholder="Phone number"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Recipient Contact Address */}
           <div>
-            <label className="block text-sm font-medium mb-1">Recipient Contact Address</label>
+            <label className='ndpr-form-field__label'>Recipient Contact Address</label>
             <input
               type="text"
               value={formData.recipientContactAddress}
               onChange={(e) => handleFieldChange('recipientContactAddress', e.target.value)}
               placeholder="Address"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Purpose */}
           <div className="md:col-span-2">
-            <label htmlFor="cb-purpose" className="block text-sm font-medium mb-1">
-              Purpose of Transfer <span className="text-red-500">*</span>
+            <label htmlFor="cb-purpose" className='ndpr-form-field__label'>
+              Purpose of Transfer <span className="ndpr-form-field__required">*</span>
             </label>
             <textarea
               id="cb-purpose"
@@ -775,14 +775,14 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               rows={2}
               aria-required="true"
               aria-describedby="cb-form-errors"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Safeguards */}
           <div className="md:col-span-2">
-            <label htmlFor="cb-safeguards" className="block text-sm font-medium mb-1">
-              Safeguards <span className="text-red-500">*</span>
+            <label htmlFor="cb-safeguards" className='ndpr-form-field__label'>
+              Safeguards <span className="ndpr-form-field__required">*</span>
             </label>
             <textarea
               id="cb-safeguards"
@@ -792,15 +792,15 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               rows={3}
               aria-required="true"
               aria-describedby="cb-safeguards-help"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
             <p id="cb-safeguards-help" className="text-xs text-gray-500 mt-1">Enter one safeguard per line</p>
           </div>
 
           {/* Risk Assessment */}
           <div className="md:col-span-2">
-            <label htmlFor="cb-riskAssessment" className="block text-sm font-medium mb-1">
-              Risk Assessment Summary <span className="text-red-500">*</span>
+            <label htmlFor="cb-riskAssessment" className='ndpr-form-field__label'>
+              Risk Assessment Summary <span className="ndpr-form-field__required">*</span>
             </label>
             <textarea
               id="cb-riskAssessment"
@@ -810,17 +810,17 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               rows={2}
               aria-required="true"
               aria-describedby="cb-form-errors"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Frequency */}
           <div>
-            <label className="block text-sm font-medium mb-1">Transfer Frequency</label>
+            <label className='ndpr-form-field__label'>Transfer Frequency</label>
             <select
               value={formData.frequency}
               onChange={(e) => handleFieldChange('frequency', e.target.value)}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
             >
               {FREQUENCY_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -832,11 +832,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium mb-1">Status</label>
+            <label className='ndpr-form-field__label'>Status</label>
             <select
               value={formData.status}
               onChange={(e) => handleFieldChange('status', e.target.value)}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
             >
               {STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -850,23 +850,23 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         {/* NDPC Approval Section (conditional) */}
         {needsApproval && (
           <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-            <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-3">
+            <h4 className="text-sm font-medium ndpr-text-info mb-3">
               NDPC Approval Required
             </h4>
-            <p className="text-xs text-blue-700 dark:text-blue-300 mb-3">
+            <p className="text-xs ndpr-text-info mb-3">
               The selected transfer mechanism requires approval from the Nigeria Data Protection
               Commission.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="ndpcApprovalApplied"
                   checked={formData.ndpcApprovalApplied}
                   onChange={(e) => handleFieldChange('ndpcApprovalApplied', e.target.checked)}
-                  className="h-4 w-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))]"
+                  className='ndpr-form-field__checkbox'
                 />
-                <label htmlFor="ndpcApprovalApplied" className="text-sm">
+                <label htmlFor="ndpcApprovalApplied" className='ndpr-text-sm'>
                   Application submitted
                 </label>
               </div>
@@ -876,20 +876,20 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                   id="ndpcApprovalApproved"
                   checked={formData.ndpcApprovalApproved}
                   onChange={(e) => handleFieldChange('ndpcApprovalApproved', e.target.checked)}
-                  className="h-4 w-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))]"
+                  className='ndpr-form-field__checkbox'
                 />
-                <label htmlFor="ndpcApprovalApproved" className="text-sm">
+                <label htmlFor="ndpcApprovalApproved" className='ndpr-text-sm'>
                   Approval granted
                 </label>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-1">NDPC Reference Number</label>
+                <label className='ndpr-form-field__label'>NDPC Reference Number</label>
                 <input
                   type="text"
                   value={formData.ndpcApprovalReference}
                   onChange={(e) => handleFieldChange('ndpcApprovalReference', e.target.value)}
                   placeholder="Reference number (if available)"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                 />
               </div>
             </div>
@@ -900,27 +900,27 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         {showTIA && (
           <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-600 rounded-md">
             <h4 className="text-sm font-medium mb-3">Transfer Impact Assessment</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="tiaCompleted"
                   checked={formData.tiaCompleted}
                   onChange={(e) => handleFieldChange('tiaCompleted', e.target.checked)}
-                  className="h-4 w-4 text-[rgb(var(--ndpr-primary))] border-gray-300 rounded focus:ring-[rgb(var(--ndpr-ring))]"
+                  className='ndpr-form-field__checkbox'
                 />
-                <label htmlFor="tiaCompleted" className="text-sm">
+                <label htmlFor="tiaCompleted" className='ndpr-text-sm'>
                   TIA completed
                 </label>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">TIA Reference</label>
+                <label className='ndpr-form-field__label'>TIA Reference</label>
                 <input
                   type="text"
                   value={formData.tiaReference}
                   onChange={(e) => handleFieldChange('tiaReference', e.target.value)}
                   placeholder="Document reference"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                 />
               </div>
             </div>
@@ -954,7 +954,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
     return (
       <div role="status" aria-label="Transfer details" className={resolveClass('', classNames?.detailPanel, unstyled)}>
         <div className="flex justify-between items-start mb-4">
-          <h3 className="text-lg font-medium">
+          <h3 className='ndpr-section-heading'>
             {transfer.destinationCountry} — {transfer.recipientOrganization}
           </h3>
           <div className="flex gap-2">
@@ -965,11 +965,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
         {/* Validation warnings */}
         {!validation.isValid && (
-          <div className="mb-4 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-            <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-1">
+          <div className='ndpr-alert ndpr-alert--destructive'>
+            <p className="text-sm font-medium ndpr-text-destructive mb-1">
               Compliance Issues
             </p>
-            <ul className="list-disc list-inside text-sm text-red-700 dark:text-red-300">
+            <ul className="list-disc list-inside text-sm ndpr-text-destructive">
               {validation.errors.map((error, i) => (
                 <li key={i}>{error}</li>
               ))}
@@ -978,9 +978,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         )}
 
         {validation.warnings.length > 0 && (
-          <div className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
-            <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-1">Warnings</p>
-            <ul className="list-disc list-inside text-sm text-yellow-700 dark:text-yellow-300">
+          <div className='ndpr-alert ndpr-alert--warning'>
+            <p className="text-sm font-medium ndpr-text-warning mb-1">Warnings</p>
+            <ul className="list-disc list-inside text-sm ndpr-text-warning">
               {validation.warnings.map((warning, i) => (
                 <li key={i}>{warning}</li>
               ))}
@@ -991,47 +991,47 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         {/* Transfer Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Destination:</span> {transfer.destinationCountry}
               {transfer.destinationCountryCode ? ` (${transfer.destinationCountryCode})` : ''}
             </p>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Adequacy:</span>{' '}
               {ADEQUACY_OPTIONS.find((o) => o.value === transfer.adequacyStatus)?.label}
             </p>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Frequency:</span>{' '}
               {FREQUENCY_OPTIONS.find((o) => o.value === transfer.frequency)?.label}
             </p>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Start Date:</span> {formatDate(transfer.startDate)}
             </p>
             {transfer.endDate && (
-              <p className="text-sm">
+              <p className='ndpr-text-sm'>
                 <span className="font-medium">End Date:</span> {formatDate(transfer.endDate)}
               </p>
             )}
             {transfer.reviewDate && (
-              <p className="text-sm">
+              <p className='ndpr-text-sm'>
                 <span className="font-medium">Next Review:</span> {formatDate(transfer.reviewDate)}
               </p>
             )}
           </div>
           <div>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Recipient:</span> {transfer.recipientOrganization}
             </p>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Contact:</span> {transfer.recipientContact.name} (
               {transfer.recipientContact.email})
             </p>
             {transfer.estimatedDataSubjects && (
-              <p className="text-sm">
+              <p className='ndpr-text-sm'>
                 <span className="font-medium">Data Subjects:</span>{' '}
                 {transfer.estimatedDataSubjects.toLocaleString()}
               </p>
             )}
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Sensitive Data:</span>{' '}
               {transfer.includesSensitiveData ? 'Yes' : 'No'}
             </p>
@@ -1039,9 +1039,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         </div>
 
         {/* Transfer Mechanism */}
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-1">Transfer Mechanism</p>
-          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+        <div className='ndpr-form-field'>
+          <p className='ndpr-form-field__label'>Transfer Mechanism</p>
+          <div className='ndpr-panel'>
             <p className="text-sm text-gray-700 dark:text-gray-200">
               {getTransferMechanismDescription(transfer.transferMechanism)}
             </p>
@@ -1049,16 +1049,16 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         </div>
 
         {/* Purpose */}
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-1">Purpose</p>
-          <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-2 rounded-md">
+        <div className='ndpr-form-field'>
+          <p className='ndpr-form-field__label'>Purpose</p>
+          <p className="text-sm ndpr-text-muted bg-gray-50 dark:bg-gray-700 p-2 rounded-md">
             {transfer.purpose}
           </p>
         </div>
 
         {/* Data Categories */}
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-1">Data Categories</p>
+        <div className='ndpr-form-field'>
+          <p className='ndpr-form-field__label'>Data Categories</p>
           <div className="flex flex-wrap gap-1">
             {transfer.dataCategories.map((category, i) => (
               <span
@@ -1072,9 +1072,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         </div>
 
         {/* Safeguards */}
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-1">Safeguards</p>
-          <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-300">
+        <div className='ndpr-form-field'>
+          <p className='ndpr-form-field__label'>Safeguards</p>
+          <ul className="list-disc list-inside text-sm ndpr-text-muted">
             {transfer.safeguards.map((safeguard, i) => (
               <li key={i}>{safeguard}</li>
             ))}
@@ -1082,18 +1082,18 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         </div>
 
         {/* Risk Assessment */}
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-1">Risk Assessment</p>
-          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+        <div className='ndpr-form-field'>
+          <p className='ndpr-form-field__label'>Risk Assessment</p>
+          <div className='ndpr-panel'>
             <p className="text-sm text-gray-700 dark:text-gray-200 mb-2">
               {transfer.riskAssessment}
             </p>
             <div className="mt-2" role="status" aria-label="Automated risk assessment result">
-              <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+              <p className="text-xs font-medium ndpr-text-muted mb-1">
                 Automated Assessment (Score: {riskResult.riskScore})
               </p>
               {riskResult.factors.length > 0 && (
-                <ul className="list-disc list-inside text-xs text-gray-600 dark:text-gray-400">
+                <ul className="list-disc list-inside text-xs ndpr-text-muted">
                   {riskResult.factors.map((factor, i) => (
                     <li key={i}>{factor}</li>
                   ))}
@@ -1101,10 +1101,10 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
               )}
               {riskResult.recommendations.length > 0 && (
                 <div className="mt-2">
-                  <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                  <p className="text-xs font-medium ndpr-text-muted mb-1">
                     Recommendations:
                   </p>
-                  <ul className="list-disc list-inside text-xs text-gray-600 dark:text-gray-400">
+                  <ul className="list-disc list-inside text-xs ndpr-text-muted">
                     {riskResult.recommendations.map((rec, i) => (
                       <li key={i}>{rec}</li>
                     ))}
@@ -1117,18 +1117,18 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
         {/* NDPC Approval */}
         {transfer.ndpcApproval && (
-          <div className="mb-4">
-            <p className="text-sm font-medium mb-1">NDPC Approval</p>
+          <div className='ndpr-form-field'>
+            <p className='ndpr-form-field__label'>NDPC Approval</p>
             <div
               className={resolveClass(`p-3 rounded-md ${
                 transfer.ndpcApproval.approved
-                  ? 'bg-green-50 dark:bg-green-900/20'
+                  ? 'ndpr-alert ndpr-alert--success'
                   : transfer.ndpcApproval.applied
-                    ? 'bg-yellow-50 dark:bg-yellow-900/20'
-                    : 'bg-red-50 dark:bg-red-900/20'
+                    ? 'ndpr-alert ndpr-alert--warning'
+                    : 'ndpr-alert ndpr-alert--destructive'
               }`, classNames?.approvalStatus, unstyled)}
             >
-              <p className="text-sm">
+              <p className='ndpr-text-sm'>
                 <span className="font-medium">Status:</span>{' '}
                 {transfer.ndpcApproval.approved
                   ? 'Approved'
@@ -1137,19 +1137,19 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                     : 'Not Applied'}
               </p>
               {transfer.ndpcApproval.referenceNumber && (
-                <p className="text-sm">
+                <p className='ndpr-text-sm'>
                   <span className="font-medium">Reference:</span>{' '}
                   {transfer.ndpcApproval.referenceNumber}
                 </p>
               )}
               {transfer.ndpcApproval.appliedAt && (
-                <p className="text-sm">
+                <p className='ndpr-text-sm'>
                   <span className="font-medium">Applied:</span>{' '}
                   {formatDate(transfer.ndpcApproval.appliedAt)}
                 </p>
               )}
               {transfer.ndpcApproval.approvedAt && (
-                <p className="text-sm">
+                <p className='ndpr-text-sm'>
                   <span className="font-medium">Approved:</span>{' '}
                   {formatDate(transfer.ndpcApproval.approvedAt)}
                 </p>
@@ -1159,21 +1159,21 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
         )}
 
         {/* TIA */}
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-1">Transfer Impact Assessment</p>
+        <div className='ndpr-form-field'>
+          <p className='ndpr-form-field__label'>Transfer Impact Assessment</p>
           <div
             className={`p-3 rounded-md ${
               transfer.tiaCompleted
-                ? 'bg-green-50 dark:bg-green-900/20'
-                : 'bg-yellow-50 dark:bg-yellow-900/20'
+                ? 'ndpr-alert ndpr-alert--success'
+                : 'ndpr-alert ndpr-alert--warning'
             }`}
           >
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Status:</span>{' '}
               {transfer.tiaCompleted ? 'Completed' : 'Not Completed'}
             </p>
             {transfer.tiaReference && (
-              <p className="text-sm">
+              <p className='ndpr-text-sm'>
                 <span className="font-medium">Reference:</span> {transfer.tiaReference}
               </p>
             )}
@@ -1203,8 +1203,8 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
-      <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
+      <p className='ndpr-card__subtitle'>{description}</p>
 
       {/* Compliance Summary */}
       {showSummary && renderSummary()}
@@ -1227,7 +1227,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
       {/* Filters */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="cbStatusFilter" className="block text-sm font-medium mb-1">
+          <label htmlFor="cbStatusFilter" className='ndpr-form-field__label'>
             Status Filter
           </label>
           <select
@@ -1235,7 +1235,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             aria-label="Filter transfers by status"
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+            className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
           >
             <option value="all">All Statuses</option>
             {STATUS_OPTIONS.map((option) => (
@@ -1246,7 +1246,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
           </select>
         </div>
         <div>
-          <label htmlFor="cbMechanismFilter" className="block text-sm font-medium mb-1">
+          <label htmlFor="cbMechanismFilter" className='ndpr-form-field__label'>
             Mechanism Filter
           </label>
           <select
@@ -1254,7 +1254,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
             value={mechanismFilter}
             onChange={(e) => setMechanismFilter(e.target.value)}
             aria-label="Filter transfers by mechanism"
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+            className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
           >
             <option value="all">All Mechanisms</option>
             {MECHANISM_OPTIONS.map((option) => (
@@ -1273,7 +1273,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
           <h3 className="text-lg font-medium mb-3">Transfers</h3>
 
           {filteredTransfers.length === 0 ? (
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className='ndpr-card__subtitle'>
               No cross-border transfers found.
             </p>
           ) : (
@@ -1283,8 +1283,8 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                   key={transfer.id}
                   className={resolveClass(`p-3 rounded-md cursor-pointer ${
                     selectedTransferId === transfer.id
-                      ? 'bg-[rgb(var(--ndpr-primary)/0.05)] dark:bg-[rgb(var(--ndpr-primary)/0.1)] border border-[rgb(var(--ndpr-primary)/0.2)] dark:border-[rgb(var(--ndpr-primary)/0.3)]'
-                      : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
+                      ? 'ndpr-alert ndpr-alert--info'
+                      : 'ndpr-panel'
                   }`, classNames?.transferItem, unstyled)}
                   role="button"
                   tabIndex={0}
@@ -1296,16 +1296,16 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                     <h4 className="font-medium text-sm">{transfer.destinationCountry}</h4>
                     {renderRiskBadge(transfer.riskLevel)}
                   </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  <p className="text-xs ndpr-text-muted mb-1">
                     {transfer.recipientOrganization}
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                  <p className="text-xs ndpr-text-muted mb-1">
                     {renderMechanismBadge(transfer.transferMechanism)}
                   </p>
                   <div className="flex justify-between items-center mt-2">
                     {renderStatusBadge(transfer.status)}
                     {transfer.ndpcApproval?.required && !transfer.ndpcApproval?.approved && (
-                      <span className="text-xs text-purple-600 dark:text-purple-400">
+                      <span className="text-xs ndpr-text-info">
                         NDPC Pending
                       </span>
                     )}
@@ -1321,8 +1321,8 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
           {selectedTransfer ? (
             renderTransferDetail(selectedTransfer)
           ) : (
-            <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-md">
-              <p className="text-gray-600 dark:text-gray-400">
+            <div className='ndpr-empty-state'>
+              <p className='ndpr-card__subtitle'>
                 Select a transfer to view details
               </p>
             </div>

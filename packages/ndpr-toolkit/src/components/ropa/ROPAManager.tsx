@@ -385,8 +385,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
   // Status badge rendering
   const renderStatusBadge = useCallback((status: ProcessingRecord['status']) => {
     const colorClasses: Record<ProcessingRecord['status'], string> = {
-      active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      inactive: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      active: 'ndpr-badge ndpr-badge--success',
+      inactive: 'ndpr-badge ndpr-badge--warning',
       archived: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
     };
 
@@ -415,7 +415,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     };
 
     return (
-      <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+      <span className='ndpr-badge ndpr-badge--info'>
         {labels[basis]}
       </span>
     );
@@ -426,28 +426,28 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     <div className={resolveClass('mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md', classNames?.orgInfo, unstyled)}>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Organization</p>
-          <p className="text-sm font-semibold">{ropa.organizationName}</p>
+          <p className="text-sm font-medium ndpr-text-muted">Organization</p>
+          <p className='ndpr-section-heading'>{ropa.organizationName}</p>
         </div>
         {ropa.dpoDetails && (
           <div>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p className="text-sm font-medium ndpr-text-muted">
               Data Protection Officer
             </p>
-            <p className="text-sm font-semibold">{ropa.dpoDetails.name}</p>
-            <p className="text-xs text-gray-600 dark:text-gray-400">{ropa.dpoDetails.email}</p>
+            <p className='ndpr-section-heading'>{ropa.dpoDetails.name}</p>
+            <p className='ndpr-form-field__hint'>{ropa.dpoDetails.email}</p>
           </div>
         )}
         {ropa.ndpcRegistrationNumber && (
           <div>
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <p className="text-sm font-medium ndpr-text-muted">
               NDPC Registration No.
             </p>
-            <p className="text-sm font-semibold">{ropa.ndpcRegistrationNumber}</p>
+            <p className='ndpr-section-heading'>{ropa.ndpcRegistrationNumber}</p>
           </div>
         )}
       </div>
-      <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+      <div className="mt-2 text-xs ndpr-text-muted">
         Version {ropa.version} | Last Updated: {formatDate(ropa.lastUpdated)}
       </div>
     </div>
@@ -458,68 +458,68 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     <div className={resolveClass('mb-6', classNames?.summary, unstyled)}>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div className={resolveClass('p-4 bg-blue-50 dark:bg-blue-900/20 rounded-md text-center', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">
+          <p className='ndpr-stat__value ndpr-text-info'>
             {summary.totalRecords}
           </p>
-          <p className="text-xs text-blue-600 dark:text-blue-400">Total Records</p>
+          <p className="text-xs ndpr-text-info">Total Records</p>
         </div>
         <div className={resolveClass('p-4 bg-green-50 dark:bg-green-900/20 rounded-md text-center', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-green-700 dark:text-green-300">
+          <p className='ndpr-stat__value ndpr-text-success'>
             {summary.activeRecords}
           </p>
-          <p className="text-xs text-green-600 dark:text-green-400">Active</p>
+          <p className="text-xs ndpr-text-success">Active</p>
         </div>
         <div className={resolveClass('p-4 bg-purple-50 dark:bg-purple-900/20 rounded-md text-center', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">
+          <p className='ndpr-stat__value ndpr-text-info'>
             {summary.crossBorderRecords}
           </p>
-          <p className="text-xs text-purple-600 dark:text-purple-400">Cross-Border</p>
+          <p className="text-xs ndpr-text-info">Cross-Border</p>
         </div>
         <div className={resolveClass('p-4 bg-orange-50 dark:bg-orange-900/20 rounded-md text-center', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">
+          <p className='ndpr-stat__value ndpr-text-warning'>
             {complianceGaps.length}
           </p>
-          <p className="text-xs text-orange-600 dark:text-orange-400">Records with Gaps</p>
+          <p className="text-xs ndpr-text-warning">Records with Gaps</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-        <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
-          <p className="text-sm font-medium mb-2">By Lawful Basis</p>
+        <div className='ndpr-panel'>
+          <p className='ndpr-form-field__label'>By Lawful Basis</p>
           {LAWFUL_BASIS_OPTIONS.map((option) => (
             <div key={option.value} className="flex justify-between text-xs mb-1">
-              <span className="text-gray-600 dark:text-gray-400">{option.label.split(' (')[0]}</span>
+              <span className='ndpr-card__subtitle'>{option.label.split(' (')[0]}</span>
               <span className="font-medium">{summary.byLawfulBasis[option.value] || 0}</span>
             </div>
           ))}
         </div>
-        <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
-          <p className="text-sm font-medium mb-2">Risk Indicators</p>
+        <div className='ndpr-panel'>
+          <p className='ndpr-form-field__label'>Risk Indicators</p>
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-gray-600 dark:text-gray-400">Sensitive Data</span>
+            <span className='ndpr-card__subtitle'>Sensitive Data</span>
             <span className="font-medium">{summary.sensitiveDataRecords}</span>
           </div>
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-gray-600 dark:text-gray-400">DPIA Required</span>
+            <span className='ndpr-card__subtitle'>DPIA Required</span>
             <span className="font-medium">{summary.dpiaRequiredRecords}</span>
           </div>
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-gray-600 dark:text-gray-400">Automated Decisions</span>
+            <span className='ndpr-card__subtitle'>Automated Decisions</span>
             <span className="font-medium">{summary.automatedDecisionRecords}</span>
           </div>
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-gray-600 dark:text-gray-400">Due for Review</span>
-            <span className={`font-medium ${summary.recordsDueForReview.length > 0 ? 'text-red-600 dark:text-red-400' : ''}`}>
+            <span className='ndpr-card__subtitle'>Due for Review</span>
+            <span className={`font-medium ${summary.recordsDueForReview.length > 0 ? 'ndpr-text-destructive' : ''}`}>
               {summary.recordsDueForReview.length}
             </span>
           </div>
         </div>
         {summary.topDepartments.length > 0 && (
-          <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
-            <p className="text-sm font-medium mb-2">Top Departments</p>
+          <div className='ndpr-panel'>
+            <p className='ndpr-form-field__label'>Top Departments</p>
             {summary.topDepartments.slice(0, 5).map((dept) => (
               <div key={dept.department} className="flex justify-between text-xs mb-1">
-                <span className="text-gray-600 dark:text-gray-400">{dept.department}</span>
+                <span className='ndpr-card__subtitle'>{dept.department}</span>
                 <span className="font-medium">{dept.count}</span>
               </div>
             ))}
@@ -529,15 +529,15 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
 
       {complianceGaps.length > 0 && (
         <div className={resolveClass('p-3 bg-red-50 dark:bg-red-900/20 rounded-md', classNames?.complianceGap, unstyled)} role="status" aria-live="polite">
-          <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
+          <p className="text-sm font-medium ndpr-text-destructive mb-2">
             Compliance Gaps Detected
           </p>
           {complianceGaps.slice(0, 5).map((gap) => (
             <div key={gap.recordId} className="mb-2">
-              <p className="text-xs font-medium text-red-700 dark:text-red-300">{gap.recordName}</p>
+              <p className="text-xs font-medium ndpr-text-destructive">{gap.recordName}</p>
               <ul className="list-disc list-inside">
                 {gap.gaps.map((g, i) => (
-                  <li key={i} className="text-xs text-red-600 dark:text-red-400">
+                  <li key={i} className="text-xs ndpr-text-destructive">
                     {g}
                   </li>
                 ))}
@@ -545,7 +545,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
             </div>
           ))}
           {complianceGaps.length > 5 && (
-            <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+            <p className="text-xs ndpr-text-destructive mt-1">
               ...and {complianceGaps.length - 5} more record(s) with gaps.
             </p>
           )}
@@ -560,7 +560,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
       {/* Filters */}
       <div className="mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
-          <label htmlFor="ropaSearch" className="block text-sm font-medium mb-1">
+          <label htmlFor="ropaSearch" className='ndpr-form-field__label'>
             Search
           </label>
           <input
@@ -569,18 +569,18 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
             value={searchTerm}
             onChange={handleSearchChange}
             placeholder="Search records..."
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+            className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
           />
         </div>
         <div>
-          <label htmlFor="ropaStatusFilter" className="block text-sm font-medium mb-1">
+          <label htmlFor="ropaStatusFilter" className='ndpr-form-field__label'>
             Status
           </label>
           <select
             id="ropaStatusFilter"
             value={statusFilter}
             onChange={handleStatusFilterChange}
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+            className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
           >
             <option value="all">All Statuses</option>
             {STATUS_OPTIONS.map((opt) => (
@@ -591,14 +591,14 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </select>
         </div>
         <div>
-          <label htmlFor="ropaBasisFilter" className="block text-sm font-medium mb-1">
+          <label htmlFor="ropaBasisFilter" className='ndpr-form-field__label'>
             Lawful Basis
           </label>
           <select
             id="ropaBasisFilter"
             value={basisFilter}
             onChange={handleBasisFilterChange}
-            className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+            className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
           >
             <option value="all">All Bases</option>
             {LAWFUL_BASIS_OPTIONS.map((opt) => (
@@ -627,20 +627,20 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
 
       {/* Table */}
       {filteredRecords.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400 text-sm text-center py-8">
+        <p className='ndpr-empty-state'>
           No processing records found.
         </p>
       ) : (
         <div className="overflow-x-auto">
           <table className={resolveClass('w-full text-sm text-left', classNames?.table, unstyled)}>
-            <thead className={resolveClass('text-xs uppercase bg-gray-50 dark:bg-gray-700', classNames?.tableHeader, unstyled)}>
+            <thead className={resolveClass('ndpr-table__head', classNames?.tableHeader, unstyled)}>
               <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Lawful Basis</th>
-                <th className="px-4 py-3">Data Categories</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Last Reviewed</th>
-                <th className="px-4 py-3">Actions</th>
+                <th className='ndpr-table__cell'>Name</th>
+                <th className='ndpr-table__cell'>Lawful Basis</th>
+                <th className='ndpr-table__cell'>Data Categories</th>
+                <th className='ndpr-table__cell'>Status</th>
+                <th className='ndpr-table__cell'>Last Reviewed</th>
+                <th className='ndpr-table__cell'>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -659,37 +659,37 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                           : 'bg-white dark:bg-gray-800'
                     } hover:bg-gray-50 dark:hover:bg-gray-700`, classNames?.tableRow, unstyled)}
                   >
-                    <td className="px-4 py-3">
+                    <td className='ndpr-table__cell'>
                       <div>
                         <p className="font-medium">{record.name}</p>
                         {record.department && (
-                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                          <p className='ndpr-form-field__hint'>
                             {record.department}
                           </p>
                         )}
                         {overdue && (
-                          <span className="text-xs text-red-600 dark:text-red-400 font-medium">
+                          <span className="text-xs ndpr-text-destructive font-medium">
                             Review Overdue
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3">{renderBasisBadge(record.lawfulBasis)}</td>
-                    <td className="px-4 py-3">
-                      <p className="text-xs text-gray-600 dark:text-gray-300 max-w-xs truncate">
+                    <td className='ndpr-table__cell'>{renderBasisBadge(record.lawfulBasis)}</td>
+                    <td className='ndpr-table__cell'>
+                      <p className="text-xs ndpr-text-muted max-w-xs truncate">
                         {record.dataCategories.join(', ')}
                       </p>
                     </td>
-                    <td className="px-4 py-3">{renderStatusBadge(record.status)}</td>
-                    <td className="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">
+                    <td className='ndpr-table__cell'>{renderStatusBadge(record.status)}</td>
+                    <td className='ndpr-table__cell ndpr-table__cell--muted'>
                       {formatDate(record.lastReviewedAt)}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex space-x-2">
+                    <td className='ndpr-table__cell'>
+                      <div className='ndpr-card__footer'>
                         <button
                           onClick={() => handleEditRecord(record)}
                           aria-label={`Edit record: ${record.name}`}
-                          className="text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline text-xs"
+                          className="ndpr-text-primary hover:underline text-xs"
                         >
                           Edit
                         </button>
@@ -697,7 +697,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                           <button
                             onClick={() => handleArchiveRecord(record.id)}
                             aria-label={`Archive record: ${record.name}`}
-                            className="text-gray-600 dark:text-gray-400 hover:underline text-xs"
+                            className="ndpr-text-muted hover:underline text-xs"
                           >
                             Archive
                           </button>
@@ -726,27 +726,27 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     const isNew = isNewRecord;
 
     return (
-      <div className={resolveClass('', classNames?.form, unstyled)}>
+      <div data-ndpr-component="ropa-manager" className={resolveClass('', classNames?.form, unstyled)}>
         <div className={resolveClass('flex justify-between items-center mb-4', classNames?.header, unstyled)}>
-          <h3 className="text-lg font-medium">
+          <h3 className='ndpr-section-heading'>
             {isNew ? 'Add Processing Record' : 'Edit Processing Record'}
           </h3>
           <button
             onClick={handleCancelForm}
-            className="text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-sm"
+            className='ndpr-button ndpr-button--ghost ndpr-button--sm'
           >
             Cancel
           </button>
         </div>
 
         {formErrors.length > 0 && (
-          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-md" role="status" aria-live="polite">
-            <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-1">
+          <div className='ndpr-alert ndpr-alert--destructive' role="status" aria-live="polite">
+            <p className="text-sm font-medium ndpr-text-destructive mb-1">
               Please fix the following errors:
             </p>
             <ul className="list-disc list-inside">
               {formErrors.map((error, i) => (
-                <li key={i} className="text-xs text-red-600 dark:text-red-400">
+                <li key={i} className="text-xs ndpr-text-destructive">
                   {error}
                 </li>
               ))}
@@ -754,13 +754,13 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </div>
         )}
 
-        <div className="space-y-6">
+        <div className='ndpr-form-section'>
           {/* Basic Information */}
-          <fieldset className="border border-gray-200 dark:border-gray-600 rounded-md p-4">
-            <legend className="text-sm font-medium px-2">Basic Information</legend>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className='ndpr-card ndpr-card--compact ndpr-card--flat'>
+            <legend className='ndpr-badge'>Basic Information</legend>
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div>
-                <label htmlFor="recordName" className="block text-sm font-medium mb-1">
+                <label htmlFor="recordName" className='ndpr-form-field__label'>
                   Activity Name *
                 </label>
                 <input
@@ -769,12 +769,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={editingRecord.name}
                   onChange={(e) => updateEditingField('name', e.target.value)}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., Customer Account Management"
                 />
               </div>
               <div>
-                <label htmlFor="recordDepartment" className="block text-sm font-medium mb-1">
+                <label htmlFor="recordDepartment" className='ndpr-form-field__label'>
                   Department
                 </label>
                 <input
@@ -782,12 +782,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="recordDepartment"
                   value={editingRecord.department || ''}
                   onChange={(e) => updateEditingField('department', e.target.value || undefined)}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., Marketing"
                 />
               </div>
               <div className="md:col-span-2">
-                <label htmlFor="recordDescription" className="block text-sm font-medium mb-1">
+                <label htmlFor="recordDescription" className='ndpr-form-field__label'>
                   Description *
                 </label>
                 <textarea
@@ -796,12 +796,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   onChange={(e) => updateEditingField('description', e.target.value)}
                   rows={3}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="Describe what personal data processing is performed..."
                 />
               </div>
               <div>
-                <label htmlFor="recordStatus" className="block text-sm font-medium mb-1">
+                <label htmlFor="recordStatus" className='ndpr-form-field__label'>
                   Status *
                 </label>
                 <select
@@ -811,7 +811,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     updateEditingField('status', e.target.value as ProcessingRecord['status'])
                   }
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
                 >
                   {STATUS_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -824,11 +824,11 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </fieldset>
 
           {/* Controller Details */}
-          <fieldset className="border border-gray-200 dark:border-gray-600 rounded-md p-4">
-            <legend className="text-sm font-medium px-2">Controller Details</legend>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className='ndpr-card ndpr-card--compact ndpr-card--flat'>
+            <legend className='ndpr-badge'>Controller Details</legend>
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div>
-                <label htmlFor="controllerName" className="block text-sm font-medium mb-1">
+                <label htmlFor="controllerName" className='ndpr-form-field__label'>
                   Controller Name *
                 </label>
                 <input
@@ -837,11 +837,11 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={editingRecord.controllerDetails.name}
                   onChange={(e) => updateControllerField('name', e.target.value)}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                 />
               </div>
               <div>
-                <label htmlFor="controllerContact" className="block text-sm font-medium mb-1">
+                <label htmlFor="controllerContact" className='ndpr-form-field__label'>
                   Controller Contact *
                 </label>
                 <input
@@ -850,11 +850,11 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={editingRecord.controllerDetails.contact}
                   onChange={(e) => updateControllerField('contact', e.target.value)}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                 />
               </div>
               <div className="md:col-span-2">
-                <label htmlFor="controllerAddress" className="block text-sm font-medium mb-1">
+                <label htmlFor="controllerAddress" className='ndpr-form-field__label'>
                   Controller Address *
                 </label>
                 <input
@@ -863,18 +863,18 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={editingRecord.controllerDetails.address}
                   onChange={(e) => updateControllerField('address', e.target.value)}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                 />
               </div>
             </div>
           </fieldset>
 
           {/* Lawful Basis */}
-          <fieldset className="border border-gray-200 dark:border-gray-600 rounded-md p-4">
-            <legend className="text-sm font-medium px-2">Lawful Basis (NDPA Section 25)</legend>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className='ndpr-card ndpr-card--compact ndpr-card--flat'>
+            <legend className='ndpr-badge'>Lawful Basis (NDPA Section 25)</legend>
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div>
-                <label htmlFor="lawfulBasis" className="block text-sm font-medium mb-1">
+                <label htmlFor="lawfulBasis" className='ndpr-form-field__label'>
                   Lawful Basis *
                 </label>
                 <select
@@ -884,7 +884,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     updateEditingField('lawfulBasis', e.target.value as LawfulBasis)
                   }
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
                 >
                   {LAWFUL_BASIS_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -894,7 +894,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                 </select>
               </div>
               <div>
-                <label htmlFor="lawfulBasisJustification" className="block text-sm font-medium mb-1">
+                <label htmlFor="lawfulBasisJustification" className='ndpr-form-field__label'>
                   Justification *
                 </label>
                 <textarea
@@ -905,7 +905,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   }
                   rows={2}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="Explain why this lawful basis applies..."
                 />
               </div>
@@ -913,11 +913,11 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </fieldset>
 
           {/* Data Details */}
-          <fieldset className="border border-gray-200 dark:border-gray-600 rounded-md p-4">
-            <legend className="text-sm font-medium px-2">Data Details</legend>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className='ndpr-card ndpr-card--compact ndpr-card--flat'>
+            <legend className='ndpr-badge'>Data Details</legend>
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div>
-                <label htmlFor="purposes" className="block text-sm font-medium mb-1">
+                <label htmlFor="purposes" className='ndpr-form-field__label'>
                   Purposes * (comma-separated)
                 </label>
                 <input
@@ -926,12 +926,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={purposesInput}
                   onChange={handlePurposesChange}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., Account management, Service delivery"
                 />
               </div>
               <div>
-                <label htmlFor="dataCategories" className="block text-sm font-medium mb-1">
+                <label htmlFor="dataCategories" className='ndpr-form-field__label'>
                   Data Categories * (comma-separated)
                 </label>
                 <input
@@ -940,12 +940,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={dataCategoriesInput}
                   onChange={handleDataCategoriesChange}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., Name, Email, Phone number"
                 />
               </div>
               <div>
-                <label htmlFor="sensitiveData" className="block text-sm font-medium mb-1">
+                <label htmlFor="sensitiveData" className='ndpr-form-field__label'>
                   Sensitive Data Categories (comma-separated)
                 </label>
                 <input
@@ -953,12 +953,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="sensitiveData"
                   value={sensitiveDataInput}
                   onChange={handleSensitiveDataChange}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., Health data, Biometric data"
                 />
               </div>
               <div>
-                <label htmlFor="subjectCategories" className="block text-sm font-medium mb-1">
+                <label htmlFor="subjectCategories" className='ndpr-form-field__label'>
                   Data Subject Categories * (comma-separated)
                 </label>
                 <input
@@ -967,12 +967,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={subjectCategoriesInput}
                   onChange={handleSubjectCategoriesChange}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., Customers, Employees"
                 />
               </div>
               <div>
-                <label htmlFor="recipients" className="block text-sm font-medium mb-1">
+                <label htmlFor="recipients" className='ndpr-form-field__label'>
                   Recipients * (comma-separated)
                 </label>
                 <input
@@ -981,12 +981,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={recipientsInput}
                   onChange={handleRecipientsChange}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., Payment processors, Cloud service providers"
                 />
               </div>
               <div>
-                <label htmlFor="dataSource" className="block text-sm font-medium mb-1">
+                <label htmlFor="dataSource" className='ndpr-form-field__label'>
                   Data Source *
                 </label>
                 <select
@@ -999,7 +999,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     )
                   }
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
                 >
                   {DATA_SOURCE_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -1012,7 +1012,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                 <div className="md:col-span-2">
                   <label
                     htmlFor="thirdPartyDetails"
-                    className="block text-sm font-medium mb-1"
+                    className='ndpr-form-field__label'
                   >
                     Third-Party Source Details *
                   </label>
@@ -1024,7 +1024,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       updateEditingField('thirdPartySourceDetails', e.target.value || undefined)
                     }
                     aria-required="true"
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                    className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                     placeholder="Describe the third-party data source..."
                   />
                 </div>
@@ -1033,11 +1033,11 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </fieldset>
 
           {/* Retention and Security */}
-          <fieldset className="border border-gray-200 dark:border-gray-600 rounded-md p-4">
-            <legend className="text-sm font-medium px-2">Retention and Security</legend>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className='ndpr-card ndpr-card--compact ndpr-card--flat'>
+            <legend className='ndpr-badge'>Retention and Security</legend>
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div>
-                <label htmlFor="retentionPeriod" className="block text-sm font-medium mb-1">
+                <label htmlFor="retentionPeriod" className='ndpr-form-field__label'>
                   Retention Period *
                 </label>
                 <input
@@ -1046,12 +1046,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={editingRecord.retentionPeriod}
                   onChange={(e) => updateEditingField('retentionPeriod', e.target.value)}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., 5 years after account closure"
                 />
               </div>
               <div>
-                <label htmlFor="retentionJustification" className="block text-sm font-medium mb-1">
+                <label htmlFor="retentionJustification" className='ndpr-form-field__label'>
                   Retention Justification
                 </label>
                 <input
@@ -1061,12 +1061,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   onChange={(e) =>
                     updateEditingField('retentionJustification', e.target.value || undefined)
                   }
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="Why this retention period is necessary..."
                 />
               </div>
               <div className="md:col-span-2">
-                <label htmlFor="securityMeasures" className="block text-sm font-medium mb-1">
+                <label htmlFor="securityMeasures" className='ndpr-form-field__label'>
                   Security Measures * (comma-separated)
                 </label>
                 <input
@@ -1075,12 +1075,12 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   value={securityMeasuresInput}
                   onChange={handleSecurityMeasuresChange}
                   aria-required="true"
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., Encryption at rest, Access controls, Audit logging"
                 />
               </div>
               <div>
-                <label htmlFor="systemsUsed" className="block text-sm font-medium mb-1">
+                <label htmlFor="systemsUsed" className='ndpr-form-field__label'>
                   Systems Used (comma-separated)
                 </label>
                 <input
@@ -1088,7 +1088,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   id="systemsUsed"
                   value={systemsUsedInput}
                   onChange={handleSystemsUsedChange}
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   placeholder="e.g., CRM, ERP, Cloud Storage"
                 />
               </div>
@@ -1096,24 +1096,24 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </fieldset>
 
           {/* Risk Indicators */}
-          <fieldset className="border border-gray-200 dark:border-gray-600 rounded-md p-4">
-            <legend className="text-sm font-medium px-2">Risk Indicators</legend>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className='ndpr-card ndpr-card--compact ndpr-card--flat'>
+            <legend className='ndpr-badge'>Risk Indicators</legend>
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   id="dpiaRequired"
                   checked={editingRecord.dpiaRequired}
                   onChange={(e) => updateEditingField('dpiaRequired', e.target.checked)}
-                  className="rounded border-gray-300 dark:border-gray-600"
+                  className='ndpr-form-field__checkbox'
                 />
-                <label htmlFor="dpiaRequired" className="text-sm font-medium">
+                <label htmlFor="dpiaRequired" className='ndpr-text-sm ndpr-font-medium'>
                   DPIA Required
                 </label>
               </div>
               {editingRecord.dpiaRequired && (
                 <div>
-                  <label htmlFor="dpiaReference" className="block text-sm font-medium mb-1">
+                  <label htmlFor="dpiaReference" className='ndpr-form-field__label'>
                     DPIA Reference *
                   </label>
                   <input
@@ -1124,7 +1124,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       updateEditingField('dpiaReference', e.target.value || undefined)
                     }
                     aria-required="true"
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                    className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                     placeholder="Reference to the completed DPIA"
                   />
                 </div>
@@ -1137,9 +1137,9 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                   onChange={(e) =>
                     updateEditingField('automatedDecisionMaking', e.target.checked)
                   }
-                  className="rounded border-gray-300 dark:border-gray-600"
+                  className='ndpr-form-field__checkbox'
                 />
-                <label htmlFor="automatedDecisionMaking" className="text-sm font-medium">
+                <label htmlFor="automatedDecisionMaking" className='ndpr-text-sm ndpr-font-medium'>
                   Automated Decision-Making
                 </label>
               </div>
@@ -1147,7 +1147,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                 <div>
                   <label
                     htmlFor="automatedDecisionMakingDetails"
-                    className="block text-sm font-medium mb-1"
+                    className='ndpr-form-field__label'
                   >
                     Automated Decision-Making Details *
                   </label>
@@ -1162,7 +1162,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                     }
                     rows={2}
                     aria-required="true"
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                    className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                     placeholder="Describe the automated decision-making process..."
                   />
                 </div>
@@ -1171,11 +1171,11 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           </fieldset>
 
           {/* Review Schedule */}
-          <fieldset className="border border-gray-200 dark:border-gray-600 rounded-md p-4">
-            <legend className="text-sm font-medium px-2">Review Schedule</legend>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <fieldset className='ndpr-card ndpr-card--compact ndpr-card--flat'>
+            <legend className='ndpr-badge'>Review Schedule</legend>
+            <div className='ndpr-form-grid ndpr-form-grid--2'>
               <div>
-                <label htmlFor="nextReviewDate" className="block text-sm font-medium mb-1">
+                <label htmlFor="nextReviewDate" className='ndpr-form-field__label'>
                   Next Review Date
                 </label>
                 <input
@@ -1192,7 +1192,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
                       e.target.value ? new Date(e.target.value).getTime() : undefined
                     )
                   }
-                  className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                  className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                 />
               </div>
             </div>
@@ -1202,7 +1202,7 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
           <div className="flex justify-end space-x-3">
             <button
               onClick={handleCancelForm}
-              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
+              className='ndpr-button ndpr-button--secondary ndpr-button--sm'
             >
               Cancel
             </button>
@@ -1220,13 +1220,13 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
 
   // View mode tabs
   const renderViewTabs = () => (
-    <div className="flex space-x-4 mb-6 border-b border-gray-200 dark:border-gray-600">
+    <div className='ndpr-section-divider ndpr-text-sm'>
       <button
         onClick={handleSetViewList}
         className={`pb-2 text-sm font-medium ${
           viewMode === 'list'
-            ? 'border-b-2 border-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]'
-            : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            ? 'border-b-2 border-[rgb(var(--ndpr-primary))] ndpr-text-primary'
+            : 'ndpr-text-muted hover:text-gray-700 dark:hover:text-gray-300'
         }`}
       >
         Processing Records
@@ -1235,8 +1235,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
         onClick={handleSetViewSummary}
         className={`pb-2 text-sm font-medium ${
           viewMode === 'summary'
-            ? 'border-b-2 border-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]'
-            : 'text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            ? 'border-b-2 border-[rgb(var(--ndpr-primary))] ndpr-text-primary'
+            : 'ndpr-text-muted hover:text-gray-700 dark:hover:text-gray-300'
         }`}
       >
         Compliance Summary
@@ -1246,8 +1246,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
 
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
-      <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
+      <p className='ndpr-card__subtitle'>{description}</p>
 
       {renderOrganizationHeader()}
 

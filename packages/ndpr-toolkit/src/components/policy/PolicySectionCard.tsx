@@ -61,7 +61,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
         <div className={resolveClass('flex items-center gap-3 min-w-0', classNames?.titleRow, unstyled)}>
           <span
             className={resolveClass(
-              'flex-shrink-0 w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-semibold flex items-center justify-center',
+              'flex-shrink-0 w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-700 ndpr-text-muted text-xs font-semibold flex items-center justify-center',
               classNames?.sectionNumber,
               unstyled,
             )}
@@ -71,7 +71,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
           </span>
           <h4
             className={resolveClass(
-              'text-sm font-semibold text-gray-900 dark:text-gray-100 truncate',
+              'text-sm font-semibold ndpr-text-foreground truncate',
               classNames?.sectionTitle,
               unstyled,
             )}
@@ -80,7 +80,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
             {isCustom && (
               <span
                 className={resolveClass(
-                  'ml-2 text-xs font-normal text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded',
+                  'ml-2 text-xs font-normal ndpr-text-muted bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded',
                   classNames?.customBadge,
                   unstyled,
                 )}
@@ -98,7 +98,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
               type="button"
               onClick={onMoveUp}
               className={resolveClass(
-                'p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
+                'ndpr-button ndpr-button--icon',
                 classNames?.moveButton,
                 unstyled,
               )}
@@ -114,7 +114,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
               type="button"
               onClick={onMoveDown}
               className={resolveClass(
-                'p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors',
+                'ndpr-button ndpr-button--icon',
                 classNames?.moveButton,
                 unstyled,
               )}
@@ -170,7 +170,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
             onChange={(e) => setLocalContent(e.target.value)}
             rows={8}
             className={resolveClass(
-              'w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] text-sm font-mono resize-y',
+              'w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 ndpr-text-foreground focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] text-sm font-mono resize-y',
               classNames?.textarea,
               unstyled,
             )}
@@ -181,7 +181,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
               type="button"
               onClick={() => onSaveEdit(localContent)}
               className={resolveClass(
-                'px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] text-sm font-medium',
+                'ndpr-button ndpr-button--primary ndpr-button--sm',
                 classNames?.saveButton,
                 unstyled,
               )}
@@ -192,7 +192,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
               type="button"
               onClick={onCancelEdit}
               className={resolveClass(
-                'px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-md text-sm',
+                'ndpr-button ndpr-button--secondary ndpr-button--sm',
                 classNames?.cancelButton,
                 unstyled,
               )}
@@ -204,7 +204,7 @@ export const PolicySectionCard: React.FC<PolicySectionCardProps> = ({
       ) : (
         <div
           className={resolveClass(
-            'text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-4 whitespace-pre-wrap',
+            'text-sm ndpr-text-muted leading-relaxed line-clamp-4 whitespace-pre-wrap',
             classNames?.content,
             unstyled,
           )}

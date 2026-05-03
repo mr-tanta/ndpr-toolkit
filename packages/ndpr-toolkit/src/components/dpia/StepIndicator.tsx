@@ -130,7 +130,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
   const isVertical = orientation === 'vertical';
 
   return (
-    <div
+    <div data-ndpr-component="dpia-step-indicator"
       role="navigation"
       aria-label="Step progress"
       className={`${cx(
@@ -147,32 +147,32 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
         // then the new classNames keys, and finally the built-in defaults.
         const labelClass = step.active
           ? cx(
-              `font-medium ${activeStepClassName || 'text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))]'}`,
+              `font-medium ${activeStepClassName || 'ndpr-text-primary'}`,
               'label',
             )
           : step.completed
             ? cx(
-                completedStepClassName || 'text-green-600 dark:text-green-400',
+                completedStepClassName || 'ndpr-text-success',
                 'label',
               )
             : cx(
-                incompleteStepClassName || 'text-gray-600 dark:text-gray-400',
+                incompleteStepClassName || 'ndpr-card__subtitle',
                 'label',
               );
 
         // Circle indicator class
         const circleClass = step.active
           ? cx(
-              'flex items-center justify-center w-8 h-8 rounded-full bg-[rgb(var(--ndpr-primary)/0.1)] dark:bg-[rgb(var(--ndpr-primary)/0.2)] text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] border-2 border-[rgb(var(--ndpr-primary))] dark:border-[rgb(var(--ndpr-primary))]',
+              'flex items-center justify-center w-8 h-8 rounded-full bg-[rgb(var(--ndpr-primary)/0.1)] dark:bg-[rgb(var(--ndpr-primary)/0.2)] ndpr-text-primary border-2 border-[rgb(var(--ndpr-primary))] dark:border-[rgb(var(--ndpr-primary))]',
               'stepActive',
             )
           : step.completed
             ? cx(
-                'flex items-center justify-center w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 border-2 border-green-600 dark:border-green-400',
+                'flex items-center justify-center w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 ndpr-text-success border-2 border-green-600 dark:border-green-400',
                 'stepCompleted',
               )
             : cx(
-                'flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 border-2 border-gray-300 dark:border-gray-600',
+                'flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 ndpr-text-muted border-2 border-gray-300 dark:border-gray-600',
                 'stepPending',
               );
 
@@ -210,7 +210,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                   {step.label}
                 </div>
                 {step.description && (
-                  <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  <div className='ndpr-form-field__hint'>
                     {step.description}
                   </div>
                 )}

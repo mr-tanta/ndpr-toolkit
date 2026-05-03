@@ -729,13 +729,25 @@
   gap: var(--ndpr-space-3);
 }
 
-.ndpr-form-field__checkbox {
+.ndpr-form-field__checkbox,
+.ndpr-form-field__radio {
   width: 1rem;
   height: 1rem;
   margin-top: 0.2rem;
   accent-color: rgb(var(--ndpr-primary));
   flex-shrink: 0;
   cursor: pointer;
+}
+
+.ndpr-form-field__option-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ndpr-space-2);
+}
+
+.ndpr-form-field__input--mono {
+  font-family: var(--ndpr-font-mono, ui-monospace, 'Cascadia Code', Menlo, monospace);
+  font-size: var(--ndpr-font-size-sm);
 }
 
 .ndpr-form-section {
@@ -906,3 +918,525 @@
   color: rgb(var(--ndpr-foreground));
   font-size: var(--ndpr-font-size-sm);
 }
+
+/* ── Shared layout primitives ──────────────────────────────────────────── */
+
+/* Generic surface card — used by every "manager" / "report" / "dashboard"
+ * component. Replaces the repeated
+ * `bg-white dark:bg-gray-800 border ... rounded-lg p-{4,6} shadow-md`
+ * pattern. */
+.ndpr-card {
+  background: rgb(var(--ndpr-background));
+  color: rgb(var(--ndpr-foreground));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius-lg);
+  box-shadow: var(--ndpr-shadow);
+  padding: var(--ndpr-space-6);
+}
+
+.ndpr-card--compact { padding: var(--ndpr-space-4); }
+.ndpr-card--flat    { box-shadow: none; }
+.ndpr-card--subtle  {
+  background: rgb(var(--ndpr-surface));
+  box-shadow: none;
+  padding: var(--ndpr-space-4);
+}
+
+.ndpr-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ndpr-space-4);
+  margin-bottom: var(--ndpr-space-4);
+}
+
+.ndpr-card__title {
+  margin: 0;
+  font-size: var(--ndpr-font-size-lg);
+  font-weight: 600;
+  line-height: var(--ndpr-line-height-tight);
+}
+
+.ndpr-card__subtitle {
+  margin: var(--ndpr-space-1) 0 0;
+  font-size: var(--ndpr-font-size-sm);
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ndpr-space-4);
+}
+
+.ndpr-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ndpr-space-3);
+  margin-top: var(--ndpr-space-6);
+  padding-top: var(--ndpr-space-4);
+  border-top: 1px solid rgb(var(--ndpr-border));
+}
+
+/* Inline panel — light-surface inset for grouped content. */
+.ndpr-panel {
+  background: rgb(var(--ndpr-surface));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius);
+  padding: var(--ndpr-space-3) var(--ndpr-space-4);
+}
+
+/* ── Status badges (pills) ─────────────────────────────────────────────── */
+
+.ndpr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ndpr-space-1);
+  padding: 0.125rem var(--ndpr-space-2);
+  border-radius: var(--ndpr-radius-full);
+  font-size: var(--ndpr-font-size-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  border: 1px solid transparent;
+  background: rgb(var(--ndpr-muted));
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-badge--success {
+  background: rgb(var(--ndpr-success) / 0.12);
+  color: rgb(var(--ndpr-success));
+  border-color: rgb(var(--ndpr-success) / 0.3);
+}
+
+.ndpr-badge--warning {
+  background: rgb(var(--ndpr-warning) / 0.12);
+  color: rgb(var(--ndpr-warning));
+  border-color: rgb(var(--ndpr-warning) / 0.3);
+}
+
+.ndpr-badge--destructive,
+.ndpr-badge--danger {
+  background: rgb(var(--ndpr-destructive) / 0.12);
+  color: rgb(var(--ndpr-destructive));
+  border-color: rgb(var(--ndpr-destructive) / 0.3);
+}
+
+.ndpr-badge--info {
+  background: rgb(var(--ndpr-primary) / 0.12);
+  color: rgb(var(--ndpr-primary));
+  border-color: rgb(var(--ndpr-primary) / 0.3);
+}
+
+.ndpr-badge--neutral {
+  background: rgb(var(--ndpr-muted));
+  color: rgb(var(--ndpr-muted-foreground));
+  border-color: rgb(var(--ndpr-border));
+}
+
+/* ── Alert / callout blocks ────────────────────────────────────────────── */
+
+.ndpr-alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ndpr-space-1);
+  padding: var(--ndpr-space-3) var(--ndpr-space-4);
+  border-radius: var(--ndpr-radius);
+  border: 1px solid rgb(var(--ndpr-border));
+  background: rgb(var(--ndpr-surface));
+  color: rgb(var(--ndpr-foreground));
+  font-size: var(--ndpr-font-size-sm);
+}
+
+.ndpr-alert__title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.ndpr-alert__body {
+  margin: 0;
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-alert--info {
+  background: rgb(var(--ndpr-primary) / 0.08);
+  border-color: rgb(var(--ndpr-primary) / 0.3);
+}
+.ndpr-alert--info .ndpr-alert__title { color: rgb(var(--ndpr-primary)); }
+
+.ndpr-alert--success {
+  background: rgb(var(--ndpr-success) / 0.08);
+  border-color: rgb(var(--ndpr-success) / 0.3);
+}
+.ndpr-alert--success .ndpr-alert__title { color: rgb(var(--ndpr-success)); }
+
+.ndpr-alert--warning {
+  background: rgb(var(--ndpr-warning) / 0.08);
+  border-color: rgb(var(--ndpr-warning) / 0.3);
+}
+.ndpr-alert--warning .ndpr-alert__title { color: rgb(var(--ndpr-warning)); }
+
+.ndpr-alert--destructive,
+.ndpr-alert--danger {
+  background: rgb(var(--ndpr-destructive) / 0.08);
+  border-color: rgb(var(--ndpr-destructive) / 0.3);
+}
+.ndpr-alert--destructive .ndpr-alert__title,
+.ndpr-alert--danger .ndpr-alert__title { color: rgb(var(--ndpr-destructive)); }
+
+/* ── Tables ────────────────────────────────────────────────────────────── */
+
+.ndpr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ndpr-font-size-sm);
+}
+
+.ndpr-table__head {
+  background: rgb(var(--ndpr-surface));
+  text-align: left;
+  font-size: var(--ndpr-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-table__row {
+  border-bottom: 1px solid rgb(var(--ndpr-border));
+}
+
+.ndpr-table__row:last-child { border-bottom: 0; }
+
+.ndpr-table__cell,
+.ndpr-table__heading {
+  padding: var(--ndpr-space-3) var(--ndpr-space-4);
+  vertical-align: top;
+}
+
+.ndpr-table__heading {
+  font-weight: 600;
+}
+
+.ndpr-table__cell--muted {
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-table__cell--actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ndpr-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius);
+}
+
+/* ── Empty / placeholder states ────────────────────────────────────────── */
+
+.ndpr-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ndpr-space-2);
+  min-height: 12rem;
+  padding: var(--ndpr-space-6);
+  background: rgb(var(--ndpr-surface));
+  border: 1px dashed rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius);
+  color: rgb(var(--ndpr-muted-foreground));
+  text-align: center;
+}
+
+.ndpr-empty-state__title {
+  margin: 0;
+  font-size: var(--ndpr-font-size-base);
+  font-weight: 600;
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-empty-state__body {
+  margin: 0;
+  font-size: var(--ndpr-font-size-sm);
+}
+
+/* ── Range / slider input ──────────────────────────────────────────────── */
+
+.ndpr-form-field__range {
+  width: 100%;
+  height: 0.5rem;
+  background: rgb(var(--ndpr-muted));
+  border-radius: var(--ndpr-radius-full);
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.ndpr-form-field__range::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background: rgb(var(--ndpr-primary));
+  border: 2px solid rgb(var(--ndpr-background));
+  box-shadow: var(--ndpr-shadow-sm);
+  cursor: pointer;
+}
+
+.ndpr-form-field__range::-moz-range-thumb {
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 50%;
+  background: rgb(var(--ndpr-primary));
+  border: 2px solid rgb(var(--ndpr-background));
+  box-shadow: var(--ndpr-shadow-sm);
+  cursor: pointer;
+}
+
+/* ── Generic button family (used across non-consent components) ────────── */
+
+.ndpr-button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ndpr-space-2);
+  padding: var(--ndpr-space-2) var(--ndpr-space-4);
+  border: 1px solid transparent;
+  border-radius: var(--ndpr-radius);
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background var(--ndpr-transition), border-color var(--ndpr-transition), color var(--ndpr-transition);
+  text-decoration: none;
+}
+
+.ndpr-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ndpr-button--primary {
+  background: rgb(var(--ndpr-primary));
+  color: rgb(var(--ndpr-primary-foreground));
+}
+.ndpr-button--primary:hover:not(:disabled) {
+  background: rgb(var(--ndpr-primary-hover));
+}
+
+.ndpr-button--secondary {
+  background: rgb(var(--ndpr-muted));
+  color: rgb(var(--ndpr-foreground));
+  border-color: rgb(var(--ndpr-border));
+}
+.ndpr-button--secondary:hover:not(:disabled) {
+  background: rgb(var(--ndpr-border));
+}
+
+.ndpr-button--ghost {
+  background: transparent;
+  color: rgb(var(--ndpr-foreground));
+}
+.ndpr-button--ghost:hover:not(:disabled) {
+  background: rgb(var(--ndpr-muted));
+}
+
+.ndpr-button--destructive {
+  background: rgb(var(--ndpr-destructive));
+  color: #fff;
+}
+.ndpr-button--destructive:hover:not(:disabled) {
+  filter: brightness(0.92);
+}
+
+.ndpr-button--sm {
+  padding: var(--ndpr-space-1) var(--ndpr-space-3);
+  font-size: var(--ndpr-font-size-xs);
+}
+
+.ndpr-button--lg {
+  padding: var(--ndpr-space-3) var(--ndpr-space-6);
+  font-size: var(--ndpr-font-size-base);
+}
+
+.ndpr-button--icon {
+  padding: var(--ndpr-space-2);
+  background: transparent;
+  color: rgb(var(--ndpr-muted-foreground));
+}
+.ndpr-button--icon:hover:not(:disabled) {
+  background: rgb(var(--ndpr-muted));
+  color: rgb(var(--ndpr-foreground));
+}
+
+/* ── Step indicator (DPIA / Policy wizards) ────────────────────────────── */
+
+.ndpr-step-indicator {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ndpr-space-2);
+  width: 100%;
+  margin-bottom: var(--ndpr-space-6);
+}
+
+.ndpr-step-indicator__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  min-width: 0;
+}
+
+.ndpr-step-indicator__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: rgb(var(--ndpr-border));
+  z-index: 0;
+}
+
+.ndpr-step-indicator__item--complete:not(:last-child)::after {
+  background: rgb(var(--ndpr-primary));
+}
+
+.ndpr-step-indicator__bullet {
+  position: relative;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--ndpr-font-size-sm);
+  font-weight: 600;
+  background: rgb(var(--ndpr-muted));
+  color: rgb(var(--ndpr-muted-foreground));
+  border: 2px solid rgb(var(--ndpr-border));
+}
+
+.ndpr-step-indicator__item--current .ndpr-step-indicator__bullet {
+  background: rgb(var(--ndpr-primary));
+  color: rgb(var(--ndpr-primary-foreground));
+  border-color: rgb(var(--ndpr-primary));
+}
+
+.ndpr-step-indicator__item--complete .ndpr-step-indicator__bullet {
+  background: rgb(var(--ndpr-success));
+  color: #fff;
+  border-color: rgb(var(--ndpr-success));
+}
+
+.ndpr-step-indicator__label {
+  margin-top: var(--ndpr-space-2);
+  font-size: var(--ndpr-font-size-xs);
+  color: rgb(var(--ndpr-muted-foreground));
+  font-weight: 500;
+}
+
+.ndpr-step-indicator__item--current .ndpr-step-indicator__label {
+  color: rgb(var(--ndpr-foreground));
+  font-weight: 600;
+}
+
+/* ── Progress bar ──────────────────────────────────────────────────────── */
+
+.ndpr-progress {
+  width: 100%;
+  height: 0.5rem;
+  background: rgb(var(--ndpr-muted));
+  border-radius: var(--ndpr-radius-full);
+  overflow: hidden;
+}
+
+.ndpr-progress__bar {
+  height: 100%;
+  background: rgb(var(--ndpr-primary));
+  transition: width var(--ndpr-transition-slow);
+}
+
+.ndpr-progress__bar--success { background: rgb(var(--ndpr-success)); }
+.ndpr-progress__bar--warning { background: rgb(var(--ndpr-warning)); }
+.ndpr-progress__bar--destructive { background: rgb(var(--ndpr-destructive)); }
+
+/* ── Stat grid (NDPRDashboard, compliance reports) ─────────────────────── */
+
+.ndpr-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--ndpr-space-4);
+}
+
+.ndpr-stat {
+  background: rgb(var(--ndpr-surface));
+  border: 1px solid rgb(var(--ndpr-border));
+  border-radius: var(--ndpr-radius);
+  padding: var(--ndpr-space-4);
+}
+
+.ndpr-stat__label {
+  margin: 0 0 var(--ndpr-space-1);
+  font-size: var(--ndpr-font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+.ndpr-stat__value {
+  margin: 0;
+  font-size: var(--ndpr-font-size-xl);
+  font-weight: 700;
+  color: rgb(var(--ndpr-foreground));
+  line-height: var(--ndpr-line-height-tight);
+}
+
+.ndpr-stat__delta {
+  margin: var(--ndpr-space-1) 0 0;
+  font-size: var(--ndpr-font-size-xs);
+  color: rgb(var(--ndpr-muted-foreground));
+}
+
+/* ── Section heading (used inside cards) ───────────────────────────────── */
+
+.ndpr-section-heading {
+  margin: 0 0 var(--ndpr-space-3);
+  font-size: var(--ndpr-font-size-base);
+  font-weight: 600;
+  color: rgb(var(--ndpr-foreground));
+}
+
+.ndpr-section-divider {
+  height: 1px;
+  background: rgb(var(--ndpr-border));
+  border: 0;
+  margin: var(--ndpr-space-6) 0;
+}
+
+/* ── Semantic text utilities ───────────────────────────────────────────── */
+
+.ndpr-text-muted        { color: rgb(var(--ndpr-muted-foreground)); }
+.ndpr-text-foreground   { color: rgb(var(--ndpr-foreground)); }
+.ndpr-text-primary      { color: rgb(var(--ndpr-primary)); }
+.ndpr-text-success      { color: rgb(var(--ndpr-success)); }
+.ndpr-text-warning      { color: rgb(var(--ndpr-warning)); }
+.ndpr-text-destructive  { color: rgb(var(--ndpr-destructive)); }
+.ndpr-text-info         { color: rgb(var(--ndpr-primary)); }
+
+.ndpr-text-xs   { font-size: var(--ndpr-font-size-xs); }
+.ndpr-text-sm   { font-size: var(--ndpr-font-size-sm); }
+.ndpr-text-base { font-size: var(--ndpr-font-size-base); }
+.ndpr-text-lg   { font-size: var(--ndpr-font-size-lg); }
+.ndpr-text-xl   { font-size: var(--ndpr-font-size-xl); }
+
+.ndpr-font-medium   { font-weight: 500; }
+.ndpr-font-semibold { font-weight: 600; }
+.ndpr-font-bold     { font-weight: 700; }

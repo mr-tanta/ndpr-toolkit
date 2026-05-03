@@ -264,10 +264,10 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
     if (!level) return null;
     
     const colorClasses = {
-      low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      low: 'ndpr-badge ndpr-badge--success',
+      medium: 'ndpr-badge ndpr-badge--warning',
+      high: 'ndpr-badge ndpr-badge--warning',
+      critical: 'ndpr-badge ndpr-badge--destructive'
     };
     
     return (
@@ -280,13 +280,13 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   // Render status badge
   const renderStatusBadge = (status: string) => {
     const colorClasses = {
-      ongoing: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-      contained: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      resolved: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      ongoing: 'ndpr-badge ndpr-badge--destructive',
+      contained: 'ndpr-badge ndpr-badge--warning',
+      resolved: 'ndpr-badge ndpr-badge--success'
     };
 
     return (
-      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status as keyof typeof colorClasses] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'}`, cn.statusBadge, unstyled)}>
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status as keyof typeof colorClasses] || 'ndpr-badge ndpr-badge--neutral'}`, cn.statusBadge, unstyled)}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
     );
@@ -298,11 +298,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
     
     if (!notificationRequirements.ndpcNotificationRequired) {
       return (
-        <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
-          <p className="text-sm text-green-800 dark:text-green-200 font-medium">
+        <div data-ndpr-component="breach-notification-manager" className='ndpr-alert ndpr-alert--success'>
+          <p className="text-sm ndpr-text-success font-medium">
             Notification Not Required
           </p>
-          <p className="text-xs text-green-700 dark:text-green-300 mt-1">
+          <p className="text-xs ndpr-text-success mt-1">
             Based on the risk assessment, NDPC notification is not required for this breach.
           </p>
         </div>
@@ -311,11 +311,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
 
     if (selectedNotification) {
       return (
-        <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
-          <p className="text-sm text-green-800 dark:text-green-200 font-medium">
+        <div className='ndpr-alert ndpr-alert--success'>
+          <p className="text-sm ndpr-text-success font-medium">
             Notification Sent
           </p>
-          <p className="text-xs text-green-700 dark:text-green-300 mt-1">
+          <p className="text-xs ndpr-text-success mt-1">
             Notification was sent to the NDPC on {formatDate(selectedNotification.sentAt)}.
           </p>
         </div>
@@ -326,11 +326,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
 
     if (hoursRemaining <= 0) {
       return (
-        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-          <p className="text-sm text-red-800 dark:text-red-200 font-medium">
+        <div className='ndpr-alert ndpr-alert--destructive'>
+          <p className="text-sm ndpr-text-destructive font-medium">
             Notification Deadline Passed
           </p>
-          <p className="text-xs text-red-700 dark:text-red-300 mt-1">
+          <p className="text-xs ndpr-text-destructive mt-1">
             The 72-hour deadline for NDPC notification has passed. Notification should be sent immediately.
           </p>
         </div>
@@ -339,11 +339,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
 
     if (hoursRemaining <= 24) {
       return (
-        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-          <p className="text-sm text-red-800 dark:text-red-200 font-medium">
+        <div className='ndpr-alert ndpr-alert--destructive'>
+          <p className="text-sm ndpr-text-destructive font-medium">
             Urgent: Notification Due Soon
           </p>
-          <p className="text-xs text-red-700 dark:text-red-300 mt-1">
+          <p className="text-xs ndpr-text-destructive mt-1">
             Only {hoursRemaining} hours remaining until the NDPC notification deadline.
           </p>
         </div>
@@ -351,11 +351,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
     }
 
     return (
-      <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
-        <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
+      <div className='ndpr-alert ndpr-alert--warning'>
+        <p className="text-sm ndpr-text-warning font-medium">
           Notification Required
         </p>
-        <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+        <p className="text-xs ndpr-text-warning mt-1">
           NDPC notification is required by {formatDate(notificationRequirements.ndpcNotificationDeadline)} ({hoursRemaining} hours remaining).
         </p>
       </div>
@@ -414,13 +414,13 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                   ? 'bg-green-500 border-green-500 dark:border-green-500' 
                   : 'bg-gray-200 border-gray-200 dark:bg-gray-700 dark:border-gray-700'
               }`}></div>
-              <time className="mb-1 text-sm font-normal leading-none text-gray-600 dark:text-gray-500">
+              <time className="mb-1 text-sm font-normal leading-none ndpr-text-muted">
                 {item.date ? formatDate(item.date) : 'Pending'}
               </time>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+              <h4 className='ndpr-section-heading'>
                 {item.title}
               </h4>
-              <p className="text-xs text-gray-600 dark:text-gray-400">
+              <p className='ndpr-form-field__hint'>
                 {item.description}
               </p>
             </li>
@@ -433,21 +433,21 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
       <div className={resolveClass("", cn.header, unstyled)}>
-        <h2 className={resolveClass("text-xl font-bold mb-2", cn.title, unstyled)}>{title}</h2>
-        <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{title}</h2>
+        <p className='ndpr-card__subtitle'>{description}</p>
       </div>
       
       {/* Filters and Search */}
       <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label htmlFor="statusFilter" className="block text-sm font-medium mb-1">
+          <label htmlFor="statusFilter" className='ndpr-form-field__label'>
             Status Filter
           </label>
           <select
             id="statusFilter"
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+            className='ndpr-form-field__input'
           >
             <option value="all">All Statuses</option>
             <option value="ongoing">Ongoing</option>
@@ -457,14 +457,14 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
         </div>
         
         <div>
-          <label htmlFor="sortBy" className="block text-sm font-medium mb-1">
+          <label htmlFor="sortBy" className='ndpr-form-field__label'>
             Sort By
           </label>
           <select
             id="sortBy"
             value={sortBy}
             onChange={e => setSortBy(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+            className='ndpr-form-field__input'
           >
             <option value="discoveredAt">Discovery Date</option>
             <option value="title">Title</option>
@@ -474,7 +474,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
         </div>
         
         <div>
-          <label htmlFor="searchTerm" className="block text-sm font-medium mb-1">
+          <label htmlFor="searchTerm" className='ndpr-form-field__label'>
             Search
           </label>
           <input
@@ -483,7 +483,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
             placeholder="Search breaches..."
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]"
+            className='ndpr-form-field__input'
           />
         </div>
       </div>
@@ -495,7 +495,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
           <h3 className="text-lg font-medium mb-3">Breach Reports</h3>
           
           {filteredBreaches.length === 0 ? (
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className='ndpr-card__subtitle'>
               No breach reports found.
             </p>
           ) : (
@@ -510,7 +510,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                 if (requirements?.ndpcNotificationRequired) {
                   if (notification) {
                     notificationStatus = (
-                      <span className="text-xs text-green-600 dark:text-green-400">
+                      <span className="text-xs ndpr-text-success">
                         Notified
                       </span>
                     );
@@ -518,19 +518,19 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                     const hoursRemaining = calculateHoursRemaining(requirements.ndpcNotificationDeadline);
                     if (hoursRemaining <= 0) {
                       notificationStatus = (
-                        <span className="text-xs text-red-600 dark:text-red-400 font-bold">
+                        <span className="text-xs ndpr-text-destructive font-bold">
                           Overdue
                         </span>
                       );
                     } else if (hoursRemaining <= 24) {
                       notificationStatus = (
-                        <span className="text-xs text-red-600 dark:text-red-400">
+                        <span className="text-xs ndpr-text-destructive">
                           Urgent
                         </span>
                       );
                     } else {
                       notificationStatus = (
-                        <span className="text-xs text-yellow-600 dark:text-yellow-400">
+                        <span className="text-xs ndpr-text-warning">
                           Required
                         </span>
                       );
@@ -538,7 +538,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                   }
                 } else {
                   notificationStatus = (
-                    <span className="text-xs text-green-600 dark:text-green-400">
+                    <span className="text-xs ndpr-text-success">
                       Not Required
                     </span>
                   );
@@ -549,8 +549,8 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                     key={breach.id}
                     className={resolveClass(`p-3 rounded-md cursor-pointer ${
                       selectedBreachId === breach.id
-                        ? 'bg-[rgb(var(--ndpr-primary)/0.05)] dark:bg-[rgb(var(--ndpr-primary)/0.1)] border border-[rgb(var(--ndpr-primary)/0.2)] dark:border-[rgb(var(--ndpr-primary)/0.3)]'
-                        : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600'
+                        ? 'ndpr-alert ndpr-alert--info'
+                        : 'ndpr-panel'
                     }`, cn.breachItem, unstyled)}
                     onClick={() => handleSelectBreach(breach.id)}
                   >
@@ -558,7 +558,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                       <h4 className="font-medium text-sm">{breach.title}</h4>
                       {renderStatusBadge(breach.status)}
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                    <p className="text-xs ndpr-text-muted mb-1">
                       Discovered: {new Date(breach.discoveredAt).toLocaleDateString()}
                     </p>
                     <div className="flex justify-between items-center mt-2">
@@ -581,13 +581,13 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
           {selectedBreach ? (
             <div>
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-medium">{selectedBreach.title}</h3>
+                <h3 className='ndpr-section-heading'>{selectedBreach.title}</h3>
                 {renderStatusBadge(selectedBreach.status)}
               </div>
               
               {/* Notification Status Alert */}
               {showDeadlineAlerts && (
-                <div className="mb-4">
+                <div className='ndpr-form-field'>
                   {renderNotificationStatus()}
                 </div>
               )}
@@ -597,32 +597,32 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                 <div className="mb-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                      <p className="text-sm"><span className="font-medium">Discovered:</span> {formatDate(selectedBreach.discoveredAt)}</p>
+                      <p className='ndpr-text-sm'><span className="font-medium">Discovered:</span> {formatDate(selectedBreach.discoveredAt)}</p>
                       {selectedBreach.occurredAt && (
-                        <p className="text-sm"><span className="font-medium">Occurred:</span> {formatDate(selectedBreach.occurredAt)}</p>
+                        <p className='ndpr-text-sm'><span className="font-medium">Occurred:</span> {formatDate(selectedBreach.occurredAt)}</p>
                       )}
-                      <p className="text-sm"><span className="font-medium">Reporter:</span> {selectedBreach.reporter.name}</p>
+                      <p className='ndpr-text-sm'><span className="font-medium">Reporter:</span> {selectedBreach.reporter.name}</p>
                     </div>
                     <div>
-                      <p className="text-sm"><span className="font-medium">Affected Systems:</span> {selectedBreach.affectedSystems.join(', ')}</p>
-                      <p className="text-sm"><span className="font-medium">Data Types:</span> {selectedBreach.dataTypes.join(', ')}</p>
-                      <p className="text-sm">
+                      <p className='ndpr-text-sm'><span className="font-medium">Affected Systems:</span> {selectedBreach.affectedSystems.join(', ')}</p>
+                      <p className='ndpr-text-sm'><span className="font-medium">Data Types:</span> {selectedBreach.dataTypes.join(', ')}</p>
+                      <p className='ndpr-text-sm'>
                         <span className="font-medium">Affected Subjects:</span> {selectedBreach.estimatedAffectedSubjects || 'Unknown'}
                       </p>
                     </div>
                   </div>
                   
-                  <div className="mb-4">
-                    <p className="text-sm font-medium">Description:</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-2 rounded-md mt-1">
+                  <div className='ndpr-form-field'>
+                    <p className='ndpr-text-sm ndpr-font-medium'>Description:</p>
+                    <p className='ndpr-panel'>
                       {selectedBreach.description}
                     </p>
                   </div>
                   
                   {selectedBreach.initialActions && (
                     <div>
-                      <p className="text-sm font-medium">Initial Actions Taken:</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-2 rounded-md mt-1">
+                      <p className='ndpr-text-sm ndpr-font-medium'>Initial Actions Taken:</p>
+                      <p className='ndpr-panel'>
                         {selectedBreach.initialActions}
                       </p>
                     </div>
@@ -635,9 +635,9 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                 <h3 className="text-lg font-medium mb-3">Risk Assessment</h3>
                 
                 {selectedAssessment ? (
-                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+                  <div className='ndpr-panel'>
                     <div className="flex justify-between items-center mb-2">
-                      <p className="text-sm font-medium">Risk Level:</p>
+                      <p className='ndpr-text-sm ndpr-font-medium'>Risk Level:</p>
                       {renderRiskLevelBadge(selectedAssessment.riskLevel)}
                     </div>
                     <p className="text-sm mb-2">
@@ -652,13 +652,13 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                     <p className="text-sm mb-1">
                       <span className="font-medium">Justification:</span>
                     </p>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 p-2 rounded-md">
+                    <p className="text-xs ndpr-text-muted bg-white dark:bg-gray-800 p-2 rounded-md">
                       {selectedAssessment.justification}
                     </p>
                   </div>
                 ) : (
-                  <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
-                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                  <div className='ndpr-alert ndpr-alert--warning'>
+                    <p className="text-sm ndpr-text-warning">
                       Risk assessment has not been conducted yet.
                     </p>
                     <button
@@ -676,7 +676,7 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                 <h3 className="text-lg font-medium mb-3">Notification Status</h3>
                 
                 {selectedNotification ? (
-                  <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
+                  <div className='ndpr-panel'>
                     <p className="text-sm mb-2">
                       <span className="font-medium">Notification Sent:</span> {formatDate(selectedNotification.sentAt)}
                     </p>
@@ -697,8 +697,8 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                 ) : (
                   <div>
                     {notificationRequirements?.ndpcNotificationRequired ? (
-                      <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
-                        <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                      <div className='ndpr-alert ndpr-alert--warning'>
+                        <p className="text-sm ndpr-text-warning">
                           NDPC notification is required but has not been sent yet.
                         </p>
                         <button
@@ -709,8 +709,8 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                         </button>
                       </div>
                     ) : (
-                      <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
-                        <p className="text-sm text-green-800 dark:text-green-200">
+                      <div className='ndpr-alert ndpr-alert--success'>
+                        <p className="text-sm ndpr-text-success">
                           NDPC notification is not required for this breach.
                         </p>
                       </div>
@@ -723,8 +723,8 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
               {showNotificationTimeline && renderNotificationTimeline()}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-md">
-              <p className="text-gray-600 dark:text-gray-400">
+            <div className='ndpr-empty-state'>
+              <p className='ndpr-card__subtitle'>
                 Select a breach to view details
               </p>
             </div>

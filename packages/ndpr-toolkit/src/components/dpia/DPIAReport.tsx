@@ -171,10 +171,10 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
   // Render risk level badge
   const renderRiskLevelBadge = (level: 'low' | 'medium' | 'high' | 'critical') => {
     const defaultColorClasses: Record<string, string> = {
-      low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      low: 'ndpr-badge ndpr-badge--success',
+      medium: 'ndpr-badge ndpr-badge--warning',
+      high: 'ndpr-badge ndpr-badge--warning',
+      critical: 'ndpr-badge ndpr-badge--destructive'
     };
 
     return (
@@ -185,15 +185,15 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
   };
 
   return (
-    <div className={`${cx('bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 print:shadow-none print:p-0', 'root')} ${className}`}>
+    <div data-ndpr-component="dpia-report" className={`${cx('bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 print:shadow-none print:p-0', 'root')} ${className}`}>
       {/* Report Header */}
       <div className={cx('mb-8 border-b border-gray-200 dark:border-gray-700 pb-6 print:pb-4', 'header')}>
         <div className="flex justify-between items-start">
           <div>
-            <h1 className={cx('text-2xl font-bold text-gray-900 dark:text-white mb-2', 'title')}>
+            <h1 className={cx('ndpr-card__title', 'title')}>
               Data Protection Impact Assessment Report
             </h1>
-            <h2 className="text-xl text-gray-700 dark:text-gray-300 mb-4">
+            <h2 className="text-xl ndpr-text-muted mb-4">
               {result.title}
             </h2>
           </div>
@@ -235,21 +235,21 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Assessor:</span> {result.assessor.name}, {result.assessor.role}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Contact:</span> {result.assessor.email}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Started:</span> {formatDate(result.startedAt)}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Completed:</span> {result.completedAt ? formatDate(result.completedAt) : 'In progress'}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Next review:</span> {result.reviewDate ? formatDate(result.reviewDate) : 'Not scheduled'}
             </p>
           </div>
@@ -258,11 +258,11 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
 
       {/* Executive Summary */}
       <div className={cx('mb-8', 'summary')}>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        <h2 className='ndpr-section-heading'>
           Executive Summary
         </h2>
 
-        <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md mb-4">
+        <div className='ndpr-panel'>
           <div className="flex items-center mb-2" role="status" aria-live="polite">
             <span className="font-medium mr-2">Overall Risk Level:</span>
             {renderRiskLevelBadge(result.overallRiskLevel)}
@@ -278,19 +278,19 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
         </div>
 
         <div>
-          <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+          <h3 className="font-medium ndpr-text-foreground mb-2">
             Processing Activity Description
           </h3>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">
+          <p className="ndpr-text-muted mb-4">
             {result.processingDescription}
           </p>
 
           {result.recommendations && result.recommendations.length > 0 && (
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-white mb-2">
+              <h3 className="font-medium ndpr-text-foreground mb-2">
                 Key Recommendations
               </h3>
-              <ul className="list-disc pl-5 text-gray-700 dark:text-gray-300">
+              <ul className="list-disc pl-5 ndpr-text-muted">
                 {result.recommendations.map((rec, index) => (
                   <li key={index} className={cx('', 'recommendation')}>{rec}</li>
                 ))}
@@ -302,54 +302,54 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
 
       {/* Identified Risks */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+        <h2 className='ndpr-section-heading'>
           Identified Risks
         </h2>
 
         {result.risks.length === 0 ? (
-          <p className="text-gray-700 dark:text-gray-300">No risks identified.</p>
+          <p className="ndpr-text-muted">No risks identified.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className={cx('min-w-full divide-y divide-gray-200 dark:divide-gray-700', 'riskTable')}>
-              <thead className="bg-gray-50 dark:bg-gray-700">
+              <thead className='ndpr-panel'>
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                     Risk
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                     Likelihood
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                     Impact
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                     Risk Level
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                     Mitigated
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className='ndpr-table'>
                 {result.risks.map((risk) => (
                   <tr key={risk.id} className={cx('', 'riskRow')}>
-                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 dark:text-gray-100">
+                    <td className='ndpr-table__cell'>
                       {risk.description}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                    <td className='ndpr-table__cell ndpr-table__cell--muted'>
                       {risk.likelihood} / 5
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                    <td className='ndpr-table__cell ndpr-table__cell--muted'>
                       {risk.impact} / 5
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {renderRiskLevelBadge(risk.level)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                    <td className='ndpr-table__cell ndpr-table__cell--muted'>
                       {risk.mitigated ? (
-                        <span className="text-green-600 dark:text-green-400">Yes</span>
+                        <span className="ndpr-text-success">Yes</span>
                       ) : (
-                        <span className="text-red-600 dark:text-red-400">No</span>
+                        <span className="ndpr-text-destructive">No</span>
                       )}
                     </td>
                   </tr>
@@ -363,7 +363,7 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
       {/* Full Assessment Details */}
       {showFullReport && (
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className='ndpr-section-heading'>
             Full Assessment Details
           </h2>
 
@@ -378,29 +378,29 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
 
             return (
               <div key={section.id} className="mb-6">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                <h3 className="text-lg font-medium ndpr-text-foreground mb-2">
                   {section.title}
                 </h3>
 
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead className="bg-gray-50 dark:bg-gray-700">
+                    <thead className='ndpr-panel'>
                       <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                           Question
                         </th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium ndpr-text-muted uppercase tracking-wider">
                           Answer
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    <tbody className='ndpr-table'>
                       {sectionQuestions.map((question) => (
                         <tr key={question.id}>
-                          <td className="px-6 py-4 whitespace-normal text-sm text-gray-900 dark:text-gray-100">
+                          <td className='ndpr-table__cell'>
                             {question.text}
                           </td>
-                          <td className="px-6 py-4 whitespace-normal text-sm text-gray-600 dark:text-gray-400">
+                          <td className="px-6 py-4 whitespace-normal text-sm ndpr-text-muted">
                             {getAnswerText(question.id)}
                           </td>
                         </tr>
@@ -415,7 +415,7 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
       )}
 
       {/* Footer */}
-      <div className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
+      <div className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm ndpr-text-muted">
         <p>This DPIA was conducted in accordance with the Nigeria Data Protection Act (NDPA) 2023.</p>
         <p>DPIA Report Version: {result.version}</p>
         <p>Generated on: {generatedDate}</p>

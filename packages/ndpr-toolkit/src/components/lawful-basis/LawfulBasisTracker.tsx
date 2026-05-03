@@ -351,10 +351,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   // Render status badge
   const renderStatusBadge = useCallback((status: ProcessingActivity['status']) => {
     const colorClasses: Record<ProcessingActivity['status'], string> = {
-      active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      inactive: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
-      under_review: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      archived: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      active: 'ndpr-badge ndpr-badge--success',
+      inactive: 'ndpr-badge ndpr-badge--neutral',
+      under_review: 'ndpr-badge ndpr-badge--warning',
+      archived: 'ndpr-badge ndpr-badge--destructive',
     };
 
     const labels: Record<ProcessingActivity['status'], string> = {
@@ -374,11 +374,11 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   // Render lawful basis badge
   const renderBasisBadge = useCallback((basis: LawfulBasis) => {
     const colorClasses: Record<LawfulBasis, string> = {
-      consent: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      contract: 'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
-      legal_obligation: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      vital_interests: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-      public_interest: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+      consent: 'ndpr-badge ndpr-badge--info',
+      contract: 'ndpr-badge ndpr-badge--info',
+      legal_obligation: 'ndpr-badge ndpr-badge--info',
+      vital_interests: 'ndpr-badge ndpr-badge--destructive',
+      public_interest: 'ndpr-badge ndpr-badge--warning',
       legitimate_interests: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
     };
 
@@ -410,14 +410,14 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
     if (activity.dpoApproval.approved) {
       return (
-        <span className="px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+        <span className='ndpr-badge ndpr-badge--success'>
           Approved
         </span>
       );
     }
 
     return (
-      <span className="px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+      <span className='ndpr-badge ndpr-badge--warning'>
         Pending Approval
       </span>
     );
@@ -426,30 +426,30 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   // Render compliance summary
   const renderSummary = () => {
     return (
-      <div className={resolveClass('grid grid-cols-2 md:grid-cols-4 gap-4 mb-6', classNames?.summary, unstyled)} role="status" aria-label="Compliance summary">
-        <div className={resolveClass('bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
+      <div data-ndpr-component="lawful-basis-tracker" className={resolveClass('grid grid-cols-2 md:grid-cols-4 gap-4 mb-6', classNames?.summary, unstyled)} role="status" aria-label="Compliance summary">
+        <div className={resolveClass('ndpr-alert ndpr-alert--info', classNames?.summaryCard, unstyled)}>
+          <p className='ndpr-stat__value ndpr-text-info'>
             {summary.totalActivities}
           </p>
-          <p className="text-sm text-blue-600 dark:text-blue-300">Total Activities</p>
+          <p className="text-sm ndpr-text-info">Total Activities</p>
         </div>
         <div className={resolveClass('bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-orange-800 dark:text-orange-200">
+          <p className='ndpr-stat__value ndpr-text-warning'>
             {summary.sensitiveDataActivities}
           </p>
-          <p className="text-sm text-orange-600 dark:text-orange-300">Sensitive Data</p>
+          <p className="text-sm ndpr-text-warning">Sensitive Data</p>
         </div>
-        <div className={resolveClass('bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-purple-800 dark:text-purple-200">
+        <div className={resolveClass('ndpr-alert ndpr-alert--info', classNames?.summaryCard, unstyled)}>
+          <p className='ndpr-stat__value ndpr-text-info'>
             {summary.crossBorderActivities}
           </p>
-          <p className="text-sm text-purple-600 dark:text-purple-300">Cross-Border Transfers</p>
+          <p className="text-sm ndpr-text-info">Cross-Border Transfers</p>
         </div>
-        <div className={resolveClass('bg-red-50 dark:bg-red-900/20 p-4 rounded-lg', classNames?.summaryCard, unstyled)}>
-          <p className="text-2xl font-bold text-red-800 dark:text-red-200">
+        <div className={resolveClass('ndpr-alert ndpr-alert--destructive', classNames?.summaryCard, unstyled)}>
+          <p className='ndpr-stat__value ndpr-text-destructive'>
             {summary.activitiesWithoutApproval.length}
           </p>
-          <p className="text-sm text-red-600 dark:text-red-300">Pending Approval</p>
+          <p className="text-sm ndpr-text-destructive">Pending Approval</p>
         </div>
       </div>
     );
@@ -470,10 +470,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     if (complianceGaps.length === 0) {
       return (
         <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg mb-6" role="status" aria-label="No compliance gaps">
-          <p className="text-sm text-green-800 dark:text-green-200 font-medium">
+          <p className="text-sm ndpr-text-success font-medium">
             No compliance gaps detected.
           </p>
-          <p className="text-xs text-green-700 dark:text-green-300 mt-1">
+          <p className="text-xs ndpr-text-success mt-1">
             All processing activities appear to be properly documented.
           </p>
         </div>
@@ -484,12 +484,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
       <div className="mb-6" role="status" aria-label={`${complianceGaps.length} compliance gaps detected`}>
         {highSeverityGaps.length > 0 && (
           <div className={resolveClass('bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-3', classNames?.gapAlert, unstyled)}>
-            <p className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
+            <p className="text-sm ndpr-text-destructive font-medium mb-2">
               High Priority ({highSeverityGaps.length})
             </p>
             <ul className="space-y-1">
               {highSeverityGaps.map((gap, index) => (
-                <li key={index} className="text-xs text-red-700 dark:text-red-300">
+                <li key={index} className="text-xs ndpr-text-destructive">
                   {gap.description}
                 </li>
               ))}
@@ -497,13 +497,13 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           </div>
         )}
         {mediumSeverityGaps.length > 0 && (
-          <div className={resolveClass('bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg', classNames?.gapAlert, unstyled)}>
-            <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">
+          <div className={resolveClass('ndpr-alert ndpr-alert--warning', classNames?.gapAlert, unstyled)}>
+            <p className="text-sm ndpr-text-warning font-medium mb-2">
               Medium Priority ({mediumSeverityGaps.length})
             </p>
             <ul className="space-y-1">
               {mediumSeverityGaps.map((gap, index) => (
-                <li key={index} className="text-xs text-yellow-700 dark:text-yellow-300">
+                <li key={index} className="text-xs ndpr-text-warning">
                   {gap.description}
                 </li>
               ))}
@@ -549,12 +549,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     return (
       <div className={resolveClass('', classNames?.form, unstyled)}>
         <div className={resolveClass('flex justify-between items-center mb-4', classNames?.header, unstyled)}>
-          <h3 className="text-lg font-medium">
+          <h3 className='ndpr-section-heading'>
             {editingId ? 'Edit Processing Activity' : 'New Processing Activity'}
           </h3>
           <button
             onClick={handleCancelForm}
-            className={`px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${buttonClassName}`}
+            className={`px-4 py-2 ndpr-text-muted bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${buttonClassName}`}
           >
             Cancel
           </button>
@@ -562,12 +562,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
         {formErrors.length > 0 && (
           <div id="form-errors" className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mb-4" role="alert">
-            <p className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
+            <p className="text-sm ndpr-text-destructive font-medium mb-2">
               Please correct the following errors:
             </p>
             <ul className="list-disc list-inside space-y-1">
               {formErrors.map((error, index) => (
-                <li key={index} className="text-xs text-red-700 dark:text-red-300">
+                <li key={index} className="text-xs ndpr-text-destructive">
                   {error}
                 </li>
               ))}
@@ -575,10 +575,10 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           </div>
         )}
 
-        <div className="space-y-4">
+        <div className='ndpr-form-section'>
           {/* Name */}
           <div>
-            <label htmlFor="activityName" className="block text-sm font-medium mb-1">
+            <label htmlFor="activityName" className='ndpr-form-field__label'>
               Activity Name *
             </label>
             <input
@@ -589,13 +589,13 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               placeholder="e.g., Customer Account Management"
               aria-required="true"
               aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label htmlFor="activityDescription" className="block text-sm font-medium mb-1">
+            <label htmlFor="activityDescription" className='ndpr-form-field__label'>
               Description *
             </label>
             <textarea
@@ -606,13 +606,13 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               rows={3}
               aria-required="true"
               aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Lawful Basis */}
           <div>
-            <label htmlFor="lawfulBasis" className="block text-sm font-medium mb-1">
+            <label htmlFor="lawfulBasis" className='ndpr-form-field__label'>
               Lawful Basis (NDPA Section 25) *
             </label>
             <select
@@ -622,7 +622,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 handleFormFieldChange('lawfulBasis', e.target.value)
               }
               aria-required="true"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
             >
               {LAWFUL_BASIS_OPTIONS.map(option => (
                 <option key={option.value} value={option.value}>
@@ -630,14 +630,14 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+            <p className="mt-1 text-xs ndpr-text-muted">
               {getLawfulBasisDescription(formData.lawfulBasis)}
             </p>
           </div>
 
           {/* Justification */}
           <div>
-            <label htmlFor="justification" className="block text-sm font-medium mb-1">
+            <label htmlFor="justification" className='ndpr-form-field__label'>
               Lawful Basis Justification *
             </label>
             <textarea
@@ -650,7 +650,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               rows={3}
               aria-required="true"
               aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
@@ -664,9 +664,9 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 NDPA Section 25(1)(f) requires a balancing test when relying on legitimate interests.
               </p>
 
-              <div className="space-y-3">
+              <div className='ndpr-form-section'>
                 <div>
-                  <label htmlFor="liaPurpose" className="block text-sm font-medium mb-1">
+                  <label htmlFor="liaPurpose" className='ndpr-form-field__label'>
                     Purpose Test
                   </label>
                   <textarea
@@ -677,12 +677,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     }
                     placeholder="Describe the legitimate interest being pursued..."
                     rows={2}
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                    className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="liaNecessity" className="block text-sm font-medium mb-1">
+                  <label htmlFor="liaNecessity" className='ndpr-form-field__label'>
                     Necessity Test
                   </label>
                   <textarea
@@ -693,12 +693,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     }
                     placeholder="Explain why this processing is necessary for the stated purpose..."
                     rows={2}
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                    className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="liaBalancing" className="block text-sm font-medium mb-1">
+                  <label htmlFor="liaBalancing" className='ndpr-form-field__label'>
                     Balancing Test
                   </label>
                   <textarea
@@ -709,12 +709,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     }
                     placeholder="Assess the impact on data subjects' rights and interests..."
                     rows={2}
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                    className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="liaSafeguards" className="block text-sm font-medium mb-1">
+                  <label htmlFor="liaSafeguards" className='ndpr-form-field__label'>
                     Safeguards
                   </label>
                   <input
@@ -725,12 +725,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                       handleFormFieldChange('liaSafeguards', e.target.value)
                     }
                     placeholder="List safeguards (comma-separated)..."
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                    className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="liaConclusion" className="block text-sm font-medium mb-1">
+                  <label htmlFor="liaConclusion" className='ndpr-form-field__label'>
                     Conclusion
                   </label>
                   <textarea
@@ -741,7 +741,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     }
                     placeholder="State your overall conclusion..."
                     rows={2}
-                    className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                    className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
                   />
                 </div>
               </div>
@@ -750,7 +750,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
           {/* Data Categories */}
           <div>
-            <label htmlFor="dataCategories" className="block text-sm font-medium mb-1">
+            <label htmlFor="dataCategories" className='ndpr-form-field__label'>
               Data Categories *
             </label>
             <input
@@ -761,7 +761,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               placeholder="e.g., Name, Email, Phone Number (comma-separated)"
               aria-required="true"
               aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
@@ -774,7 +774,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 onChange={e => handleSensitiveDataChange(e.target.checked)}
                 className="rounded border-gray-300 dark:border-gray-600 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
               />
-              <span className="text-sm font-medium">
+              <span className='ndpr-text-sm ndpr-font-medium'>
                 Involves Sensitive Personal Data (NDPA Section 27)
               </span>
             </label>
@@ -783,7 +783,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           {/* Sensitive Data Condition (conditional) */}
           {formData.involvesSensitiveData && (
             <div>
-              <label htmlFor="sensitiveCondition" className="block text-sm font-medium mb-1">
+              <label htmlFor="sensitiveCondition" className='ndpr-form-field__label'>
                 Sensitive Data Condition (NDPA Section 27) *
               </label>
               <select
@@ -793,7 +793,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                   handleFormFieldChange('sensitiveDataCondition', e.target.value)
                 }
                 aria-required="true"
-                className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+                className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
               >
                 <option value="">Select a condition...</option>
                 {SENSITIVE_DATA_OPTIONS.map(option => (
@@ -807,7 +807,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
           {/* Data Subject Categories */}
           <div>
-            <label htmlFor="dataSubjectCategories" className="block text-sm font-medium mb-1">
+            <label htmlFor="dataSubjectCategories" className='ndpr-form-field__label'>
               Data Subject Categories *
             </label>
             <input
@@ -820,13 +820,13 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               placeholder="e.g., Customers, Employees, Vendors (comma-separated)"
               aria-required="true"
               aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Purposes */}
           <div>
-            <label htmlFor="purposes" className="block text-sm font-medium mb-1">
+            <label htmlFor="purposes" className='ndpr-form-field__label'>
               Processing Purposes *
             </label>
             <input
@@ -837,14 +837,14 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               placeholder="e.g., Account management, Service delivery (comma-separated)"
               aria-required="true"
               aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
           {/* Retention Period */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className='ndpr-form-grid ndpr-form-grid--2'>
             <div>
-              <label htmlFor="retentionPeriod" className="block text-sm font-medium mb-1">
+              <label htmlFor="retentionPeriod" className='ndpr-form-field__label'>
                 Retention Period *
               </label>
               <input
@@ -855,11 +855,11 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 placeholder="e.g., 3 years after account closure"
                 aria-required="true"
                 aria-describedby={formErrors.length > 0 ? 'form-errors' : undefined}
-                className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
               />
             </div>
             <div>
-              <label htmlFor="retentionJustification" className="block text-sm font-medium mb-1">
+              <label htmlFor="retentionJustification" className='ndpr-form-field__label'>
                 Retention Justification
               </label>
               <input
@@ -870,14 +870,14 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                   handleFormFieldChange('retentionJustification', e.target.value)
                 }
                 placeholder="Reason for the retention period"
-                className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+                className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
               />
             </div>
           </div>
 
           {/* Recipients */}
           <div>
-            <label htmlFor="recipients" className="block text-sm font-medium mb-1">
+            <label htmlFor="recipients" className='ndpr-form-field__label'>
               Recipients
             </label>
             <input
@@ -886,7 +886,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={formData.recipients}
               onChange={e => handleFormFieldChange('recipients', e.target.value)}
               placeholder="e.g., Payment processor, Cloud provider (comma-separated)"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
@@ -901,7 +901,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 }
                 className="rounded border-gray-300 dark:border-gray-600 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
               />
-              <span className="text-sm font-medium">
+              <span className='ndpr-text-sm ndpr-font-medium'>
                 Involves Cross-Border Transfer Outside Nigeria
               </span>
             </label>
@@ -909,7 +909,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
           {/* Review Date */}
           <div>
-            <label htmlFor="reviewDate" className="block text-sm font-medium mb-1">
+            <label htmlFor="reviewDate" className='ndpr-form-field__label'>
               Next Review Date
             </label>
             <input
@@ -917,7 +917,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               id="reviewDate"
               value={formData.reviewDate}
               onChange={e => handleFormFieldChange('reviewDate', e.target.value)}
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
@@ -925,7 +925,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           <div className="flex justify-end space-x-3 pt-4">
             <button
               onClick={handleCancelForm}
-              className={`px-4 py-2 text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${buttonClassName}`}
+              className={`px-4 py-2 ndpr-text-muted bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600 ${buttonClassName}`}
             >
               Cancel
             </button>
@@ -945,8 +945,8 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   const renderDetail = () => {
     if (!selectedActivity) {
       return (
-        <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-md">
-          <p className="text-gray-600 dark:text-gray-400">Activity not found.</p>
+        <div className='ndpr-empty-state'>
+          <p className='ndpr-card__subtitle'>Activity not found.</p>
         </div>
       );
     }
@@ -959,14 +959,14 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           <div>
             <button
               onClick={handleBackToList}
-              className="text-sm text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline mb-2"
+              className="text-sm ndpr-text-primary hover:underline mb-2"
               aria-label="Back to activities list"
             >
               Back to list
             </button>
-            <h3 className="text-lg font-medium">{selectedActivity.name}</h3>
+            <h3 className='ndpr-section-heading'>{selectedActivity.name}</h3>
           </div>
-          <div className="flex space-x-2">
+          <div className='ndpr-card__footer'>
             {renderBasisBadge(selectedActivity.lawfulBasis)}
             {renderStatusBadge(selectedActivity.status)}
             {renderApprovalIndicator(selectedActivity)}
@@ -976,12 +976,12 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         {/* Validation warnings */}
         {validation.warnings.length > 0 && (
           <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md mb-4">
-            <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-1">
+            <p className="text-sm ndpr-text-warning font-medium mb-1">
               Warnings
             </p>
             <ul className="list-disc list-inside space-y-1">
               {validation.warnings.map((warning, index) => (
-                <li key={index} className="text-xs text-yellow-700 dark:text-yellow-300">
+                <li key={index} className="text-xs ndpr-text-warning">
                   {warning}
                 </li>
               ))}
@@ -992,36 +992,36 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         {/* Activity details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Description:</span> {selectedActivity.description}
             </p>
-            <p className="text-sm mt-2">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Lawful Basis:</span>{' '}
               {getLawfulBasisDescription(selectedActivity.lawfulBasis)}
             </p>
-            <p className="text-sm mt-2">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Justification:</span>{' '}
               {selectedActivity.lawfulBasisJustification}
             </p>
           </div>
           <div>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Data Categories:</span>{' '}
               {selectedActivity.dataCategories.join(', ')}
             </p>
-            <p className="text-sm mt-2">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Data Subject Categories:</span>{' '}
               {selectedActivity.dataSubjectCategories.join(', ')}
             </p>
-            <p className="text-sm mt-2">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Purposes:</span>{' '}
               {selectedActivity.purposes.join(', ')}
             </p>
-            <p className="text-sm mt-2">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Retention Period:</span>{' '}
               {selectedActivity.retentionPeriod}
               {selectedActivity.retentionJustification && (
-                <span className="text-gray-600 dark:text-gray-400">
+                <span className='ndpr-card__subtitle'>
                   {' '}
                   ({selectedActivity.retentionJustification})
                 </span>
@@ -1032,7 +1032,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Sensitive Data:</span>{' '}
               {selectedActivity.involvesSensitiveData ? 'Yes' : 'No'}
               {selectedActivity.sensitiveDataCondition && (
@@ -1046,32 +1046,32 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 </span>
               )}
             </p>
-            <p className="text-sm mt-2">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Cross-Border Transfer:</span>{' '}
               {selectedActivity.crossBorderTransfer ? 'Yes' : 'No'}
             </p>
             {selectedActivity.recipients && selectedActivity.recipients.length > 0 && (
-              <p className="text-sm mt-2">
+              <p className='ndpr-form-field__hint'>
                 <span className="font-medium">Recipients:</span>{' '}
                 {selectedActivity.recipients.join(', ')}
               </p>
             )}
           </div>
           <div>
-            <p className="text-sm">
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Created:</span>{' '}
               {formatDate(selectedActivity.createdAt)}
             </p>
-            <p className="text-sm mt-2">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Last Updated:</span>{' '}
               {formatDate(selectedActivity.updatedAt)}
             </p>
             {selectedActivity.reviewDate && (
-              <p className="text-sm mt-2">
+              <p className='ndpr-form-field__hint'>
                 <span className="font-medium">Next Review:</span>{' '}
                 {formatDate(selectedActivity.reviewDate)}
                 {selectedActivity.reviewDate < Date.now() && (
-                  <span className="text-red-600 dark:text-red-400 font-medium"> (Overdue)</span>
+                  <span className="ndpr-text-destructive font-medium"> (Overdue)</span>
                 )}
               </p>
             )}
@@ -1081,21 +1081,21 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         {/* DPO Approval details */}
         {selectedActivity.dpoApproval && (
           <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-md mb-6">
-            <h4 className="text-sm font-semibold mb-2">DPO Approval</h4>
-            <p className="text-sm">
+            <h4 className='ndpr-section-heading'>DPO Approval</h4>
+            <p className='ndpr-text-sm'>
               <span className="font-medium">Status:</span>{' '}
               {selectedActivity.dpoApproval.approved ? 'Approved' : 'Not Approved'}
             </p>
-            <p className="text-sm mt-1">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Approved By:</span>{' '}
               {selectedActivity.dpoApproval.approvedBy}
             </p>
-            <p className="text-sm mt-1">
+            <p className='ndpr-form-field__hint'>
               <span className="font-medium">Date:</span>{' '}
               {formatDate(selectedActivity.dpoApproval.approvedAt)}
             </p>
             {selectedActivity.dpoApproval.notes && (
-              <p className="text-sm mt-1">
+              <p className='ndpr-form-field__hint'>
                 <span className="font-medium">Notes:</span>{' '}
                 {selectedActivity.dpoApproval.notes}
               </p>
@@ -1133,7 +1133,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         {/* Filters */}
         <div className="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label htmlFor="basisFilter" className="block text-sm font-medium mb-1">
+            <label htmlFor="basisFilter" className='ndpr-form-field__label'>
               Lawful Basis
             </label>
             <select
@@ -1141,7 +1141,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={basisFilter}
               onChange={e => setBasisFilter(e.target.value)}
               aria-label="Filter by lawful basis"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
             >
               <option value="all">All Bases</option>
               {LAWFUL_BASIS_OPTIONS.map(option => (
@@ -1153,7 +1153,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="statusFilterSelect" className="block text-sm font-medium mb-1">
+            <label htmlFor="statusFilterSelect" className='ndpr-form-field__label'>
               Status
             </label>
             <select
@@ -1161,7 +1161,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
               aria-label="Filter by status"
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.select, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
             >
               <option value="all">All Statuses</option>
               <option value="active">Active</option>
@@ -1172,7 +1172,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           </div>
 
           <div>
-            <label htmlFor="searchInput" className="block text-sm font-medium mb-1">
+            <label htmlFor="searchInput" className='ndpr-form-field__label'>
               Search
             </label>
             <input
@@ -1181,7 +1181,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder="Search activities..."
-              className={resolveClass('w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))]', classNames?.input, unstyled)}
+              className={resolveClass('ndpr-form-field__input', classNames?.input, unstyled)}
             />
           </div>
 
@@ -1198,22 +1198,22 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
         {/* Activities table */}
         {filteredActivities.length === 0 ? (
           <div className="flex items-center justify-center h-32 bg-gray-50 dark:bg-gray-700 rounded-md">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className='ndpr-card__subtitle'>
               No processing activities found.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className={resolveClass('w-full text-sm text-left', classNames?.table, unstyled)}>
-              <thead className={resolveClass('text-xs uppercase bg-gray-50 dark:bg-gray-700', classNames?.tableHeader, unstyled)}>
+              <thead className={resolveClass('ndpr-table__head', classNames?.tableHeader, unstyled)}>
                 <tr>
-                  <th className="px-4 py-3">Activity</th>
-                  <th className="px-4 py-3">Lawful Basis</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">DPO Approval</th>
-                  <th className="px-4 py-3">Sensitive Data</th>
-                  <th className="px-4 py-3">Last Updated</th>
-                  <th className="px-4 py-3">Actions</th>
+                  <th className='ndpr-table__cell'>Activity</th>
+                  <th className='ndpr-table__cell'>Lawful Basis</th>
+                  <th className='ndpr-table__cell'>Status</th>
+                  <th className='ndpr-table__cell'>DPO Approval</th>
+                  <th className='ndpr-table__cell'>Sensitive Data</th>
+                  <th className='ndpr-table__cell'>Last Updated</th>
+                  <th className='ndpr-table__cell'>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1222,40 +1222,40 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                     key={activity.id}
                     className={resolveClass('border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700', classNames?.tableRow, unstyled)}
                   >
-                    <td className="px-4 py-3">
+                    <td className='ndpr-table__cell'>
                       <button
                         onClick={() => handleViewDetail(activity.id)}
-                        className="font-medium text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline text-left"
+                        className="font-medium ndpr-text-primary hover:underline text-left"
                       >
                         {activity.name}
                       </button>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate max-w-xs">
+                      <p className="text-xs ndpr-text-muted mt-1 truncate max-w-xs">
                         {activity.description}
                       </p>
                     </td>
-                    <td className="px-4 py-3">{renderBasisBadge(activity.lawfulBasis)}</td>
-                    <td className="px-4 py-3">{renderStatusBadge(activity.status)}</td>
-                    <td className="px-4 py-3">{renderApprovalIndicator(activity)}</td>
-                    <td className="px-4 py-3">
+                    <td className='ndpr-table__cell'>{renderBasisBadge(activity.lawfulBasis)}</td>
+                    <td className='ndpr-table__cell'>{renderStatusBadge(activity.status)}</td>
+                    <td className='ndpr-table__cell'>{renderApprovalIndicator(activity)}</td>
+                    <td className='ndpr-table__cell'>
                       <span
                         className={`text-xs ${
                           activity.involvesSensitiveData
-                            ? 'text-orange-600 dark:text-orange-400 font-medium'
-                            : 'text-gray-600 dark:text-gray-400'
+                            ? 'ndpr-text-warning font-medium'
+                            : 'ndpr-card__subtitle'
                         }`}
                       >
                         {activity.involvesSensitiveData ? 'Yes' : 'No'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-gray-600 dark:text-gray-400">
+                    <td className='ndpr-table__cell ndpr-table__cell--muted'>
                       {formatDate(activity.updatedAt)}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex space-x-2">
+                    <td className='ndpr-table__cell'>
+                      <div className='ndpr-card__footer'>
                         <button
                           onClick={() => handleEditActivity(activity)}
                           aria-label={`Edit ${activity.name}`}
-                          className="text-xs text-[rgb(var(--ndpr-primary))] dark:text-[rgb(var(--ndpr-primary))] hover:underline"
+                          className="text-xs ndpr-text-primary hover:underline"
                         >
                           Edit
                         </button>
@@ -1263,7 +1263,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                           <button
                             onClick={() => handleArchiveActivity(activity.id)}
                             aria-label={`Archive ${activity.name}`}
-                            className="text-xs text-gray-600 dark:text-gray-400 hover:underline"
+                            className="text-xs ndpr-text-muted hover:underline"
                           >
                             Archive
                           </button>
@@ -1282,8 +1282,8 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
-      <h2 className={resolveClass('text-xl font-bold mb-2', classNames?.title, unstyled)}>{title}</h2>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
+      <p className='ndpr-card__subtitle'>{description}</p>
 
       {/* Compliance Summary */}
       {showSummary && viewMode === 'list' && renderSummary()}

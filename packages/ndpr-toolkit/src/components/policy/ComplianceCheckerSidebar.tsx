@@ -83,7 +83,7 @@ export const ComplianceCheckerSidebar: React.FC<ComplianceCheckerSidebarProps> =
       >
         <h2
           className={resolveClass(
-            'text-sm font-semibold text-gray-900 dark:text-gray-100',
+            'ndpr-section-heading',
             classNames?.title,
             unstyled,
           )}
@@ -140,16 +140,16 @@ export const ComplianceCheckerSidebar: React.FC<ComplianceCheckerSidebarProps> =
           >
             {(
               [
-                { count: complianceResult.gaps.filter((g) => g.severity === 'critical').length, label: 'Critical', color: 'text-red-600 dark:text-red-400' },
-                { count: complianceResult.gaps.filter((g) => g.severity === 'important').length, label: 'Important', color: 'text-amber-600 dark:text-amber-400' },
-                { count: complianceResult.passed.length, label: 'Passed', color: 'text-green-600 dark:text-green-400' },
+                { count: complianceResult.gaps.filter((g) => g.severity === 'critical').length, label: 'Critical', color: 'ndpr-text-destructive' },
+                { count: complianceResult.gaps.filter((g) => g.severity === 'important').length, label: 'Important', color: 'ndpr-text-warning' },
+                { count: complianceResult.passed.length, label: 'Passed', color: 'ndpr-text-success' },
               ] as const
             ).map(({ count, label, color }) => (
               <div key={label}>
                 <p className={resolveClass(`text-base font-bold ${color}`, classNames?.statValue, unstyled)}>
                   {count}
                 </p>
-                <p className={resolveClass('text-xs text-gray-500 dark:text-gray-400', classNames?.statLabel, unstyled)}>
+                <p className={resolveClass('ndpr-form-field__hint', classNames?.statLabel, unstyled)}>
                   {label}
                 </p>
               </div>
@@ -165,7 +165,7 @@ export const ComplianceCheckerSidebar: React.FC<ComplianceCheckerSidebarProps> =
             )}
           >
             {allRequirements.length === 0 ? (
-              <p className={resolveClass('text-xs text-gray-500 dark:text-gray-400 text-center py-4', classNames?.emptyState, unstyled)}>
+              <p className={resolveClass('ndpr-empty-state', classNames?.emptyState, unstyled)}>
                 No requirements to display.
               </p>
             ) : (

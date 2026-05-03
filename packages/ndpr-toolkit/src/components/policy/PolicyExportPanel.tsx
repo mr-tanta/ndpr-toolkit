@@ -14,18 +14,18 @@ export interface PolicyExportPanelProps {
 
 const RATING_STYLES: Record<string, { bg: string; text: string; border: string }> = {
   compliant: {
-    bg: 'bg-green-50 dark:bg-green-900/20',
-    text: 'text-green-700 dark:text-green-300',
+    bg: 'ndpr-alert ndpr-alert--success',
+    text: 'ndpr-text-success',
     border: 'border-green-200 dark:border-green-700',
   },
   nearly_compliant: {
     bg: 'bg-amber-50 dark:bg-amber-900/20',
-    text: 'text-amber-700 dark:text-amber-300',
+    text: 'ndpr-text-warning',
     border: 'border-amber-200 dark:border-amber-700',
   },
   not_compliant: {
-    bg: 'bg-red-50 dark:bg-red-900/20',
-    text: 'text-red-700 dark:text-red-300',
+    bg: 'ndpr-alert ndpr-alert--destructive',
+    text: 'ndpr-text-destructive',
     border: 'border-red-200 dark:border-red-700',
   },
 };
@@ -76,10 +76,10 @@ const FormatCard: React.FC<FormatCardProps> = ({
         {icon}
       </div>
       <div className="min-w-0">
-        <p className={resolveClass('text-sm font-semibold text-gray-900 dark:text-gray-100', classNames?.formatLabel, unstyled)}>
+        <p className={resolveClass('ndpr-section-heading', classNames?.formatLabel, unstyled)}>
           {label}
         </p>
-        <p className={resolveClass('text-xs text-gray-500 dark:text-gray-400', classNames?.formatDescription, unstyled)}>
+        <p className={resolveClass('ndpr-form-field__hint', classNames?.formatDescription, unstyled)}>
           {description}
         </p>
       </div>
@@ -149,7 +149,7 @@ export const PolicyExportPanel: React.FC<PolicyExportPanelProps> = ({
   return (
     <div
       data-ndpr-component="policy-export-panel"
-      className={resolveClass('space-y-6', classNames?.root, unstyled)}
+      className={resolveClass('ndpr-form-section', classNames?.root, unstyled)}
     >
       {/* Compliance summary */}
       <div
@@ -179,7 +179,7 @@ export const PolicyExportPanel: React.FC<PolicyExportPanelProps> = ({
           >
             {RATING_LABELS[complianceResult.rating]}
           </p>
-          <p className={resolveClass('text-xs text-gray-500 dark:text-gray-400 mt-0.5', classNames?.complianceDetail, unstyled)}>
+          <p className={resolveClass('text-xs ndpr-text-muted mt-0.5', classNames?.complianceDetail, unstyled)}>
             {complianceResult.score} / {complianceResult.maxScore} points &bull;{' '}
             {complianceResult.gaps.length} gap
             {complianceResult.gaps.length !== 1 ? 's' : ''} remaining
@@ -191,7 +191,7 @@ export const PolicyExportPanel: React.FC<PolicyExportPanelProps> = ({
       <div>
         <h3
           className={resolveClass(
-            'text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3',
+            'ndpr-section-heading',
             classNames?.formatsHeading,
             unstyled,
           )}
@@ -253,7 +253,7 @@ export const PolicyExportPanel: React.FC<PolicyExportPanelProps> = ({
 
           <FormatCard
             icon={
-              <svg className="w-5 h-5 text-gray-500 dark:text-gray-300" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-5 h-5 ndpr-text-muted" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M3 5h18v2H3V5zm0 4h12v2H3V9zm0 4h18v2H3v-2zm0 4h12v2H3v-2z" />
               </svg>
             }

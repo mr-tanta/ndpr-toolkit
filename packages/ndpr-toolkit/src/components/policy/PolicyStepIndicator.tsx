@@ -82,7 +82,7 @@ export const PolicyStepIndicator: React.FC<PolicyStepIndicatorProps> = ({
                     'text-xs font-medium hidden sm:block',
                     isCompleted || isCurrent
                       ? 'text-[rgb(var(--ndpr-primary))]'
-                      : 'text-gray-400 dark:text-gray-500',
+                      : 'ndpr-card__subtitle',
                   ].join(' '),
                   classNames?.stepLabel,
                   unstyled,

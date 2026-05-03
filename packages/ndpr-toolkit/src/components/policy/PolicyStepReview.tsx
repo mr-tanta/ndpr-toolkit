@@ -56,13 +56,13 @@ export const PolicyStepReview: React.FC<PolicyStepReviewProps> = ({
   return (
     <div
       data-ndpr-component="policy-step-review"
-      className={resolveClass('space-y-6', classNames?.root, unstyled)}
+      className={resolveClass('ndpr-form-section', classNames?.root, unstyled)}
     >
       <div>
-        <h2 className={resolveClass('text-xl font-semibold text-gray-900 dark:text-gray-100', classNames?.heading, unstyled)}>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.heading, unstyled)}>
           Review &amp; Export
         </h2>
-        <p className={resolveClass('text-sm text-gray-500 dark:text-gray-400 mt-1', classNames?.subheading, unstyled)}>
+        <p className={resolveClass('ndpr-form-field__hint', classNames?.subheading, unstyled)}>
           Review your generated policy sections, reorder or edit content, then export.
         </p>
       </div>
@@ -133,7 +133,7 @@ export const PolicyStepReview: React.FC<PolicyStepReviewProps> = ({
             type="button"
             onClick={() => setShowCustomForm(false)}
             className={resolveClass(
-              'text-sm text-gray-500 dark:text-gray-400 hover:underline',
+              'text-sm ndpr-text-muted hover:underline',
               classNames?.cancelCustomForm,
               unstyled,
             )}

@@ -9,7 +9,7 @@ export interface CustomSectionFormProps {
 }
 
 const INPUT_CLASS =
-  'w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] text-sm';
+  'w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 ndpr-text-foreground focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] text-sm';
 
 export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
   onAdd,
@@ -41,14 +41,14 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
     <div
       data-ndpr-component="custom-section-form"
       className={resolveClass(
-        'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4',
+        'ndpr-card ndpr-card--compact',
         classNames?.root,
         unstyled,
       )}
     >
       <h4
         className={resolveClass(
-          'text-sm font-semibold text-gray-900 dark:text-gray-100',
+          'ndpr-section-heading',
           classNames?.heading,
           unstyled,
         )}
@@ -60,7 +60,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
         <p
           role="alert"
           className={resolveClass(
-            'text-xs text-red-600 dark:text-red-400',
+            'text-xs ndpr-text-destructive',
             classNames?.error,
             unstyled,
           )}
@@ -74,7 +74,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
           <label
             htmlFor={`${instanceId}-custom-section-title`}
             className={resolveClass(
-              'block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1',
+              'block text-xs font-medium ndpr-text-muted mb-1',
               classNames?.label,
               unstyled,
             )}
@@ -99,7 +99,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
           <label
             htmlFor={`${instanceId}-custom-section-content`}
             className={resolveClass(
-              'block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1',
+              'block text-xs font-medium ndpr-text-muted mb-1',
               classNames?.label,
               unstyled,
             )}
@@ -130,7 +130,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
           type="button"
           onClick={handleAdd}
           className={resolveClass(
-            'px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-[rgb(var(--ndpr-primary-foreground))] rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] text-sm font-medium',
+            'ndpr-button ndpr-button--primary ndpr-button--sm',
             classNames?.addButton,
             unstyled,
           )}

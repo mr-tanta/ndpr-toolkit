@@ -11,9 +11,9 @@ export interface ComplianceRequirementItemProps {
 }
 
 const SEVERITY_COLORS: Record<ComplianceGap['severity'], string> = {
-  critical: 'text-red-600 dark:text-red-400',
-  important: 'text-amber-600 dark:text-amber-400',
-  recommended: 'text-blue-600 dark:text-blue-400',
+  critical: 'ndpr-text-destructive',
+  important: 'ndpr-text-warning',
+  recommended: 'ndpr-text-info',
 };
 
 export const ComplianceRequirementItem: React.FC<ComplianceRequirementItemProps> = ({
@@ -79,7 +79,7 @@ export const ComplianceRequirementItem: React.FC<ComplianceRequirementItemProps>
           <div className="flex items-center justify-between gap-1">
             <p
               className={resolveClass(
-                `text-xs font-medium ${isPassed ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-gray-100'}`,
+                `text-xs font-medium ${isPassed ? 'ndpr-text-muted' : 'ndpr-text-foreground'}`,
                 classNames?.requirementLabel,
                 unstyled,
               )}
