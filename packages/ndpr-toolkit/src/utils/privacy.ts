@@ -1,10 +1,39 @@
 import { PolicySection, OrganizationInfo, PolicyVariable } from '../types/privacy';
+import { UNFILLED_PREFIX, UNFILLED_SUFFIX } from './policy-sections';
 
 /**
  * Escapes special RegExp characters in a string so it can be safely interpolated into a RegExp.
  */
 function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Scans rendered policy text for unfilled tokens. Returns the list of field
+ * names that were left unfilled (deduplicated). Use in CI to assert a
+ * canonical org-info fixture renders cleanly, or at runtime to surface
+ * "policy is missing X" errors before publishing.
+ */
+export function findUnfilledTokens(rendered: string): string[] {
+  const found = new Set<string>();
+
+  // Markers from policy-sections.ts: «TODO: fieldName»
+  const markerRe = new RegExp(
+    `${escapeRegExp(UNFILLED_PREFIX)}([^${escapeRegExp(UNFILLED_SUFFIX)}]+)${escapeRegExp(UNFILLED_SUFFIX)}`,
+    'g',
+  );
+  let match;
+  while ((match = markerRe.exec(rendered)) !== null) {
+    found.add(match[1].trim());
+  }
+
+  // Mustache tokens that survived substitution: {{fieldName}}
+  const mustacheRe = /\{\{\s*([^}\s]+)\s*\}\}/g;
+  while ((match = mustacheRe.exec(rendered)) !== null) {
+    found.add(match[1].trim());
+  }
+
+  return Array.from(found);
 }
 
 /**

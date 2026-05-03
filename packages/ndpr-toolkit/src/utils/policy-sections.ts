@@ -20,6 +20,18 @@ import type {
 // Helpers
 // ---------------------------------------------------------------------------
 
+// Sentinel prefix for missing required fields. Chosen so that:
+// - It's visually unmistakable in rendered policy output (will not be confused
+//   with legitimate content the way `[Address]` was).
+// - It's machine-greppable via `findUnfilledTokens()` for CI / runtime checks.
+// - It survives HTML / Markdown / DOCX / PDF export unchanged.
+export const UNFILLED_PREFIX = '«TODO: ';
+export const UNFILLED_SUFFIX = '»';
+
+function unfilled(field: string): string {
+  return `${UNFILLED_PREFIX}${field}${UNFILLED_SUFFIX}`;
+}
+
 function makeSection(
   id: string,
   title: string,
@@ -64,8 +76,8 @@ function purposeLabel(p: ProcessingPurpose): string {
 // ---------------------------------------------------------------------------
 
 function buildIntroduction(ctx: TemplateContext, order: number): PolicySection {
-  const orgName = ctx.org.name || '[Organisation Name]';
-  const website = ctx.org.website || '[website]';
+  const orgName = ctx.org.name || unfilled('orgName');
+  const website = ctx.org.website || unfilled('website');
   const date = new Date().toISOString().slice(0, 10);
 
   return makeSection(
@@ -88,7 +100,7 @@ function buildDataCollection(
   ctx: TemplateContext,
   order: number,
 ): PolicySection {
-  const orgName = ctx.org.name || '[Organisation Name]';
+  const orgName = ctx.org.name || unfilled('orgName');
   const selected = selectedCategories(ctx.dataCategories);
 
   const groupLabels: Record<string, string> = {
@@ -131,7 +143,7 @@ function buildDataCollection(
 }
 
 function buildLegalBasis(ctx: TemplateContext, order: number): PolicySection {
-  const orgName = ctx.org.name || '[Organisation Name]';
+  const orgName = ctx.org.name || unfilled('orgName');
 
   const bases: string[] = [];
 
@@ -203,7 +215,7 @@ function buildDataUsage(ctx: TemplateContext, order: number): PolicySection {
 }
 
 function buildDataSharing(ctx: TemplateContext, order: number): PolicySection {
-  const orgName = ctx.org.name || '[Organisation Name]';
+  const orgName = ctx.org.name || unfilled('orgName');
   const processors = ctx.thirdPartyProcessors;
 
   let processorText: string;
@@ -246,7 +258,7 @@ function buildDataSubjectRights(
   ctx: TemplateContext,
   order: number,
 ): PolicySection {
-  const email = ctx.org.privacyEmail || '[privacy email]';
+  const email = ctx.org.privacyEmail || unfilled('privacyEmail');
 
   return makeSection(
     'data-subject-rights',
@@ -278,7 +290,7 @@ function buildDataSubjectRights(
 }
 
 function buildDataSecurity(ctx: TemplateContext, order: number): PolicySection {
-  const email = ctx.org.privacyEmail || '[privacy email]';
+  const email = ctx.org.privacyEmail || unfilled('privacyEmail');
   const industry = ctx.org.industry;
 
   let industrySpecific = '';
@@ -326,12 +338,22 @@ function buildDataSecurity(ctx: TemplateContext, order: number): PolicySection {
 }
 
 function buildContactInfo(ctx: TemplateContext, order: number): PolicySection {
-  const orgName = ctx.org.name || '[Organisation Name]';
-  const address = ctx.org.address || '[Address]';
-  const email = ctx.org.privacyEmail || '[privacy email]';
-  const website = ctx.org.website || '[website]';
-  const dpoName = ctx.org.dpoName || '[DPO Name]';
-  const dpoEmail = ctx.org.dpoEmail || '[DPO Email]';
+  // Required: orgName + privacyEmail. If absent, render the unfilled marker
+  // so it's visually obvious *and* greppable.
+  const orgName = ctx.org.name || unfilled('orgName');
+  const email = ctx.org.privacyEmail || unfilled('privacyEmail');
+
+  // Optional: only render the line when present. Avoids shipping a "DPO Email:
+  // [DPO Email]" line for organisations that don't have a DPO.
+  const optionalLines: string[] = [];
+  if (ctx.org.address) optionalLines.push(`Address: ${ctx.org.address}`);
+  if (ctx.org.website) optionalLines.push(`Website: ${ctx.org.website}`);
+
+  const dpoLines: string[] = [];
+  if (ctx.org.dpoName) dpoLines.push(`Data Protection Officer: ${ctx.org.dpoName}`);
+  if (ctx.org.dpoEmail) dpoLines.push(`DPO Email: ${ctx.org.dpoEmail}`);
+
+  const dpoBlock = dpoLines.length > 0 ? `\n\n${dpoLines.join('\n')}` : '';
 
   return makeSection(
     'contact-info',
@@ -339,12 +361,10 @@ function buildContactInfo(ctx: TemplateContext, order: number): PolicySection {
     `If you have questions, concerns, or requests regarding this privacy policy or our ` +
       `data protection practices, please contact us:\n\n` +
       `Organisation: ${orgName}\n` +
-      `Address: ${address}\n` +
-      `Email: ${email}\n` +
-      `Website: ${website}\n\n` +
-      `Data Protection Officer: ${dpoName}\n` +
-      `DPO Email: ${dpoEmail}\n\n` +
-      `You also have the right to lodge a complaint with the Nigeria Data Protection ` +
+      `Email: ${email}` +
+      (optionalLines.length > 0 ? `\n${optionalLines.join('\n')}` : '') +
+      dpoBlock +
+      `\n\nYou also have the right to lodge a complaint with the Nigeria Data Protection ` +
       `Commission (NDPC) if you believe your data protection rights have been infringed.\n\n` +
       `Nigeria Data Protection Commission\n` +
       `Website: https://ndpc.gov.ng\n` +
@@ -462,7 +482,7 @@ function buildAutomatedDecisions(order: number): PolicySection {
 }
 
 function buildDataRetention(ctx: TemplateContext, order: number): PolicySection {
-  const orgName = ctx.org.name || '[Organisation Name]';
+  const orgName = ctx.org.name || unfilled('orgName');
   const industry = ctx.org.industry;
 
   let industryRetention = '';

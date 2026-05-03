@@ -1,4 +1,6 @@
-import { generatePolicyText } from '../../utils/privacy';
+import { generatePolicyText, findUnfilledTokens } from '../../utils/privacy';
+import { assemblePolicy } from '../../utils/policy-sections';
+import { createDefaultContext } from '../../types/policy-engine';
 import { PolicySection } from '../../types/privacy';
 
 describe('generatePolicyText (NDPA-compliant Privacy Policy)', () => {
@@ -165,5 +167,63 @@ describe('generatePolicyText RegExp injection safety', () => {
         generatePolicyText(`{{${name}}}`, { [name]: value });
       }).not.toThrow();
     }
+  });
+});
+
+describe('findUnfilledTokens', () => {
+  it('detects «TODO: field» markers from policy-sections', () => {
+    const text = 'Contact us at «TODO: privacyEmail» for more.';
+    expect(findUnfilledTokens(text)).toEqual(['privacyEmail']);
+  });
+
+  it('detects unsubstituted {{mustache}} tokens', () => {
+    const text = 'Hello {{orgName}}, your address is {{address}}.';
+    expect(findUnfilledTokens(text).sort()).toEqual(['address', 'orgName']);
+  });
+
+  it('deduplicates repeated tokens', () => {
+    const text = '{{orgName}} and «TODO: orgName» again';
+    expect(findUnfilledTokens(text)).toEqual(['orgName']);
+  });
+
+  it('returns [] for fully-rendered text', () => {
+    expect(findUnfilledTokens('All variables resolved cleanly.')).toEqual([]);
+  });
+});
+
+describe('assemblePolicy: canonical fixture renders without unfilled tokens', () => {
+  // CI guard: a fully-populated org info should never produce {{...}} or
+  // «TODO: ...» markers in the rendered output. This is the test that would
+  // have caught the FINLAB v3.3.1 issue where DEFAULT placeholders shipped
+  // to production privacy pages.
+  it('renders cleanly when all required org info is provided', () => {
+    const ctx = createDefaultContext();
+    ctx.org.name = 'Acme Nigeria Ltd';
+    ctx.org.website = 'https://acme.ng';
+    ctx.org.privacyEmail = 'privacy@acme.ng';
+    ctx.org.address = '12 Marina, Lagos';
+    ctx.org.dpoName = 'Jane Doe';
+    ctx.org.dpoEmail = 'dpo@acme.ng';
+
+    const sections = assemblePolicy(ctx);
+    const rendered = sections.map((s) => s.template).join('\n\n');
+
+    const unfilled = findUnfilledTokens(rendered);
+    expect(unfilled).toEqual([]);
+  });
+
+  it('reports missing required fields when org info is empty', () => {
+    const ctx = createDefaultContext();
+    // Only fill DPO so the unfilled set is bounded.
+    ctx.org.dpoName = 'Jane Doe';
+    ctx.org.dpoEmail = 'dpo@acme.ng';
+    ctx.org.address = '12 Marina, Lagos';
+    ctx.org.website = 'https://acme.ng';
+
+    const sections = assemblePolicy(ctx);
+    const rendered = sections.map((s) => s.template).join('\n\n');
+
+    const unfilled = findUnfilledTokens(rendered);
+    expect(unfilled.sort()).toEqual(['orgName', 'privacyEmail']);
   });
 });
