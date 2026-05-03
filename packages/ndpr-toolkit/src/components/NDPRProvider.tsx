@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useMemo, Component } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
 import type { NDPRLocale } from '../types/locale';

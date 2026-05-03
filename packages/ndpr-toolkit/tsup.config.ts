@@ -1,41 +1,53 @@
 import { defineConfig } from 'tsup';
 
-export default defineConfig({
-  entry: {
-    index: 'src/index.ts',
-    core: 'src/core.ts',
-    'hooks-entry': 'src/hooks-entry.ts',
-    consent: 'src/consent.ts',
-    dsr: 'src/dsr.ts',
-    dpia: 'src/dpia.ts',
-    breach: 'src/breach.ts',
-    policy: 'src/policy.ts',
-    'lawful-basis-entry': 'src/lawful-basis-entry.ts',
-    'cross-border-entry': 'src/cross-border-entry.ts',
-    'ropa-entry': 'src/ropa-entry.ts',
-    presets: 'src/presets-entry.ts',
-  },
-  format: ['cjs', 'esm'],
-  target: 'es2018',
+const sharedOptions = {
+  format: ['cjs', 'esm'] as const,
+  target: 'es2018' as const,
   dts: false,
   splitting: true,
   sourcemap: true,
-  clean: true,
   external: ['react', 'react-dom'],
-  outExtension({ format }) {
+  outExtension({ format }: { format: string }) {
     return {
       js: format === 'esm' ? '.mjs' : '.js',
     };
   },
-  onSuccess: async () => {
-    const fs = await import('fs');
-    const path = await import('path');
+};
 
-    const animationsSource = path.join('src', 'styles', 'animations.css');
-    const animationsDest = path.join('dist', 'styles.css');
-
-    if (fs.existsSync(animationsSource)) {
-      fs.copyFileSync(animationsSource, animationsDest);
-    }
+export default defineConfig([
+  // Pure-logic entry: must remain RSC-safe (no "use client" directive).
+  {
+    ...sharedOptions,
+    entry: { core: 'src/core.ts' },
+    clean: true,
+    onSuccess: async () => {
+      const fs = await import('fs');
+      const path = await import('path');
+      const animationsSource = path.join('src', 'styles', 'animations.css');
+      const animationsDest = path.join('dist', 'styles.css');
+      if (fs.existsSync(animationsSource)) {
+        fs.copyFileSync(animationsSource, animationsDest);
+      }
+    },
   },
-});
+  // Client entries: hooks + components. Inject "use client" so consumers can
+  // import these directly from a Server Component file without a wrapper.
+  {
+    ...sharedOptions,
+    entry: {
+      index: 'src/index.ts',
+      'hooks-entry': 'src/hooks-entry.ts',
+      consent: 'src/consent.ts',
+      dsr: 'src/dsr.ts',
+      dpia: 'src/dpia.ts',
+      breach: 'src/breach.ts',
+      policy: 'src/policy.ts',
+      'lawful-basis-entry': 'src/lawful-basis-entry.ts',
+      'cross-border-entry': 'src/cross-border-entry.ts',
+      'ropa-entry': 'src/ropa-entry.ts',
+      presets: 'src/presets-entry.ts',
+    },
+    clean: false,
+    banner: { js: '"use client";' },
+  },
+]);

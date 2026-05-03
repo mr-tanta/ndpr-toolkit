@@ -1,7 +1,7 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "3.2.0",
-  "description": "A comprehensive toolkit for implementing NDPR-compliant features in web applications",
+  "version": "3.3.1",
+  "description": "React and TypeScript compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -77,8 +77,11 @@
       "require": "./dist/presets.js"
     },
     "./styles": {
+      "style": "./dist/styles.css",
+      "sass": "./dist/styles.css",
       "import": "./dist/styles.css",
-      "require": "./dist/styles.css"
+      "require": "./dist/styles.css",
+      "default": "./dist/styles.css"
     }
   },
   "typesVersions": {
@@ -100,6 +103,7 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {
@@ -108,25 +112,45 @@
     "dev": "tsup --watch",
     "test": "jest",
     "lint": "eslint src --ext .ts,.tsx",
-    "prepublishOnly": "pnpm build"
+    "sync:changelog": "node -e \"require('node:fs').copyFileSync('../../CHANGELOG.md','./CHANGELOG.md')\"",
+    "prepublishOnly": "pnpm sync:changelog && pnpm build"
   },
   "keywords": [
+    "ndpa",
     "ndpr",
-    "data-protection",
-    "privacy",
-    "compliance",
     "nigeria",
+    "data-protection",
+    "compliance",
+    "privacy",
+    "ndpc",
     "consent",
     "dpia",
     "data-subject-rights",
-    "breach-notification"
+    "breach-notification",
+    "cross-border-transfer",
+    "ropa",
+    "lawful-basis",
+    "react",
+    "typescript",
+    "privacy-policy",
+    "cookie-consent",
+    "dsr",
+    "compliance-tools"
   ],
-  "author": "Tanta Innovative",
+  "author": {
+    "name": "Abraham Esandayinze Tanta",
+    "url": "https://linkedin.com/in/mr-tanta"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tantainnovative/ndpr-toolkit"
+    "url": "git+https://github.com/mr-tanta/ndpr-toolkit.git",
+    "directory": "packages/ndpr-toolkit"
   },
+  "bugs": {
+    "url": "https://github.com/mr-tanta/ndpr-toolkit/issues"
+  },
+  "homepage": "https://ndprtoolkit.com.ng",
   "publishConfig": {
     "access": "public"
   },
