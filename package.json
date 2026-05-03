@@ -80,6 +80,11 @@
       "import": "./dist/core.mjs",
       "require": "./dist/core.js"
     },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js"
+    },
     "./hooks": {
       "types": "./dist/hooks.d.ts",
       "import": "./dist/hooks.mjs",
@@ -142,14 +147,20 @@
     },
     "./styles": {
       "types": "./dist/styles.d.ts",
+      "style": "./dist/styles.css",
+      "sass": "./dist/styles.css",
       "import": "./dist/styles.css",
-      "require": "./dist/styles.css"
+      "require": "./dist/styles.css",
+      "default": "./dist/styles.css"
     }
   },
   "typesVersions": {
     "*": {
       "core": [
         "./dist/core.d.ts"
+      ],
+      "server": [
+        "./dist/server.d.ts"
       ],
       "hooks": [
         "./dist/hooks.d.ts"
@@ -196,6 +207,7 @@
     "dist/**/*.d.mts",
     "dist/**/*.css",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "publishConfig": {

@@ -37,7 +37,7 @@ jobs:
 
       - name: Verify entry points
         run: |
-          for entry in index core hooks adapters presets consent dsr dpia breach policy lawful-basis cross-border ropa unstyled; do
+          for entry in index core server hooks adapters presets consent dsr dpia breach policy lawful-basis cross-border ropa unstyled; do
             for ext in js mjs d.ts; do
               if [ ! -f "dist/$entry.$ext" ]; then
                 echo "MISSING: dist/$entry.$ext"
@@ -45,7 +45,11 @@ jobs:
               fi
             done
           done
-          echo "All 14 entry points verified"
+          if [ ! -f "dist/styles.css" ]; then
+            echo "MISSING: dist/styles.css"
+            exit 1
+          fi
+          echo "All 15 entry points + styles.css verified"
 
       - name: Verify package version matches release tag
         env:
