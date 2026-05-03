@@ -46,7 +46,7 @@ Effort: **S** = <1 day. **M** = 1–3 days. **L** = >3 days, may need design dis
 | S2 | Server companion package: `@tantainnovative/ndpr-toolkit/next`, `/nest`, `/express` with typed DSR route handlers, storage adapter, mailer adapter, 30-day SLA scheduler | L | Biggest market gap — every consumer rebuilds this. |
 | S3 | Compliance Console admin app (separate package or hosted SaaS): DSR queue with SLA countdown, DPIA dashboard, breach 72-hour timer, ROPA editor, audit log | XL | The upsell. OSS toolkit drives adoption; console pays bills. |
 | S4 | `npx @tantainnovative/ndpr-audit <url>` — crawls a site, scores compliance, outputs fix list | M | Marketing surface + lead gen. |
-| S5 | RSC-safe split: `@tantainnovative/ndpr-toolkit/server` (pure logic, no React) vs `/react` (components + hooks) | M | Lets RSC consumers import validators server-side without bundling React. |
+| S5 | ~~RSC-safe split: `@tantainnovative/ndpr-toolkit/server` (pure logic, no React) vs `/react` (components + hooks)~~ **DONE** in 3.4.0 — `/server` subpath shipped with zero-React surface, RSC-safety enforced by build-output guard tests. The `/react` half remains optional cleanup. | ~~M~~ | |
 | S6 | Discriminated DSR payload types (`requestType: 'rectification'` requires `correction_details`); branded NDPA section IDs | S | Type-system polish; high impact on consumer DX. |
 | S7 | Audit `storageKeyPrefix` propagation — reviewer reports it's not applied to all internal `localStorage.setItem` calls | S | |
 | S8 | Storybook + Chromatic visual regression for `<PolicyPage />`, `<ConsentBanner />`, etc. — would have caught B1 and B4 | M | |

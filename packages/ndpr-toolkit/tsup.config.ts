@@ -15,10 +15,12 @@ const sharedOptions = {
 };
 
 export default defineConfig([
-  // Pure-logic entry: must remain RSC-safe (no "use client" directive).
+  // Pure-logic entries: must remain RSC-safe (no "use client" directive).
+  // /server is the strict pure surface — zero React. /core is the broader
+  // entry that also re-exports NDPRProvider for backward compat.
   {
     ...sharedOptions,
-    entry: { core: 'src/core.ts' },
+    entry: { core: 'src/core.ts', server: 'src/server.ts' },
     clean: true,
     onSuccess: async () => {
       const fs = await import('fs');

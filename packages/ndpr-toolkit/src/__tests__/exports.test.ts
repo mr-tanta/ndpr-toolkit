@@ -85,6 +85,86 @@ describe('Entry point: core', () => {
   });
 });
 
+describe('Entry point: server', () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const mod = require('../../src/server');
+
+  it.each([
+    // Validators
+    'validateConsent',
+    'validateConsentOptions',
+    'validateProcessingActivity',
+    'validateTransfer',
+    'validateProcessingRecord',
+    // Domain utilities
+    'formatDSRRequest',
+    'assessDPIARisk',
+    'calculateBreachSeverity',
+    'createAuditEntry',
+    'getAuditLog',
+    'appendAuditEntry',
+    'sanitizeInput',
+    // Privacy-policy generation
+    'generatePolicyText',
+    'findUnfilledTokens',
+    'DEFAULT_POLICY_SECTIONS',
+    'DEFAULT_POLICY_VARIABLES',
+    'createBusinessPolicyTemplate',
+    'assemblePolicy',
+    'UNFILLED_PREFIX',
+    'UNFILLED_SUFFIX',
+    'evaluatePolicyCompliance',
+    'createDefaultContext',
+    'DEFAULT_DATA_CATEGORIES',
+    // Policy export
+    'exportHTML',
+    'exportMarkdown',
+    'exportDOCX',
+    'exportPDF',
+    // Compliance scoring
+    'getComplianceScore',
+    // Locales + i18n helpers
+    'defaultLocale',
+    'yorubaLocale',
+    'igboLocale',
+    'hausaLocale',
+    'pidginLocale',
+    'mergeLocale',
+    // Adapters
+    'localStorageAdapter',
+    'sessionStorageAdapter',
+    'cookieAdapter',
+    'apiAdapter',
+    'memoryAdapter',
+    'composeAdapters',
+    // Lawful basis / cross-border / ROPA helpers
+    'getLawfulBasisDescription',
+    'assessComplianceGaps',
+    'generateLawfulBasisSummary',
+    'getTransferMechanismDescription',
+    'assessTransferRisk',
+    'isNDPCApprovalRequired',
+    'generateROPASummary',
+    'exportROPAToCSV',
+    'identifyComplianceGaps',
+  ])('exports %s', (name) => {
+    expect(mod[name]).toBeDefined();
+  });
+
+  it.each([
+    'NDPRProvider',
+    'useNDPRConfig',
+    'useNDPRLocale',
+    'ConsentBanner',
+    'PolicyPage',
+    'useDSR',
+    'useConsent',
+    'usePrivacyPolicy',
+  ])('does NOT export React-touching %s', (name) => {
+    expect(mod[name]).toBeUndefined();
+  });
+});
+
 describe('Entry point: hooks', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/hooks-entry');

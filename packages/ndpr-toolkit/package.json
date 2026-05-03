@@ -16,6 +16,11 @@
       "import": "./dist/core.mjs",
       "require": "./dist/core.js"
     },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js"
+    },
     "./hooks": {
       "types": "./dist/hooks-entry.d.ts",
       "import": "./dist/hooks-entry.mjs",
@@ -87,6 +92,7 @@
   "typesVersions": {
     "*": {
       "core": ["./dist/core.d.ts"],
+      "server": ["./dist/server.d.ts"],
       "hooks": ["./dist/hooks-entry.d.ts"],
       "consent": ["./dist/consent.d.ts"],
       "dsr": ["./dist/dsr.d.ts"],
