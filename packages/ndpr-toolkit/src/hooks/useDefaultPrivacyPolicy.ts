@@ -1,20 +1,40 @@
-import { usePrivacyPolicy } from './usePrivacyPolicy';
+import { useEffect, useRef } from 'react';
+import { usePrivacyPolicy, UsePrivacyPolicyReturn } from './usePrivacyPolicy';
 import { createBusinessPolicyTemplate } from '../utils/policy-templates';
-import { PolicyTemplate, PrivacyPolicy } from '../types/privacy';
+import { OrganizationInfo, PolicyTemplate, PrivacyPolicy } from '../types/privacy';
 import type { StorageAdapter } from '../adapters/types';
 
 interface UseDefaultPrivacyPolicyOptions {
   /**
-   * Organisation information to pre-fill into the policy variables.
+   * Organisation information to pre-fill into the policy. When provided and
+   * `autoGenerate` is true (the default), the hook will auto-select the
+   * default template and generate a renderable policy on first commit, so
+   * `policy` is non-null on the first useful render.
    */
   orgInfo?: {
-    /** Organisation name */
+    /** Organisation name (maps to `organizationInfo.name` and `orgName` variable) */
     name?: string;
-    /** Privacy contact email */
+    /** Privacy contact email (maps to `privacyEmail`) */
     email?: string;
+    /** Organisation website URL */
+    website?: string;
+    /** Physical address */
+    address?: string;
+    /** Industry / sector descriptor */
+    industry?: string;
     /** Data Protection Officer name */
     dpoName?: string;
+    /** DPO email address */
+    dpoEmail?: string;
   };
+
+  /**
+   * Whether the hook should auto-select the default template and generate
+   * the policy as soon as it's mounted with `orgInfo`. Set to false to
+   * retain manual control via `selectTemplate` / `generatePolicy`.
+   * @default true
+   */
+  autoGenerate?: boolean;
 
   /**
    * Storage key for policy data.
@@ -29,44 +49,40 @@ interface UseDefaultPrivacyPolicyOptions {
   useLocalStorage?: boolean;
 
   /**
-   * Pluggable storage adapter. When provided, takes precedence over storageKey/useLocalStorage.
+   * Pluggable storage adapter. When provided, takes precedence over
+   * storageKey/useLocalStorage.
    */
   adapter?: StorageAdapter<PrivacyPolicy>;
 }
 
-/**
- * Convenience wrapper around `usePrivacyPolicy` that automatically
- * loads the default NDPA-compliant business policy template and
- * pre-fills common organisation variables.
- *
- * @example
- * ```tsx
- * const policy = useDefaultPrivacyPolicy({
- *   orgInfo: { name: 'Acme Ltd', email: 'privacy@acme.ng', dpoName: 'Jane Doe' }
- * });
- * ```
- */
-export function useDefaultPrivacyPolicy(options: UseDefaultPrivacyPolicyOptions = {}) {
-  const { orgInfo, storageKey, useLocalStorage, adapter } = options;
+const DEFAULT_TEMPLATE_ID = 'default-business';
+
+function buildTemplate(
+  orgInfo: UseDefaultPrivacyPolicyOptions['orgInfo'],
+): PolicyTemplate {
   const { sections, variables } = createBusinessPolicyTemplate();
 
-  // Build overrides from orgInfo without mutating the source variables
+  // Pre-fill template variable defaults from orgInfo so the rendered
+  // template has values even before the consumer wires up an editor UI.
   const variableOverrides: Record<string, string> = {};
   if (orgInfo) {
-    if (orgInfo.name) variableOverrides['orgName'] = orgInfo.name;
-    if (orgInfo.email) variableOverrides['privacyEmail'] = orgInfo.email;
-    if (orgInfo.dpoName) variableOverrides['dpoName'] = orgInfo.dpoName;
+    if (orgInfo.name) variableOverrides.orgName = orgInfo.name;
+    if (orgInfo.email) variableOverrides.privacyEmail = orgInfo.email;
+    if (orgInfo.website) variableOverrides.website = orgInfo.website;
+    if (orgInfo.address) variableOverrides.address = orgInfo.address;
+    if (orgInfo.industry) variableOverrides.industry = orgInfo.industry;
+    if (orgInfo.dpoName) variableOverrides.dpoName = orgInfo.dpoName;
+    if (orgInfo.dpoEmail) variableOverrides.dpoEmail = orgInfo.dpoEmail;
   }
 
-  // Build a PolicyTemplate from the defaults so usePrivacyPolicy can consume it
-  const template: PolicyTemplate = {
-    id: 'default-business',
+  return {
+    id: DEFAULT_TEMPLATE_ID,
     name: 'Default Business Policy',
     description: 'NDPA-compliant privacy policy template for businesses.',
     organizationType: 'business',
     sections,
     variables: Object.fromEntries(
-      variables.map(v => [
+      variables.map((v) => [
         v.name,
         {
           name: v.name,
@@ -74,17 +90,111 @@ export function useDefaultPrivacyPolicy(options: UseDefaultPrivacyPolicyOptions 
           required: v.required,
           defaultValue: variableOverrides[v.name] || v.value || undefined,
         },
-      ])
+      ]),
     ),
     version: '1.0',
     lastUpdated: Date.now(),
     ndpaCompliant: true,
   };
+}
 
-  return usePrivacyPolicy({
-    templates: [template],
+function orgInfoToOrganizationInfo(
+  orgInfo: UseDefaultPrivacyPolicyOptions['orgInfo'],
+): Partial<OrganizationInfo> {
+  if (!orgInfo) return {};
+  const out: Partial<OrganizationInfo> = {};
+  if (orgInfo.name) out.name = orgInfo.name;
+  if (orgInfo.email) out.privacyEmail = orgInfo.email;
+  if (orgInfo.website) out.website = orgInfo.website;
+  if (orgInfo.address) out.address = orgInfo.address;
+  if (orgInfo.industry) out.industry = orgInfo.industry;
+  if (orgInfo.dpoName) out.dpoName = orgInfo.dpoName;
+  if (orgInfo.dpoEmail) out.dpoEmail = orgInfo.dpoEmail;
+  return out;
+}
+
+/**
+ * Convenience wrapper around `usePrivacyPolicy`. With `orgInfo` provided
+ * and `autoGenerate` enabled (default), `policy` is non-null on the first
+ * post-load render — no manual `selectTemplate` / `generatePolicy` chaining
+ * required.
+ *
+ * @example
+ * ```tsx
+ * const { policy } = useDefaultPrivacyPolicy({
+ *   orgInfo: { name: 'Acme Ltd', email: 'privacy@acme.ng' }
+ * });
+ * return policy ? <PolicyPage policy={policy} /> : <Spinner />;
+ * ```
+ */
+export function useDefaultPrivacyPolicy(
+  options: UseDefaultPrivacyPolicyOptions = {},
+): UsePrivacyPolicyReturn {
+  const { orgInfo, autoGenerate = true, storageKey, useLocalStorage, adapter } = options;
+
+  // Build the template once per mount. Re-running on every render would
+  // discard the user's edits to `template.variables` because we'd hand a
+  // fresh PolicyTemplate object to usePrivacyPolicy each time.
+  const templateRef = useRef<PolicyTemplate | null>(null);
+  if (templateRef.current === null) {
+    templateRef.current = buildTemplate(orgInfo);
+  }
+
+  const result = usePrivacyPolicy({
+    templates: [templateRef.current],
     adapter,
     storageKey,
     useLocalStorage,
   });
+
+  // Auto-init runs in two phases because generatePolicy reads
+  // `organizationInfo` from its callback closure, so it must run on a
+  // render *after* updateOrganizationInfo / selectTemplate have committed.
+  //
+  // Phase 1 (after first load): seed organizationInfo + select template.
+  // Phase 2 (after seed commits): generate the policy.
+  const seededRef = useRef(false);
+  const generatedRef = useRef(false);
+
+  useEffect(() => {
+    if (!autoGenerate) return;
+    if (result.isLoading) return;
+    if (seededRef.current) return;
+    // If a policy was rehydrated from storage, don't clobber it.
+    if (result.policy) {
+      seededRef.current = true;
+      generatedRef.current = true;
+      return;
+    }
+    seededRef.current = true;
+
+    const overrides = orgInfoToOrganizationInfo(orgInfo);
+    if (Object.keys(overrides).length > 0) {
+      result.updateOrganizationInfo(overrides);
+    }
+    if (!result.selectedTemplate) {
+      result.selectTemplate(DEFAULT_TEMPLATE_ID);
+    }
+    // Phase 2 runs in the effect below once selectedTemplate + organizationInfo
+    // have been committed by React.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoGenerate, result.isLoading]);
+
+  useEffect(() => {
+    if (!autoGenerate) return;
+    if (generatedRef.current) return;
+    if (!seededRef.current) return;
+    if (!result.selectedTemplate) return;
+    // selectTemplate snapshots organizationInfo into policy at call time
+    // (with empty values, before our seed has committed). We must wait for
+    // organizationInfo state to match the seeded values, then regenerate so
+    // the persisted policy carries the right org info.
+    const seededName = orgInfo?.name ?? '';
+    if (seededName && result.organizationInfo.name !== seededName) return;
+    generatedRef.current = true;
+    result.generatePolicy();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoGenerate, result.selectedTemplate, result.organizationInfo]);
+
+  return result;
 }

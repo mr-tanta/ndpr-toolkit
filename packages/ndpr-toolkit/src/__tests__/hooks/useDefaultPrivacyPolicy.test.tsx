@@ -185,4 +185,77 @@ describe('useDefaultPrivacyPolicy', () => {
       expect(Object.keys(tpl!.variables).length).toBeGreaterThan(0);
     });
   });
+
+  describe('auto-init (B2)', () => {
+    it('produces a non-null policy on first useful render when orgInfo is provided', async () => {
+      const { result } = renderHook(() =>
+        useDefaultPrivacyPolicy({
+          orgInfo: { name: 'Acme Ltd', email: 'privacy@acme.ng' },
+          useLocalStorage: false,
+        }),
+      );
+
+      await waitFor(() => {
+        expect(result.current.policy).not.toBeNull();
+      });
+
+      expect(result.current.selectedTemplate?.id).toBe('default-business');
+      expect(result.current.policy?.organizationInfo.name).toBe('Acme Ltd');
+      expect(result.current.policy?.organizationInfo.privacyEmail).toBe(
+        'privacy@acme.ng',
+      );
+    });
+
+    it('does not auto-generate when autoGenerate is false', async () => {
+      const { result } = renderHook(() =>
+        useDefaultPrivacyPolicy({
+          orgInfo: { name: 'Acme Ltd' },
+          autoGenerate: false,
+          useLocalStorage: false,
+        }),
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+      expect(result.current.policy).toBeNull();
+      expect(result.current.selectedTemplate).toBeNull();
+    });
+
+    it('preserves a rehydrated policy instead of overwriting it on auto-init', async () => {
+      const existing = {
+        id: 'policy_existing',
+        title: 'Existing',
+        templateId: 'default-business',
+        organizationInfo: {
+          name: 'Existing Corp',
+          website: '',
+          privacyEmail: 'p@existing.com',
+          address: '',
+          privacyPhone: '',
+          dpoName: '',
+          dpoEmail: '',
+          industry: '',
+        },
+        sections: [],
+        variableValues: {},
+        effectiveDate: 1,
+        lastUpdated: 1,
+        version: '1.0',
+      };
+      localStorage.setItem('ndpr_privacy_policy', JSON.stringify(existing));
+
+      const { result } = renderHook(() =>
+        useDefaultPrivacyPolicy({
+          orgInfo: { name: 'New Corp', email: 'new@corp.com' },
+        }),
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+      expect(result.current.policy?.id).toBe('policy_existing');
+      expect(result.current.policy?.organizationInfo.name).toBe('Existing Corp');
+    });
+  });
 });
