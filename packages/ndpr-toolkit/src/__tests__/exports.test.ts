@@ -98,6 +98,7 @@ describe('Entry point: server', () => {
     'validateProcessingRecord',
     // Domain utilities
     'formatDSRRequest',
+    'validateDsrSubmission',
     'assessDPIARisk',
     'calculateBreachSeverity',
     'createAuditEntry',

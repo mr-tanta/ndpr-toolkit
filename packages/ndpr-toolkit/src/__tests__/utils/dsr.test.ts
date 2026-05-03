@@ -1,4 +1,4 @@
-import { formatDSRRequest } from '../../utils/dsr';
+import { formatDSRRequest, validateDsrSubmission } from '../../utils/dsr';
 import { DSRRequest, DSRType, DSRStatus } from '../../types/dsr';
 
 interface FormattedDataSubject {
@@ -264,5 +264,109 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
       const result = formatDSRRequest(request);
       expect(getDataSubject(result)).toBeUndefined();
     });
+  });
+});
+
+// ── validateDsrSubmission (v3.5.0 — server-side payload validator) ──────────
+
+describe('validateDsrSubmission', () => {
+  function validPayload() {
+    return {
+      requestType: 'access',
+      dataSubject: {
+        fullName: 'Jane Doe',
+        email: 'jane@example.com',
+        phone: '+2348012345678',
+        identifierType: 'email',
+        identifierValue: 'jane@example.com',
+      },
+      additionalInfo: { notes: 'Please respond by post.' },
+      submittedAt: 1_700_000_000_000,
+    };
+  }
+
+  it('returns valid + typed data for a well-formed payload', () => {
+    const result = validateDsrSubmission(validPayload());
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual({});
+    expect(result.data?.requestType).toBe('access');
+    expect(result.data?.dataSubject.email).toBe('jane@example.com');
+  });
+
+  it('rejects non-object payloads', () => {
+    expect(validateDsrSubmission(null).valid).toBe(false);
+    expect(validateDsrSubmission(undefined).valid).toBe(false);
+    expect(validateDsrSubmission('a string').valid).toBe(false);
+    expect(validateDsrSubmission(42).valid).toBe(false);
+    expect(validateDsrSubmission([]).valid).toBe(false);
+  });
+
+  it('flags missing requestType', () => {
+    const p = validPayload();
+    delete (p as { requestType?: string }).requestType;
+    const r = validateDsrSubmission(p);
+    expect(r.valid).toBe(false);
+    expect(r.errors.requestType).toMatch(/required/i);
+  });
+
+  it('flags requestType not in allowedRequestTypes', () => {
+    const r = validateDsrSubmission(
+      { ...validPayload(), requestType: 'invalid' },
+      { allowedRequestTypes: ['access', 'erasure'] },
+    );
+    expect(r.valid).toBe(false);
+    expect(r.errors.requestType).toMatch(/not in the allowed set/);
+  });
+
+  it('flags missing fullName / invalid email format', () => {
+    const r = validateDsrSubmission({
+      ...validPayload(),
+      dataSubject: { fullName: '', email: 'not-an-email', identifierType: 'email', identifierValue: 'x' },
+    });
+    expect(r.valid).toBe(false);
+    expect(r.errors['dataSubject.fullName']).toBeDefined();
+    expect(r.errors['dataSubject.email']).toMatch(/format is invalid/);
+  });
+
+  it('flags missing identifier when requireIdentityVerification is true (default)', () => {
+    const r = validateDsrSubmission({
+      ...validPayload(),
+      dataSubject: { fullName: 'Jane', email: 'j@e.co', identifierType: '', identifierValue: '' },
+    });
+    expect(r.valid).toBe(false);
+    expect(r.errors['dataSubject.identifierType']).toBeDefined();
+    expect(r.errors['dataSubject.identifierValue']).toBeDefined();
+  });
+
+  it('skips identifier checks when requireIdentityVerification: false', () => {
+    const r = validateDsrSubmission(
+      {
+        ...validPayload(),
+        dataSubject: { fullName: 'Jane', email: 'j@e.co', identifierType: '', identifierValue: '' },
+      },
+      { requireIdentityVerification: false },
+    );
+    expect(r.valid).toBe(true);
+  });
+
+  it('flags non-numeric submittedAt', () => {
+    const r = validateDsrSubmission({ ...validPayload(), submittedAt: 'now' as unknown as number });
+    expect(r.valid).toBe(false);
+    expect(r.errors.submittedAt).toMatch(/finite number/);
+  });
+
+  it('rejects non-object additionalInfo', () => {
+    const r = validateDsrSubmission({
+      ...validPayload(),
+      additionalInfo: 'not an object' as unknown as Record<string, never>,
+    });
+    expect(r.valid).toBe(false);
+    expect(r.errors.additionalInfo).toMatch(/must be an object/);
+  });
+
+  it('omits .data when validation fails', () => {
+    const r = validateDsrSubmission({ requestType: '', dataSubject: {}, submittedAt: NaN });
+    expect(r.valid).toBe(false);
+    expect(r.data).toBeUndefined();
   });
 });

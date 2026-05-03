@@ -264,6 +264,10 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
     } else {
       setIsOpen(show);
     }
+    // `show` is intentionally NOT in the dep array — a separate effect below
+    // reacts to it. Including it here would re-run the storage-load logic
+    // every time the parent toggles `show`, undoing the dismissal state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options, storageKey, version, manageStorage]);
 
   // Issue 7.2 — Sync the `show` prop to internal `isOpen` state.
@@ -363,6 +367,11 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
+    // handleRejectAll is intentionally excluded — its identity changes on
+    // every render but the keydown handler always reads the latest options
+    // via closure-fresh state. Including it would rebind the listener on
+    // every render with no behaviour change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, fireAnalytics, options, showCustomize]);
 
   // Fire the "shown" analytics event when the banner becomes visible

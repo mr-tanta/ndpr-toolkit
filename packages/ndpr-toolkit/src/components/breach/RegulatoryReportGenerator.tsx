@@ -176,6 +176,10 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
     const initialContent = generateInitialContent();
     setReportContent(initialContent);
     setIsGenerated(true);
+    // generateInitialContent is intentionally excluded — it's a closure
+    // over the same three deps already listed; including it would just
+    // create a stable identity wrapper around the same data.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breachData, assessmentData, organizationInfo]);
   
   // Format a date from timestamp

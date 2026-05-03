@@ -537,13 +537,44 @@ function buildDataRetention(ctx: TemplateContext, order: number): PolicySection 
 // ---------------------------------------------------------------------------
 
 /**
- * Assembles an ordered array of privacy policy sections based on the
- * provided template context. Core sections are always included; conditional
- * sections are added based on context flags (children, sensitive data,
- * cross-border transfers, automated decisions).
+ * Assemble an ordered, NDPA-aligned array of privacy-policy sections from
+ * a {@link TemplateContext}. This is the canonical "compute the policy"
+ * function — it produces structured `PolicySection[]` data that downstream
+ * renderers (`exportHTML`, `exportMarkdown`, `exportPDF`, `exportDOCX`,
+ * `<PolicyPage />`) consume.
  *
- * @param context - The template context describing the organisation and its data practices.
- * @returns An array of {@link PolicySection} objects, ordered and ready for rendering.
+ * Section composition:
+ * - **Core sections** (always included): Introduction, Data Collection,
+ *   Legal Basis, Data Usage, Data Sharing, Data Retention, Data Security,
+ *   Data Subject Rights, Contact Information.
+ * - **Conditional sections** (included based on context flags):
+ *   - `hasChildrenData` → Children's Data Protection (NDPA §31)
+ *   - `hasSensitiveData` → Sensitive / Special-Category Data
+ *   - `hasCrossBorderTransfer` → Cross-Border Transfers (NDPA Part VI)
+ *   - `hasAutomatedDecisions` → Automated Decision-Making (NDPA §37)
+ *
+ * Section text uses `«TODO: fieldName»` markers (see {@link UNFILLED_PREFIX})
+ * for any required org-info field that's empty in the context. Pair with
+ * {@link findUnfilledTokens} to surface those before publishing.
+ *
+ * @param context - Organisation info, data categories, processing purposes,
+ *                  third-party processors, and feature flags. Build a default
+ *                  context with `createDefaultContext()` then mutate.
+ * @returns An ordered array of {@link PolicySection} objects ready to pass
+ *          to `exportHTML(policy)` or `<PolicyPage policy={...} />`.
+ *
+ * @example
+ * ```ts
+ * import { assemblePolicy, createDefaultContext } from '@tantainnovative/ndpr-toolkit/server';
+ *
+ * const ctx = createDefaultContext();
+ * ctx.org.name = 'Acme Nigeria Ltd';
+ * ctx.org.privacyEmail = 'privacy@acme.ng';
+ * ctx.hasCrossBorderTransfer = true;
+ *
+ * const sections = assemblePolicy(ctx);
+ * // sections is a 10-element array (9 core + 1 cross-border)
+ * ```
  */
 export function assemblePolicy(context: TemplateContext): PolicySection[] {
   let order = 1;

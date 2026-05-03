@@ -14,12 +14,7 @@
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import reactPlugin from 'eslint-plugin-react';
-// eslint-plugin-react-hooks@4 calls `context.getSource()` which was removed
-// in ESLint 9, so it crashes hard when loaded. Until we bump it to v5 (which
-// supports the new API) we skip the plugin entirely. Tracked as a dev-tooling
-// follow-up; the rules were never actually running before this fix because
-// the whole lint script was broken — so disabling them is a no-op for
-// behavior, just an honest restatement of the status quo.
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
 
 export default [
   // Files this config applies to. The root config's `ignores` are merged
@@ -38,10 +33,10 @@ export default [
   {
     files: ['src/**/*.{ts,tsx}'],
     linterOptions: {
-      // Inline `// eslint-disable-next-line react-hooks/...` directives stay
-      // in place via the stub plugin below, so they're "unused" by the
-      // current stub but valid for when we upgrade the real plugin. Don't
-      // warn about them in the meantime.
+      // Real react-hooks plugin (v7+) is now loaded, so inline disable
+      // directives are evaluated normally. Keep this off because the
+      // codebase has historical disables that point at the old rule
+      // names; we don't want lint noise during the v5/v7 transition.
       reportUnusedDisableDirectives: 'off',
     },
     languageOptions: {
@@ -95,17 +90,7 @@ export default [
     plugins: {
       '@typescript-eslint': tsPlugin,
       react: reactPlugin,
-      // Stub plugin: registers no-op rules under the `react-hooks` namespace
-      // so inline `// eslint-disable-next-line react-hooks/exhaustive-deps`
-      // comments scattered through the codebase don't fail with "Definition
-      // for rule not found". The real react-hooks plugin (v4) is incompatible
-      // with ESLint 9. Bumping it to v5 is a separate dev-tooling task.
-      'react-hooks': {
-        rules: {
-          'rules-of-hooks': { create: () => ({}), meta: { type: 'problem', schema: [] } },
-          'exhaustive-deps': { create: () => ({}), meta: { type: 'problem', schema: [] } },
-        },
-      },
+      'react-hooks': reactHooksPlugin,
     },
     settings: {
       react: { version: 'detect' },
@@ -123,6 +108,9 @@ export default [
       'react/prop-types': 'off',
       'react/display-name': 'off',
       'react/react-in-jsx-scope': 'off',
+      // Hooks rules — these catch real bugs.
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
       // Semicolon / quote style left unmanaged — Prettier territory.
       'no-undef': 'off', // typescript-eslint handles this; ESLint can't see TS globals
       'no-empty': 'off',

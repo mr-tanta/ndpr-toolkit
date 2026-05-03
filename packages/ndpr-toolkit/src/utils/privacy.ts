@@ -9,10 +9,36 @@ function escapeRegExp(str: string): string {
 }
 
 /**
- * Scans rendered policy text for unfilled tokens. Returns the list of field
- * names that were left unfilled (deduplicated). Use in CI to assert a
- * canonical org-info fixture renders cleanly, or at runtime to surface
- * "policy is missing X" errors before publishing.
+ * Scan rendered policy text for unfilled placeholder tokens.
+ *
+ * Detects two token forms:
+ * - `«TODO: fieldName»` — sentinel emitted by {@link assemblePolicy} when
+ *   a required org-info field is missing from the context.
+ * - `{{fieldName}}` — mustache token that escaped substitution (either
+ *   because the variable wasn't declared or its value was empty).
+ *
+ * Returns a deduplicated list of the field names found. An empty array
+ * means the rendered text is fully populated.
+ *
+ * Two recommended uses:
+ *
+ * 1. **CI guard** — assert your canonical org-info fixture renders without
+ *    leaving any tokens behind:
+ *    ```ts
+ *    const html = exportHTML(policy);
+ *    expect(findUnfilledTokens(html)).toEqual([]);
+ *    ```
+ *
+ * 2. **Runtime guard** — surface a clear error to compliance officers
+ *    before they publish a policy with `{{orgName}}` visible to visitors:
+ *    ```ts
+ *    const missing = findUnfilledTokens(getPolicyText().fullText);
+ *    if (missing.length) throw new Error(`Policy is missing: ${missing.join(', ')}`);
+ *    ```
+ *
+ * @param rendered - The substituted policy text (from `exportHTML`,
+ *                   `exportMarkdown`, or `usePrivacyPolicy().getPolicyText().fullText`).
+ * @returns Deduplicated array of unfilled field names; `[]` if fully filled.
  */
 export function findUnfilledTokens(rendered: string): string[] {
   const found = new Set<string>();

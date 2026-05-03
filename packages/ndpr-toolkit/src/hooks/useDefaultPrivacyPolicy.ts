@@ -43,14 +43,23 @@ interface UseDefaultPrivacyPolicyOptions {
   storageKey?: string;
 
   /**
-   * Whether to persist policy data in local storage.
+   * Whether to persist policy data in storage. When `false`, the hook
+   * uses an in-memory no-op adapter and nothing survives a page reload.
+   * @default true
+   */
+  persist?: boolean;
+
+  /**
+   * @deprecated Renamed to `persist` in v3.5.0 — `useLocalStorage` is
+   * still accepted for backward compatibility and will be removed in
+   * v4.0. Use `persist` (or pass an explicit `adapter`) instead.
    * @default true
    */
   useLocalStorage?: boolean;
 
   /**
    * Pluggable storage adapter. When provided, takes precedence over
-   * storageKey/useLocalStorage.
+   * storageKey/persist/useLocalStorage.
    */
   adapter?: StorageAdapter<PrivacyPolicy>;
 }
@@ -149,7 +158,10 @@ function orgInfoToOrganizationInfo(
 export function useDefaultPrivacyPolicy(
   options: UseDefaultPrivacyPolicyOptions = {},
 ): UsePrivacyPolicyReturn {
-  const { orgInfo, autoGenerate = true, storageKey, useLocalStorage, adapter } = options;
+  const { orgInfo, autoGenerate = true, storageKey, persist, useLocalStorage, adapter } = options;
+  // v3.5.0: `persist` is the canonical name; `useLocalStorage` is the
+  // deprecated alias. Either may be passed; explicit values win, default true.
+  const persistResolved = persist ?? useLocalStorage ?? true;
 
   // Build the template once per mount. Re-running on every render would
   // discard the user's edits to `template.variables` because we'd hand a
@@ -163,7 +175,7 @@ export function useDefaultPrivacyPolicy(
     templates: [templateRef.current],
     adapter,
     storageKey,
-    useLocalStorage,
+    persist: persistResolved,
   });
 
   // Auto-init runs in two phases because generatePolicy reads
@@ -190,7 +202,7 @@ export function useDefaultPrivacyPolicy(
     // generate a competing one.
     const usingDefaultLocalStorage =
       !adapter &&
-      useLocalStorage !== false &&
+      persistResolved !== false &&
       typeof window !== 'undefined' &&
       typeof window.localStorage !== 'undefined';
     if (usingDefaultLocalStorage) {

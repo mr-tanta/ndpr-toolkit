@@ -32,13 +32,61 @@ export interface PolicyPageProps {
 }
 
 /**
- * PolicyPage renders a full privacy policy. By default uses Shadow DOM so the
- * embedded stylesheet (bare selectors like `body`, `article`, `h1`) cannot
- * leak into the host application's CSS. Pass `mode="inline"` for SSR/SEO
- * scenarios where the policy text must appear in the host document.
+ * Renders a full privacy policy from a typed `PrivacyPolicy` object.
  *
- * HTML is generated internally by exportHTML from a typed PrivacyPolicy and
- * never contains untrusted user input.
+ * ## Choosing a mode
+ *
+ * | mode | renders | SEO | host-CSS isolation | best for |
+ * |------|---------|-----|--------------------|----------|
+ * | `'shadow'` (default) | Inside a Shadow DOM root, opinionated styles included | ❌ markup is invisible to crawlers (lives in shadow) | ✅ structurally impossible to leak | in-app embeds where you want a polished drop-in widget |
+ * | `'inline'` | Directly in the host document body | ✅ crawlable markup | ⚠️ consumer styles the markup themselves | SSR'd `/privacy` pages, public legal pages |
+ *
+ * Inline mode defaults `includeStyles: false` so bare element selectors
+ * (`body`, `article`, `h1`...) don't leak into the host page. The rendered
+ * markup is plain semantic HTML — `<article>`, `<section>`, `<h2>`, `<p>`,
+ * `<ul>`. Pair it with your own typography to make it look right.
+ *
+ * @example **Inline mode + Tailwind `@tailwindcss/typography`**
+ * ```tsx
+ * import { PolicyPage } from '@tantainnovative/ndpr-toolkit';
+ *
+ * // Wrap with the `prose` class so headings, paragraphs, and lists pick
+ * // up Tailwind's typography defaults. dark:prose-invert handles dark mode.
+ * <article className="prose prose-slate dark:prose-invert max-w-3xl mx-auto">
+ *   <PolicyPage policy={policy} mode="inline" />
+ * </article>
+ * ```
+ *
+ * @example **Inline mode with shadcn-ui typography**
+ * ```tsx
+ * <Card>
+ *   <CardContent className="prose dark:prose-invert">
+ *     <PolicyPage policy={policy} mode="inline" />
+ *   </CardContent>
+ * </Card>
+ * ```
+ *
+ * @example **Inline mode with raw CSS**
+ * ```css
+ * .ndpr-policy-page article { font-family: Georgia, serif; line-height: 1.7; }
+ * .ndpr-policy-page h2 { font-size: 1.5rem; margin-top: 2rem; }
+ * .ndpr-policy-page section { margin-bottom: 1.5rem; }
+ * ```
+ *
+ * @example **Theming the shadow-mode default**
+ * ```tsx
+ * // Brand the policy without leaving shadow mode — pass theme + customCSS.
+ * <PolicyPage
+ *   policy={policy}
+ *   options={{
+ *     theme: 'auto', // or 'light' (default) / 'dark'
+ *     customCSS: ':root { --color-accent: #1d4ed8; --max-width: 64rem; }',
+ *   }}
+ * />
+ * ```
+ *
+ * HTML is generated internally by `exportHTML` from a typed `PrivacyPolicy`
+ * and never contains untrusted user input.
  */
 // eslint-disable-next-line react/no-danger
 export const PolicyPage: React.FC<PolicyPageProps> = ({

@@ -166,7 +166,12 @@ export {
 // Domain utilities
 // ---------------------------------------------------------------------------
 
-export { formatDSRRequest } from './utils/dsr';
+export { formatDSRRequest, validateDsrSubmission } from './utils/dsr';
+export type {
+  DsrSubmissionPayload,
+  DsrSubmissionValidationResult,
+  ValidateDsrSubmissionOptions,
+} from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
 export {

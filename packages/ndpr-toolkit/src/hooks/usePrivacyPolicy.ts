@@ -35,9 +35,19 @@ interface UsePrivacyPolicyOptions {
   storageKey?: string;
 
   /**
-   * Whether to use local storage to persist policy data
+   * Whether to persist policy data in storage. When `false`, the hook
+   * uses an in-memory no-op adapter and nothing survives a page reload.
+   * Prefer `adapter` for richer control (custom backends, async APIs).
+   *
    * @default true
-   * @deprecated Use adapter instead
+   */
+  persist?: boolean;
+
+  /**
+   * @deprecated Renamed to `persist` in v3.5.0 — `useLocalStorage` is
+   * still accepted for backward compatibility and will be removed in
+   * v4.0. Use `persist` (or pass an explicit `adapter`) instead.
+   * @default true
    */
   useLocalStorage?: boolean;
 
@@ -129,10 +139,15 @@ export function usePrivacyPolicy({
   initialPolicy,
   adapter,
   storageKey = 'ndpr_privacy_policy',
-  useLocalStorage = true,
+  persist,
+  useLocalStorage,
   onGenerate,
 }: UsePrivacyPolicyOptions): UsePrivacyPolicyReturn {
-  const resolvedAdapter = adapter ?? resolveAdapter(storageKey, useLocalStorage);
+  // v3.5.0: `persist` is the new canonical name; `useLocalStorage` is the
+  // deprecated alias kept for backward compatibility. If a consumer passes
+  // either explicitly, honor it; otherwise default to true (persist).
+  const persistResolved = persist ?? useLocalStorage ?? true;
+  const resolvedAdapter = adapter ?? resolveAdapter(storageKey, persistResolved);
   const adapterRef = useRef(resolvedAdapter);
   adapterRef.current = resolvedAdapter;
 

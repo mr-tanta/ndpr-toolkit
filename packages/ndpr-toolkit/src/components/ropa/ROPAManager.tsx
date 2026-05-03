@@ -219,6 +219,10 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
       setSecurityMeasuresInput(editingRecord.securityMeasures.join(', '));
       setSystemsUsedInput((editingRecord.systemsUsed || []).join(', '));
     }
+    // Sync only when the edited record changes by id — including the full
+    // editingRecord object would re-sync inputs on every keystroke as the
+    // record's nested fields update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editingRecord?.id]);
 
   const handleNewRecord = useCallback(() => {

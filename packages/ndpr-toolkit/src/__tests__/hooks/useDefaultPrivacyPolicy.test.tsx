@@ -259,6 +259,54 @@ describe('useDefaultPrivacyPolicy', () => {
     });
   });
 
+  describe('persist option (v3.5.0)', () => {
+    // The new `persist` name is canonical; `useLocalStorage` is the
+    // deprecated alias kept for backward compatibility.
+
+    it('persist: false uses no-op storage (no localStorage writes)', async () => {
+      // Render with persist:false — generated policy must NOT appear in
+      // localStorage afterwards.
+      const { result } = renderHook(() =>
+        useDefaultPrivacyPolicy({
+          orgInfo: { name: 'Acme Ltd' },
+          persist: false,
+        }),
+      );
+      await waitFor(() => {
+        expect(result.current.policy).not.toBeNull();
+      });
+      expect(localStorage.getItem('ndpr_privacy_policy')).toBeNull();
+    });
+
+    it('useLocalStorage: false (legacy alias) behaves identically to persist: false', async () => {
+      const { result } = renderHook(() =>
+        useDefaultPrivacyPolicy({
+          orgInfo: { name: 'Acme Ltd' },
+          useLocalStorage: false,
+        }),
+      );
+      await waitFor(() => {
+        expect(result.current.policy).not.toBeNull();
+      });
+      expect(localStorage.getItem('ndpr_privacy_policy')).toBeNull();
+    });
+
+    it('explicit persist: true overrides legacy useLocalStorage: false', async () => {
+      // When both are passed, persist wins because it's the canonical name.
+      const { result } = renderHook(() =>
+        useDefaultPrivacyPolicy({
+          orgInfo: { name: 'Acme Ltd', email: 'p@a.ng' },
+          persist: true,
+          useLocalStorage: false,
+        }),
+      );
+      await waitFor(() => {
+        expect(result.current.policy).not.toBeNull();
+      });
+      expect(localStorage.getItem('ndpr_privacy_policy')).not.toBeNull();
+    });
+  });
+
   describe('effectiveDate auto-default (v3.4.1 regression guard)', () => {
     // v3.4.0 left `policy.variableValues.effectiveDate` as `""` after
     // auto-init, so the contact-info section rendered "This policy is

@@ -51,7 +51,12 @@ export { mergeLocale } from './utils/locale';
 export { validateConsent, validateConsentOptions } from './utils/consent';
 export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
 export type { ConsentAuditEntry } from './utils/consent-audit';
-export { formatDSRRequest } from './utils/dsr';
+export { formatDSRRequest, validateDsrSubmission } from './utils/dsr';
+export type {
+  DsrSubmissionPayload,
+  DsrSubmissionValidationResult,
+  ValidateDsrSubmissionOptions,
+} from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
 export { generatePolicyText, findUnfilledTokens } from './utils/privacy';
