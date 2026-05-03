@@ -78,6 +78,18 @@ My take: do **B first**. Server integration is the half that's universally missi
 
 ## Open questions for the team
 
-1. UI strategy: A (shadcn copy-paste) or B (fully-styled drop-in)? Or keep both via `./unstyled` and a new `./styled`?
+1. ~~UI strategy: A (shadcn copy-paste) or B (fully-styled drop-in)?~~ **Resolved (B)** — shipped in 3.4.0 alongside `./unstyled` opt-out. Option A (shadcn-style copy CLI) deferred to 4.0.
 2. Is there appetite to ship a server companion now, or wait?
 3. Do we want to invite the integration team's video walkthrough? Could double as a recorded reproduction of every blocker.
+
+---
+
+## Shipped: v3.4.0 — 2026-05-03
+
+All B (blocker), D (DX), and S (strategic) items called out as in-scope above are now closed:
+
+- **B1–B5, D3, D5:** ✅ shipped
+- **S1 (UI strategy):** ✅ option B shipped — full BEM migration, `dist/styles.css` (1442 lines, 210 rules), `./unstyled` opt-out
+- **S5 (RSC-safe `/server` split):** ✅ shipped — zero-React surface with build-output guard tests
+
+Remaining 3.5+ items: S2 (server companion), S3 (admin console), S4 (audit CLI), and the smaller polish items (S6–S10) — open as deliberate product decisions.
