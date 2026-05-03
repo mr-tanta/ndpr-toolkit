@@ -365,6 +365,70 @@ function AnalyticsComponent() {
         </pre>
       </section>
 
+      <section id="variants" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Banner variants</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
+          The <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">variant</code> prop (added in v3.4.0) controls visual treatment. Pair it with{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">position</code> for placement.
+        </p>
+
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-3"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">variant=&quot;bar&quot;</code> (default)</h3>
+        <p className="text-muted-foreground mb-4">Full-width strip pinned to the top or bottom edge.</p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`<ConsentBanner
+  options={options}
+  onSave={handleSave}
+  position="bottom"
+/>`}</code>
+        </pre>
+
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-3"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">variant=&quot;card&quot;</code></h3>
+        <p className="text-muted-foreground mb-4">
+          Bounded floating card with rounded corners and margin from the screen edges. Polished default for
+          marketing and product sites.
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`<ConsentBanner
+  options={options}
+  onSave={handleSave}
+  variant="card"
+  position="bottom"
+/>`}</code>
+        </pre>
+
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-3"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">variant=&quot;modal&quot;</code></h3>
+        <p className="text-muted-foreground mb-4">
+          Centered card with a backdrop overlay. Forces center placement regardless of{' '}
+          <code className="bg-muted px-1 rounded">position</code>. Use sparingly — modals interrupt the page and are
+          rarely the right choice for compliance widgets.
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`<ConsentBanner
+  options={options}
+  onSave={handleSave}
+  variant="modal"
+/>`}</code>
+        </pre>
+
+        <h3 className="text-lg font-semibold text-foreground mt-8 mb-3">Targeting variants from your CSS</h3>
+        <p className="text-muted-foreground mb-4">
+          Each rendered banner exposes <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">data-ndpr-component</code>,{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">data-ndpr-variant</code>, and <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">data-ndpr-position</code> attributes you can target without depending on internal class names.
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`/* Customise the card variant only */
+[data-ndpr-component="consent-banner"][data-ndpr-variant="card"] {
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Special-case the modal overlay */
+[data-ndpr-component="consent-banner"][data-ndpr-variant="modal"] {
+  background: rgba(0, 0, 0, 0.7);
+}`}</code>
+        </pre>
+      </section>
+
       <section id="api" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">API Reference</h2>
 
@@ -397,6 +461,14 @@ function AnalyticsComponent() {
                 <td className="py-3 px-4 text-sm text-muted-foreground">&apos;top&apos; | &apos;bottom&apos; | &apos;center&apos; | &apos;inline&apos;</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">&apos;bottom&apos;</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Position of the banner on the page. top/bottom/center render via a portal; inline renders in normal document flow.</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">variant</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;bar&apos; | &apos;card&apos; | &apos;modal&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;bar&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">
+                  Visual treatment. <code className="bg-muted px-1 rounded">bar</code> is the default full-width strip. <code className="bg-muted px-1 rounded">card</code> renders a bounded floating card with margin from the screen edges (pairs well with <code className="bg-muted px-1 rounded">position=&quot;bottom&quot;</code>). <code className="bg-muted px-1 rounded">modal</code> forces center placement with a backdrop overlay regardless of <code className="bg-muted px-1 rounded">position</code>. <em>Added in v3.4.0.</em>
+                </td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">title</td>

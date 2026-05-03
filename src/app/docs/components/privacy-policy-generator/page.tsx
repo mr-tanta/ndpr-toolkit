@@ -474,6 +474,124 @@ function generatePolicyText(
         </pre>
       </section>
 
+      <section id="policy-page" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">PolicyPage — drop-in renderer</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">{`<PolicyPage />`}</code>{' '}
+          (added in v3.4.0) renders a fully-styled privacy policy from a typed{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">PrivacyPolicy</code> object.
+          Pair it with <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useDefaultPrivacyPolicy</code> for a zero-config compliance page:
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`// app/privacy/page.tsx
+'use client';
+import { useDefaultPrivacyPolicy, PolicyPage } from '@tantainnovative/ndpr-toolkit';
+
+export default function PrivacyPage() {
+  const { policy } = useDefaultPrivacyPolicy({
+    orgInfo: {
+      name: 'Acme Nigeria Ltd',
+      email: 'privacy@acme.ng',
+      website: 'https://acme.ng',
+      address: '12 Marina, Lagos',
+    },
+  });
+
+  return policy ? <PolicyPage policy={policy} /> : null;
+}`}</code>
+        </pre>
+
+        <h3 className="text-lg font-semibold text-foreground mt-8 mb-3">Render mode: shadow vs inline</h3>
+        <div className="overflow-x-auto mb-6">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-muted">
+                <th className="border border-border px-4 py-2 text-left font-semibold text-foreground">mode</th>
+                <th className="border border-border px-4 py-2 text-left font-semibold text-foreground">Renders</th>
+                <th className="border border-border px-4 py-2 text-center font-semibold text-foreground">SEO</th>
+                <th className="border border-border px-4 py-2 text-center font-semibold text-foreground">Host CSS isolation</th>
+                <th className="border border-border px-4 py-2 text-left font-semibold text-foreground">Best for</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 text-foreground"><code className="bg-muted px-1 rounded">&apos;shadow&apos;</code> (default)</td>
+                <td className="border border-border px-4 py-2 text-foreground">Inside Shadow DOM, opinionated styles included</td>
+                <td className="border border-border px-4 py-2 text-center text-foreground">❌</td>
+                <td className="border border-border px-4 py-2 text-center text-foreground">✅ structural</td>
+                <td className="border border-border px-4 py-2 text-foreground">In-app embeds — drop-in widget</td>
+              </tr>
+              <tr className="bg-muted/30">
+                <td className="border border-border px-4 py-2 text-foreground"><code className="bg-muted px-1 rounded">&apos;inline&apos;</code></td>
+                <td className="border border-border px-4 py-2 text-foreground">Directly in host doc body</td>
+                <td className="border border-border px-4 py-2 text-center text-foreground">✅</td>
+                <td className="border border-border px-4 py-2 text-center text-foreground">⚠️ consumer styles</td>
+                <td className="border border-border px-4 py-2 text-foreground">SSR&apos;d <code className="bg-muted px-1 rounded">/privacy</code> pages, public legal pages</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">Inline mode + typography pairing</h3>
+        <p className="text-muted-foreground mb-4">
+          Inline mode defaults <code className="bg-muted px-1 py-0.5 rounded">includeStyles: false</code> so bare element selectors don&apos;t leak. Pair with your own typography library:
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`// Tailwind + @tailwindcss/typography
+<article className="prose prose-slate dark:prose-invert max-w-3xl mx-auto">
+  <PolicyPage policy={policy} mode="inline" />
+</article>
+
+// shadcn-ui Card
+<Card>
+  <CardContent className="prose dark:prose-invert">
+    <PolicyPage policy={policy} mode="inline" />
+  </CardContent>
+</Card>
+
+// Raw CSS (target the data attribute)
+[data-ndpr-component="policy-page"] article {
+  font-family: Georgia, serif;
+  line-height: 1.7;
+}`}</code>
+        </pre>
+
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">Theme: light / dark / auto</h3>
+        <p className="text-muted-foreground mb-4">
+          Theme defaults to <code className="bg-muted px-1 py-0.5 rounded">&apos;light&apos;</code> (added in v3.4.1). Shadow DOM does <strong>not</strong> isolate{' '}
+          <code className="bg-muted px-1 py-0.5 rounded">prefers-color-scheme</code>, so before 3.4.1 every visitor on macOS dark mode saw a dark policy bleed through any light-only host. Default light is safer for embedded widgets — opt in to OS-driven theming when you actively want it:
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`// Default — no prefers-color-scheme: dark block emitted.
+<PolicyPage policy={policy} />
+
+// Force dark.
+<PolicyPage policy={policy} options={{ theme: 'dark' }} />
+
+// Follow OS preference.
+<PolicyPage policy={policy} options={{ theme: 'auto' }} />`}</code>
+        </pre>
+
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">TOC anchor links work in Shadow DOM</h3>
+        <p className="text-muted-foreground mb-4">
+          The exported policy includes a table-of-contents nav with intra-document anchors. Browser default
+          anchor behaviour can&apos;t traverse Shadow DOM boundaries, so as of v3.5.1 PolicyPage installs a click
+          delegate on the shadow root that intercepts these clicks and scrolls the matching{' '}
+          <code className="bg-muted px-1 py-0.5 rounded">{`<section>`}</code> into view. No consumer code required.
+        </p>
+
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">Custom CSS injection</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`// Brand without leaving shadow mode.
+<PolicyPage
+  policy={policy}
+  options={{
+    customCSS: ':root { --color-accent: #1d4ed8; --max-width: 64rem; }',
+  }}
+/>`}</code>
+        </pre>
+      </section>
+
       <section id="best-practices" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Best Practices</h2>
         <ul className="space-y-3 text-muted-foreground leading-relaxed list-disc pl-6">

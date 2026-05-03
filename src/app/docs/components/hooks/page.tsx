@@ -213,9 +213,44 @@ function BreachManager() {
           </div>
 
           <div className="bg-card border border-border p-6 rounded-xl">
+            <h3 className="text-xl font-bold mb-2">useDefaultPrivacyPolicy</h3>
+            <p className="text-muted-foreground mb-4">
+              The recommended hook for the common case: generates an NDPA-compliant policy from your{' '}
+              <code className="bg-muted px-1 py-0.5 rounded">orgInfo</code> automatically. Returns a non-null{' '}
+              <code className="bg-muted px-1 py-0.5 rounded">policy</code> on the first useful render with{' '}
+              <code className="bg-muted px-1 py-0.5 rounded">autoGenerate: true</code> (the default, added in v3.4.0).
+            </p>
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useDefaultPrivacyPolicy, PolicyPage } from '@tantainnovative/ndpr-toolkit';
+
+function PrivacyPage() {
+  const { policy } = useDefaultPrivacyPolicy({
+    orgInfo: {
+      name: 'Acme Nigeria Ltd',
+      email: 'privacy@acme.ng',
+      website: 'https://acme.ng',
+      address: '12 Marina, Lagos',
+    },
+  });
+
+  return policy ? <PolicyPage policy={policy} /> : null;
+}`}</code></pre>
+
+            <p className="text-muted-foreground mb-2 mt-4">Options:</p>
+            <ul className="list-disc pl-6 text-sm text-muted-foreground mb-4 space-y-1">
+              <li><code className="bg-muted px-1 py-0.5 rounded">orgInfo</code> — name / email / website / address / industry / dpoName / dpoEmail. Maps directly to template variables.</li>
+              <li><code className="bg-muted px-1 py-0.5 rounded">autoGenerate</code> — defaults to <code className="bg-muted px-1 py-0.5 rounded">true</code>. Set <code className="bg-muted px-1 py-0.5 rounded">false</code> to retain manual control via <code className="bg-muted px-1 py-0.5 rounded">selectTemplate</code> / <code className="bg-muted px-1 py-0.5 rounded">generatePolicy</code>.</li>
+              <li><code className="bg-muted px-1 py-0.5 rounded">persist</code> — defaults to <code className="bg-muted px-1 py-0.5 rounded">true</code> (writes to localStorage). Pass <code className="bg-muted px-1 py-0.5 rounded">false</code> for an in-memory no-op adapter. <em>Renamed from <code className="bg-muted px-1 py-0.5 rounded">useLocalStorage</code> in v3.5.0; the old name still works as a deprecated alias and will be removed in 4.0.</em></li>
+              <li><code className="bg-muted px-1 py-0.5 rounded">adapter</code> — pluggable storage adapter. Takes precedence over <code className="bg-muted px-1 py-0.5 rounded">persist</code>.</li>
+            </ul>
+          </div>
+
+          <div className="bg-card border border-border p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-2">usePrivacyPolicy</h3>
             <p className="text-muted-foreground mb-4">
-              A hook for managing privacy policy generation and customization.
+              The lower-level hook for managing privacy policy generation and customization. Use this when
+              you need explicit control over template selection, variable values, and section toggling — for
+              example when building a policy editor UI. For the common drop-in case prefer{' '}
+              <code className="bg-muted px-1 py-0.5 rounded">useDefaultPrivacyPolicy</code> above.
             </p>
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
 
