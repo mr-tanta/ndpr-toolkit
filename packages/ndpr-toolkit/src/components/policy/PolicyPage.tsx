@@ -111,7 +111,33 @@ export const PolicyPage: React.FC<PolicyPageProps> = ({
     const shadow = host.shadowRoot ?? host.attachShadow({ mode: 'open' });
     shadow.innerHTML = shadowHtml;
 
+    // ── TOC anchor handling (v3.5.1 fix)
+    //
+    // Browser default behaviour for `<a href="#section">` is to look up the
+    // target in the LIGHT DOM only. The exported policy lives inside a
+    // Shadow DOM root, so the section anchors are invisible to the default
+    // scroll-into-view machinery — TOC clicks do nothing without help.
+    //
+    // Intercept clicks on intra-document anchor links inside the shadow
+    // root, find the target by id within the same shadow tree, and scroll
+    // it into view. Cross-document and external links pass through.
+    const handleAnchorClick = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      const anchor = target.closest('a[href]') as HTMLAnchorElement | null;
+      if (!anchor) return;
+      const href = anchor.getAttribute('href') ?? '';
+      if (!href.startsWith('#') || href.length < 2) return;
+      const id = decodeURIComponent(href.slice(1));
+      const dest = shadow.getElementById(id);
+      if (!dest) return;
+      event.preventDefault();
+      dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    shadow.addEventListener('click', handleAnchorClick);
+
     return () => {
+      shadow.removeEventListener('click', handleAnchorClick);
       if (host.shadowRoot) host.shadowRoot.innerHTML = '';
     };
   }, [policy, options, mode]);

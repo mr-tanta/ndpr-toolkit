@@ -41,6 +41,9 @@
     "examples/**/*",
     "test-installation/**/*",
     "packages/create-ndpr/**/*",
-    "packages/ndpr-recipes/**/*"
+    "packages/ndpr-recipes/**/*",
+    "packages/ndpr-toolkit/**/*",
+    "phase1/**/*",
+    "scripts/**/*"
   ]
 }

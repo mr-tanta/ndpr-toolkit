@@ -94,4 +94,76 @@ describe('PolicyPage (B1: no global CSS leak)', () => {
       expect(host.querySelectorAll('style').length).toBeGreaterThan(0);
     });
   });
+
+  describe('TOC anchor links inside Shadow DOM (v3.5.1 fix)', () => {
+    // Browser default <a href="#x"> behaviour can't traverse shadow boundaries.
+    // PolicyPage installs a click delegate on the shadow root that intercepts
+    // intra-document anchors and scrolls the target into view.
+
+    it('scrolls the matching shadow-root section into view when a TOC link is clicked', () => {
+      const { container } = render(<PolicyPage policy={samplePolicy} />);
+      const host = container.querySelector(
+        '[data-ndpr-component="policy-page"]',
+      ) as HTMLElement;
+      const shadow = host.shadowRoot;
+      expect(shadow).not.toBeNull();
+
+      // The exported HTML uses slugified section titles as anchor ids.
+      // sample policy has section "Introduction" → id "introduction".
+      const target = shadow!.getElementById('introduction');
+      expect(target).not.toBeNull();
+
+      // Spy on scrollIntoView (jsdom doesn't implement it; we add a stub).
+      const scrollSpy = jest.fn();
+      (target as HTMLElement & { scrollIntoView: typeof scrollSpy }).scrollIntoView = scrollSpy;
+
+      const tocLink = shadow!.querySelector('a[href="#introduction"]') as HTMLAnchorElement;
+      expect(tocLink).not.toBeNull();
+      // Use a real bubbling MouseEvent so the click delegate on the shadow
+      // root receives it via standard event flow.
+      tocLink.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+
+      expect(scrollSpy).toHaveBeenCalledTimes(1);
+      expect(scrollSpy).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+    });
+
+    it('ignores external and cross-document links', () => {
+      const { container } = render(<PolicyPage policy={samplePolicy} />);
+      const host = container.querySelector(
+        '[data-ndpr-component="policy-page"]',
+      ) as HTMLElement;
+      const shadow = host.shadowRoot!;
+
+      // Inject a non-anchor link to verify the handler doesn't preventDefault.
+      const externalLink = document.createElement('a');
+      externalLink.href = 'https://example.com/page';
+      externalLink.textContent = 'External';
+      shadow.appendChild(externalLink);
+
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+      externalLink.dispatchEvent(event);
+      expect(preventDefaultSpy).not.toHaveBeenCalled();
+    });
+
+    it('handles bare hash links pointing at unknown ids gracefully', () => {
+      const { container } = render(<PolicyPage policy={samplePolicy} />);
+      const host = container.querySelector(
+        '[data-ndpr-component="policy-page"]',
+      ) as HTMLElement;
+      const shadow = host.shadowRoot!;
+
+      const bogus = document.createElement('a');
+      bogus.href = '#nope-not-a-real-section';
+      bogus.textContent = 'Broken';
+      shadow.appendChild(bogus);
+
+      const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+      const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+      // Should NOT throw, should NOT preventDefault — let the browser do
+      // whatever it would naturally do with a missing fragment target.
+      expect(() => bogus.dispatchEvent(event)).not.toThrow();
+      expect(preventDefaultSpy).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -1,8 +1,13 @@
+import type { Format, Options } from 'tsup';
 import { defineConfig } from 'tsup';
 
-const sharedOptions = {
-  format: ['cjs', 'esm'] as const,
-  target: 'es2018' as const,
+// Use a mutable typed object so each split config below extends cleanly
+// without tripping `readonly` incompatibilities under strict TS. The
+// next.config.ts typecheck step in CI scans this file even though tsup
+// only consumes it at build time.
+const sharedOptions: Options = {
+  format: ['cjs', 'esm'] satisfies Format[],
+  target: 'es2018',
   dts: false,
   splitting: true,
   sourcemap: true,
