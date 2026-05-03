@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.5.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.0...v3.5.1) (2026-05-03)
+
+
+### Bug Fixes
+
+* **ndpr-toolkit:** TOC anchor links + unblock docs site deploy ([c2f977b](https://github.com/mr-tanta/ndpr-toolkit/commit/c2f977b6be423f633860b80331a6ee4de1dcfaf0))
+
 ## [3.5.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.4.1...v3.5.0) (2026-05-03)
 
 

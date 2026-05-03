@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "description": "React and TypeScript compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
