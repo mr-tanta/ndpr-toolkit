@@ -431,7 +431,7 @@ function buildCrossBorderTransfers(
   );
   let transferDetail = '';
   if (processors.length > 0) {
-    const countries = [...new Set(processors.map((p) => p.country))];
+    const countries = Array.from(new Set(processors.map((p) => p.country)));
     transferDetail =
       `\n\nWe currently transfer personal data to the following jurisdictions: ` +
       `${countries.join(', ')}. Each transfer is subject to the safeguards described above.`;

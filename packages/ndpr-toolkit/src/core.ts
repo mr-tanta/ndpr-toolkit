@@ -1,8 +1,24 @@
 /**
- * Core module — types and utilities only.
- * Zero UI dependencies. Works in any JavaScript/TypeScript environment.
+ * Core module — cross-cutting types, utilities, locales, and the NDPRProvider.
  *
- * Usage: import { validateConsent, LawfulBasis } from '@tantainnovative/ndpr-toolkit/core'
+ * What this entry contains:
+ * - All NDPA-related TypeScript types (no runtime cost in JS).
+ * - Pure validators / generators (validateConsent, generatePolicyText, etc.).
+ * - Locale data (defaultLocale, yorubaLocale, ...) and the mergeLocale helper.
+ * - NDPRProvider plus its `useNDPRConfig` / `useNDPRLocale` hooks. These
+ *   pull in React Context — they are *client-only* and bring React into the
+ *   import graph wherever this entry is consumed.
+ *
+ * RSC guidance:
+ * Importing `validateConsent` (or any pure utility above) from a Server
+ * Component file is fine — bundlers tree-shake the Provider out of the
+ * server bundle as long as you do not also call the hooks. A truly pure
+ * `@tantainnovative/ndpr-toolkit/server` subpath (zero React surface) is
+ * planned for v3.5; see FINLAB feedback Suggestion S5.
+ *
+ * @example
+ *   import { validateConsent } from '@tantainnovative/ndpr-toolkit/core';
+ *   import { NDPRProvider } from '@tantainnovative/ndpr-toolkit'; // root entry
  */
 
 // All types
