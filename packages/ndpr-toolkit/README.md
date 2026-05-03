@@ -2,16 +2,37 @@
 
 <div align="center">
 
-![NDPR Toolkit Logo](https://via.placeholder.com/200x200?text=NDPR+Toolkit)
+<img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.4.0/public/icon-blue.png" alt="NDPR Toolkit" width="160" height="160" />
 
 A comprehensive enterprise solution for implementing NDPA-compliant features in web applications, aligned with the Nigeria Data Protection Act (NDPA) 2023 and its subsidiary regulations.
 
 [![npm version](https://img.shields.io/npm/v/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
-[![license](https://img.shields.io/npm/l/@tantainnovative/ndpr-toolkit.svg)](https://github.com/tantainnovative/ndpr-toolkit/blob/main/LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-4.9%2B-blue)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18.0%2B-blue)](https://reactjs.org/)
+[![npm downloads](https://img.shields.io/npm/dm/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
+[![license](https://img.shields.io/npm/l/@tantainnovative/ndpr-toolkit.svg)](https://github.com/mr-tanta/ndpr-toolkit/blob/main/LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-blue)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18%20%7C%2019-blue)](https://reactjs.org/)
 
 </div>
+
+## What's new in 3.4.0
+
+3.4.0 is the [integration-feedback response release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0). Three things are worth knowing if you're upgrading:
+
+1. **Components ship styled defaults via a real stylesheet — Tailwind is no longer required.** Add one import in your app entry and every component renders correctly:
+   ```ts
+   // app/layout.tsx (Next.js) or src/main.tsx (Vite/CRA)
+   import "@tantainnovative/ndpr-toolkit/styles";
+   ```
+   Defaults are driven by `--ndpr-*` CSS custom properties (override at any level), with light/dark mode via `prefers-color-scheme` and an explicit `data-theme="dark"` opt-in. If you want to bring your own design system, import from `@tantainnovative/ndpr-toolkit/unstyled` instead.
+
+2. **New `/server` subpath** — RSC-safe pure-logic surface (validators, generators, scoring, locales, adapters) with **zero React in the import graph**. Safe to call from a Next.js Server Component, Edge Function, NestJS controller, or Cloudflare Worker:
+   ```ts
+   import { validateConsent, generatePolicyText } from '@tantainnovative/ndpr-toolkit/server';
+   ```
+
+3. **`<ConsentBanner />` has a new `variant` prop** — `'bar'` (default), `'card'` (floating bounded card), or `'modal'` (centered with backdrop). Pair with `position` for placement.
+
+Backward-compatible at the component API level — existing `classNames` slot maps, ARIA contracts, and prop shapes are unchanged. See the [GitHub release notes](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0) for the full upgrade guide.
 
 ## Overview
 
@@ -91,16 +112,48 @@ bun add @tantainnovative/ndpr-toolkit
 npm install @tantainnovative/ndpr-toolkit
 ```
 
+Then add the stylesheet import once in your app entry so components render with their default styling:
+
+```ts
+// app/layout.tsx (Next.js App Router) or src/main.tsx (Vite/CRA)
+import "@tantainnovative/ndpr-toolkit/styles";
+```
+
+Skip this step only if you're using the `/unstyled` entry — see [Import Styles](#import-styles) below.
+
 ## Import Styles
 
-The toolkit supports three import styles so you can pull in only what your application needs:
+The toolkit supports four import styles so you can pull in only what your application needs:
 
-### 1. Lightweight (Core) — Types and Utilities Only
+### 1. Server / Edge — Strictly Pure Logic, Zero React
 
-No React dependency. Works in any JavaScript or TypeScript environment — Node.js servers, edge functions, CLI tools, or shared validation libraries.
+The recommended entry for backend and serverless environments. Safe to import from a Next.js Server Component, Edge Function, NestJS controller, Cloudflare Worker, or any non-browser runtime — **no React lands in your server bundle.**
 
 ```ts
 import {
+  validateConsent,
+  formatDSRRequest,
+  assessDPIARisk,
+  calculateBreachSeverity,
+  generatePolicyText,
+  findUnfilledTokens,
+  exportHTML,
+  exportPDF,
+  getComplianceScore,
+} from '@tantainnovative/ndpr-toolkit/server';
+
+import type { DSRRequest, BreachReport, PrivacyPolicy } from '@tantainnovative/ndpr-toolkit/server';
+```
+
+Build-output guards in CI assert this entry never carries a `"use client"` directive and never imports `react`/`react-dom` — the RSC-safety contract is structurally enforced.
+
+### 2. Lightweight (Core) — Types, Utilities, and the Provider
+
+A broader entry that adds the `NDPRProvider` React Context on top of the pure-logic surface. Use when you want types and validators alongside the provider in the same import.
+
+```ts
+import {
+  NDPRProvider,
   validateConsent,
   assessDPIARisk,
   calculateBreachSeverity,
@@ -113,7 +166,7 @@ import {
 import type { ConsentOption, BreachReport, CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/core';
 ```
 
-### 2. Hooks Only — React State Management Without UI
+### 3. Hooks Only — React State Management Without UI
 
 Requires React as a peer dependency but ships zero UI components. Ideal when you need compliance logic with your own custom UI.
 
@@ -130,7 +183,7 @@ import {
 } from '@tantainnovative/ndpr-toolkit/hooks';
 ```
 
-### 3. Full UI — Components, Hooks, and Utilities
+### 4. Full UI — Components, Hooks, and Utilities
 
 The default import path. Ships everything: React components, hooks, utilities, and types.
 
@@ -169,21 +222,26 @@ import { ROPAManager, useROPA } from '@tantainnovative/ndpr-toolkit/ropa';
 
 ## Import Paths Reference
 
-| Path | Contents | React Required |
-|------|----------|:--------------:|
-| `@tantainnovative/ndpr-toolkit` | All components, hooks, utilities, types | Yes |
-| `@tantainnovative/ndpr-toolkit/core` | Types and utility functions only | No |
-| `@tantainnovative/ndpr-toolkit/hooks` | All React hooks and related types | Yes |
-| `@tantainnovative/ndpr-toolkit/consent` | ConsentBanner, ConsentManager, ConsentStorage, useConsent | Yes |
-| `@tantainnovative/ndpr-toolkit/dsr` | DSRRequestForm, DSRDashboard, DSRTracker, useDSR | Yes |
-| `@tantainnovative/ndpr-toolkit/dpia` | DPIAQuestionnaire, DPIAReport, StepIndicator, useDPIA | Yes |
-| `@tantainnovative/ndpr-toolkit/breach` | BreachReportForm, BreachRiskAssessment, BreachNotificationManager, RegulatoryReportGenerator, useBreach | Yes |
-| `@tantainnovative/ndpr-toolkit/policy` | PolicyGenerator, PolicyPreview, PolicyExporter, usePrivacyPolicy | Yes |
-| `@tantainnovative/ndpr-toolkit/lawful-basis` | LawfulBasisTracker, useLawfulBasis | Yes |
-| `@tantainnovative/ndpr-toolkit/cross-border` | CrossBorderTransferManager, useCrossBorderTransfer | Yes |
-| `@tantainnovative/ndpr-toolkit/ropa` | ROPAManager, useROPA | Yes |
-| `@tantainnovative/ndpr-toolkit/unstyled` | All components without default styles | Yes |
-| `@tantainnovative/ndpr-toolkit/styles` | Default CSS stylesheet | No |
+| Path | Contents | React Required | RSC-safe |
+|------|----------|:--------------:|:--------:|
+| `@tantainnovative/ndpr-toolkit` | All components, hooks, utilities, types | Yes | No |
+| `@tantainnovative/ndpr-toolkit/server` | Pure validators, generators, scoring, locales, adapters, types — **zero React in import graph** | No | **Yes** |
+| `@tantainnovative/ndpr-toolkit/core` | Types, utility functions, locales, NDPRProvider | Optional | Partial[^1] |
+| `@tantainnovative/ndpr-toolkit/hooks` | All React hooks and related types | Yes | No |
+| `@tantainnovative/ndpr-toolkit/consent` | ConsentBanner, ConsentManager, ConsentStorage, useConsent | Yes | No |
+| `@tantainnovative/ndpr-toolkit/dsr` | DSRRequestForm, DSRDashboard, DSRTracker, useDSR | Yes | No |
+| `@tantainnovative/ndpr-toolkit/dpia` | DPIAQuestionnaire, DPIAReport, StepIndicator, useDPIA | Yes | No |
+| `@tantainnovative/ndpr-toolkit/breach` | BreachReportForm, BreachRiskAssessment, BreachNotificationManager, RegulatoryReportGenerator, useBreach | Yes | No |
+| `@tantainnovative/ndpr-toolkit/policy` | PolicyGenerator, PolicyPreview, PolicyExporter, PolicyPage, usePrivacyPolicy, useDefaultPrivacyPolicy | Yes | No |
+| `@tantainnovative/ndpr-toolkit/lawful-basis` | LawfulBasisTracker, useLawfulBasis | Yes | No |
+| `@tantainnovative/ndpr-toolkit/cross-border` | CrossBorderTransferManager, useCrossBorderTransfer | Yes | No |
+| `@tantainnovative/ndpr-toolkit/ropa` | ROPAManager, useROPA | Yes | No |
+| `@tantainnovative/ndpr-toolkit/adapters` | Storage adapters (localStorage, sessionStorage, cookie, api, memory, composeAdapters) | No | Yes |
+| `@tantainnovative/ndpr-toolkit/presets` | Higher-level presets (NDPRConsent, NDPRSubjectRights, NDPRPrivacyPolicy, etc.) | Yes | No |
+| `@tantainnovative/ndpr-toolkit/unstyled` | Components with `unstyled` defaulted to `true` — bring your own design system | Yes | No |
+| `@tantainnovative/ndpr-toolkit/styles` | Default CSS stylesheet — `import "@tantainnovative/ndpr-toolkit/styles"` once in your app entry | No | N/A (CSS) |
+
+[^1]: `/core` re-exports `NDPRProvider` for backward compatibility, which pulls in React. For strictly server-side imports use `/server` instead — it carries the same pure validators and generators with no React surface.
 
 ## Quick Start
 

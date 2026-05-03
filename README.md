@@ -5,13 +5,15 @@
 [![npm version](https://img.shields.io/npm/v/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![npm downloads](https://img.shields.io/npm/dm/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-3178C6.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-788%20passing-brightgreen.svg)](#)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-3178C6.svg)](https://www.typescriptlang.org/)
+[![Tests](https://img.shields.io/badge/tests-1098%20passing-brightgreen.svg)](#)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
 v3 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, and a **compliance score engine** — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
 
-**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)**
+**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.4.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0)**
+
+> **What's new in 3.4.0:** components now ship styled defaults via a real stylesheet — Tailwind is no longer required. Add `import "@tantainnovative/ndpr-toolkit/styles";` once in your app entry. Plus a new `/server` subpath for RSC-safe pure-logic imports (validators, generators, scoring) with zero React in the import graph. Backward-compatible at the component API level. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0).
 
 <p align="center">
   <img src="public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
@@ -76,7 +78,16 @@ That's it. NDPA-compliant consent with server-side persistence in under 20 lines
 pnpm add @tantainnovative/ndpr-toolkit
 ```
 
-Install UI peer dependencies (only needed for styled components):
+Add the stylesheet import once in your app entry so components render with default styles:
+
+```ts
+// app/layout.tsx (Next.js App Router) or src/main.tsx (Vite/CRA)
+import "@tantainnovative/ndpr-toolkit/styles";
+```
+
+The stylesheet is opinionated but token-driven — override any `--ndpr-*` CSS custom property to theme. Skip this import only if you're using `/unstyled` to bring your own design system.
+
+Install UI peer dependencies (only needed if you use the higher-level Radix-based components from `/presets`):
 
 ```bash
 pnpm add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
@@ -137,12 +148,27 @@ import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
 const { hasConsent, acceptAll, rejectAll, shouldShowBanner } = useConsent({ options });
 ```
 
-### Core — no React
+### Server — strictly RSC-safe, zero React
 
-Pure TypeScript utilities and validators. Works anywhere — Node, edge functions, Deno.
+The recommended entry for backend and serverless contexts. Pure validators, generators, scoring, locales, and adapters — no React in the import graph. Safe to call from a Next.js Server Component, Edge Function, NestJS controller, or Cloudflare Worker.
 
 ```ts
-import { validateConsent, getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
+import {
+  validateConsent,
+  generatePolicyText,
+  exportHTML,
+  getComplianceScore,
+} from '@tantainnovative/ndpr-toolkit/server';
+```
+
+Build-output guard tests assert this entry never carries a `"use client"` directive and never imports `react` — the RSC-safety contract is structurally enforced.
+
+### Core — types + utilities + Provider
+
+Adds the `NDPRProvider` React Context on top of `/server`'s pure surface. Use when you want types and validators alongside the provider in the same import.
+
+```ts
+import { NDPRProvider, validateConsent, getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
 ```
 
 ### Adapters — pluggable storage
@@ -312,37 +338,49 @@ Every module has an interactive demo. No signup, no setup — try them instantly
 
 ## Styling & Customization
 
-Every component supports three modes:
+As of 3.4.0, components ship semantic BEM-style class names (`.ndpr-consent-banner`, `.ndpr-form-field__input`, etc.) backed by a real stylesheet. **Tailwind is no longer required** — the package works in any host so long as you import the stylesheet once.
 
-**Default (Tailwind CSS):**
+**Default — works in any host:**
+```ts
+// Once in your app entry
+import "@tantainnovative/ndpr-toolkit/styles";
+```
 ```tsx
-<ConsentBanner options={options} onSave={handleSave} />
+<ConsentBanner options={options} onSave={handleSave} variant="card" position="bottom" />
 ```
 
-**Override specific sections:**
+**Theme via CSS custom properties:**
+```css
+/* Override any --ndpr-* token at :root, [data-theme="dark"], or scoped to a parent. */
+:root {
+  --ndpr-primary: 22 163 74;          /* RGB triplet — green-600 */
+  --ndpr-radius: 1rem;
+  --ndpr-font-sans: "Inter", system-ui, sans-serif;
+}
+```
+
+Light + dark mode auto-switch via `prefers-color-scheme`, plus an explicit opt-in via `data-theme="dark"` or `.dark` on any ancestor.
+
+**Per-instance override via slot map:**
 ```tsx
 <ConsentBanner
   options={options}
   onSave={handleSave}
-  classNames={{
-    root: "fixed bottom-0 inset-x-0 bg-white shadow-xl p-6",
-    acceptButton: "bg-green-600 text-white px-6 py-2 rounded-full",
-  }}
-/>
-```
-
-**Fully unstyled (BYO CSS — Bootstrap, CSS Modules, vanilla):**
-```tsx
-<ConsentBanner
-  options={options}
-  onSave={handleSave}
-  unstyled
   classNames={{
     root: "my-consent-banner",
     acceptButton: "btn btn-primary",
+    rejectButton: "btn btn-secondary",
   }}
 />
 ```
+
+**Bring your own design system entirely:**
+```tsx
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/unstyled';
+
+<ConsentBanner options={options} onSave={handleSave} classNames={{ /* yours */ }} />
+```
+The `/unstyled` entry defaults `unstyled` to `true`, stripping every `.ndpr-*` class so your CSS applies unfiltered. ARIA, focus management, and `data-ndpr-component` attributes are preserved (those are part of the contract, not styling).
 
 Each component exports its `ClassNames` TypeScript interface for autocomplete. Full reference in the [docs](https://ndprtoolkit.com.ng/docs/guides/styling-customization).
 
@@ -350,22 +388,26 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 
 ## Available Import Paths
 
-| Path | What you get | Dependencies |
-|------|-------------|--------------|
-| `.` (default) | Everything | All peer deps |
-| `/core` | Types + utility functions | `tslib` |
-| `/hooks` | React hooks for all 8 modules | `react` |
-| `/presets` | Zero-config preset components | `react`, Radix, Tailwind |
-| `/adapters` | Storage adapters | none |
-| `/consent` | Consent components + `Consent.*` compound API | `react`, Radix, Tailwind |
-| `/dsr` | DSR components + hook | `react`, Radix, Tailwind |
-| `/dpia` | DPIA components + hook | `react`, Radix, Tailwind |
-| `/breach` | Breach components + hook | `react`, Radix, Tailwind |
-| `/policy` | Policy components + hook | `react`, Radix, Tailwind, `jspdf` |
-| `/lawful-basis` | Lawful basis component + hook | `react`, Radix, Tailwind |
-| `/cross-border` | Cross-border component + hook | `react`, Radix, Tailwind |
-| `/ropa` | ROPA component + hook | `react`, Radix, Tailwind |
-| `/unstyled` | Unstyled consent primitives | `react` |
+| Path | What you get | Dependencies | RSC-safe |
+|------|-------------|--------------|:--------:|
+| `.` (default) | Everything | `react`, optional Radix peers for `/presets` | No |
+| `/server` | **Pure validators, generators, scoring, locales, adapters, types — zero React** | `tslib` | **Yes** |
+| `/core` | Types, utility functions, NDPRProvider | `react`[^core] | Partial |
+| `/hooks` | React hooks for all 8 modules | `react` | No |
+| `/presets` | Zero-config preset components | `react`, Radix peers | No |
+| `/adapters` | Storage adapters (localStorage, sessionStorage, cookie, api, memory, composeAdapters) | none | Yes |
+| `/consent` | ConsentBanner, ConsentManager, `Consent.*` compound API, useConsent | `react` | No |
+| `/dsr` | DSR components + hook | `react` | No |
+| `/dpia` | DPIA components + hook | `react` | No |
+| `/breach` | Breach components + hook | `react` | No |
+| `/policy` | Policy components + hook | `react`, `jspdf`, `docx` (optional) | No |
+| `/lawful-basis` | Lawful basis component + hook | `react` | No |
+| `/cross-border` | Cross-border component + hook | `react` | No |
+| `/ropa` | ROPA component + hook | `react` | No |
+| `/unstyled` | All published components with `unstyled` defaulted to `true` | `react` | No |
+| `/styles` | Default CSS stylesheet — `import "@tantainnovative/ndpr-toolkit/styles"` once in your app entry | none | N/A |
+
+[^core]: `/core` re-exports the React `NDPRProvider` for backward compatibility. For strictly server-side imports use `/server` — it carries the same pure validators with no React surface.
 
 ---
 
