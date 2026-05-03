@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.4.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.3.1...v3.4.0) (2026-05-03)
+
+
+### Features
+
+* **ndpr-toolkit:** complete BEM migration for all remaining components (3.5.x) ([052827a](https://github.com/mr-tanta/ndpr-toolkit/commit/052827a1c10390998c681d222070e797aa75acde))
+* **ndpr-toolkit:** ship /server subpath for RSC-safe pure-logic imports ([5dbb24d](https://github.com/mr-tanta/ndpr-toolkit/commit/5dbb24dcd88235a4e184ef8cca7fdf105c35934d))
+* **ndpr-toolkit:** styled-defaults UI strategy (B4 + S1) ([b875d3b](https://github.com/mr-tanta/ndpr-toolkit/commit/b875d3b66ad36a9df8b12431e1d95f9257537db1))
+
+
+### Bug Fixes
+
+* **ndpr-toolkit:** auto-init useDefaultPrivacyPolicy + isolate PolicyPage CSS ([550e015](https://github.com/mr-tanta/ndpr-toolkit/commit/550e015f1011d975dea90e417cd699ee2fb9187d))
+* **ndpr-toolkit:** packaging — style export, CHANGELOG, RSC directives ([d0bf85b](https://github.com/mr-tanta/ndpr-toolkit/commit/d0bf85b6990f02cb4aeb3dbaa448e5d5643cde29))
+* **ndpr-toolkit:** policy templates no longer ship literal placeholders to production ([6c373a8](https://github.com/mr-tanta/ndpr-toolkit/commit/6c373a8dadf21a565539888042e2be36a1ba9510))
+* **ndpr-toolkit:** unblock pnpm build, document core entry honestly ([ab2f5d7](https://github.com/mr-tanta/ndpr-toolkit/commit/ab2f5d7a031300e11180e093e9b3c14b793f957a))
+* **ndpr-toolkit:** use direct localStorage check to detect rehydration race ([df81d9b](https://github.com/mr-tanta/ndpr-toolkit/commit/df81d9b42720b9265964a6f6405f767cf2c152c7))
+
+
+### Documentation
+
+* **phase1:** add v3.3.1 integration feedback triage ([37b4a92](https://github.com/mr-tanta/ndpr-toolkit/commit/37b4a922f5364da8da595ca971785ddabf1a9074))
+* rename external-feedback references for public release ([afb7fa0](https://github.com/mr-tanta/ndpr-toolkit/commit/afb7fa000c2c9d575bf46c26b0271896b49db04e))
+
 ## [3.3.1](https://github.com/tantainnovative/ndpr-toolkit/compare/v3.3.0...v3.3.1) (2026-04-23)
 
 
