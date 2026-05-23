@@ -1,13 +1,14 @@
 import React from 'react';
 import { useDPIA } from '../../hooks/useDPIA';
+import type { DPIAAnswerMap } from '../../hooks/useDPIA';
 import { DPIACompoundContext } from './context';
 import type { DPIASection, DPIAResult } from '../../types/dpia';
 import type { StorageAdapter } from '../../adapters/types';
 
 export interface DPIAProviderProps {
   sections: DPIASection[];
-  initialAnswers?: Record<string, any>;
-  adapter?: StorageAdapter<Record<string, any>>;
+  initialAnswers?: DPIAAnswerMap;
+  adapter?: StorageAdapter<DPIAAnswerMap>;
   storageKey?: string;
   useLocalStorage?: boolean;
   onComplete?: (result: DPIAResult) => void;

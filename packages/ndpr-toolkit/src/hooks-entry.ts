@@ -19,6 +19,7 @@ export type { ProcessingRecord, RecordOfProcessingActivities, ROPASummary } from
 export { useConsent } from './hooks/useConsent';
 export { useDSR } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
+export type { DPIAAnswerMap, DPIAAnswerValue } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';

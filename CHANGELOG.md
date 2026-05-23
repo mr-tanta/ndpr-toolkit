@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.5.5](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.4...v3.5.5) (2026-05-24)
+
+### Features (tests + types)
+
+* **Tests:** 8 new tests for the 72-hour NDPC notification deadline (`useBreach.getBreachesRequiringNotification`) — covers 1h / 24h / 48h / 71.5h / expired / sort-by-urgency / already-notified cases. Test suite now at 1134 passing (up from 1126).
+* **CI:** Tests now run with `--coverage` and the report uploads as a workflow artifact on each run. Thresholds re-set as a ratchet (45% branches, 50% functions, 65% lines/statements — at or just below current to catch regressions, raised in follow-up patches).
+* **types:** `DPIAAnswerMap` and `DPIAAnswerValue` exported from `/` and `/hooks`. `DPIAProvider` and `<NDPRDPIA>` props now use these instead of `Record<string, any>`, restoring callsite type-safety on `onComplete`, `initialAnswers`, and `adapter`.
+
+### Bug Fixes (API contract)
+
+* **useDSR:** `submitRequest` previously declared `Omit<DSRRequest, 'id' | 'status' | 'submittedAt' | 'updatedAt' | 'estimatedCompletionDate'>` — but `submittedAt` and `estimatedCompletionDate` don't exist on `DSRRequest`. Corrected to `Omit<DSRRequest, 'id' | 'status' | 'createdAt' | 'updatedAt' | 'dueDate'>` so the type contract matches the implementation.
+* **useDSR:** `getRequestsByStatus` now accepts `DSRStatus | RequestStatus` instead of only the deprecated `RequestStatus`. Callers using the modern `DSRStatus` literals (e.g. `'awaitingVerification'`) no longer get a type error.
+
 ## [3.5.4](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.3...v3.5.4) (2026-05-23)
 
 ### Features (accessibility)
