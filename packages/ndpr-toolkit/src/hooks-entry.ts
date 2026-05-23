@@ -33,3 +33,7 @@ export type { ComplianceInput, ComplianceReport } from './utils/compliance-score
 
 export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
 export type { UseAdaptivePolicyWizardOptions, UseAdaptivePolicyWizardReturn } from './hooks/useAdaptivePolicyWizard';
+
+// Accessibility primitives
+export { useFocusTrap } from './hooks/useFocusTrap';
+export type { UseFocusTrapOptions } from './hooks/useFocusTrap';

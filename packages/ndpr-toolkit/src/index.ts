@@ -70,6 +70,8 @@ export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
 export { useComplianceScore } from './hooks/useComplianceScore';
 export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
+export { useFocusTrap } from './hooks/useFocusTrap';
+export type { UseFocusTrapOptions } from './hooks/useFocusTrap';
 export type {
   UseAdaptivePolicyWizardOptions,
   UseAdaptivePolicyWizardReturn,

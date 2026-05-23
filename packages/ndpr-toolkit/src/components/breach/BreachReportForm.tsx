@@ -740,9 +740,14 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                 {errors.estimatedAffectedSubjects && <p id="estimatedAffectedSubjects-error" role="alert" className="ndpr-form-field__error">{errors.estimatedAffectedSubjects}</p>}
               </div>
               
-              <fieldset className="md:col-span-2">
+              <fieldset
+                className="md:col-span-2"
+                aria-invalid={!!errors.dataTypes}
+                aria-describedby={errors.dataTypes ? 'dataTypes-error' : undefined}
+              >
                 <legend className='ndpr-form-field__label'>
-                  Types of Data Involved <span className="ndpr-form-field__required">*</span>
+                  Types of Data Involved <span className="ndpr-form-field__required" aria-hidden="true">*</span>
+                  <span className="sr-only">(required)</span>
                 </legend>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {commonDataTypes.map(type => (
@@ -972,11 +977,13 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                         <button
                           type="button"
                           onClick={() => removeAttachment(index)}
-                          className="text-red-500 hover:ndpr-text-destructive"
+                          aria-label={`Remove attachment ${file.name}`}
+                          className="text-red-500 hover:ndpr-text-destructive p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                         >
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                          <svg aria-hidden="true" focusable="false" className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                           </svg>
+                          <span className="sr-only">Remove</span>
                         </button>
                       </li>
                     ))}

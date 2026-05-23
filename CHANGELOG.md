@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.5.4](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.3...v3.5.4) (2026-05-23)
+
+### Features (accessibility)
+
+* **useFocusTrap:** New shared hook that captures `document.activeElement` on activation, traps Tab cycling inside the container, optionally handles Escape, and restores focus on deactivation (WCAG 2.4.3). Exported from `/`, `/hooks`. Drops a previously-missing piece — closing `<ConsentBanner>` now correctly returns focus to whatever triggered it.
+* **prefers-reduced-motion:** Stylesheet now neutralises all toolkit animations (slide-in, fade-in, scale-in) and transitions when the user sets `prefers-reduced-motion: reduce` at the OS level (WCAG 2.3.3). Applies to banners, modals, dashboards, and policy previews.
+
+### Bug Fixes (accessibility)
+
+* **ConsentBanner:** Internal focus trap now restores focus on close (was previously leaving focus at `<body>`). Replaced the duplicated trap implementation with the new shared `useFocusTrap` hook.
+* **BreachReportForm:** Icon-only "remove attachment" button now has an accessible label (`aria-label="Remove attachment {filename}"`) and a 44×44 px touch target. SVG marked `aria-hidden`. WCAG 4.1.2 / 2.5.5.
+* **BreachReportForm:** `dataTypes` fieldset is now properly wired to its error message via `aria-invalid` + `aria-describedby="dataTypes-error"`. Required-asterisk now announced via `<span className="sr-only">(required)</span>` (was visual-only). WCAG 1.3.1 / 3.3.2.
+
 ## [3.5.3](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.2...v3.5.3) (2026-05-23)
 
 ### Bug Fixes (developer experience)
