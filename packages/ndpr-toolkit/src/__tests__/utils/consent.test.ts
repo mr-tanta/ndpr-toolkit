@@ -86,12 +86,16 @@ describe('validateConsent (NDPA Section 26)', () => {
     expect(result.errors).toContain('User interaction status is required');
   });
 
-  it('should pass for consent that is exactly 395 days old (within 13 calendar months)', () => {
-    // 395 days ago is within 13 calendar months (~396 days).
-    // The old 390-day approximation (13 * 30 * 24 * 60 * 60 * 1000) would wrongly reject this.
-    // Proper calendar-month math via setMonth(-13) keeps it valid.
+  it('should pass for consent that is 394 days old (within 13 calendar months)', () => {
+    // 394 days ago is within 13 calendar months (~395–396 days depending on
+    // which months are in play). The old 390-day approximation
+    // (13 * 30 * 24 * 60 * 60 * 1000) would wrongly reject this — calendar
+    // months count for variable lengths and Feb pulls the window forward.
+    // Slack of 1–2 days protects against sub-ms timing variance between the
+    // test's `Date.now()` and the impl's `new Date()`, especially under
+    // coverage instrumentation.
     const now = Date.now();
-    const daysOld = 395;
+    const daysOld = 394;
     const timestamp = now - daysOld * 24 * 60 * 60 * 1000;
 
     const settings: ConsentSettings = {
