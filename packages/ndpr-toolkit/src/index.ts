@@ -68,6 +68,12 @@ export { useDPIA } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
+export { useComplianceScore } from './hooks/useComplianceScore';
+export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
+export type {
+  UseAdaptivePolicyWizardOptions,
+  UseAdaptivePolicyWizardReturn,
+} from './hooks/useAdaptivePolicyWizard';
 
 // Lawful Basis Tracking Components
 export { LawfulBasisTracker } from './components/lawful-basis/LawfulBasisTracker';

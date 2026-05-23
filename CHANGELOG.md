@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.5.3](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.2...v3.5.3) (2026-05-23)
+
+### Bug Fixes (developer experience)
+
+* **dsr:** `<DSRRequestForm>` now throws a clear `[ndpr-toolkit] <DSRRequestForm requestTypes={...}> requires an array of RequestType[]` error when the required prop is missing — previously crashed deep in a minified chunk with `Cannot read properties of undefined (reading 'find')`. Points users at the `<NDPRSubjectRights>` preset for defaults.
+* **dsr:** Default form description updated from "NDPA Part IV, Sections 29-36" to "NDPA Part VI" (matching the 3.5.2 citation fixes).
+
+### Features
+
+* **package.json:** `sideEffects: ["*.css"]` is now declared on both root and workspace manifests — bundlers can reliably tree-shake unused subpaths.
+* **package.json:** `engines.node: ">=18.0.0"` declared. Quiets installer warnings on Node 16 setups and matches React 18/19 requirements.
+* **package.json:** `funding` field added (GitHub Sponsors URL).
+* **keywords:** Added high-intent search terms developers actually type — `ndpa-2023`, `nigeria-compliance`, `data-privacy`, `compliance-tools`, `nitda`, `gdpr`, `gdpr-nigeria`, `africa`, `cookie-banner`, `nextjs`. Improves npm search ranking for queries like "react NDPA" and "cookie consent Nigeria".
+* **root exports:** `useComplianceScore` and `useAdaptivePolicyWizard` now re-exported from the root entry. Previously only on `/hooks` — caused silent discoverability gap when users autocompleted from the bare `@tantainnovative/ndpr-toolkit`.
+
 ## [3.5.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.1...v3.5.2) (2026-05-23)
 
 ### ⚠️ Legal correctness — please re-review generated artifacts

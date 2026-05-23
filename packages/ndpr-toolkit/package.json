@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "3.5.2",
+  "version": "3.5.3",
   "description": "React and TypeScript compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -154,24 +154,33 @@
   "keywords": [
     "ndpa",
     "ndpr",
+    "ndpa-2023",
     "nigeria",
+    "nigeria-compliance",
     "data-protection",
+    "data-privacy",
     "compliance",
+    "compliance-tools",
     "privacy",
+    "privacy-policy",
     "ndpc",
+    "nitda",
+    "gdpr",
+    "gdpr-nigeria",
+    "africa",
     "consent",
+    "cookie-consent",
+    "cookie-banner",
     "dpia",
+    "dsr",
     "data-subject-rights",
     "breach-notification",
     "cross-border-transfer",
     "ropa",
     "lawful-basis",
     "react",
-    "typescript",
-    "privacy-policy",
-    "cookie-consent",
-    "dsr",
-    "compliance-tools"
+    "nextjs",
+    "typescript"
   ],
   "author": {
     "name": "Abraham Esandayinze Tanta",
@@ -187,6 +196,16 @@
     "url": "https://github.com/mr-tanta/ndpr-toolkit/issues"
   },
   "homepage": "https://ndprtoolkit.com.ng",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/mr-tanta"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
   "publishConfig": {
     "access": "public"
   },
