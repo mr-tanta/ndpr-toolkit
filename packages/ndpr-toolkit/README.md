@@ -1,726 +1,479 @@
-# NDPR Toolkit
+# @tantainnovative/ndpr-toolkit
 
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.4.0/public/icon-blue.png" alt="NDPR Toolkit" width="160" height="160" />
-
-A comprehensive enterprise solution for implementing NDPA-compliant features in web applications, aligned with the Nigeria Data Protection Act (NDPA) 2023 and its subsidiary regulations.
+**Compliance infrastructure for the Nigeria Data Protection Act (NDPA) 2023**
 
 [![npm version](https://img.shields.io/npm/v/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![npm downloads](https://img.shields.io/npm/dm/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
-[![license](https://img.shields.io/npm/l/@tantainnovative/ndpr-toolkit.svg)](https://github.com/mr-tanta/ndpr-toolkit/blob/main/LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-blue)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18%20%7C%2019-blue)](https://reactjs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-3178C6.svg)](https://www.typescriptlang.org/)
+[![Tests](https://img.shields.io/badge/tests-1098%20passing-brightgreen.svg)](#)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
-</div>
+v3 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, and a **compliance score engine** — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
 
-## What's new in 3.4.0
+**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.4.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0)**
 
-3.4.0 is the [integration-feedback response release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0). Three things are worth knowing if you're upgrading:
+> **What's new in 3.4.0:** components now ship styled defaults via a real stylesheet — Tailwind is no longer required. Add `import "@tantainnovative/ndpr-toolkit/styles";` once in your app entry. Plus a new `/server` subpath for RSC-safe pure-logic imports (validators, generators, scoring) with zero React in the import graph. Backward-compatible at the component API level. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0).
 
-1. **Components ship styled defaults via a real stylesheet — Tailwind is no longer required.** Add one import in your app entry and every component renders correctly:
-   ```ts
-   // app/layout.tsx (Next.js) or src/main.tsx (Vite/CRA)
-   import "@tantainnovative/ndpr-toolkit/styles";
-   ```
-   Defaults are driven by `--ndpr-*` CSS custom properties (override at any level), with light/dark mode via `prefers-color-scheme` and an explicit `data-theme="dark"` opt-in. If you want to bring your own design system, import from `@tantainnovative/ndpr-toolkit/unstyled` instead.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
+</p>
 
-2. **New `/server` subpath** — RSC-safe pure-logic surface (validators, generators, scoring, locales, adapters) with **zero React in the import graph**. Safe to call from a Next.js Server Component, Edge Function, NestJS controller, or Cloudflare Worker:
-   ```ts
-   import { validateConsent, generatePolicyText } from '@tantainnovative/ndpr-toolkit/server';
-   ```
+---
 
-3. **`<ConsentBanner />` has a new `variant` prop** — `'bar'` (default), `'card'` (floating bounded card), or `'modal'` (centered with backdrop). Pair with `position` for placement.
+## The 3-File Quickstart
 
-Backward-compatible at the component API level — existing `classNames` slot maps, ARIA contracts, and prop shapes are unchanged. See the [GitHub release notes](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0) for the full upgrade guide.
+Three files. Full NDPA consent compliance.
 
-## Overview
+**`app/layout.tsx`**
+```tsx
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
 
-The NDPR Toolkit is an enterprise-grade solution that provides a comprehensive set of React components, hooks, and utilities to help organizations implement NDPA-compliant features in their web applications with minimal development effort. Designed by compliance experts and developers, this toolkit offers a complete solution for privacy policy management, consent handling, data subject rights, breach notification, data protection impact assessments, lawful basis tracking, cross-border data transfers, and records of processing activities.
-
-> **NDPR Toolkit is actively maintained and regularly updated to ensure compliance with the latest Nigerian data protection regulations.**
-
-## Key Features
-
-### Privacy Policy Management
-
-- **PolicyGenerator**: Create customizable, NDPA-compliant privacy policies with an intuitive form interface
-- **PolicyPreview**: Display generated policies with professional formatting and section navigation
-- **PolicyExporter**: Export policies in multiple formats (PDF, HTML, Markdown) with compliance notices
-
-### Consent Management
-
-- **ConsentBanner**: Implement cookie consent banners with customizable appearance and behavior
-- **ConsentManager**: Track and manage user consent preferences across your application
-- **ConsentStorage**: Securely store and retrieve consent records with built-in persistence
-
-### Data Subject Rights (DSR)
-
-- **DSRRequestForm**: Collect and validate data subject requests with comprehensive form validation
-- **DSRTracker**: Monitor the status and progress of data subject requests
-- **DSRDashboard**: Visualize and manage all data subject requests in one place
-
-### Data Protection Impact Assessment (DPIA)
-
-- **DPIAQuestionnaire**: Guide users through the DPIA process with step-by-step questionnaires
-- **DPIAReport**: Generate comprehensive DPIA reports based on questionnaire responses
-- **StepIndicator**: Track progress through multi-step DPIA processes
-
-### Breach Notification
-
-- **BreachReportForm**: Collect essential information about data breaches
-- **BreachRiskAssessment**: Evaluate the risk level of reported breaches
-- **RegulatoryReportGenerator**: Create NDPA-compliant breach notification reports for NDPC submission
-- **BreachNotificationManager**: Manage the entire breach notification workflow
-
-### Lawful Basis Tracking
-
-- **LawfulBasisTracker**: Document and manage lawful basis for each processing activity under NDPA Section 25
-- **useLawfulBasis**: Hook for managing lawful basis state across your application
-- Utility functions for validation, compliance gap assessment, and summary generation
-
-### Cross-Border Data Transfers
-
-- **CrossBorderTransferManager**: Assess and document international data transfers under NDPA Part VI (Sections 41-45)
-- **useCrossBorderTransfer**: Hook for managing transfer assessments and compliance state
-- Utility functions for transfer validation, risk assessment, and NDPC approval checks
-
-### Record of Processing Activities (ROPA)
-
-- **ROPAManager**: Maintain comprehensive processing records as required by NDPA's accountability principle
-- **useROPA**: Hook for managing processing records and generating summaries
-- Utility functions for record validation, CSV export, and compliance gap identification
-
-### Enterprise Features
-
-- **Advanced Conditional Logic**: Support for complex conditional blocks in policy templates
-- **Professional Formatting**: Enterprise-ready formatting for all exported documents
-- **Comprehensive Type System**: Full TypeScript support with detailed interfaces and type definitions
-- **Modular Architecture**: Use only what you need — from lightweight core utilities to full UI components
-- **Accessibility**: WCAG 2.1 AA compliant components for inclusive user experiences
-
-## Installation
-
-```bash
-# Using pnpm (recommended)
-pnpm add @tantainnovative/ndpr-toolkit
-
-# Using bun
-bun add @tantainnovative/ndpr-toolkit
-
-# Using npm
-npm install @tantainnovative/ndpr-toolkit
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <NDPRConsent />
+      </body>
+    </html>
+  );
+}
 ```
 
-Then add the stylesheet import once in your app entry so components render with their default styling:
+**`app/api/consent/route.ts`**
+```ts
+import { NextRequest, NextResponse } from 'next/server';
+
+let store: unknown = null;
+
+export async function GET() { return NextResponse.json(store ?? {}); }
+export async function POST(req: NextRequest) {
+  store = await req.json();
+  return NextResponse.json({ ok: true });
+}
+```
+
+**Persist to your API instead of localStorage:**
+```tsx
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
+import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+
+<NDPRConsent adapter={apiAdapter('/api/consent')} />
+```
+
+That's it. NDPA-compliant consent with server-side persistence in under 20 lines.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
+  <br />
+  <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
+</p>
+
+---
+
+## Install
+
+```bash
+pnpm add @tantainnovative/ndpr-toolkit
+```
+
+Add the stylesheet import once in your app entry so components render with default styles:
 
 ```ts
 // app/layout.tsx (Next.js App Router) or src/main.tsx (Vite/CRA)
 import "@tantainnovative/ndpr-toolkit/styles";
 ```
 
-Skip this step only if you're using the `/unstyled` entry — see [Import Styles](#import-styles) below.
+The stylesheet is opinionated but token-driven — override any `--ndpr-*` CSS custom property to theme. Skip this import only if you're using `/unstyled` to bring your own design system.
 
-## Import Styles
+Install UI peer dependencies (only needed if you use the higher-level Radix-based components from `/presets`):
 
-The toolkit supports four import styles so you can pull in only what your application needs:
-
-### 1. Server / Edge — Strictly Pure Logic, Zero React
-
-The recommended entry for backend and serverless environments. Safe to import from a Next.js Server Component, Edge Function, NestJS controller, Cloudflare Worker, or any non-browser runtime — **no React lands in your server bundle.**
-
-```ts
-import {
-  validateConsent,
-  formatDSRRequest,
-  assessDPIARisk,
-  calculateBreachSeverity,
-  generatePolicyText,
-  findUnfilledTokens,
-  exportHTML,
-  exportPDF,
-  getComplianceScore,
-} from '@tantainnovative/ndpr-toolkit/server';
-
-import type { DSRRequest, BreachReport, PrivacyPolicy } from '@tantainnovative/ndpr-toolkit/server';
+```bash
+pnpm add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
 ```
 
-Build-output guards in CI assert this entry never carries a `"use client"` directive and never imports `react`/`react-dom` — the RSC-safety contract is structurally enforced.
+Or scaffold instantly with the CLI:
 
-### 2. Lightweight (Core) — Types, Utilities, and the Provider
-
-A broader entry that adds the `NDPRProvider` React Context on top of the pure-logic surface. Use when you want types and validators alongside the provider in the same import.
-
-```ts
-import {
-  NDPRProvider,
-  validateConsent,
-  assessDPIARisk,
-  calculateBreachSeverity,
-  validateTransfer,
-  assessTransferRisk,
-  validateProcessingRecord,
-  generateROPASummary,
-} from '@tantainnovative/ndpr-toolkit/core';
-
-import type { ConsentOption, BreachReport, CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/core';
+```bash
+npx @tantainnovative/create-ndpr
 ```
 
-### 3. Hooks Only — React State Management Without UI
+---
 
-Requires React as a peer dependency but ships zero UI components. Ideal when you need compliance logic with your own custom UI.
+## Choose Your Layer
 
-```ts
-import {
-  useConsent,
-  useDSR,
-  useDPIA,
-  useBreach,
-  usePrivacyPolicy,
-  useLawfulBasis,
-  useCrossBorderTransfer,
-  useROPA,
-} from '@tantainnovative/ndpr-toolkit/hooks';
-```
+Pick exactly what your project needs.
 
-### 4. Full UI — Components, Hooks, and Utilities
+### Presets — zero-config
 
-The default import path. Ships everything: React components, hooks, utilities, and types.
+Drop-in components with sensible defaults. No configuration required.
 
 ```tsx
 import {
-  ConsentBanner,
-  ConsentManager,
-  useConsent,
-  DSRRequestForm,
-  LawfulBasisTracker,
-  CrossBorderTransferManager,
-  ROPAManager,
-} from '@tantainnovative/ndpr-toolkit';
+  NDPRConsent,           // Consent banner — works with zero props
+  NDPRSubjectRights,     // DSR request form
+  NDPRBreachReport,      // Breach report form
+  NDPRPrivacyPolicy,     // Policy generator wizard
+  NDPRDPIA,              // DPIA questionnaire
+  NDPRComplianceDashboard, // Visual compliance dashboard
+} from '@tantainnovative/ndpr-toolkit/presets';
 ```
 
-### Per-Module Imports
+### Components — compound pattern
 
-For maximum tree-shaking, import from individual module entry points. Each module bundles only its own component(s), hook, utilities, and types.
+Full control over layout without rebuilding logic.
 
 ```tsx
-// Only consent management — nothing else is bundled
-import { ConsentBanner, ConsentManager, useConsent } from '@tantainnovative/ndpr-toolkit/consent';
+import { Consent } from '@tantainnovative/ndpr-toolkit/consent';
 
-// Only breach notification
-import { BreachReportForm, useBreach } from '@tantainnovative/ndpr-toolkit/breach';
-
-// Only lawful basis tracking
-import { LawfulBasisTracker, useLawfulBasis } from '@tantainnovative/ndpr-toolkit/lawful-basis';
-
-// Only cross-border transfers
-import { CrossBorderTransferManager, useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/cross-border';
-
-// Only ROPA
-import { ROPAManager, useROPA } from '@tantainnovative/ndpr-toolkit/ropa';
+<Consent.Provider options={options} onChange={handleSave}>
+  <div className="my-layout">
+    <Consent.OptionList />
+    <div className="flex gap-2">
+      <Consent.AcceptButton />
+      <Consent.RejectButton />
+    </div>
+  </div>
+</Consent.Provider>
 ```
 
-## Import Paths Reference
+### Hooks — headless
 
-| Path | Contents | React Required | RSC-safe |
-|------|----------|:--------------:|:--------:|
-| `@tantainnovative/ndpr-toolkit` | All components, hooks, utilities, types | Yes | No |
-| `@tantainnovative/ndpr-toolkit/server` | Pure validators, generators, scoring, locales, adapters, types — **zero React in import graph** | No | **Yes** |
-| `@tantainnovative/ndpr-toolkit/core` | Types, utility functions, locales, NDPRProvider | Optional | Partial[^1] |
-| `@tantainnovative/ndpr-toolkit/hooks` | All React hooks and related types | Yes | No |
-| `@tantainnovative/ndpr-toolkit/consent` | ConsentBanner, ConsentManager, ConsentStorage, useConsent | Yes | No |
-| `@tantainnovative/ndpr-toolkit/dsr` | DSRRequestForm, DSRDashboard, DSRTracker, useDSR | Yes | No |
-| `@tantainnovative/ndpr-toolkit/dpia` | DPIAQuestionnaire, DPIAReport, StepIndicator, useDPIA | Yes | No |
-| `@tantainnovative/ndpr-toolkit/breach` | BreachReportForm, BreachRiskAssessment, BreachNotificationManager, RegulatoryReportGenerator, useBreach | Yes | No |
-| `@tantainnovative/ndpr-toolkit/policy` | PolicyGenerator, PolicyPreview, PolicyExporter, PolicyPage, usePrivacyPolicy, useDefaultPrivacyPolicy | Yes | No |
-| `@tantainnovative/ndpr-toolkit/lawful-basis` | LawfulBasisTracker, useLawfulBasis | Yes | No |
-| `@tantainnovative/ndpr-toolkit/cross-border` | CrossBorderTransferManager, useCrossBorderTransfer | Yes | No |
-| `@tantainnovative/ndpr-toolkit/ropa` | ROPAManager, useROPA | Yes | No |
-| `@tantainnovative/ndpr-toolkit/adapters` | Storage adapters (localStorage, sessionStorage, cookie, api, memory, composeAdapters) | No | Yes |
-| `@tantainnovative/ndpr-toolkit/presets` | Higher-level presets (NDPRConsent, NDPRSubjectRights, NDPRPrivacyPolicy, etc.) | Yes | No |
-| `@tantainnovative/ndpr-toolkit/unstyled` | Components with `unstyled` defaulted to `true` — bring your own design system | Yes | No |
-| `@tantainnovative/ndpr-toolkit/styles` | Default CSS stylesheet — `import "@tantainnovative/ndpr-toolkit/styles"` once in your app entry | No | N/A (CSS) |
-
-[^1]: `/core` re-exports `NDPRProvider` for backward compatibility, which pulls in React. For strictly server-side imports use `/server` instead — it carries the same pure validators and generators with no React surface.
-
-## Quick Start
-
-### Consent Management
+Stateful hooks for every module. Bring your own UI entirely.
 
 ```tsx
-import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
 import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
 
-const consentOptions = [
-  {
-    id: 'necessary',
-    label: 'Necessary Cookies',
-    description: 'Essential cookies for the website to function.',
-    required: true,
-    purpose: 'Site operation'
+const { hasConsent, acceptAll, rejectAll, shouldShowBanner } = useConsent({ options });
+```
+
+### Server — strictly RSC-safe, zero React
+
+The recommended entry for backend and serverless contexts. Pure validators, generators, scoring, locales, and adapters — no React in the import graph. Safe to call from a Next.js Server Component, Edge Function, NestJS controller, or Cloudflare Worker.
+
+```ts
+import {
+  validateConsent,
+  generatePolicyText,
+  exportHTML,
+  getComplianceScore,
+} from '@tantainnovative/ndpr-toolkit/server';
+```
+
+Build-output guard tests assert this entry never carries a `"use client"` directive and never imports `react` — the RSC-safety contract is structurally enforced.
+
+### Core — types + utilities + Provider
+
+Adds the `NDPRProvider` React Context on top of `/server`'s pure surface. Use when you want types and validators alongside the provider in the same import.
+
+```ts
+import { NDPRProvider, validateConsent, getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
+```
+
+### Adapters — pluggable storage
+
+Swap where consent (and other state) is stored without changing any component code.
+
+```ts
+import { apiAdapter, localStorageAdapter, cookieAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+```
+
+---
+
+## Pluggable Storage
+
+Every stateful component accepts an `adapter` prop. Built-in adapters ship out of the box.
+
+```ts
+import {
+  localStorageAdapter,    // default for browsers
+  sessionStorageAdapter,  // cleared on tab close
+  cookieAdapter,          // server-readable cookies
+  apiAdapter,             // HTTP endpoint (any backend)
+  memoryAdapter,          // in-process, good for SSR / tests
+  composeAdapters,        // fan-out writes to multiple stores
+} from '@tantainnovative/ndpr-toolkit/adapters';
+```
+
+**localStorage (default browser behaviour):**
+```tsx
+<NDPRConsent adapter={localStorageAdapter('ndpr_consent')} />
+```
+
+**API endpoint:**
+```tsx
+<NDPRConsent adapter={apiAdapter('/api/consent', {
+  headers: { Authorization: `Bearer ${token}` },
+})} />
+```
+
+**Write to API + keep a local cache:**
+```tsx
+import { composeAdapters, apiAdapter, localStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+
+<NDPRConsent adapter={composeAdapters(
+  apiAdapter('/api/consent'),
+  localStorageAdapter('ndpr_consent'),
+)} />
+```
+
+**Cookie (server-readable, for SSR consent gating):**
+```tsx
+<NDPRConsent adapter={cookieAdapter('ndpr_consent', { expires: 365 })} />
+```
+
+---
+
+## Compliance Score
+
+`getComplianceScore()` evaluates your posture across all 8 NDPA modules and returns a 0–100 score with rated gaps and prioritised recommendations.
+
+```ts
+import { getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
+
+const report = getComplianceScore({
+  consent: {
+    hasConsentMechanism: true,
+    hasPurposeSpecification: true,
+    hasWithdrawalMechanism: true,
+    hasMinorProtection: false,
+    consentRecordsRetained: true,
   },
-  {
-    id: 'analytics',
-    label: 'Analytics Cookies',
-    description: 'Cookies that help us understand how you use our website.',
-    required: false,
-    purpose: 'Usage analytics'
-  }
-];
-
-function MyApp() {
-  const { hasConsent, acceptAll, rejectAll, shouldShowBanner } = useConsent({
-    options: consentOptions,
-  });
-
-  return (
-    <div>
-      {shouldShowBanner && (
-        <ConsentBanner
-          options={consentOptions}
-          position="bottom"
-          onSave={(settings) => console.log('Consent saved:', settings)}
-        />
-      )}
-      <AppContent hasConsent={hasConsent} />
-    </div>
-  );
-}
-
-function AppContent({ hasConsent }: { hasConsent: (id: string) => boolean }) {
-  if (hasConsent('analytics')) {
-    // Initialize analytics
-  }
-
-  return (
-    <div>
-      {/* Your app content */}
-    </div>
-  );
-}
-```
-
-### Privacy Policy Generator
-
-```tsx
-import { PolicyGenerator, PolicyPreview, PolicyExporter } from '@tantainnovative/ndpr-toolkit/policy';
-import { useState } from 'react';
-
-const policySections = [
-  {
-    id: 'introduction',
-    title: 'Introduction',
-    template: 'This Privacy Policy explains how {{name}} collects, uses, and protects your personal data when you visit {{website}}.',
-    required: true,
-    included: true
+  dsr: {
+    hasRequestMechanism: true,
+    supportsAccess: true,
+    supportsRectification: false,
+    supportsErasure: false,
+    supportsPortability: false,
+    supportsObjection: false,
+    responseTimelineDays: 30,
   },
-  // More sections...
-];
+  dpia: { conductedForHighRisk: true, documentedRisks: true, mitigationMeasures: true },
+  breach: { hasNotificationProcess: true, notifiesWithin72Hours: true, hasRiskAssessment: true, hasRecordKeeping: true },
+  policy: { hasPrivacyPolicy: true, isPubliclyAccessible: true, lastUpdated: '2026-01-01', coversAllSections: true },
+  lawfulBasis: { documentedForAllProcessing: true, hasLegitimateInterestAssessment: false },
+  crossBorder: { hasTransferMechanisms: true, adequacyAssessed: true, ndpcApprovalObtained: false },
+  ropa: { maintained: true, includesAllProcessing: true, lastReviewed: '2026-01-01' },
+});
 
-const policyVariables = [
-  { id: 'org-name', name: 'name', description: 'Organization name', value: 'Acme Corporation', inputType: 'text' as const, required: true },
-  { id: 'org-website', name: 'website', description: 'Website URL', value: 'https://acme.com', inputType: 'url' as const, required: true },
-];
-
-function PrivacyPolicyPage() {
-  const [generatedContent, setGeneratedContent] = useState<string | null>(null);
-
-  return (
-    <div>
-      {!generatedContent ? (
-        <PolicyGenerator
-          sections={policySections}
-          variables={policyVariables}
-          onGenerate={({ content }) => {
-            setGeneratedContent(content);
-          }}
-        />
-      ) : (
-        <>
-          <PolicyPreview
-            content={generatedContent}
-            sections={policySections}
-            variables={policyVariables}
-          />
-
-          <PolicyExporter
-            content={generatedContent}
-            title="Privacy Policy for Acme Corporation"
-            organizationName="Acme Corporation"
-          />
-        </>
-      )}
-    </div>
-  );
-}
+console.log(report.score);         // e.g. 74
+console.log(report.rating);        // "good" | "excellent" | "needs-work" | "critical"
+console.log(report.recommendations[0].priority); // "critical"
 ```
 
-### Lawful Basis Tracking
+Render a live dashboard:
 
 ```tsx
-import { LawfulBasisTracker } from '@tantainnovative/ndpr-toolkit/lawful-basis';
-import { useLawfulBasis } from '@tantainnovative/ndpr-toolkit/hooks';
+import { NDPRComplianceDashboard } from '@tantainnovative/ndpr-toolkit/presets';
 
-function LawfulBasisPage() {
-  const { activities, addActivity, updateActivity, removeActivity } = useLawfulBasis();
-
-  return (
-    <LawfulBasisTracker
-      activities={activities}
-      onAddActivity={addActivity}
-      onUpdateActivity={updateActivity}
-      onArchiveActivity={removeActivity}
-    />
-  );
-}
+<NDPRComplianceDashboard
+  input={complianceInput}
+  showRecommendations
+  maxRecommendations={5}
+/>
 ```
 
-### Cross-Border Data Transfers
+---
 
-```tsx
-import { CrossBorderTransferManager } from '@tantainnovative/ndpr-toolkit/cross-border';
-import { useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/hooks';
+## Backend Integration
 
-function TransferManagement() {
-  const { transfers, addTransfer, updateTransfer, removeTransfer, getSummary } = useCrossBorderTransfer();
+### CLI scaffolder
 
-  return (
-    <CrossBorderTransferManager
-      transfers={transfers}
-      onAddTransfer={addTransfer}
-      onUpdateTransfer={updateTransfer}
-      onRemoveTransfer={removeTransfer}
-      summary={getSummary()}
-    />
-  );
-}
+Scaffold a complete wiring for your stack in seconds:
+
+```bash
+npx @tantainnovative/create-ndpr
 ```
 
-### Record of Processing Activities
+Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (Prisma / Drizzle / none), and generates API routes, schema, and layout files — no manual copy-pasting.
 
-```tsx
-import { ROPAManager } from '@tantainnovative/ndpr-toolkit/ropa';
-import { useROPA } from '@tantainnovative/ndpr-toolkit/hooks';
+### Backend recipes
 
-function ProcessingRecords() {
-  const { ropa, addRecord, updateRecord, archiveRecord, exportCSV } = useROPA({
-    initialData: { id: 'ropa-1', organizationName: 'Acme Ltd', organizationContact: 'dpo@acme.ng', organizationAddress: 'Lagos, Nigeria', records: [], lastUpdated: Date.now(), version: '1.0' },
-  });
+`@tantainnovative/ndpr-recipes` is a reference implementation with production-ready patterns:
 
-  return (
-    <div>
-      <ROPAManager
-        ropa={ropa}
-        onAddRecord={addRecord}
-        onUpdateRecord={updateRecord}
-        onArchiveRecord={archiveRecord}
-      />
-      <button onClick={() => { const csv = exportCSV(); console.log(csv); }}>
-        Export to CSV
-      </button>
-    </div>
-  );
-}
-```
+| Recipe | What you get |
+|--------|-------------|
+| `prisma/schema.prisma` | All 5 NDPA compliance tables |
+| `src/adapters/prisma-consent.ts` | Prisma `StorageAdapter<ConsentSettings>` |
+| `src/adapters/drizzle-consent.ts` | Drizzle `StorageAdapter<ConsentSettings>` |
+| `src/nextjs/app-router/` | Consent, DSR, Breach, ROPA, compliance route handlers |
+| `src/express/` | Full NDPR router with consent, DSR, breach, ROPA routes |
+| `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
+
+Copy the files you need into your project. [Browse the recipes →](https://github.com/tantainnovative/ndpr-toolkit/tree/main/packages/ndpr-recipes)
+
+---
+
+## Live Demos
+
+Every module has an interactive demo. No signup, no setup — try them instantly.
+
+<p align="center">
+  <a href="https://ndprtoolkit.com.ng/ndpr-demos">
+    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
+</p>
+
+<p align="center">
+  <em>Left: Data Subject Rights portal with 8 NDPA rights. Right: Breach notification with 72-hour NDPC deadline countdown.</em>
+</p>
+
+---
+
+## All 8 Modules
+
+| Module | Import path | NDPA reference | Key exports |
+|--------|-------------|----------------|-------------|
+| Consent Management | `/consent` | Sections 25–26 | `ConsentBanner`, `ConsentManager`, `Consent.*`, `useConsent` |
+| Data Subject Rights | `/dsr` | Part IV §29–36 | `DSRRequestForm`, `DSRDashboard`, `useDSR` |
+| DPIA | `/dpia` | Sections 38–39 | `DPIAQuestionnaire`, `DPIAReport`, `useDPIA` |
+| Breach Notification | `/breach` | Section 40 | `BreachReportForm`, `BreachRiskAssessment`, `useBreach` |
+| Privacy Policy | `/policy` | Sections 27–28 | `PolicyGenerator`, `PolicyPreview`, `PolicyExporter` |
+| Lawful Basis | `/lawful-basis` | Section 25 | `LawfulBasisTracker`, `useLawfulBasis` |
+| Cross-Border Transfers | `/cross-border` | Part VI §41–45 | `CrossBorderTransferManager`, `useCrossBorderTransfer` |
+| ROPA | `/ropa` | Section 28(2) | `ROPAManager`, `useROPA`, `exportROPAToCSV` |
+
+---
 
 ## Styling & Customization
 
-Every component supports three styling modes:
+As of 3.4.0, components ship semantic BEM-style class names (`.ndpr-consent-banner`, `.ndpr-form-field__input`, etc.) backed by a real stylesheet. **Tailwind is no longer required** — the package works in any host so long as you import the stylesheet once.
 
-**Default (Tailwind CSS built-in):**
-
+**Default — works in any host:**
+```ts
+// Once in your app entry
+import "@tantainnovative/ndpr-toolkit/styles";
+```
 ```tsx
-<ConsentBanner options={options} onSave={handleSave} />
+<ConsentBanner options={options} onSave={handleSave} variant="card" position="bottom" />
 ```
 
-**Override specific sections:**
+**Theme via CSS custom properties:**
+```css
+/* Override any --ndpr-* token at :root, [data-theme="dark"], or scoped to a parent. */
+:root {
+  --ndpr-primary: 22 163 74;          /* RGB triplet — green-600 */
+  --ndpr-radius: 1rem;
+  --ndpr-font-sans: "Inter", system-ui, sans-serif;
+}
+```
 
+Light + dark mode auto-switch via `prefers-color-scheme`, plus an explicit opt-in via `data-theme="dark"` or `.dark` on any ancestor.
+
+**Per-instance override via slot map:**
 ```tsx
-import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
-
 <ConsentBanner
   options={options}
   onSave={handleSave}
-  classNames={{
-    root: "fixed bottom-0 inset-x-0 bg-white shadow-xl p-6 z-50",
-    title: "text-xl font-serif text-gray-900",
-    acceptButton: "bg-green-600 text-white px-6 py-2 rounded-full",
-    rejectButton: "border border-gray-300 px-6 py-2 rounded-full",
-  }}
-/>
-```
-
-**Fully unstyled (BYO CSS -- works with Bootstrap, CSS Modules, vanilla CSS):**
-
-```tsx
-<ConsentBanner
-  options={options}
-  onSave={handleSave}
-  unstyled
   classNames={{
     root: "my-consent-banner",
     acceptButton: "btn btn-primary",
-    rejectButton: "btn btn-outline-secondary",
+    rejectButton: "btn btn-secondary",
   }}
 />
 ```
 
-### classNames Reference
-
-| Component | Key classNames | Total keys |
-|-----------|---------------|------------|
-| ConsentBanner | root, title, acceptButton, rejectButton, optionsList | 14 |
-| DSRRequestForm | root, form, input, select, submitButton | 11 |
-| BreachReportForm | root, form, input, submitButton, notice | 10 |
-| LawfulBasisTracker | root, table, form, statusBadge, complianceScore | 15 |
-| All 19 components | -- | 194 total |
-
-Every component follows the same pattern. Pass `classNames` to override specific sections, or set `unstyled` to strip all default styles.
-
-## Component Categories
-
-### Consent Management
-- `ConsentBanner`: Cookie consent banner with customizable options
-- `ConsentManager`: Component for managing consent preferences
-- `ConsentStorage`: Storage mechanism for consent settings with support for localStorage, sessionStorage, and cookies
-- `useConsent`: Hook for managing consent state
-
-### Data Subject Rights
-- `DSRRequestForm`: Form for submitting data subject rights requests
-- `DSRDashboard`: Admin dashboard for managing DSR requests
-- `DSRTracker`: Component for tracking the status of DSR requests
-- `useDSR`: Hook for managing DSR state
-- Types: `DSRType`, `DSRStatus`, `DSRRequest` for type-safe implementation
-
-### DPIA (Data Protection Impact Assessment)
-- `DPIAQuestionnaire`: Interactive questionnaire for conducting DPIAs
-- `DPIAReport`: Component for generating DPIA reports
-- `StepIndicator`: Progress indicator for multi-step processes
-- `useDPIA`: Hook for managing DPIA state
-- Types: `DPIAQuestion`, `DPIASection`, `DPIARisk`, `DPIAResult` for structured assessments
-
-### Breach Notification
-- `BreachReportForm`: Form for reporting data breaches
-- `BreachRiskAssessment`: Tool for assessing breach risk and severity
-- `BreachNotificationManager`: Component for managing breach notifications
-- `RegulatoryReportGenerator`: Tool for generating regulatory reports for NDPC
-- `useBreach`: Hook for managing breach notification state
-- Types: `BreachReport`, `RiskAssessment`, `NotificationRequirement` for compliance with 72-hour notification requirements
-
-### Privacy Policy
-- `PolicyGenerator`: Component for generating privacy policies
-- `PolicyPreview`: Preview component for privacy policies
-- `PolicyExporter`: Tool for exporting privacy policies to different formats
-- `generatePolicyText`: Utility for creating dynamic policies with variable support
-- `usePrivacyPolicy`: Hook for managing privacy policy state
-
-### Lawful Basis Tracking
-- `LawfulBasisTracker`: Component for documenting lawful basis per processing activity (NDPA Section 25)
-- `useLawfulBasis`: Hook for managing lawful basis state
-- `validateProcessingActivity`, `assessComplianceGaps`, `generateLawfulBasisSummary`: Utility functions
-- Types: `LawfulBasis`, `ProcessingActivity`, `LawfulBasisSummary` for structured tracking
-
-### Cross-Border Data Transfers
-- `CrossBorderTransferManager`: Component for assessing and documenting international transfers (NDPA Part VI)
-- `useCrossBorderTransfer`: Hook for managing transfer state
-- `validateTransfer`, `assessTransferRisk`, `isNDPCApprovalRequired`: Utility functions
-- Types: `CrossBorderTransfer`, `TransferImpactAssessment`, `CrossBorderSummary` for compliance documentation
-
-### Record of Processing Activities (ROPA)
-- `ROPAManager`: Component for maintaining processing records (NDPA accountability principle)
-- `useROPA`: Hook for managing processing records
-- `validateProcessingRecord`, `generateROPASummary`, `exportROPAToCSV`, `identifyComplianceGaps`: Utility functions
-- Types: `ProcessingRecord`, `RecordOfProcessingActivities`, `ROPASummary` for structured records
-
-## Implementation Guides
-
-### Setting Up Consent Management
-
+**Bring your own design system entirely:**
 ```tsx
-import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
-import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/unstyled';
 
-const consentOptions = [
-  { id: 'necessary', label: 'Necessary', description: 'Required for the site to function', required: true, purpose: 'Site operation' },
-  { id: 'analytics', label: 'Analytics', description: 'Help us understand usage', required: false, purpose: 'Usage analytics' },
-  { id: 'marketing', label: 'Marketing', description: 'Personalized ads', required: false, purpose: 'Marketing' }
-];
+<ConsentBanner options={options} onSave={handleSave} classNames={{ /* yours */ }} />
+```
+The `/unstyled` entry defaults `unstyled` to `true`, stripping every `.ndpr-*` class so your CSS applies unfiltered. ARIA, focus management, and `data-ndpr-component` attributes are preserved (those are part of the contract, not styling).
 
-// 1. Use the useConsent hook and ConsentBanner in your app
-function App() {
-  const { hasConsent, shouldShowBanner } = useConsent({ options: consentOptions });
+Each component exports its `ClassNames` TypeScript interface for autocomplete. Full reference in the [docs](https://ndprtoolkit.com.ng/docs/guides/styling-customization).
 
-  return (
-    <div>
-      {shouldShowBanner && (
-        <ConsentBanner
-          options={consentOptions}
-          position="bottom"
-          onSave={(settings) => console.log('Consent saved:', settings)}
-        />
-      )}
-      <AnalyticsLoader hasConsent={hasConsent} />
-      <YourApp />
-    </div>
-  );
-}
+---
 
-// 2. Check consent before loading third-party scripts
-function AnalyticsLoader({ hasConsent }: { hasConsent: (id: string) => boolean }) {
-  useEffect(() => {
-    if (hasConsent('analytics')) {
-      // Initialize analytics
-    }
-  }, [hasConsent]);
+## Available Import Paths
 
-  return null;
-}
+| Path | What you get | Dependencies | RSC-safe |
+|------|-------------|--------------|:--------:|
+| `.` (default) | Everything | `react`, optional Radix peers for `/presets` | No |
+| `/server` | **Pure validators, generators, scoring, locales, adapters, types — zero React** | `tslib` | **Yes** |
+| `/core` | Types, utility functions, NDPRProvider | `react`[^core] | Partial |
+| `/hooks` | React hooks for all 8 modules | `react` | No |
+| `/presets` | Zero-config preset components | `react`, Radix peers | No |
+| `/adapters` | Storage adapters (localStorage, sessionStorage, cookie, api, memory, composeAdapters) | none | Yes |
+| `/consent` | ConsentBanner, ConsentManager, `Consent.*` compound API, useConsent | `react` | No |
+| `/dsr` | DSR components + hook | `react` | No |
+| `/dpia` | DPIA components + hook | `react` | No |
+| `/breach` | Breach components + hook | `react` | No |
+| `/policy` | Policy components + hook | `react`, `jspdf`, `docx` (optional) | No |
+| `/lawful-basis` | Lawful basis component + hook | `react` | No |
+| `/cross-border` | Cross-border component + hook | `react` | No |
+| `/ropa` | ROPA component + hook | `react` | No |
+| `/unstyled` | All published components with `unstyled` defaulted to `true` | `react` | No |
+| `/styles` | Default CSS stylesheet — `import "@tantainnovative/ndpr-toolkit/styles"` once in your app entry | none | N/A |
+
+[^core]: `/core` re-exports the React `NDPRProvider` for backward compatibility. For strictly server-side imports use `/server` — it carries the same pure validators with no React surface.
+
+---
+
+## NDPA 2023 Overview
+
+The **Nigeria Data Protection Act (NDPA) 2023** replaced the NDPR 2019 and established the **Nigeria Data Protection Commission (NDPC)** as the independent regulatory body.
+
+| Aspect | NDPR (2019) | NDPA (2023) |
+|--------|-------------|-------------|
+| Legal status | NITDA regulation | Act of the National Assembly |
+| Regulator | NITDA | NDPC (independent commission) |
+| Enforcement | Limited | Independent investigation and penalty powers |
+| Data subject rights | 6 rights | 8 rights (added information + automated decision-making) |
+| Cross-border transfers | Basic provisions | Comprehensive framework with adequacy decisions |
+| Breach notification | 72 hours to NITDA | 72 hours to NDPC (Section 40) |
+| DPIA | Recommended | Required for high-risk processing (Section 38) |
+
+---
+
+## TypeScript
+
+Written in TypeScript. All types are exported:
+
+```typescript
+import type {
+  // Consent
+  ConsentOption, ConsentSettings,
+  // DSR
+  DSRRequest, DSRType, DSRStatus,
+  // DPIA
+  DPIAQuestion, DPIASection, DPIAResult,
+  // Breach
+  BreachReport, BreachCategory, RiskAssessment,
+  // Policy
+  PolicySection, PolicyTemplate, PrivacyPolicy,
+  // Lawful Basis
+  LawfulBasis, ProcessingActivity,
+  // Cross-Border
+  CrossBorderTransfer, TransferMechanism,
+  // ROPA
+  ProcessingRecord, RecordOfProcessingActivities,
+  // Compliance score
+  ComplianceInput, ComplianceReport, ComplianceRating,
+  // Storage
+  StorageAdapter,
+} from '@tantainnovative/ndpr-toolkit/core';
 ```
 
-### Implementing a Data Subject Rights Portal
-
-```tsx
-import { DSRRequestForm, DSRDashboard } from '@tantainnovative/ndpr-toolkit/dsr';
-import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
-
-const requestTypes = [
-  { id: 'access', name: 'Access my data', description: 'Right of access (Section 30)', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
-  { id: 'rectification', name: 'Correct my data', description: 'Right to rectification (Section 31)', estimatedCompletionTime: 30, requiresAdditionalInfo: true },
-  { id: 'erasure', name: 'Delete my data', description: 'Right to erasure (Section 32)', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
-  { id: 'restriction', name: 'Restrict processing', description: 'Right to restrict processing (Section 33)', estimatedCompletionTime: 30, requiresAdditionalInfo: true },
-  { id: 'portability', name: 'Data portability', description: 'Right to data portability (Section 34)', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
-  { id: 'objection', name: 'Object to processing', description: 'Right to object (Section 35)', estimatedCompletionTime: 30, requiresAdditionalInfo: true },
-];
-
-// 1. Create a form for data subjects to submit requests
-function DSRPortal() {
-  const { submitRequest } = useDSR({ requestTypes });
-
-  const handleSubmit = (formData: any) => {
-    const request = submitRequest({
-      type: formData.type,
-      subject: {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone
-      },
-      description: formData.details
-    });
-
-    alert(`Your request has been submitted. Your tracking ID is: ${request.id}`);
-  };
-
-  return (
-    <DSRRequestForm
-      onSubmit={handleSubmit}
-      requestTypes={requestTypes}
-    />
-  );
-}
-
-// 2. Create an admin dashboard for managing requests
-function AdminDashboard() {
-  const { requests, updateRequest } = useDSR({ requestTypes });
-
-  return (
-    <DSRDashboard
-      requests={requests}
-      onUpdateStatus={(id, status) => updateRequest(id, { status })}
-    />
-  );
-}
-```
-
-### Setting Up a Breach Notification System
-
-```tsx
-import { BreachReportForm, BreachRiskAssessment } from '@tantainnovative/ndpr-toolkit/breach';
-import { useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
-
-const breachCategories = [
-  { id: 'unauthorized-access', name: 'Unauthorized Access', description: 'Unauthorized person accessed data', defaultSeverity: 'high' as const },
-  { id: 'data-loss', name: 'Data Loss', description: 'Data was lost or destroyed', defaultSeverity: 'high' as const },
-  { id: 'system-compromise', name: 'System Compromise', description: 'System was compromised', defaultSeverity: 'critical' as const }
-];
-
-// 1. Create a form for reporting breaches
-function BreachReporting() {
-  const { reportBreach, getReport } = useBreach({ categories: breachCategories });
-
-  const handleSubmit = (formData: any) => {
-    const report = reportBreach({
-      title: formData.title,
-      description: formData.description,
-      category: formData.category,
-      discoveredAt: Date.now(),
-      reporter: {
-        name: formData.reporterName,
-        email: formData.reporterEmail,
-        department: formData.department
-      },
-      affectedSystems: formData.systems,
-      dataTypes: formData.dataTypes,
-      status: 'ongoing'
-    });
-
-    navigate(`/breach/${report.id}/assess`);
-  };
-
-  return (
-    <BreachReportForm
-      onSubmit={handleSubmit}
-      categories={breachCategories}
-    />
-  );
-}
-
-// 2. Create a risk assessment component
-function RiskAssessmentView({ breachId }: { breachId: string }) {
-  const { assessRisk, calculateNotificationRequirements, getReport } = useBreach({ categories: breachCategories });
-  const report = getReport(breachId);
-
-  if (!report) return <div>Breach not found</div>;
-
-  const handleAssessment = (assessment: any) => {
-    assessRisk(breachId, assessment);
-
-    const requirements = calculateNotificationRequirements(breachId);
-    if (requirements?.ndpcNotificationRequired) {
-      const deadline = new Date(requirements.ndpcNotificationDeadline);
-      alert(`NDPC notification required by ${deadline.toLocaleString()}`);
-    }
-  };
-
-  return (
-    <BreachRiskAssessment
-      breachData={report}
-      onComplete={handleAssessment}
-    />
-  );
-}
-```
-
-## Documentation
-
-For detailed documentation, visit [https://ndprtoolkit.com.ng/docs](https://ndprtoolkit.com.ng/docs)
-
-### API Reference
-
-Detailed API documentation is available for all components:
-
-- [Consent Management](https://ndprtoolkit.com.ng/docs/components/consent-management)
-- [Data Subject Rights](https://ndprtoolkit.com.ng/docs/components/data-subject-rights)
-- [DPIA Questionnaire](https://ndprtoolkit.com.ng/docs/components/dpia-questionnaire)
-- [Breach Notification](https://ndprtoolkit.com.ng/docs/components/breach-notification)
-- [Privacy Policy Generator](https://ndprtoolkit.com.ng/docs/components/privacy-policy-generator)
-- [Lawful Basis Tracking](https://ndprtoolkit.com.ng/docs/components/lawful-basis-tracking)
-- [Cross-Border Transfers](https://ndprtoolkit.com.ng/docs/components/cross-border-transfers)
-- [Record of Processing Activities](https://ndprtoolkit.com.ng/docs/components/ropa)
-- [React Hooks](https://ndprtoolkit.com.ng/docs/components/hooks)
+---
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome. Please read the [Contributing Guide](./CONTRIBUTING.md) before submitting a pull request.
+
+---
+
+## License
+
+MIT
+
+---
 
 ## Author
 
@@ -729,7 +482,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - GitHub: [@mr-tanta](https://github.com/mr-tanta)
 - LinkedIn: [mr-tanta](https://linkedin.com/in/mr-tanta)
 - Organization: [Tanta Innovative](https://github.com/tantainnovative)
-
-## License
-
-MIT (c) Abraham Esandayinze Tanta

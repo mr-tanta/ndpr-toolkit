@@ -5,12 +5,18 @@ import { defineConfig } from 'tsup';
 // without tripping `readonly` incompatibilities under strict TS. The
 // next.config.ts typecheck step in CI scans this file even though tsup
 // only consumes it at build time.
+// Sourcemaps were previously emitted into the tarball, adding ~3 MB
+// of `.map` files for consumers that never need them. Allow callers to
+// opt-in via NDPR_SOURCEMAPS=1 (used by the dev workspace), but default
+// to off so the published tarball stays lean.
+const EMIT_SOURCEMAPS = process.env.NDPR_SOURCEMAPS === '1';
+
 const sharedOptions: Options = {
   format: ['cjs', 'esm'] satisfies Format[],
   target: 'es2018',
   dts: false,
   splitting: true,
-  sourcemap: true,
+  sourcemap: EMIT_SOURCEMAPS,
   external: ['react', 'react-dom'],
   outExtension({ format }: { format: string }) {
     return {
@@ -49,15 +55,15 @@ export default defineConfig([
     ...sharedOptions,
     entry: {
       index: 'src/index.ts',
-      'hooks-entry': 'src/hooks-entry.ts',
+      hooks: 'src/hooks-entry.ts',
       consent: 'src/consent.ts',
       dsr: 'src/dsr.ts',
       dpia: 'src/dpia.ts',
       breach: 'src/breach.ts',
       policy: 'src/policy.ts',
-      'lawful-basis-entry': 'src/lawful-basis-entry.ts',
-      'cross-border-entry': 'src/cross-border-entry.ts',
-      'ropa-entry': 'src/ropa-entry.ts',
+      'lawful-basis': 'src/lawful-basis-entry.ts',
+      'cross-border': 'src/cross-border-entry.ts',
+      ropa: 'src/ropa-entry.ts',
       presets: 'src/presets-entry.ts',
       unstyled: 'src/unstyled.ts',
     },

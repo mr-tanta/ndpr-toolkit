@@ -96,44 +96,44 @@ describe('getTransferMechanismDescription', () => {
     expect(description.length).toBeGreaterThan(0);
   });
 
-  it('should reference NDPA Section 41 for adequacy_decision', () => {
+  it('should reference NDPA Section 42 for adequacy_decision', () => {
     const description = getTransferMechanismDescription('adequacy_decision');
 
-    expect(description).toContain('NDPA Section 41');
+    expect(description).toContain('NDPA Section 42');
     expect(description).toContain('Adequacy Decision');
   });
 
-  it('should reference NDPA Section 42 for standard_clauses', () => {
+  it('should reference NDPA Section 41(1)(a) for standard_clauses', () => {
     const description = getTransferMechanismDescription('standard_clauses');
 
-    expect(description).toContain('NDPA Section 42');
+    expect(description).toContain('NDPA Section 41(1)(a)');
     expect(description).toContain('Standard Contractual Clauses');
   });
 
-  it('should reference NDPA Section 43 for binding_corporate_rules', () => {
+  it('should reference NDPA Section 41(1)(a) for binding_corporate_rules', () => {
     const description = getTransferMechanismDescription('binding_corporate_rules');
 
-    expect(description).toContain('NDPA Section 43');
+    expect(description).toContain('NDPA Section 41(1)(a)');
     expect(description).toContain('Binding Corporate Rules');
   });
 
-  it('should reference NDPA Section 44 for ndpc_authorization', () => {
+  it('should reference NDPA Section 42(5) for ndpc_authorization', () => {
     const description = getTransferMechanismDescription('ndpc_authorization');
 
-    expect(description).toContain('NDPA Section 44');
+    expect(description).toContain('NDPA Section 42(5)');
   });
 
-  it('should reference NDPA Section 45 derogations for explicit_consent', () => {
+  it('should reference NDPA Section 43(1)(a) derogations for explicit_consent', () => {
     const description = getTransferMechanismDescription('explicit_consent');
 
-    expect(description).toContain('NDPA Section 45(a)');
+    expect(description).toContain('NDPA Section 43(1)(a)');
     expect(description).toContain('Explicit Consent');
   });
 
-  it('should reference NDPA Section 45 derogations for vital_interests', () => {
+  it('should reference NDPA Section 43(1)(f) derogations for vital_interests', () => {
     const description = getTransferMechanismDescription('vital_interests');
 
-    expect(description).toContain('NDPA Section 45(e)');
+    expect(description).toContain('NDPA Section 43(1)(f)');
     expect(description).toContain('Vital Interests');
   });
 });
@@ -264,7 +264,7 @@ describe('validateTransfer', () => {
 
     expect(result.isValid).toBe(false);
     expect(result.errors).toContain(
-      'Cannot rely on adequacy decision (Section 41) when the destination country is marked as inadequate.'
+      'Cannot rely on adequacy decision (Section 42) when the destination country is marked as inadequate.'
     );
   });
 

@@ -134,8 +134,8 @@ export interface DPIAQuestionnaireProps {
 }
 
 /**
- * DPIA questionnaire component. Implements NDPA Section 38 requirements
- * for conducting Data Protection Impact Assessments on high-risk processing activities.
+ * DPIA questionnaire component. Implements NDPA Section 28 requirements
+ * for conducting Data Privacy Impact Assessments on high-risk processing activities.
  */
 export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
   sections,

@@ -232,7 +232,8 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
       restriction: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
       portability: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
       objection: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      automated_decision_making: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
+      automated_decision_making: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
+      withdraw_consent: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200'
     };
 
     const typeLabels: Record<DSRType, string> = {
@@ -243,7 +244,8 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
       restriction: 'Restriction',
       portability: 'Portability',
       objection: 'Objection',
-      automated_decision_making: 'Automated Decision-Making'
+      automated_decision_making: 'Automated Decision-Making',
+      withdraw_consent: 'Withdraw Consent'
     };
 
     return (
@@ -421,14 +423,15 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   const renderTypeOptions = () => {
     const options = [
       { value: 'all', label: 'All Types' },
-      { value: 'information', label: 'Information (NDPA Section 29)' },
-      { value: 'access', label: 'Access (NDPA Section 30)' },
-      { value: 'rectification', label: 'Rectification (NDPA Section 31)' },
-      { value: 'erasure', label: 'Erasure (NDPA Section 32)' },
-      { value: 'restriction', label: 'Restriction (NDPA Section 33)' },
-      { value: 'portability', label: 'Portability (NDPA Section 34)' },
-      { value: 'objection', label: 'Objection (NDPA Section 35)' },
-      { value: 'automated_decision_making', label: 'Automated Decision-Making (NDPA Section 36)' }
+      { value: 'information', label: 'Information (NDPA Section 27)' },
+      { value: 'access', label: 'Access (NDPA Section 34(1)(a))' },
+      { value: 'rectification', label: 'Rectification (NDPA Section 34(1)(c))' },
+      { value: 'erasure', label: 'Erasure (NDPA Section 34(1)(d))' },
+      { value: 'restriction', label: 'Restriction (NDPA Section 34(1)(e))' },
+      { value: 'portability', label: 'Portability (NDPA Section 38)' },
+      { value: 'objection', label: 'Objection (NDPA Section 36)' },
+      { value: 'automated_decision_making', label: 'Automated Decision-Making (NDPA Section 37)' },
+      { value: 'withdraw_consent', label: 'Withdraw Consent (NDPA Section 35)' }
     ];
     
     return options.map(option => (

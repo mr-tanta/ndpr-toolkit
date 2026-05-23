@@ -1,5 +1,6 @@
 import type { PrivacyPolicy } from '../../types/privacy';
 import type { DOCXExportOptions } from '../../types/policy-engine';
+import { LEGAL_DISCLAIMER_LONG } from '../legal-notice';
 
 /**
  * Export a PrivacyPolicy as a Word (.docx) Blob using the `docx` library
@@ -251,6 +252,26 @@ export async function exportDOCX(
       });
     }
   });
+
+  // ── Legal notice block ────────────────────────────────────────────────────
+  children.push(
+    new Paragraph({
+      heading: HeadingLevel.HEADING_1,
+      children: [new TextRun({ text: 'Important Notice', bold: true })],
+      spacing: { before: 600, after: 200 },
+    }),
+    new Paragraph({
+      children: [
+        new TextRun({
+          text: LEGAL_DISCLAIMER_LONG,
+          size: 18,
+          color: '4b5563',
+          italics: true,
+        }),
+      ],
+      spacing: { after: 200 },
+    }),
+  );
 
   // ── Footer / metadata paragraph ───────────────────────────────────────────
   children.push(

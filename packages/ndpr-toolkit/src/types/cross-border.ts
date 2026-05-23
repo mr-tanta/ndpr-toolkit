@@ -1,21 +1,24 @@
 /**
- * Cross-Border Data Transfer types aligned with NDPA 2023 Part VI (Sections 41-45)
- * Personal data may only be transferred outside Nigeria under specific conditions
+ * Cross-Border Data Transfer types aligned with NDPA 2023 Part VIII (Sections 41-43).
+ * Personal data may only be transferred outside Nigeria under the bases listed in
+ * Section 41(1), where Section 42 defines adequacy and Section 43 lists derogations.
+ *
+ * Note: These are guidance labels — not legal advice. Verify with your DPO or counsel.
  */
 
 /**
  * Transfer mechanisms recognized under the NDPA
  */
 export type TransferMechanism =
-  | 'adequacy_decision'       // Section 41 - Country has adequate protection
-  | 'standard_clauses'        // Section 42 - Standard contractual clauses approved by NDPC
-  | 'binding_corporate_rules' // Section 43 - BCRs approved by NDPC
-  | 'ndpc_authorization'      // Section 44 - Specific authorization from NDPC
-  | 'explicit_consent'        // Section 45(a) - Explicit informed consent
-  | 'contract_performance'    // Section 45(b) - Necessary for contract performance
-  | 'public_interest'         // Section 45(c) - Important reasons of public interest
-  | 'legal_claims'            // Section 45(d) - Establishment or defense of legal claims
-  | 'vital_interests';        // Section 45(e) - Protect vital interests
+  | 'adequacy_decision'       // Section 42 - Country/region/sector has NDPC-determined adequate protection
+  | 'standard_clauses'        // Section 41(1)(a) - Contractual clauses affording adequate protection
+  | 'binding_corporate_rules' // Section 41(1)(a) - Binding corporate rules affording adequate protection
+  | 'ndpc_authorization'      // Section 42(5) - Codes of conduct, certifications, or similar instruments approved by NDPC
+  | 'explicit_consent'        // Section 43(1)(a) - Consent after being informed of risks
+  | 'contract_performance'    // Section 43(1)(b) - Necessary for contract performance
+  | 'public_interest'         // Section 43(1)(d) - Important reasons of public interest
+  | 'legal_claims'            // Section 43(1)(e) - Establishment, exercise, or defense of legal claims
+  | 'vital_interests';        // Section 43(1)(f) - Protect vital interests where data subject incapable of consent
 
 /**
  * Adequacy status of a destination country

@@ -16,7 +16,7 @@ v3 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 > **What's new in 3.4.0:** components now ship styled defaults via a real stylesheet — Tailwind is no longer required. Add `import "@tantainnovative/ndpr-toolkit/styles";` once in your app entry. Plus a new `/server` subpath for RSC-safe pure-logic imports (validators, generators, scoring) with zero React in the import graph. Backward-compatible at the component API level. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0).
 
 <p align="center">
-  <img src="public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
 </p>
 
 ---
@@ -65,7 +65,7 @@ import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 That's it. NDPA-compliant consent with server-side persistence in under 20 lines.
 
 <p align="center">
-  <img src="public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
   <br />
   <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
 </p>
@@ -127,7 +127,7 @@ Full control over layout without rebuilding logic.
 ```tsx
 import { Consent } from '@tantainnovative/ndpr-toolkit/consent';
 
-<Consent.Provider options={options} onSave={handleSave}>
+<Consent.Provider options={options} onChange={handleSave}>
   <div className="my-layout">
     <Consent.OptionList />
     <div className="flex gap-2">
@@ -249,7 +249,12 @@ const report = getComplianceScore({
     supportsObjection: false,
     responseTimelineDays: 30,
   },
-  // ... other modules
+  dpia: { conductedForHighRisk: true, documentedRisks: true, mitigationMeasures: true },
+  breach: { hasNotificationProcess: true, notifiesWithin72Hours: true, hasRiskAssessment: true, hasRecordKeeping: true },
+  policy: { hasPrivacyPolicy: true, isPubliclyAccessible: true, lastUpdated: '2026-01-01', coversAllSections: true },
+  lawfulBasis: { documentedForAllProcessing: true, hasLegitimateInterestAssessment: false },
+  crossBorder: { hasTransferMechanisms: true, adequacyAssessed: true, ndpcApprovalObtained: false },
+  ropa: { maintained: true, includesAllProcessing: true, lastReviewed: '2026-01-01' },
 });
 
 console.log(report.score);         // e.g. 74
@@ -306,13 +311,13 @@ Every module has an interactive demo. No signup, no setup — try them instantly
 
 <p align="center">
   <a href="https://ndprtoolkit.com.ng/ndpr-demos">
-    <img src="public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
+    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
   </a>
 </p>
 
 <p align="center">
-  <img src="public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
-  <img src="public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
 </p>
 
 <p align="center">

@@ -51,7 +51,9 @@ export default defineConfig({
   format: ["cjs", "esm"],
   dts: true,
   splitting: true,
-  sourcemap: true,
+  // Sourcemaps were ~3 MB of the published tarball and almost never read by
+  // consumers. Opt-in via NDPR_SOURCEMAPS=1 for local debugging.
+  sourcemap: process.env.NDPR_SOURCEMAPS === "1",
   clean: true,
   external: [
     "react",

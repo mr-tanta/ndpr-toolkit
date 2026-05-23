@@ -122,3 +122,12 @@ export type {
   EffortLevel,
   RegulatoryReference,
 } from './utils/compliance-score';
+
+// Legal notice
+export {
+  LEGAL_DISCLAIMER_SHORT,
+  LEGAL_DISCLAIMER_LONG,
+  legalDisclaimerBlock,
+} from './utils/legal-notice';
+export { LegalNotice } from './components/common/LegalNotice';
+export type { LegalNoticeProps } from './components/common/LegalNotice';

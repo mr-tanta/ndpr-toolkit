@@ -1,8 +1,8 @@
 import { assessDPIARisk } from '../../utils/dpia';
 import { DPIAResult, DPIARisk } from '../../types/dpia';
 
-describe('assessDPIARisk (NDPA Section 39 - NDPC Consultation)', () => {
-  it('should correctly assess high risk data and require NDPC consultation per NDPA Section 39', () => {
+describe('assessDPIARisk (NDPA Section 28(2) - NDPC Consultation)', () => {
+  it('should correctly assess high risk data and require NDPC consultation per NDPA Section 28(2)', () => {
     // Create a DPIA result with high risks
     const dpiaResult: DPIAResult = {
       id: '123',
@@ -59,7 +59,7 @@ describe('assessDPIARisk (NDPA Section 39 - NDPC Consultation)', () => {
     const result = assessDPIARisk(dpiaResult);
     
     expect(result.overallRiskLevel).toBe('high');
-    // NDPA Section 39 requires consultation with the NDPC for high risk
+    // NDPA Section 28(2) requires consultation with the NDPC for high risk
     expect(result.requiresConsultation).toBe(true);
     expect(result.canProceed).toBe(false);
     expect(result.recommendations.length).toBeGreaterThan(0);
@@ -114,7 +114,7 @@ describe('assessDPIARisk (NDPA Section 39 - NDPC Consultation)', () => {
     const result = assessDPIARisk(dpiaResult);
     
     expect(result.overallRiskLevel).toBe('medium');
-    // Medium risk does not require NDPC consultation under NDPA Section 39
+    // Medium risk does not require NDPC consultation under NDPA Section 28(2)
     expect(result.requiresConsultation).toBe(false);
     expect(result.canProceed).toBe(true);
     expect(result.recommendations.length).toBeGreaterThan(0);
@@ -157,7 +157,7 @@ describe('assessDPIARisk (NDPA Section 39 - NDPC Consultation)', () => {
     const result = assessDPIARisk(dpiaResult);
     
     expect(result.overallRiskLevel).toBe('low');
-    // Low risk does not require NDPC consultation under NDPA Section 39
+    // Low risk does not require NDPC consultation under NDPA Section 28(2)
     expect(result.requiresConsultation).toBe(false);
     expect(result.canProceed).toBe(true);
     expect(result.recommendations.length).toBeGreaterThan(0);

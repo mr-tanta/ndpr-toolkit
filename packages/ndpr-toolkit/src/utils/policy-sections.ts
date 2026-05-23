@@ -266,24 +266,28 @@ function buildDataSubjectRights(
     `Under the Nigeria Data Protection Act (NDPA) 2023, you are entitled to the ` +
       `following rights regarding your personal data:\n\n` +
       `1. Right of Access — You may request confirmation of whether we process your personal ` +
-      `data and obtain a copy of that data (NDPA Section 34).\n` +
+      `data and obtain a copy of that data (NDPA Section 34(1)(a)–(b)).\n` +
       `2. Right to Rectification — You may request correction of inaccurate or incomplete ` +
-      `personal data we hold about you (NDPA Section 35).\n` +
+      `personal data we hold about you (NDPA Section 34(1)(c)).\n` +
       `3. Right to Erasure — You may request deletion of your personal data where there ` +
-      `is no compelling legal reason for its continued processing (NDPA Section 36).\n` +
-      `4. Right to Data Portability — You may request to receive your personal data in a ` +
-      `structured, commonly used, and machine-readable format (NDPA Section 38).\n` +
-      `5. Right to Restrict Processing — You may request that we limit the processing of ` +
-      `your personal data in certain circumstances (NDPA Section 37).\n` +
+      `is no compelling legal reason for its continued processing (NDPA Section 34(1)(d), Section 34(2)).\n` +
+      `4. Right to Restrict Processing — You may request that we limit the processing of ` +
+      `your personal data in certain circumstances (NDPA Section 34(1)(e)).\n` +
+      `5. Right to Withdraw Consent — Where processing is based on consent, you may withdraw ` +
+      `that consent at any time (NDPA Section 35), without affecting the lawfulness of ` +
+      `processing carried out prior to withdrawal.\n` +
       `6. Right to Object — You may object to the processing of your personal data where ` +
       `processing is based on legitimate interest or is carried out for direct marketing ` +
-      `purposes (NDPA Section 37).\n\n` +
-      `You also have the right to withdraw your consent at any time, without affecting the ` +
-      `lawfulness of processing carried out prior to withdrawal.\n\n` +
+      `purposes (NDPA Section 36).\n` +
+      `7. Right Not to Be Subject to Automated Decisions — You have the right not to be ` +
+      `subject to a decision based solely on automated processing, including profiling, ` +
+      `that produces legal or similarly significant effects (NDPA Section 37).\n` +
+      `8. Right to Data Portability — You may request to receive your personal data in a ` +
+      `structured, commonly used, and machine-readable format (NDPA Section 38).\n\n` +
       `To exercise any of these rights, please contact us at ${email}. We will respond to ` +
-      `your request within 30 days, as required by the NDPA. If you are unsatisfied with our ` +
-      `response, you have the right to lodge a complaint with the Nigeria Data Protection ` +
-      `Commission (NDPC).`,
+      `your request within 30 days (extendable in complex cases per NDPC GAID 2025). If you ` +
+      `are unsatisfied with our response, you have the right to lodge a complaint with the ` +
+      `Nigeria Data Protection Commission (NDPC) under NDPA Section 46(1).`,
     order,
     true,
   );
@@ -462,7 +466,7 @@ function buildAutomatedDecisions(order: number): PolicySection {
   return makeSection(
     'automated-decision-making',
     'Automated Decision-Making & Profiling',
-    `In accordance with Section 39 of the NDPA 2023, we inform you of any automated ` +
+    `In accordance with Section 37 of the NDPA 2023, we inform you of any automated ` +
       `decision-making processes, including profiling, that produce legal effects or ` +
       `similarly significant effects on you.\n\n` +
       `Where we use automated decision-making:\n\n` +

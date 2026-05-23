@@ -76,7 +76,7 @@ describe('assemblePolicy', () => {
     expect(ids).toContain('automated-decision-making');
 
     const section = sections.find((s) => s.id === 'automated-decision-making')!;
-    expect(section.template).toContain('Section 39');
+    expect(section.template).toContain('Section 37');
   });
 
   it('includes sensitive data section when hasSensitiveData is true', () => {

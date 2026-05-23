@@ -32,6 +32,44 @@ export interface BreachFormSubmission {
   dataTypes: string[];
   /** Estimated number of affected data subjects */
   estimatedAffectedSubjects?: number;
+  /**
+   * Approximate number of personal data RECORDS concerned. Distinct from
+   * subject count (one subject may have many records). NDPA Section 40(2).
+   */
+  approximateRecordCount?: number;
+  /**
+   * Categories of data subjects affected (e.g. customers, employees, minors).
+   * NDPA Section 40(2).
+   */
+  dataSubjectCategories?: string[];
+  /** Whether sensitive personal data (NDPA Section 30) is involved */
+  involvesSensitiveData?: boolean;
+  /**
+   * Likely consequences of the breach for affected data subjects.
+   * Required content for the NDPC report and Section 40(3) communications.
+   */
+  likelyConsequences?: string;
+  /**
+   * Measures taken or proposed to mitigate adverse effects.
+   * NDPA Section 40(3).
+   */
+  mitigationMeasures?: string;
+  /**
+   * Data Protection Officer contact details (Section 32(3)(c) — DPO is the
+   * named NDPC contact). Falls back to organisation-level DPO if omitted.
+   */
+  dpoContact?: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
+  /**
+   * Whether this is a phased / interim report submitted under Section 40(2)
+   * before complete information is available.
+   */
+  isPhasedReport?: boolean;
+  /** ID of the prior phased report this report supplements, if any. */
+  supplementsReportId?: string;
   /** Current status of the breach */
   status: 'ongoing' | 'contained' | 'resolved';
   /** Initial actions taken to address the breach */
@@ -220,6 +258,22 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   const [estimatedAffectedSubjects, setEstimatedAffectedSubjects] = useState<string>(
     defaultValues?.estimatedAffectedSubjects != null ? String(defaultValues.estimatedAffectedSubjects) : ""
   );
+  const [approximateRecordCount, setApproximateRecordCount] = useState<string>(
+    defaultValues?.approximateRecordCount != null ? String(defaultValues.approximateRecordCount) : ""
+  );
+  const [dataSubjectCategoriesInput, setDataSubjectCategoriesInput] = useState<string>(
+    defaultValues?.dataSubjectCategories?.join(', ') || ""
+  );
+  const [involvesSensitiveData, setInvolvesSensitiveData] = useState<boolean>(
+    defaultValues?.involvesSensitiveData ?? false
+  );
+  const [likelyConsequences, setLikelyConsequences] = useState<string>(defaultValues?.likelyConsequences || "");
+  const [mitigationMeasures, setMitigationMeasures] = useState<string>(defaultValues?.mitigationMeasures || "");
+  const [dpoName, setDpoName] = useState<string>(defaultValues?.dpoContact?.name || "");
+  const [dpoEmail, setDpoEmail] = useState<string>(defaultValues?.dpoContact?.email || "");
+  const [dpoPhone, setDpoPhone] = useState<string>(defaultValues?.dpoContact?.phone || "");
+  const [isPhasedReport, setIsPhasedReport] = useState<boolean>(defaultValues?.isPhasedReport ?? false);
+  const [supplementsReportId, setSupplementsReportId] = useState<string>(defaultValues?.supplementsReportId || "");
   const [status, setStatus] = useState<'ongoing' | 'contained' | 'resolved'>(defaultValues?.status || 'ongoing');
   const [initialActions, setInitialActions] = useState<string>(defaultValues?.initialActions || "");
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -241,6 +295,16 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
     setAffectedSystemsInput("");
     setDataTypes([]);
     setEstimatedAffectedSubjects("");
+    setApproximateRecordCount("");
+    setDataSubjectCategoriesInput("");
+    setInvolvesSensitiveData(false);
+    setLikelyConsequences("");
+    setMitigationMeasures("");
+    setDpoName("");
+    setDpoEmail("");
+    setDpoPhone("");
+    setIsPhasedReport(false);
+    setSupplementsReportId("");
     setStatus('ongoing');
     setInitialActions("");
     setAttachments([]);
@@ -398,6 +462,22 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
       affectedSystems: affectedSystems.map(s => sanitizeInput(s)),
       dataTypes,
       estimatedAffectedSubjects: estimatedAffectedSubjects ? Number(estimatedAffectedSubjects) : undefined,
+      approximateRecordCount: approximateRecordCount ? Number(approximateRecordCount) : undefined,
+      dataSubjectCategories: dataSubjectCategoriesInput
+        ? dataSubjectCategoriesInput.split(',').map(s => sanitizeInput(s.trim())).filter(Boolean)
+        : undefined,
+      involvesSensitiveData,
+      likelyConsequences: likelyConsequences ? sanitizeInput(likelyConsequences) : undefined,
+      mitigationMeasures: mitigationMeasures ? sanitizeInput(mitigationMeasures) : undefined,
+      dpoContact: (dpoName || dpoEmail)
+        ? {
+            name: sanitizeInput(dpoName),
+            email: sanitizeInput(dpoEmail),
+            phone: dpoPhone ? sanitizeInput(dpoPhone) : undefined,
+          }
+        : undefined,
+      isPhasedReport: isPhasedReport || undefined,
+      supplementsReportId: supplementsReportId ? sanitizeInput(supplementsReportId) : undefined,
       status,
       initialActions: initialActions ? sanitizeInput(initialActions) : undefined,
       attachments: attachments.map(file => ({
@@ -700,6 +780,145 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                 </select>
               </div>
               
+              <div>
+                <label htmlFor="approximateRecordCount" className='ndpr-form-field__label'>
+                  Approximate Number of Records Concerned
+                </label>
+                <input
+                  type="text"
+                  id="approximateRecordCount"
+                  value={approximateRecordCount}
+                  onChange={e => setApproximateRecordCount(e.target.value)}
+                  placeholder="e.g. 5000"
+                  className='ndpr-form-field__input'
+                />
+                <p className="text-xs ndpr-text-muted mt-1">Required for the NDPC report (NDPA Section 40(2)).</p>
+              </div>
+
+              <div>
+                <label htmlFor="dataSubjectCategories" className='ndpr-form-field__label'>
+                  Categories of Data Subjects Affected
+                </label>
+                <input
+                  type="text"
+                  id="dataSubjectCategories"
+                  value={dataSubjectCategoriesInput}
+                  onChange={e => setDataSubjectCategoriesInput(e.target.value)}
+                  placeholder="e.g. customers, employees, minors"
+                  className='ndpr-form-field__input'
+                />
+                <p className="text-xs ndpr-text-muted mt-1">Comma-separated. Required for the NDPC report (NDPA Section 40(2)).</p>
+              </div>
+
+              <div className="md:col-span-2 flex items-center">
+                <input
+                  id="involvesSensitiveData"
+                  type="checkbox"
+                  checked={involvesSensitiveData}
+                  onChange={e => setInvolvesSensitiveData(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
+                />
+                <label htmlFor="involvesSensitiveData" className="ml-2 text-sm ndpr-text-muted">
+                  Sensitive personal data (NDPA Section 30) is involved
+                </label>
+              </div>
+
+              <div className="md:col-span-2">
+                <label htmlFor="likelyConsequences" className='ndpr-form-field__label'>
+                  Likely Consequences for Data Subjects
+                </label>
+                <textarea
+                  id="likelyConsequences"
+                  value={likelyConsequences}
+                  onChange={e => setLikelyConsequences(e.target.value)}
+                  placeholder="e.g. identity theft, financial loss, reputational damage, discrimination"
+                  rows={3}
+                  className={resolveClass('ndpr-form-field__input', cn.textarea, unstyled)}
+                />
+                <p className="text-xs ndpr-text-muted mt-1">Required content for NDPC report and Section 40(3) communications to data subjects.</p>
+              </div>
+
+              <div className="md:col-span-2">
+                <label htmlFor="mitigationMeasures" className='ndpr-form-field__label'>
+                  Mitigation Measures
+                </label>
+                <textarea
+                  id="mitigationMeasures"
+                  value={mitigationMeasures}
+                  onChange={e => setMitigationMeasures(e.target.value)}
+                  placeholder="Measures taken or proposed to mitigate possible adverse effects (NDPA Section 40(3))"
+                  rows={3}
+                  className={resolveClass('ndpr-form-field__input', cn.textarea, unstyled)}
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <h4 className="ndpr-section-heading text-sm mt-4">Data Protection Officer (NDPC contact)</h4>
+                <p className="text-xs ndpr-text-muted mb-2">Defaults to organisation-level DPO if left blank.</p>
+              </div>
+
+              <div>
+                <label htmlFor="dpoName" className='ndpr-form-field__label'>DPO Name</label>
+                <input
+                  type="text"
+                  id="dpoName"
+                  value={dpoName}
+                  onChange={e => setDpoName(e.target.value)}
+                  className='ndpr-form-field__input'
+                />
+              </div>
+
+              <div>
+                <label htmlFor="dpoEmail" className='ndpr-form-field__label'>DPO Email</label>
+                <input
+                  type="email"
+                  id="dpoEmail"
+                  value={dpoEmail}
+                  onChange={e => setDpoEmail(e.target.value)}
+                  className='ndpr-form-field__input'
+                />
+              </div>
+
+              <div>
+                <label htmlFor="dpoPhone" className='ndpr-form-field__label'>DPO Phone</label>
+                <input
+                  type="tel"
+                  id="dpoPhone"
+                  value={dpoPhone}
+                  onChange={e => setDpoPhone(e.target.value)}
+                  className='ndpr-form-field__input'
+                />
+              </div>
+
+              <div className="md:col-span-2 flex items-center mt-2">
+                <input
+                  id="isPhasedReport"
+                  type="checkbox"
+                  checked={isPhasedReport}
+                  onChange={e => setIsPhasedReport(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
+                />
+                <label htmlFor="isPhasedReport" className="ml-2 text-sm ndpr-text-muted">
+                  This is a phased / interim report (Section 40(2) — complete info not yet available)
+                </label>
+              </div>
+
+              {isPhasedReport && (
+                <div className="md:col-span-2">
+                  <label htmlFor="supplementsReportId" className='ndpr-form-field__label'>
+                    Supplements Report ID (if applicable)
+                  </label>
+                  <input
+                    type="text"
+                    id="supplementsReportId"
+                    value={supplementsReportId}
+                    onChange={e => setSupplementsReportId(e.target.value)}
+                    placeholder="Prior report ID this report supplements"
+                    className='ndpr-form-field__input'
+                  />
+                </div>
+              )}
+
               <div className="md:col-span-2">
                 <label htmlFor="initialActions" className='ndpr-form-field__label'>
                   Initial Actions Taken
@@ -715,7 +934,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
               </div>
             </div>
           </div>
-          
+
           {/* Attachments */}
           {allowAttachments && (
             <div>

@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.5.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.1...v3.5.2) (2026-05-23)
+
+### ⚠️ Legal correctness — please re-review generated artifacts
+
+3.5.2 corrects NDPA 2023 section citations across the toolkit against the gazetted text of the Act. If you embedded any pre-3.5.2 output (privacy policy text, DPIA labels, breach report templates) in a regulatory submission, please regenerate or manually update the citations. See the migration table below.
+
+### Bug Fixes (legal correctness)
+
+* **dsr:** Right citations now follow NDPA Part VI as gazetted — access = Section 34(1)(a)–(b), rectification = Section 34(1)(c), erasure = Section 34(1)(d) + 34(2), restriction = Section 34(1)(e), withdraw consent = Section 35, object = Section 36, automated decisions = Section 37, portability = Section 38. Previously cited Sections 30–36 in a way that did not match the Act.
+* **dpia:** DPIA + NDPC prior-consultation citations corrected from Section 38/39 to **Section 28** (which covers both per Section 28(1) and 28(2)).
+* **cross-border:** Transfer-mechanism citations now follow NDPA Part VIII — adequacy decision = Section 42, SCCs / BCRs = Section 41(1)(a), NDPC-approved instruments = Section 42(5), and all derogations = Section 43(1)(a)–(f). Previously cited Sections 41–45 in a way that did not match the Act.
+* **lawful-basis, breach:** Sensitive personal data citation corrected from Section 27 to **Section 30**.
+* **policy:** Privacy notice provisions now cite Section 27 (provision of information) rather than Section 29 (controller obligations).
+* **country-adequacy:** Removed fabricated NDPC adequacy claims. NDPC has not (as of publication) published a Section 42 adequacy list. The 22 entries previously labelled `recognizedBy: 'NDPC'` are now `recognizedBy: 'self-assessment'` with a clear disclaimer in the module header.
+* **dsr (types):** DSRType union extends with `'withdraw_consent'` to reflect the explicit Section 35 right.
+
+### Features
+
+* **legal-notice:** New `LEGAL_DISCLAIMER_SHORT`, `LEGAL_DISCLAIMER_LONG`, and `legalDisclaimerBlock()` exports (from `/`, `/core`, `/server`), plus a `<LegalNotice>` component. Injected into all generated artifacts (HTML / Markdown / DOCX / PDF policy exports, regulatory breach report output, DPIA report footer, breach form preview).
+* **breach (NDPC report content):** `BreachReport` / `BreachFormSubmission` extended with the fields the NDPC actually requires under Section 40(2)–(3) — `approximateRecordCount`, `dataSubjectCategories`, `likelyConsequences`, `mitigationMeasures`, `dpoContact`, `isPhasedReport`, `supplementsReportId`. `BreachReportForm` now collects them; `RegulatoryReportGenerator` includes them in the printed NDPC report.
+* **core:** `StorageAdapter` is now re-exported from `/core` for ergonomics (the concrete adapters still live in `/adapters`).
+
+### Build / packaging
+
+* **build:** Sourcemaps are no longer published. Pass `NDPR_SOURCEMAPS=1` to emit them for local debugging. Cuts the published tarball by ~3 MB.
+* **build:** `dist/` is no longer tracked in git. CI rebuilds from source on every publish.
+* **packaging:** Workspace `packages/ndpr-toolkit/package.json` exports now match the root manifest (drops accidental `-entry` suffixes that pointed at non-existent files). Workspace tsup config also aligned.
+* **packaging:** README is now synced from the repo root via `prepublishOnly`, with absolute image URLs so npm renders the hero correctly.
+
+### Release pipeline
+
+* **publish workflow:** Now publishes with `--provenance` (sigstore attestation) and checks out the tagged commit (not main HEAD).
+* **repo:** `main` is now branch-protected — PRs + 1 approval + green CI required, no force-push, no deletions.
+
+### Docs
+
+* **README:** Fixed broken code examples — `Consent.Provider` uses `onChange` (not `onSave`); `getComplianceScore` example now includes all 8 required module inputs; `StorageAdapter` re-export documented.
+
+### Migration table — old → new NDPA citation
+
+| Concept | Old (pre-3.5.2) | Correct (3.5.2+) |
+|---|---|---|
+| Right of access | Section 30 | Section 34(1)(a)–(b) |
+| Right to rectification | Section 31 | Section 34(1)(c) |
+| Right to erasure | Section 32 | Section 34(1)(d), Section 34(2) |
+| Right to restrict processing | Section 33 | Section 34(1)(e) |
+| Right to portability | Section 34 | Section 38 |
+| Right to object | Section 35 | Section 36 |
+| Right to automated-decision opt-out | Section 36 | Section 37 |
+| Right to withdraw consent | (missing) | Section 35 |
+| DPIA + prior consultation | Section 38 / 39 | Section 28 |
+| Sensitive personal data | Section 27 | Section 30 |
+| Cross-border adequacy | Section 41 | Section 42 |
+| Cross-border SCCs / BCRs | Section 42 / 43 | Section 41(1)(a) |
+| Cross-border derogations | Section 45(a)–(e) | Section 43(1)(a)–(f) |
+| Right to complain to NDPC | (missing) | Section 46(1) |
+
+> The toolkit produces guidance artifacts only — not legal advice. Verify with your DPO or qualified Nigerian privacy counsel before relying on any output for a regulatory submission.
+
 ## [3.5.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.0...v3.5.1) (2026-05-03)
 
 

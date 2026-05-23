@@ -2,10 +2,15 @@
  * Country adequacy determinations for cross-border data transfers
  * under the Nigeria Data Protection Act (NDPA).
  *
- * This module provides a reference database of adequacy statuses for countries
- * that Nigerian businesses commonly transfer personal data to, along with
- * helper functions for querying adequacy and determining whether NDPC approval
- * is required for a given destination.
+ * IMPORTANT — Not legal advice and not an NDPC adequacy list.
+ *
+ * As of publication, the Nigeria Data Protection Commission has not published
+ * a formal list of countries it deems adequate under NDPA Section 42. The
+ * Commission is empowered to issue such guidelines under Section 42(3), but
+ * has not yet done so. The entries in this map are *self-assessments* by the
+ * toolkit maintainers based on each country's data-protection framework, and
+ * are intended for guidance only. Verify the current NDPC position and consult
+ * counsel before relying on any entry here for a transfer impact assessment.
  */
 
 /**
@@ -27,8 +32,16 @@ export interface CountryAdequacy {
   isoCode: string;
   /** Adequacy status for data protection purposes */
   adequacyStatus: CountryAdequacyStatus;
-  /** Authority or framework that recognized the adequacy (e.g. 'NDPC', 'EU') */
-  recognizedBy: string;
+  /**
+   * Source of the adequacy determination.
+   * - 'NDPC' — formally listed by the Nigeria Data Protection Commission under
+   *   NDPA Section 42 (no such list has been published at time of writing).
+   * - 'EU' — recognized as adequate by EU member-state membership / GDPR.
+   * - 'UK' — recognized by the UK ICO.
+   * - 'self-assessment' — toolkit maintainers' guidance assessment. Verify
+   *   independently and confirm with your DPO/counsel before relying on it.
+   */
+  recognizedBy: 'NDPC' | 'EU' | 'UK' | 'self-assessment';
   /** Additional notes about the adequacy determination */
   notes: string;
   /** Date the adequacy determination was last reviewed */
@@ -39,9 +52,13 @@ export interface CountryAdequacy {
  * Database of country adequacy determinations for cross-border data transfers.
  *
  * This map is keyed by ISO 3166-1 alpha-2 country code (uppercase).
- * Statuses reflect general assessments based on each country's data protection
- * framework and are provided for guidance purposes. Organizations should verify
- * current NDPC guidance before relying on these determinations.
+ *
+ * IMPORTANT — Statuses with `recognizedBy: 'self-assessment'` are this toolkit's
+ * guidance assessments based on each country's data-protection framework. They
+ * are NOT NDPC-issued adequacy decisions. NDPC has not (as of publication)
+ * published any formal Section 42 adequacy list. Organisations transferring
+ * personal data outside Nigeria should perform their own transfer impact
+ * assessment and consult counsel before relying on any entry here.
  */
 export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
   // --- EU/EEA Member States (adequate due to GDPR) ---
@@ -292,7 +309,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'United Kingdom',
     isoCode: 'GB',
     adequacyStatus: 'adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes: 'Protected by UK GDPR and the Data Protection Act 2018. EU adequacy decision granted post-Brexit.',
     lastUpdated: '2024-01-01',
   },
@@ -302,7 +319,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'United States',
     isoCode: 'US',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'No comprehensive federal data protection law. Adequacy depends on transfer mechanism used (e.g. EU-US Data Privacy Framework, standard contractual clauses). Sector-specific laws exist (HIPAA, CCPA, etc.).',
     lastUpdated: '2024-01-01',
@@ -311,7 +328,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Canada',
     isoCode: 'CA',
     adequacyStatus: 'adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Protected by PIPEDA (Personal Information Protection and Electronic Documents Act) and provincial privacy laws. Recognized as adequate by the EU.',
     lastUpdated: '2024-01-01',
@@ -322,7 +339,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'South Africa',
     isoCode: 'ZA',
     adequacyStatus: 'adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Protected by POPIA (Protection of Personal Information Act, 2013). Comprehensive data protection framework with an independent Information Regulator.',
     lastUpdated: '2024-01-01',
@@ -331,7 +348,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Ghana',
     isoCode: 'GH',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Data Protection Act 2012 (Act 843) establishes a data protection framework. Enforcement capacity is still developing.',
     lastUpdated: '2024-01-01',
@@ -340,7 +357,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Kenya',
     isoCode: 'KE',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Data Protection Act 2019 provides a modern framework. The Office of the Data Protection Commissioner is operational but still maturing.',
     lastUpdated: '2024-01-01',
@@ -349,7 +366,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Rwanda',
     isoCode: 'RW',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Law No. 058/2021 on the Protection of Personal Data and Privacy. Framework is relatively new.',
     lastUpdated: '2024-01-01',
@@ -358,7 +375,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Egypt',
     isoCode: 'EG',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Personal Data Protection Law No. 151 of 2020. Implementation and enforcement are still in early stages.',
     lastUpdated: '2024-01-01',
@@ -367,7 +384,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Tanzania',
     isoCode: 'TZ',
     adequacyStatus: 'not_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes: 'No comprehensive data protection legislation in force.',
     lastUpdated: '2024-01-01',
   },
@@ -375,7 +392,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Uganda',
     isoCode: 'UG',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Data Protection and Privacy Act 2019 provides a framework, but enforcement capacity is limited.',
     lastUpdated: '2024-01-01',
@@ -384,7 +401,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Senegal',
     isoCode: 'SN',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Law No. 2008-12 on the Protection of Personal Data. One of the earlier African data protection laws.',
     lastUpdated: '2024-01-01',
@@ -393,7 +410,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Morocco',
     isoCode: 'MA',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Law No. 09-08 on the Protection of Individuals with Regard to the Processing of Personal Data (2009). Recognized as adequate by the EU.',
     lastUpdated: '2024-01-01',
@@ -402,7 +419,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Mauritius',
     isoCode: 'MU',
     adequacyStatus: 'adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Data Protection Act 2017 provides a comprehensive framework modelled on international standards.',
     lastUpdated: '2024-01-01',
@@ -413,7 +430,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'China',
     isoCode: 'CN',
     adequacyStatus: 'not_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Personal Information Protection Law (PIPL) enacted in 2021 but government access provisions and limited independent oversight raise concerns. Transfers require security assessments or standard contracts.',
     lastUpdated: '2024-01-01',
@@ -422,7 +439,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'India',
     isoCode: 'IN',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Digital Personal Data Protection Act 2023 enacted. Implementation rules and enforcement mechanisms are still being finalized.',
     lastUpdated: '2024-01-01',
@@ -431,7 +448,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Singapore',
     isoCode: 'SG',
     adequacyStatus: 'adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Personal Data Protection Act 2012 (PDPA) provides a robust framework. Strong enforcement by the PDPC.',
     lastUpdated: '2024-01-01',
@@ -460,7 +477,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'United Arab Emirates',
     isoCode: 'AE',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Federal Decree-Law No. 45 of 2021 on Personal Data Protection. DIFC and ADGM free zones have their own data protection regulations with stronger frameworks.',
     lastUpdated: '2024-01-01',
@@ -469,7 +486,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Saudi Arabia',
     isoCode: 'SA',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Personal Data Protection Law (Royal Decree M/19, 2021). Framework is new and enforcement is still developing.',
     lastUpdated: '2024-01-01',
@@ -489,7 +506,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Brazil',
     isoCode: 'BR',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Lei Geral de Protecao de Dados (LGPD, 2020) provides a comprehensive framework. The ANPD is actively enforcing.',
     lastUpdated: '2024-01-01',
@@ -509,7 +526,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Australia',
     isoCode: 'AU',
     adequacyStatus: 'partially_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Privacy Act 1988 provides protection but does not fully align with GDPR-level standards. Reform efforts are ongoing.',
     lastUpdated: '2024-01-01',
@@ -538,7 +555,7 @@ export const COUNTRY_ADEQUACY_MAP: Record<string, CountryAdequacy> = {
     country: 'Russia',
     isoCode: 'RU',
     adequacyStatus: 'not_adequate',
-    recognizedBy: 'NDPC',
+    recognizedBy: 'self-assessment',
     notes:
       'Federal Law on Personal Data (No. 152-FZ). Data localization requirements and government access concerns.',
     lastUpdated: '2024-01-01',

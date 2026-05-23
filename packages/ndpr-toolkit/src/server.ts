@@ -215,6 +215,16 @@ export {
 export { getComplianceScore } from './utils/compliance-score';
 
 // ---------------------------------------------------------------------------
+// Legal notice (pure string constants — safe everywhere, including PDFs/DOCX)
+// ---------------------------------------------------------------------------
+
+export {
+  LEGAL_DISCLAIMER_SHORT,
+  LEGAL_DISCLAIMER_LONG,
+  legalDisclaimerBlock,
+} from './utils/legal-notice';
+
+// ---------------------------------------------------------------------------
 // i18n locales — pure data, useful for server-rendered emails / PDFs
 // ---------------------------------------------------------------------------
 

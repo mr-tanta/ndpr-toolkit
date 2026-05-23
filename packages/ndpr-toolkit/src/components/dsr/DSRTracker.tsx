@@ -226,7 +226,8 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
       restriction: counts.restriction || 0,
       portability: counts.portability || 0,
       objection: counts.objection || 0,
-      automated_decision_making: counts.automated_decision_making || 0
+      automated_decision_making: counts.automated_decision_making || 0,
+      withdraw_consent: counts.withdraw_consent || 0
     };
   };
   
@@ -257,7 +258,8 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
       restriction: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
       portability: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
       objection: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-      automated_decision_making: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200'
+      automated_decision_making: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
+      withdraw_consent: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200'
     };
 
     const typeLabels: Record<DSRType, string> = {
@@ -268,7 +270,8 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
       restriction: 'Restriction',
       portability: 'Portability',
       objection: 'Objection',
-      automated_decision_making: 'Automated Decision-Making'
+      automated_decision_making: 'Automated Decision-Making',
+      withdraw_consent: 'Withdraw Consent'
     };
 
     return (
