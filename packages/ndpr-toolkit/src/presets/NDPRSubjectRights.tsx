@@ -117,6 +117,32 @@ export interface NDPRSubjectRightsProps {
    * response). Receives the underlying error or Response.
    */
   onSubmitError?: (ctx: { error?: unknown; response?: Response }) => void;
+
+  /**
+   * Called when a `submitTo` POST succeeds (2xx response). Receives the
+   * `Response` object, the submitted `DSRFormSubmission` payload, and the
+   * parsed JSON body if the server returned valid JSON. Use this to
+   * display a server-generated reference number, redirect the user, or
+   * trigger analytics.
+   *
+   * The `body` field is `undefined` if the response had no body or the
+   * body was not valid JSON. It is typed `unknown` to force consumers to
+   * narrow it themselves before reading fields.
+   *
+   * @example
+   *   <NDPRSubjectRights
+   *     submitTo="/api/dsr"
+   *     onSubmitSuccess={({ response, data, body }) => {
+   *       const ref = (body as { referenceId?: string })?.referenceId;
+   *       if (ref) router.push(`/dsr-confirmation?ref=${ref}`);
+   *     }}
+   *   />
+   */
+  onSubmitSuccess?: (ctx: {
+    response: Response;
+    data: DSRFormSubmission;
+    body?: unknown;
+  }) => void;
 }
 
 export const NDPRSubjectRights: React.FC<NDPRSubjectRightsProps> = ({
@@ -128,6 +154,7 @@ export const NDPRSubjectRights: React.FC<NDPRSubjectRightsProps> = ({
   submitTo,
   submitOptions,
   onSubmitError,
+  onSubmitSuccess,
 }) => {
   const handleSubmit = async (data: DSRFormSubmission) => {
     if (submitTo) {
@@ -145,6 +172,19 @@ export const NDPRSubjectRights: React.FC<NDPRSubjectRightsProps> = ({
         });
         if (!response.ok) {
           onSubmitError?.({ response });
+        } else if (onSubmitSuccess) {
+          // Parse the JSON body if the server returned one. Many backends
+          // return an empty body or 204 — leave `body` undefined in that
+          // case rather than throwing.
+          let body: unknown;
+          try {
+            const text = await response.clone().text();
+            if (text) body = JSON.parse(text);
+          } catch {
+            // Body wasn't valid JSON. Pass undefined; consumers can
+            // inspect `response` directly if they need raw access.
+          }
+          onSubmitSuccess({ response, data, body });
         }
       } catch (error) {
         onSubmitError?.({ error });

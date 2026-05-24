@@ -731,15 +731,36 @@ const {
       <section id="accessibility" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Accessibility</h2>
         <p className="text-muted-foreground mb-4 leading-relaxed">
-          The Consent Management components are built with accessibility in mind:
+          The ConsentBanner is keyboard-accessible, screen-reader friendly, and respects user motion preferences. The following guarantees are baked into the component itself — you do not need to add ARIA attributes or wire up focus handling.
         </p>
         <ul className="space-y-2 text-muted-foreground leading-relaxed list-disc pl-6">
-          <li>All form elements have proper labels and ARIA attributes</li>
-          <li>Focus states are clearly visible</li>
-          <li>Color contrast meets WCAG 2.1 AA standards</li>
-          <li>Keyboard navigation is fully supported</li>
-          <li>The banner is announced to screen readers when it appears</li>
+          <li>
+            <strong className="text-foreground">Dialog semantics:</strong> the banner renders with <code className="bg-muted px-1 rounded">role=&quot;dialog&quot;</code>, <code className="bg-muted px-1 rounded">aria-labelledby</code> pointing at the title and <code className="bg-muted px-1 rounded">aria-describedby</code> pointing at the description. When <code className="bg-muted px-1 rounded">variant=&quot;modal&quot;</code> or <code className="bg-muted px-1 rounded">position=&quot;center&quot;</code>, <code className="bg-muted px-1 rounded">aria-modal=&quot;true&quot;</code> is set so screen readers treat it as a true modal.
+          </li>
+          <li>
+            <strong className="text-foreground">Focus trap and restore:</strong> the shared <code className="bg-muted px-1 rounded">useFocusTrap</code> hook (3.5.4+) captures the element that had focus before the banner opened, moves focus into the banner, cycles Tab and Shift+Tab within it, and restores focus to the original element on close (WCAG 2.4.3).
+          </li>
+          <li>
+            <strong className="text-foreground">Escape dismisses:</strong> pressing Escape while the banner is open rejects all non-required consents (firing an analytics <code className="bg-muted px-1 rounded">dismissed</code> event), closes the banner, and triggers focus restoration.
+          </li>
+          <li>
+            <strong className="text-foreground">Reduced motion:</strong> the bundled <code className="bg-muted px-1 rounded">styles.css</code> includes a <code className="bg-muted px-1 rounded">@media (prefers-reduced-motion: reduce)</code> block that neutralises animations and transitions on every <code className="bg-muted px-1 rounded">.ndpr-*</code> element (WCAG 2.3.3). Users with vestibular-motion sensitivity see the banner appear without movement.
+          </li>
+          <li>
+            <strong className="text-foreground">Labelled controls:</strong> every checkbox in the customise panel has an associated <code className="bg-muted px-1 rounded">&lt;label htmlFor&gt;</code>, and required options are marked with a visible asterisk alongside the disabled checkbox.
+          </li>
+          <li>
+            <strong className="text-foreground">Accessible button names:</strong> Accept All, Reject All, Customize, Save Preferences and Back are real <code className="bg-muted px-1 rounded">&lt;button&gt;</code> elements with text content — no icon-only buttons that require <code className="bg-muted px-1 rounded">aria-label</code>.
+          </li>
         </ul>
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-2">Keyboard interaction</h3>
+        <p className="text-muted-foreground leading-relaxed mb-4">
+          Tab and Shift+Tab cycle through Accept All, Reject All, and Customize (and the checkboxes plus Save / Back when the panel is open) without escaping the banner. Enter activates the focused button. Escape closes the banner and is treated as &quot;reject all non-required&quot;.
+        </p>
+        <h3 className="text-lg font-semibold text-foreground mt-6 mb-2">If you customise the styling</h3>
+        <p className="text-muted-foreground leading-relaxed">
+          The toolkit ships the ARIA attributes, focus-trap logic, Escape handling and the reduced-motion CSS — these continue to work regardless of <code className="bg-muted px-1 rounded">unstyled</code> or <code className="bg-muted px-1 rounded">classNames</code>. However, when you opt into <code className="bg-muted px-1 rounded">unstyled</code> or override <code className="bg-muted px-1 rounded">classNames</code>, you become responsible for preserving visible focus states, sufficient color contrast (WCAG AA: 4.5:1 for text, 3:1 for UI components), spacing, and any motion-sensitive transitions you add on top.
+        </p>
       </section>
 
       <section id="help-resources" className="mb-10">
