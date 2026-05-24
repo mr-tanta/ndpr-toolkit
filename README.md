@@ -74,14 +74,26 @@ That's it. NDPA-compliant consent with server-side persistence in under 20 lines
 
 ## Install
 
+Pick your package manager:
+
 ```bash
+# pnpm
 pnpm add @tantainnovative/ndpr-toolkit
+
+# Bun
+bun add @tantainnovative/ndpr-toolkit
+
+# npm
+npm install @tantainnovative/ndpr-toolkit
+
+# Yarn
+yarn add @tantainnovative/ndpr-toolkit
 ```
 
 Add the stylesheet import once in your app entry so components render with default styles:
 
 ```ts
-// app/layout.tsx (Next.js App Router) or src/main.tsx (Vite/CRA)
+// app/layout.tsx (Next.js App Router) or src/main.tsx (Vite/CRA/Bun)
 import "@tantainnovative/ndpr-toolkit/styles";
 ```
 
@@ -90,7 +102,11 @@ The stylesheet is opinionated but token-driven — override any `--ndpr-*` CSS c
 Install UI peer dependencies (only needed if you use the higher-level Radix-based components from `/presets`):
 
 ```bash
+# pnpm
 pnpm add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
+
+# Bun
+bun add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
 ```
 
 Or scaffold instantly with the CLI:

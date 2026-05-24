@@ -61,7 +61,7 @@ jobs:
 
       - name: Verify entry points
         run: |
-          for entry in index core hooks adapters presets consent dsr dpia breach policy lawful-basis cross-border ropa unstyled; do
+          for entry in index core hooks adapters presets consent dsr dpia breach policy lawful-basis cross-border ropa unstyled presets-consent presets-dsr presets-policy; do
             for ext in js mjs d.ts; do
               if [ ! -f "dist/$entry.$ext" ]; then
                 echo "MISSING: dist/$entry.$ext"
@@ -69,4 +69,4 @@ jobs:
               fi
             done
           done
-          echo "All 14 entry points verified (js + mjs + d.ts)"
+          echo "All 17 entry points verified (js + mjs + d.ts)"

@@ -24,6 +24,9 @@ const CLIENT_ENTRIES = [
   "cross-border",
   "ropa",
   "presets",
+  "presets-consent",
+  "presets-dsr",
+  "presets-policy",
   "unstyled",
 ];
 
@@ -43,6 +46,11 @@ export default defineConfig({
     ropa: `${PKG}/ropa-entry.ts`,
     adapters: `${PKG}/adapters-entry.ts`,
     presets: `${PKG}/presets-entry.ts`,
+    // Per-preset subpath entries (3.6.0) — let consumers import only the
+    // preset they need without dragging the full /presets barrel.
+    "presets-consent": `${PKG}/presets-consent.ts`,
+    "presets-dsr": `${PKG}/presets-dsr.ts`,
+    "presets-policy": `${PKG}/presets-policy.ts`,
     // /unstyled lives at root so it can be a thin barrel re-exporting the
     // inner package's curated unstyled API while keeping the same public
     // entry path consumers expect.

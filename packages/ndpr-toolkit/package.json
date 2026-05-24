@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "3.5.5",
+  "version": "3.6.0",
   "description": "React and TypeScript compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -81,6 +81,21 @@
       "import": "./dist/presets.mjs",
       "require": "./dist/presets.js"
     },
+    "./presets/consent": {
+      "types": "./dist/presets-consent.d.ts",
+      "import": "./dist/presets-consent.mjs",
+      "require": "./dist/presets-consent.js"
+    },
+    "./presets/dsr": {
+      "types": "./dist/presets-dsr.d.ts",
+      "import": "./dist/presets-dsr.mjs",
+      "require": "./dist/presets-dsr.js"
+    },
+    "./presets/policy": {
+      "types": "./dist/presets-policy.d.ts",
+      "import": "./dist/presets-policy.mjs",
+      "require": "./dist/presets-policy.js"
+    },
     "./styles": {
       "style": "./dist/styles.css",
       "sass": "./dist/styles.css",
@@ -129,6 +144,15 @@
       ],
       "presets": [
         "./dist/presets.d.ts"
+      ],
+      "presets/consent": [
+        "./dist/presets-consent.d.ts"
+      ],
+      "presets/dsr": [
+        "./dist/presets-dsr.d.ts"
+      ],
+      "presets/policy": [
+        "./dist/presets-policy.d.ts"
       ],
       "unstyled": [
         "./dist/unstyled.d.ts"

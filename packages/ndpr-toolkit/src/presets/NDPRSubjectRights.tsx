@@ -78,6 +78,45 @@ export interface NDPRSubjectRightsProps {
   classNames?: DSRRequestFormClassNames;
   unstyled?: boolean;
   onSubmit?: (data: DSRFormSubmission) => void;
+
+  /**
+   * Public-form mode. Use when the form should submit to your existing
+   * backend workflow instead of being state-managed by an adapter.
+   *
+   * When `submitTo` is set:
+   * - the form does NOT require an `adapter`
+   * - on submit, the toolkit POSTs the JSON-serialised `DSRFormSubmission`
+   *   to this URL (with `Content-Type: application/json`)
+   * - your `onSubmit` callback still fires (after the POST resolves)
+   * - submit failures are surfaced via `onSubmitError`
+   *
+   * For more control over headers, credentials, or retry behaviour, build
+   * an `apiAdapter` (which now supports CSRF, retry, and error hooks in
+   * 3.6.0) and pass that as `adapter` instead. `submitTo` is the
+   * fire-and-forget shortcut for public forms.
+   *
+   * @example
+   *   <NDPRSubjectRights submitTo="/api/dsr" />
+   */
+  submitTo?: string;
+
+  /**
+   * Fetch options for the `submitTo` POST. Useful for adding `credentials`
+   * (cookies/auth), `X-CSRF-Token`, or any other header your backend
+   * requires. Ignored unless `submitTo` is set.
+   *
+   * @default { credentials: 'same-origin' }
+   */
+  submitOptions?: {
+    headers?: Record<string, string> | (() => Record<string, string>);
+    credentials?: RequestCredentials;
+  };
+
+  /**
+   * Called when a `submitTo` POST fails (network error or non-2xx
+   * response). Receives the underlying error or Response.
+   */
+  onSubmitError?: (ctx: { error?: unknown; response?: Response }) => void;
 }
 
 export const NDPRSubjectRights: React.FC<NDPRSubjectRightsProps> = ({
@@ -86,9 +125,33 @@ export const NDPRSubjectRights: React.FC<NDPRSubjectRightsProps> = ({
   classNames,
   unstyled,
   onSubmit = () => {},
+  submitTo,
+  submitOptions,
+  onSubmitError,
 }) => {
-  const handleSubmit = (data: DSRFormSubmission) => {
-    if (adapter) adapter.save(data);
+  const handleSubmit = async (data: DSRFormSubmission) => {
+    if (submitTo) {
+      // Public-form mode: fire-and-forget POST to the consumer's backend.
+      // No local state, no adapter required — just a single network call.
+      const headers = typeof submitOptions?.headers === 'function'
+        ? submitOptions.headers()
+        : submitOptions?.headers ?? {};
+      try {
+        const response = await fetch(submitTo, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...headers },
+          credentials: submitOptions?.credentials ?? 'same-origin',
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          onSubmitError?.({ response });
+        }
+      } catch (error) {
+        onSubmitError?.({ error });
+      }
+    } else if (adapter) {
+      adapter.save(data);
+    }
     onSubmit(data);
   };
 
