@@ -71,11 +71,17 @@ jobs:
           echo "Version verified: $PKG_VERSION"
 
       # Authentication: npm Trusted Publishing via OIDC.
-      # The workflow already requests `id-token: write` (line 12) and Setup
-      # Node.js wrote a `.npmrc` pointing at the official registry, so pnpm
-      # publish exchanges the GitHub OIDC token for a short-lived npm access
-      # token automatically — no NPM_TOKEN secret needed. The publisher must
-      # be registered on the npm package page first:
+      # Uses `npm publish` (not `pnpm publish`) because pnpm doesn't yet
+      # implement npm's `/auth/oidc` token-exchange endpoint. `npm publish`
+      # picks up the GitHub OIDC token via the `id-token: write` permission
+      # above and the registry .npmrc that actions/setup-node wrote, then
+      # exchanges it for a short-lived npm token. No NPM_TOKEN needed.
+      #
+      # Requires a registered trusted publisher at:
       #   https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit/access
+      #
+      # `--provenance` adds the sigstore attestation; both pnpm and npm
+      # publish support that flag identically.
       - name: Publish to npm (Trusted Publishing + provenance attestation)
-        run: pnpm publish --no-git-checks --access public --provenance
+        working-directory: .
+        run: npm publish --access public --provenance
