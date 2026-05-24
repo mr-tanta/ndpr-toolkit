@@ -460,14 +460,17 @@ export function HomePageClient() {
                   gap: 'var(--space-3)',
                   marginTop: 'var(--space-8)',
                 }}>
-                  <SiteButton variant="primary" size="lg" href="/docs">
-                    Get Started
+                  <SiteButton variant="primary" size="lg" href="/score">
+                    Free NDPA Audit · 5 min
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
                       <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
                     </svg>
                   </SiteButton>
+                  <SiteButton variant="secondary" size="lg" href="/docs">
+                    Get Started
+                  </SiteButton>
                   <SiteButton
-                    variant="secondary"
+                    variant="ghost"
                     size="lg"
                     href="https://github.com/mr-tanta/ndpr-toolkit"
                     icon={
