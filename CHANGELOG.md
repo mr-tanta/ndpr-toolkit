@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.6.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.7.0...v3.6.2) (2026-05-24)
+
+Compressed Phase D + E + F patch — companion-CLI templates, per-module StackBlitz scaffolds, and a real backend for the `/score` lead-magnet. Main `@tantainnovative/ndpr-toolkit` library has no code changes; the bump is for changelog alignment.
+
+### Companion packages
+
+- **`@tantainnovative/create-ndpr@0.3.0`** — the 9 remaining route templates now support all three ORM choices via `{{#if ORM=prisma|drizzle|none}}` conditional blocks. Picking `ORM=none` now scaffolds a fully working in-memory app for every endpoint, not just consent:
+  - Next.js routes: dsr, breach, dpia, lawful-basis, cross-border
+  - Express routes: consent, dpia, lawful-basis, cross-border
+- **`create-ndpr@1.0.0` (unscoped alias)** — `packages/create-ndpr-unscoped/PUBLISHING.md` documents the one-time manual publish + Trusted Publisher setup so future updates flow through CI.
+
+### Docs
+
+- **8 per-module StackBlitz scaffolds** under `examples/stackblitz/{consent,dsr,dpia,breach,policy,lawful-basis,cross-border,ropa}/`. Each is a minimal Next.js 15 + React 19 app that demonstrates ONE preset. Boot any of them in StackBlitz / CodeSandbox with one click — no clone, no install. README has a per-module badge table.
+- **Each recipe page** (`/docs/recipes/*`) now has "Open in StackBlitz" + "Open in CodeSandbox" badges pointing at the matching module's scaffold.
+- **`/score` email capture** now uses a real backend (Web3Forms) when `NEXT_PUBLIC_WEB3FORMS_KEY` is set, with the mailto: path preserved as a graceful fallback when the env var is missing or the request fails. Lead emails arrive as structured fields (name, email, org, score, top recommendations) instead of free-form mail-client output.
+
+### No library code changes
+
+`@tantainnovative/ndpr-toolkit` package is unchanged; consumers don't need to upgrade. The version bump keeps the repo, npm, and CHANGELOG in lockstep so the next library feature (3.8.0 with manager-component bundle splitting) lands cleanly.
+
 ## [3.7.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.6.1...v3.7.0) (2026-05-24)
 
 Phase B — Template + Recipe Library. Closes the dev-feedback content gap (feedback items #7 and #9). New API additions are all backward-compatible — 3.6.x consumers upgrade without changes.
