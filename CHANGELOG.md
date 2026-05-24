@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.8.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.6.2...v3.8.0) (2026-05-24)
+
+### Lite (read-only) variants of the heavy Manager components
+
+Three new components — `LawfulBasisTrackerLite`, `ROPAManagerLite`, `CrossBorderTransferManagerLite` — that render the same list-and-summary view as their Full counterparts without the form, validation, write callbacks, or CSV-export utilities. Built for dashboards, audit pages, embedded compliance widgets, and customer-facing transparency pages where users only need to *see* the records.
+
+Exposed at new subpath entries:
+
+```ts
+import { LawfulBasisTrackerLite } from '@tantainnovative/ndpr-toolkit/lawful-basis/lite';
+import { ROPAManagerLite } from '@tantainnovative/ndpr-toolkit/ropa/lite';
+import { CrossBorderTransferManagerLite } from '@tantainnovative/ndpr-toolkit/cross-border/lite';
+```
+
+Bundle deltas (minified + tree-shaken, pre-gzip; **transitive closure** of each subpath):
+
+| Module | Full | Lite | Saved |
+|---|---|---|---|
+| `/lawful-basis` → `/lawful-basis/lite` | 36.7 KB | 12.7 KB | **65%** |
+| `/cross-border` → `/cross-border/lite` | 53.3 KB | 5.6 KB | **89%** |
+| `/ropa` → `/ropa/lite` | 36.9 KB | 13.2 KB | **64%** |
+
+The cross-border Lite saves the most because it does NOT import the 624-row country-adequacy dataset — Lite displays `adequacyStatus` from each transfer record directly instead of recomputing it.
+
+Each Lite component accepts an optional `onActivityClick` / `onRecordClick` / `onTransferClick` callback so consumers can render their own detail view on row click. All other props (`title`, `description`, `unstyled`, `classNames`, `showSummary`, `showComplianceGaps`/`showRiskAlerts`) carry the same names and semantics as the Full versions.
+
+Existing `/lawful-basis`, `/cross-border`, and `/ropa` entries are unchanged. This release is fully additive — no consumers need to migrate.
+
+See the new guide: [Lite vs Full managers](https://ndprtoolkit.com.ng/docs/guides/lite-vs-full).
+
+### Other
+
+- Added `lawful-basis-lite`, `cross-border-lite`, `ropa-lite` to the publish workflow's entry-point verification loop. Total verified entries: 21.
+
 ## [3.6.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.7.0...v3.6.2) (2026-05-24)
 
 Compressed Phase D + E + F patch — companion-CLI templates, per-module StackBlitz scaffolds, and a real backend for the `/score` lead-magnet. Main `@tantainnovative/ndpr-toolkit` library has no code changes; the bump is for changelog alignment.

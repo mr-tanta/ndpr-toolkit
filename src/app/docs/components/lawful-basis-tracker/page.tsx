@@ -183,6 +183,29 @@ type LawfulBasisResult = {
 };`}</code></pre>
       </section>
 
+      <section id="lite-variant" className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Lite variant (read-only)</h2>
+        <p className="mb-4">
+          For read-only surfaces such as dashboards and audit pages, use <code>LawfulBasisTrackerLite</code> from
+          the new <code>/lawful-basis/lite</code> subpath. It renders the same list-and-summary view as the Full
+          component without any Add, Edit, Archive, or CSV-export affordances — and ships at <strong>12.7 KB</strong> instead of
+          36.7 KB (a 65% saving, minified and pre-gzip).
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4"><code className="text-sm font-mono text-foreground">{`import { LawfulBasisTrackerLite } from '@tantainnovative/ndpr-toolkit/lawful-basis/lite';
+
+<LawfulBasisTrackerLite
+  activities={activities}
+  onActivityClick={(activity) => router.push(\`/lawful-basis/\${activity.id}\`)}
+/>`}</code></pre>
+        <p className="mb-0">
+          See the{' '}
+          <Link href="/docs/guides/lite-vs-full" className="text-primary hover:underline">
+            Lite vs Full Managers guide
+          </Link>{' '}
+          for migration notes, side-by-side examples, and the full bundle-size table.
+        </p>
+      </section>
+
       <section id="best-practices" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
         <ul className="list-disc pl-6 space-y-2 text-foreground">

@@ -178,6 +178,31 @@ type TransferAssessmentResult = {
 };`}</code></pre>
       </section>
 
+      <section id="lite-variant" className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Lite variant (read-only)</h2>
+        <p className="mb-4">
+          For read-only transfer surfaces such as compliance dashboards and transparency pages, use{' '}
+          <code>CrossBorderTransferManagerLite</code> from the new <code>/cross-border/lite</code> subpath. It
+          renders the same transfer list and summary as the Full component, with no Add, Edit, or Terminate
+          affordances and — crucially — without importing the 624-row country adequacy dataset. It ships at{' '}
+          <strong>5.6 KB</strong> instead of 53.3 KB (an 89% saving, minified and pre-gzip). Lite reads{' '}
+          <code>transfer.adequacyStatus</code> directly from each record rather than recomputing it.
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4"><code className="text-sm font-mono text-foreground">{`import { CrossBorderTransferManagerLite } from '@tantainnovative/ndpr-toolkit/cross-border/lite';
+
+<CrossBorderTransferManagerLite
+  transfers={transfers}
+  onTransferClick={(transfer) => router.push(\`/cross-border/\${transfer.id}\`)}
+/>`}</code></pre>
+        <p className="mb-0">
+          See the{' '}
+          <Link href="/docs/guides/lite-vs-full" className="text-primary hover:underline">
+            Lite vs Full Managers guide
+          </Link>{' '}
+          for migration notes, side-by-side examples, and the full bundle-size table.
+        </p>
+      </section>
+
       <section id="best-practices" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
         <ul className="list-disc pl-6 space-y-2 text-foreground">

@@ -59,6 +59,7 @@ const navigation: NavItem[] = [
     ),
     children: [
       { title: 'Upgrading from 3.3.x', href: '/docs/guides/upgrading-from-3-3', isNew: true },
+      { title: 'Lite vs Full managers', href: '/docs/guides/lite-vs-full', isNew: true },
       { title: 'Styling Architecture', href: '/docs/guides/styling-architecture', isNew: true },
       { title: 'Server Rendering & RSC', href: '/docs/guides/server-rendering', isNew: true },
       { title: 'NDPA Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
