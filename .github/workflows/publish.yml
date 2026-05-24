@@ -33,6 +33,14 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
+      - name: Upgrade npm to a version that supports Trusted Publishing OIDC
+        # Node 22 ships with npm 10.x; npm Trusted Publishing (the GitHub
+        # OIDC → npm token exchange) requires npm 11.5.1 or later. Without
+        # this step, `npm publish --provenance` signs the sigstore
+        # attestation but never exchanges the OIDC token, then hits the
+        # registry unauthenticated and gets a misleading 404.
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
