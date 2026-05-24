@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/create-ndpr",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI scaffolder for NDPA compliance with @tantainnovative/ndpr-toolkit",
   "license": "MIT",
   "author": {
