@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.6.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.5...v3.6.0) (2026-05-24)
+
+### Features (developer feedback)
+
+This release lands changes flagged by integrating teams using the toolkit in production. All additions are backward-compatible — 3.5.x consumers can upgrade without changes.
+
+* **`apiAdapter` is now production-ready.** Adds `credentials` (defaults to `'same-origin'`, set `'include'` for cross-origin), dynamic `headers` (function form for runtime CSRF token lookup), `loadMethod`/`saveMethod` overrides (e.g. `PUT` for upsert APIs), `unwrap` (transform `{ data: ... }` envelopes), configurable `retry` with exponential backoff and a `shouldRetry` predicate (default: retry on network errors + 5xx, skip 4xx), and `onError`/`onSuccess` hooks for telemetry. The pre-3.6.0 `console.warn` behavior is preserved when no `onError` is configured.
+* **`NDPRConsent` exposes a `copy` prop.** Override `title` / `description` / `acceptAll` / `rejectAll` / `customize` / `save` strings without dropping to the lower-level `<ConsentBanner>` API.
+* **`NDPRSubjectRights` adds public-form `submitTo` mode.** Public sites can POST to their backend instead of being state-managed by an adapter. Pairs with `submitOptions` (credentials, headers) and `onSubmitError`. The state-managed `adapter` mode is unchanged.
+* **Per-preset subpath entries** for bundle-size-sensitive consumers:
+  - `@tantainnovative/ndpr-toolkit/presets/consent` — just `NDPRConsent` (~4KB vs ~8KB for the full barrel)
+  - `@tantainnovative/ndpr-toolkit/presets/dsr` — just `NDPRSubjectRights`
+  - `@tantainnovative/ndpr-toolkit/presets/policy` — just `NDPRPrivacyPolicy`
+  The full `/presets` barrel is unchanged. These are additive narrower entries.
+
+### Docs
+
+* README install block now shows Bun, npm, and Yarn alongside pnpm.
+
+### Coming next (3.6.1+)
+
+- Recipe pages for ecommerce / newsletter / contact-form / careers / admin DSR patterns
+- Org-specific privacy policy templates (SaaS, ecommerce, school, healthcare, procurement)
+- Continued bundle reduction
+
 ## [3.5.5](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.4...v3.5.5) (2026-05-24)
 
 ### Features (tests + types)
