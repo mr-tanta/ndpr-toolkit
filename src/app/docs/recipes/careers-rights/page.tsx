@@ -9,6 +9,24 @@ export default function CareersRightsRecipe() {
       title="Careers / Applicant Data Rights"
       description="NDPA-compliant handling of job applicant data — legitimate-interest basis, retention, erasure on request, automated CV-screening disclosure."
     >
+      <div className="flex flex-wrap gap-2 mb-6">
+        <a
+          href="https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/dsr"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" />
+        </a>
+        <a
+          href="https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/dsr"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Open in CodeSandbox" />
+        </a>
+      </div>
       <p className="mb-6 text-base text-muted-foreground">
         Applicant data is one of the highest-risk processing activities Nigerian companies do — you collect CVs, government IDs (NIN), salary history, and sometimes do automated screening (Section 37). NDPC has flagged careers / HR data as a top audit area. The good news: the toolkit handles the pieces you actually need.
       </p>

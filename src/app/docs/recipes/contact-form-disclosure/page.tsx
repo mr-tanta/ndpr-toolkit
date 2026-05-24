@@ -9,6 +9,24 @@ export default function ContactFormDisclosureRecipe() {
       title="Contact Form Disclosure"
       description="NDPA Section 27 privacy notice on a public contact form — what you collect, lawful basis, retention, complaint route."
     >
+      <div className="flex flex-wrap gap-2 mb-6">
+        <a
+          href="https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/policy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" />
+        </a>
+        <a
+          href="https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/policy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Open in CodeSandbox" />
+        </a>
+      </div>
       <p className="mb-6 text-base text-muted-foreground">
         Public contact forms collect personal data (name + email at minimum). Section 27(1) requires you to inform the data subject — before collection — of what you&apos;re doing with it. The notice doesn&apos;t have to be long; it just has to be there and link to the full policy.
       </p>

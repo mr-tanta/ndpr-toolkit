@@ -350,6 +350,23 @@ Every module has an interactive demo. No signup, no setup — try them instantly
   <em>Left: Data Subject Rights portal with 8 NDPA rights. Right: Breach notification with 72-hour NDPC deadline countdown.</em>
 </p>
 
+### Open any module in your browser (zero install)
+
+Each module ships a minimal Next.js scaffold you can fork in StackBlitz or CodeSandbox. One click → working app demonstrating just that module:
+
+| Module | NDPA | Open in StackBlitz | Open in CodeSandbox |
+|---|---|---|---|
+| Consent | §26 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/consent) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/consent) |
+| DSR | §34 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/dsr) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/dsr) |
+| DPIA | §28 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/dpia) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/dpia) |
+| Breach | §40 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/breach) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/breach) |
+| Policy | §27 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/policy) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/policy) |
+| Lawful Basis | §25 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/lawful-basis) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/lawful-basis) |
+| Cross-Border | §41–43 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/cross-border) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/cross-border) |
+| RoPA | §29 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/ropa) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/ropa) |
+
+Or open the [all-in-one example](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app) that demos every module in a single app.
+
 ---
 
 ## All 8 Modules

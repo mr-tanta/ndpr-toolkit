@@ -9,6 +9,24 @@ export default function NewsletterConsentRecipe() {
       title="Newsletter Consent"
       description="NDPA Section 26 affirmative opt-in for newsletter signups — no pre-checked boxes, double opt-in compatible."
     >
+      <div className="flex flex-wrap gap-2 mb-6">
+        <a
+          href="https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/consent"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" />
+        </a>
+        <a
+          href="https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/consent"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Open in CodeSandbox" />
+        </a>
+      </div>
       <p className="mb-6 text-base text-muted-foreground">
         Most newsletter signups in Nigerian apps still fail NDPA Section 26. The classic trap is a pre-checked &quot;subscribe me&quot; box on the signup form — that&apos;s inferred consent, which 26(7)(a) explicitly disallows. The fix is small but easy to get wrong.
       </p>

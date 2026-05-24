@@ -11,9 +11,44 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+// {{#if ORM=prisma}}
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+// {{/if}}
+// {{#if ORM=drizzle}}
+import { db } from '@/drizzle';
+import { breachReports, complianceAuditLog } from '@/drizzle/ndpr-schema';
+import { eq, desc } from 'drizzle-orm';
+// {{/if}}
+// {{#if ORM=none}}
+// TODO ({{ORG_NAME}}): wire this to your persistent store of choice. The
+// in-memory map below is enough to develop against locally but DOES NOT
+// satisfy NDPA Section 44 (record-keeping) or the 72-hour NDPC notification
+// requirement in Section 40. Replace `breachStore`/`auditLog` with your real
+// store and connect it to your incident-response tooling.
+interface BreachReport {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  status: string;
+  discoveredAt: Date;
+  occurredAt: Date | null;
+  reportedAt: Date;
+  reporterName: string;
+  reporterEmail: string;
+  reporterDepartment: string | null;
+  affectedSystems: string[];
+  dataTypes: string[];
+  estimatedAffected: number | null;
+  initialActions: string | null;
+}
+const breachStore = new Map<string, BreachReport>();
+const auditLog: Array<{ id: string; module: string; action: string; entityId: string; at: Date }> = [];
+function newId() { return crypto.randomUUID(); }
+// {{/if}}
 
 function calculateSeverity(
   category: string,
@@ -32,10 +67,22 @@ function calculateSeverity(
 export async function GET(req: NextRequest) {
   const status = req.nextUrl.searchParams.get('status');
 
+  // {{#if ORM=prisma}}
   const reports = await prisma.breachReport.findMany({
     where: status ? { status } : undefined,
     orderBy: { reportedAt: 'desc' },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  const reports = status
+    ? await db.select().from(breachReports).where(eq(breachReports.status, status)).orderBy(desc(breachReports.reportedAt))
+    : await db.select().from(breachReports).orderBy(desc(breachReports.reportedAt));
+  // {{/if}}
+  // {{#if ORM=none}}
+  const reports = [...breachStore.values()]
+    .filter((r) => (status ? r.status === status : true))
+    .sort((a, b) => b.reportedAt.getTime() - a.reportedAt.getTime());
+  // {{/if}}
 
   return NextResponse.json(reports);
 }
@@ -74,6 +121,7 @@ export async function POST(req: NextRequest) {
 
   const severity = calculateSeverity(category, estimatedAffected);
 
+  // {{#if ORM=prisma}}
   const report = await prisma.breachReport.create({
     data: {
       title,
@@ -102,6 +150,55 @@ export async function POST(req: NextRequest) {
       changes: { title, category, severity, status: 'ongoing' },
     },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  const [report] = await db.insert(breachReports).values({
+    title,
+    description,
+    category,
+    severity,
+    status: 'ongoing',
+    discoveredAt: new Date(discoveredAt),
+    occurredAt: occurredAt ? new Date(occurredAt) : null,
+    reporterName,
+    reporterEmail,
+    reporterDepartment: reporterDepartment ?? null,
+    affectedSystems,
+    dataTypes,
+    estimatedAffected: estimatedAffected ?? null,
+    initialActions: initialActions ?? null,
+  }).returning();
+
+  await db.insert(complianceAuditLog).values({
+    module: 'breach',
+    action: 'reported',
+    entityId: report.id,
+    entityType: 'BreachReport',
+    changes: { title, category, severity, status: 'ongoing' },
+  });
+  // {{/if}}
+  // {{#if ORM=none}}
+  const report: BreachReport = {
+    id: newId(),
+    title,
+    description,
+    category,
+    severity,
+    status: 'ongoing',
+    discoveredAt: new Date(discoveredAt),
+    occurredAt: occurredAt ? new Date(occurredAt) : null,
+    reportedAt: new Date(),
+    reporterName,
+    reporterEmail,
+    reporterDepartment: reporterDepartment ?? null,
+    affectedSystems,
+    dataTypes,
+    estimatedAffected: estimatedAffected ?? null,
+    initialActions: initialActions ?? null,
+  };
+  breachStore.set(report.id, report);
+  auditLog.push({ id: newId(), module: 'breach', action: 'reported', entityId: report.id, at: new Date() });
+  // {{/if}}
 
   return NextResponse.json(report, { status: 201 });
 }

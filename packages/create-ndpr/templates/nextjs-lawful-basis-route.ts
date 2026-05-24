@@ -14,16 +14,53 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+// {{#if ORM=prisma}}
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+// {{/if}}
+// {{#if ORM=drizzle}}
+import { db } from '@/drizzle';
+import { lawfulBasisRecords, complianceAuditLog } from '@/drizzle/ndpr-schema';
+import { eq, desc } from 'drizzle-orm';
+// {{/if}}
+// {{#if ORM=none}}
+// TODO ({{ORG_NAME}}): wire this to your persistent store of choice. The
+// in-memory map below is enough to develop against locally but DOES NOT
+// satisfy NDPA Section 44 (record-keeping). Replace `lawfulBasisStore`/
+// `auditLog` with your DB / KV / API.
+interface LawfulBasisRecord {
+  id: string;
+  activityName: string;
+  lawfulBasis: string;
+  justification: string;
+  dataCategories: string[];
+  purposes: string[];
+  assessedBy: string;
+  reviewDate: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+const lawfulBasisStore = new Map<string, LawfulBasisRecord>();
+const auditLog: Array<{ id: string; module: string; action: string; entityId: string; at: Date }> = [];
+function newId() { return crypto.randomUUID(); }
+// {{/if}}
 
 // GET /api/lawful-basis?lawfulBasis=consent  OR  /api/lawful-basis?id=xxx
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get('id');
 
   if (id) {
+    // {{#if ORM=prisma}}
     const record = await prisma.lawfulBasisRecord.findUnique({ where: { id } });
+    // {{/if}}
+    // {{#if ORM=drizzle}}
+    const [record] = await db.select().from(lawfulBasisRecords).where(eq(lawfulBasisRecords.id, id)).limit(1);
+    // {{/if}}
+    // {{#if ORM=none}}
+    const record = lawfulBasisStore.get(id) ?? null;
+    // {{/if}}
+
     if (!record) {
       return NextResponse.json({ error: 'Lawful basis record not found' }, { status: 404 });
     }
@@ -32,10 +69,22 @@ export async function GET(req: NextRequest) {
 
   const lawfulBasis = req.nextUrl.searchParams.get('lawfulBasis');
 
+  // {{#if ORM=prisma}}
   const records = await prisma.lawfulBasisRecord.findMany({
     where: lawfulBasis ? { lawfulBasis } : undefined,
     orderBy: { createdAt: 'desc' },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  const records = lawfulBasis
+    ? await db.select().from(lawfulBasisRecords).where(eq(lawfulBasisRecords.lawfulBasis, lawfulBasis)).orderBy(desc(lawfulBasisRecords.createdAt))
+    : await db.select().from(lawfulBasisRecords).orderBy(desc(lawfulBasisRecords.createdAt));
+  // {{/if}}
+  // {{#if ORM=none}}
+  const records = [...lawfulBasisStore.values()]
+    .filter((r) => (lawfulBasis ? r.lawfulBasis === lawfulBasis : true))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  // {{/if}}
 
   return NextResponse.json(records);
 }
@@ -67,6 +116,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // {{#if ORM=prisma}}
   const record = await prisma.lawfulBasisRecord.create({
     data: {
       activityName,
@@ -88,6 +138,43 @@ export async function POST(req: NextRequest) {
       changes: { activityName, lawfulBasis, assessedBy },
     },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  const [record] = await db.insert(lawfulBasisRecords).values({
+    activityName,
+    lawfulBasis,
+    justification,
+    dataCategories,
+    purposes,
+    assessedBy,
+    reviewDate: reviewDate ? new Date(reviewDate) : null,
+  }).returning();
+
+  await db.insert(complianceAuditLog).values({
+    module: 'lawful-basis',
+    action: 'created',
+    entityId: record.id,
+    entityType: 'LawfulBasisRecord',
+    changes: { activityName, lawfulBasis, assessedBy },
+  });
+  // {{/if}}
+  // {{#if ORM=none}}
+  const now = new Date();
+  const record: LawfulBasisRecord = {
+    id: newId(),
+    activityName,
+    lawfulBasis,
+    justification,
+    dataCategories,
+    purposes,
+    assessedBy,
+    reviewDate: reviewDate ? new Date(reviewDate) : null,
+    createdAt: now,
+    updatedAt: now,
+  };
+  lawfulBasisStore.set(record.id, record);
+  auditLog.push({ id: newId(), module: 'lawful-basis', action: 'created', entityId: record.id, at: new Date() });
+  // {{/if}}
 
   return NextResponse.json(record, { status: 201 });
 }
@@ -101,13 +188,14 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: 'id is required' }, { status: 400 });
   }
 
+  if (data.reviewDate) {
+    data.reviewDate = new Date(data.reviewDate);
+  }
+
+  // {{#if ORM=prisma}}
   const existing = await prisma.lawfulBasisRecord.findUnique({ where: { id } });
   if (!existing) {
     return NextResponse.json({ error: 'Lawful basis record not found' }, { status: 404 });
-  }
-
-  if (data.reviewDate) {
-    data.reviewDate = new Date(data.reviewDate);
   }
 
   const record = await prisma.lawfulBasisRecord.update({
@@ -124,6 +212,32 @@ export async function PUT(req: NextRequest) {
       changes: data,
     },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  const [existing] = await db.select().from(lawfulBasisRecords).where(eq(lawfulBasisRecords.id, id)).limit(1);
+  if (!existing) {
+    return NextResponse.json({ error: 'Lawful basis record not found' }, { status: 404 });
+  }
+
+  const [record] = await db.update(lawfulBasisRecords).set(data).where(eq(lawfulBasisRecords.id, id)).returning();
+
+  await db.insert(complianceAuditLog).values({
+    module: 'lawful-basis',
+    action: 'updated',
+    entityId: record.id,
+    entityType: 'LawfulBasisRecord',
+    changes: data,
+  });
+  // {{/if}}
+  // {{#if ORM=none}}
+  const existing = lawfulBasisStore.get(id);
+  if (!existing) {
+    return NextResponse.json({ error: 'Lawful basis record not found' }, { status: 404 });
+  }
+  const record: LawfulBasisRecord = { ...existing, ...data, id, updatedAt: new Date() };
+  lawfulBasisStore.set(id, record);
+  auditLog.push({ id: newId(), module: 'lawful-basis', action: 'updated', entityId: record.id, at: new Date() });
+  // {{/if}}
 
   return NextResponse.json(record);
 }
@@ -136,6 +250,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'id is required' }, { status: 400 });
   }
 
+  // {{#if ORM=prisma}}
   const existing = await prisma.lawfulBasisRecord.findUnique({ where: { id } });
   if (!existing) {
     return NextResponse.json({ error: 'Lawful basis record not found' }, { status: 404 });
@@ -152,6 +267,31 @@ export async function DELETE(req: NextRequest) {
       changes: { activityName: existing.activityName },
     },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  const [existing] = await db.select().from(lawfulBasisRecords).where(eq(lawfulBasisRecords.id, id)).limit(1);
+  if (!existing) {
+    return NextResponse.json({ error: 'Lawful basis record not found' }, { status: 404 });
+  }
+
+  await db.delete(lawfulBasisRecords).where(eq(lawfulBasisRecords.id, id));
+
+  await db.insert(complianceAuditLog).values({
+    module: 'lawful-basis',
+    action: 'deleted',
+    entityId: id,
+    entityType: 'LawfulBasisRecord',
+    changes: { activityName: existing.activityName },
+  });
+  // {{/if}}
+  // {{#if ORM=none}}
+  const existing = lawfulBasisStore.get(id);
+  if (!existing) {
+    return NextResponse.json({ error: 'Lawful basis record not found' }, { status: 404 });
+  }
+  lawfulBasisStore.delete(id);
+  auditLog.push({ id: newId(), module: 'lawful-basis', action: 'deleted', entityId: id, at: new Date() });
+  // {{/if}}
 
   return NextResponse.json({ success: true });
 }

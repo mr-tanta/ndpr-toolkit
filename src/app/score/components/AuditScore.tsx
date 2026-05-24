@@ -460,32 +460,105 @@ Thanks!`;
   return `mailto:hello@ndprtoolkit.com.ng?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+/**
+ * Build the JSON payload sent to Web3Forms. Same shape as the mailto body
+ * so the maintainer's inbox sees a consistent digest whichever path the
+ * user takes.
+ */
+function buildWeb3FormsPayload(input: {
+  accessKey: string;
+  name: string;
+  email: string;
+  orgName: string;
+  report: ComplianceReport;
+}): Record<string, string> {
+  const { accessKey, name, email, orgName, report } = input;
+  const moduleLines = Object.entries(report.modules)
+    .map(([k, m]) => `- ${k}: ${Math.round(m.score)}/100 (${moduleRating(m.score)})`)
+    .join('\n');
+  const topRecs = report.recommendations
+    .slice(0, 10)
+    .map(
+      (r, i) =>
+        `${i + 1}. [${r.priority.toUpperCase()}] ${r.label} — ${r.ndpaSection}\n   ${r.recommendation}`,
+    )
+    .join('\n\n');
+
+  return {
+    access_key: accessKey,
+    subject: `NDPA audit score: ${report.score}/100 (${report.rating}) — ${orgName || name || 'audit request'}`,
+    from_name: name,
+    email,
+    organisation: orgName || 'n/a',
+    score: String(report.score),
+    rating: report.rating,
+    generated_at: report.generatedAt,
+    per_module: moduleLines,
+    top_recommendations: topRecs || 'No gaps detected.',
+  };
+}
+
 function EmailCaptureForm({ report, submitted, onSubmitted }: EmailCaptureProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [orgName, setOrgName] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [submitMethod, setSubmitMethod] = useState<'web3forms' | 'mailto' | null>(null);
 
   const canSubmit = name.trim().length > 0 && /.+@.+\..+/.test(email);
 
-  function handleSubmit(e: React.FormEvent) {
+  // Web3Forms access key (free, no signup-by-the-end-user; one-time setup
+  // by the toolkit maintainer at web3forms.com — paste the key into the
+  // NEXT_PUBLIC_WEB3FORMS_KEY env var). When unset, falls back to mailto:.
+  const web3FormsKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSubmit) return;
-    // Open the user's mail client with the score pre-filled. The maintainer
-    // gets the lead in their inbox; the user keeps a copy in their sent
-    // folder. Zero backend dependency — works on the static export.
+
+    // Path 1: Web3Forms backend if configured. POSTs the payload; their
+    // service emails the maintainer with the structured fields.
+    if (web3FormsKey) {
+      setBusy(true);
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(
+            buildWeb3FormsPayload({ accessKey: web3FormsKey, name, email, orgName, report }),
+          ),
+        });
+        if (res.ok) {
+          setSubmitMethod('web3forms');
+          setBusy(false);
+          onSubmitted();
+          return;
+        }
+        // Fall through to mailto on non-2xx (network unavailable, key
+        // revoked, etc.) — better UX than failing silently.
+      } catch {
+        // Fall through to mailto
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    // Path 2: mailto: fallback. Works without any backend.
+    setSubmitMethod('mailto');
     const href = buildMailto({ name, email, orgName, report });
     window.location.href = href;
     onSubmitted();
   }
 
   if (submitted) {
+    const message =
+      submitMethod === 'web3forms'
+        ? `Thanks ${name}! Your score is on its way to ${email} — usually within a minute, sometimes the spam folder.`
+        : `Your default email app should have opened with the score + your details pre-filled. Hit send and we'll reply with the PDF report.`;
     return (
       <div className="rounded-lg border border-emerald-300 bg-emerald-50 dark:bg-emerald-950 dark:border-emerald-900 p-4">
-        <p className="text-sm text-foreground font-medium mb-1">✓ Email opened</p>
-        <p className="text-xs text-muted-foreground">
-          Your default email app should have opened with the score + your details pre-filled.
-          Hit send and we&apos;ll reply with the PDF report.
-        </p>
+        <p className="text-sm text-foreground font-medium mb-1">✓ Score saved</p>
+        <p className="text-xs text-muted-foreground">{message}</p>
       </div>
     );
   }
@@ -521,14 +594,13 @@ function EmailCaptureForm({ report, submitted, onSubmitted }: EmailCaptureProps)
       />
       <button
         type="submit"
-        disabled={!canSubmit}
+        disabled={!canSubmit || busy}
         className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50"
       >
-        Open mail client to send
+        {busy ? 'Sending…' : 'Email me my report'}
       </button>
       <p className="text-[10px] text-muted-foreground leading-tight">
-        Your default email app opens with the score + your details pre-filled. We use this only
-        to send the report; unsubscribe anytime. Stored per our{' '}
+        We use this only to send the report; unsubscribe anytime. Stored per our{' '}
         <Link href="/privacy" className="underline">privacy policy</Link>.
       </p>
     </form>

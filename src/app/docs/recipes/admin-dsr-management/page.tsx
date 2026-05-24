@@ -9,6 +9,24 @@ export default function AdminDSRManagementRecipe() {
       title="Admin DSR Management"
       description="DPO/staff-side workflow for handling subject requests: queue, identity verification, response within 30 days, audit trail."
     >
+      <div className="flex flex-wrap gap-2 mb-6">
+        <a
+          href="https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/dsr"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" />
+        </a>
+        <a
+          href="https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/dsr"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Open in CodeSandbox" />
+        </a>
+      </div>
       <p className="mb-6 text-base text-muted-foreground">
         The public DSR portal is half the story. The other half is the DPO / staff workflow: triage the queue, verify identity, generate the response, hit Section 34&apos;s 30-day deadline (extendable to 60 if complex, per GAID 2025), and keep an audit trail NDPC can ask for. This recipe wires those pieces.
       </p>

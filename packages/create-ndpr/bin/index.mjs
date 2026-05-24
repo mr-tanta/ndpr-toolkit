@@ -445,8 +445,21 @@ async function main() {
     // Add a template to this set as it gets ORM-aware. Other route templates
     // still hard-code Prisma, so we skip them when orm === 'none' to avoid
     // emitting code with a broken `@prisma/client` import.
+    //
+    // All Next.js and Express route templates went ORM-aware in 3.6.2.
+    // The express-setup.ts wrapper still assumes Prisma — see the
+    // separate skip handling below.
     const ORM_AWARE_TEMPLATES = new Set([
       'nextjs-consent-route.ts',
+      'nextjs-dsr-route.ts',
+      'nextjs-breach-route.ts',
+      'nextjs-dpia-route.ts',
+      'nextjs-lawful-basis-route.ts',
+      'nextjs-cross-border-route.ts',
+      'express-consent-route.ts',
+      'express-dpia-route.ts',
+      'express-lawful-basis-route.ts',
+      'express-cross-border-route.ts',
     ]);
     const generateRoute = (dest, templateName) => {
       if (orm === 'none' && !ORM_AWARE_TEMPLATES.has(templateName)) {

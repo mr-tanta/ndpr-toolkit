@@ -9,6 +9,24 @@ export default function EcommerceConsentRecipe() {
       title="Ecommerce Consent"
       description="NDPA-compliant cookie consent for online stores — checkout, cart abandonment, marketing pixels, payment processors."
     >
+      <div className="flex flex-wrap gap-2 mb-6">
+        <a
+          href="https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/consent"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" />
+        </a>
+        <a
+          href="https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/consent"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex"
+        >
+          <img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Open in CodeSandbox" />
+        </a>
+      </div>
       <p className="mb-6 text-base text-muted-foreground">
         Ecommerce sites usually need <strong>four categories</strong> of cookies: necessary (cart + checkout), analytics (Google Analytics), marketing (Facebook / TikTok pixels for retargeting), and functional (recently-viewed, recommendations). NDPA Section 26 requires explicit affirmative consent for everything except &quot;necessary&quot; — which the toolkit enforces by default.
       </p>
