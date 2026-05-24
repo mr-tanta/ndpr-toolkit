@@ -22,6 +22,16 @@ export interface UseAdaptivePolicyWizardOptions {
   adapter?: StorageAdapter<PolicyDraft>;
   onComplete?: (policy: PrivacyPolicy) => void;
   onComplianceChange?: (score: number, gaps: ComplianceGap[]) => void;
+  /**
+   * Initial template context. Use an org-template factory like
+   * `templateContextFor('healthcare')` to start the wizard with a sector-
+   * specific pre-fill (lawful basis, data categories, sensitive-data flag,
+   * cross-border default). Defaults to `createDefaultContext()` if omitted.
+   *
+   * If an adapter loads a saved draft, the draft's context wins — the
+   * `initialContext` only seeds the very first session.
+   */
+  initialContext?: TemplateContext;
 }
 
 export interface UseAdaptivePolicyWizardReturn {
@@ -139,7 +149,9 @@ export function useAdaptivePolicyWizard(
   // ── Core state ────────────────────────────────────────────────────────────
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [context, setContext] = useState<TemplateContext>(createDefaultContext);
+  const [context, setContext] = useState<TemplateContext>(
+    () => options.initialContext ?? createDefaultContext(),
+  );
   const [customSections, setCustomSections] = useState<CustomSection[]>([]);
   const [sectionOverrides, setSectionOverrides] = useState<Record<string, string>>({});
   const [sectionOrder, setSectionOrder] = useState<string[]>([]);

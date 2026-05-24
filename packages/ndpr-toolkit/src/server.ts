@@ -199,6 +199,17 @@ export {
 export { evaluatePolicyCompliance } from './utils/policy-compliance';
 export { createDefaultContext, DEFAULT_DATA_CATEGORIES } from './types/policy-engine';
 
+// Org-specific policy templates (3.7.0)
+export {
+  templateContextFor,
+  createOrgTemplate,
+  ORG_POLICY_TEMPLATE_REGISTRY,
+} from './utils/policy-templates-orgs';
+export type {
+  OrgPolicyTemplateId,
+  OrgPolicyTemplateOverrides,
+} from './utils/policy-templates-orgs';
+
 // Policy export — produces HTML / Markdown / DOCX / PDF buffers from a typed
 // PrivacyPolicy. Pure functions, no DOM or React required.
 export {
