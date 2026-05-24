@@ -453,8 +453,11 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/breach` | Breach components + hook | `react` | No |
 | `/policy` | Policy components + hook | `react`, `jspdf`, `docx` (optional) | No |
 | `/lawful-basis` | Lawful basis component + hook | `react` | No |
+| `/lawful-basis/lite` | Read-only `LawfulBasisTrackerLite` — ~65% smaller than `/lawful-basis` | `react` | No |
 | `/cross-border` | Cross-border component + hook | `react` | No |
+| `/cross-border/lite` | Read-only `CrossBorderTransferManagerLite` — ~89% smaller (skips the 624-row adequacy dataset) | `react` | No |
 | `/ropa` | ROPA component + hook | `react` | No |
+| `/ropa/lite` | Read-only `ROPAManagerLite` — ~64% smaller than `/ropa` | `react` | No |
 | `/unstyled` | All published components with `unstyled` defaulted to `true` | `react` | No |
 | `/styles` | Default CSS stylesheet — `import "@tantainnovative/ndpr-toolkit/styles"` once in your app entry | none | N/A |
 
@@ -474,6 +477,8 @@ The toolkit is published with `sideEffects: ["*.css"]`, so a modern bundler (Vit
    - `CrossBorderTransferManager` (from `/cross-border`)
 
    If your app only needs the hook (e.g. you're rendering ROPA records inside your own admin UI), import from `/hooks` instead of the feature subpath — the hook chunk doesn't drag the manager component into your bundle.
+
+   If your page only needs to *display* records (no Add / Edit / Archive / CSV export), reach for the new **Lite** variants from `/lawful-basis/lite`, `/cross-border/lite`, and `/ropa/lite` instead — they save ~65%, 89%, and 64% respectively. See [Lite vs Full managers](https://ndprtoolkit.com.ng/docs/guides/lite-vs-full).
 
 4. **`/server` carries zero React.** For Server Actions, Route Handlers, scheduled jobs, or compliance-score computation in CI, prefer `/server` and you'll pay no React-tree cost.
 

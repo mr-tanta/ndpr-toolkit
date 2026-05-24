@@ -21,8 +21,11 @@ const CLIENT_ENTRIES = [
   "breach",
   "policy",
   "lawful-basis",
+  "lawful-basis-lite",
   "cross-border",
+  "cross-border-lite",
   "ropa",
+  "ropa-lite",
   "presets",
   "presets-consent",
   "presets-dsr",
@@ -44,6 +47,12 @@ export default defineConfig({
     "lawful-basis": `${PKG}/lawful-basis-entry.ts`,
     "cross-border": `${PKG}/cross-border-entry.ts`,
     ropa: `${PKG}/ropa-entry.ts`,
+    // Read-only Lite variants (3.8.0) — display-only dashboards pay no
+    // form / validation / write-utility cost. cross-border-lite also
+    // skips the 124KB country-adequacy dataset.
+    "lawful-basis-lite": `${PKG}/lawful-basis-lite-entry.ts`,
+    "cross-border-lite": `${PKG}/cross-border-lite-entry.ts`,
+    "ropa-lite": `${PKG}/ropa-lite-entry.ts`,
     adapters: `${PKG}/adapters-entry.ts`,
     presets: `${PKG}/presets-entry.ts`,
     // Per-preset subpath entries (3.6.0) — let consumers import only the

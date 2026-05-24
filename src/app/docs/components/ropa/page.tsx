@@ -178,6 +178,29 @@ type ROPAManagerProps = {
 };`}</code></pre>
       </section>
 
+      <section id="lite-variant" className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Lite variant (read-only)</h2>
+        <p className="mb-4">
+          For read-only ROPA surfaces such as compliance dashboards and customer-facing transparency pages, use{' '}
+          <code>ROPAManagerLite</code> from the new <code>/ropa/lite</code> subpath. It renders the same record
+          list and summary as the Full component without Add, Edit, Archive, or CSV-export affordances — and
+          ships at <strong>13.2 KB</strong> instead of 36.9 KB (a 64% saving, minified and pre-gzip).
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4"><code className="text-sm font-mono text-foreground">{`import { ROPAManagerLite } from '@tantainnovative/ndpr-toolkit/ropa/lite';
+
+<ROPAManagerLite
+  records={records}
+  onRecordClick={(record) => router.push(\`/ropa/\${record.id}\`)}
+/>`}</code></pre>
+        <p className="mb-0">
+          See the{' '}
+          <Link href="/docs/guides/lite-vs-full" className="text-primary hover:underline">
+            Lite vs Full Managers guide
+          </Link>{' '}
+          for migration notes, side-by-side examples, and the full bundle-size table.
+        </p>
+      </section>
+
       <section id="best-practices" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
         <ul className="list-disc pl-6 space-y-2 text-foreground">
