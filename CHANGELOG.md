@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.8.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.8.0...v3.8.1) (2026-05-25)
+
+Documentation + small API addition patch. Fully additive — no breaking changes.
+
+### `NDPRSubjectRights` — typed `onSubmitSuccess` callback
+
+Counterpart to the existing `onSubmitError`. Fires when the `submitTo` POST returns a 2xx response. Receives the `Response`, the submitted `DSRFormSubmission` payload, and the parsed JSON body (or `undefined` if the response had no body or was not valid JSON).
+
+```tsx
+<NDPRSubjectRights
+  submitTo="/api/dsr"
+  onSubmitSuccess={({ response, data, body }) => {
+    const ref = (body as { referenceId?: string })?.referenceId;
+    if (ref) router.push(`/dsr-confirmation?ref=${ref}`);
+  }}
+  onSubmitError={({ error, response }) => {
+    console.error('DSR submit failed', error, response?.status);
+  }}
+/>
+```
+
+The `body` field is `unknown` to force consumers to narrow it themselves before reading fields. **4 new tests** cover both success and failure paths.
+
+### Documentation
+
+- **DSR submission payload contract** documented on the Data Subject Rights component page (`/docs/components/data-subject-rights#submission-payload`). Includes the canonical `DSRFormSubmission` TypeScript interface, a concrete JSON example, the recommended response shape, and a working Next.js App Router backend handler.
+- **Accessibility sections** added to ConsentBanner and DSRRequestForm docs pages. Each lists CONCRETE a11y features verified against the source — `useFocusTrap`, escape-to-dismiss, `prefers-reduced-motion` block in the BEM stylesheet, `role="alert"` on errors, `aria-required` + `aria-invalid` wiring on form fields, etc. Features that aren't implemented (e.g. auto-focusing the first invalid field) are NOT claimed — they're suggested as consumer-side recipes instead.
+- **Migration guide 3.5 → 3.8** at `/docs/guides/migrating-3-5-to-3-8`. Covers every minor and patch from 3.5.4 through 3.8.1 with a "what changed / action required" breakdown, a net migration diff for the most common upgrade path (adapter → submitTo + onSubmitSuccess), and a verify checklist. Sidebar entry added under Implementation Guides.
+
+### Verification
+
+- `tsc --noEmit` clean for both the library and the docs site
+- **Full Jest suite: 1173/1173 passing** (was 1169 — +4 new submit-callback tests)
+- No changes to the existing `onSubmitError`, `submitTo`, or `submitOptions` props (backward compatible)
+
 ## [3.8.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.6.2...v3.8.0) (2026-05-24)
 
 ### Lite (read-only) variants of the heavy Manager components

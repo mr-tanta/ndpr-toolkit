@@ -277,6 +277,141 @@ function DSRPortal() {
         </pre>
       </section>
 
+      <section id="submission-payload" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Submission payload contract</h2>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
+          When you pass a <code className="text-foreground font-mono text-sm">submitTo</code> URL to{' '}
+          <code className="text-foreground font-mono text-sm">NDPRSubjectRights</code>, the toolkit POSTs the
+          form data to your backend as JSON. This section is the canonical request and response shape so
+          backend implementers don&apos;t have to read the component source.
+        </p>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">Request</h3>
+        <ul className="space-y-2 text-muted-foreground leading-relaxed list-disc pl-6 mb-4">
+          <li><strong className="text-foreground">Method:</strong> <code className="font-mono text-sm">POST</code></li>
+          <li><strong className="text-foreground">Content-Type:</strong> <code className="font-mono text-sm">application/json</code></li>
+          <li><strong className="text-foreground">Credentials:</strong> <code className="font-mono text-sm">same-origin</code> by default</li>
+          <li><strong className="text-foreground">Body:</strong> <code className="font-mono text-sm">JSON.stringify(DSRFormSubmission)</code></li>
+        </ul>
+        <p className="text-muted-foreground mb-6 leading-relaxed">
+          Use <code className="text-foreground font-mono text-sm">submitOptions</code> on the component to
+          override <code className="font-mono text-sm">credentials</code> or add custom headers (e.g.{' '}
+          <code className="font-mono text-sm">X-CSRF-Token</code>). For full control over retries, error
+          hooks, or non-fetch transports, build an <code className="font-mono text-sm">apiAdapter</code>{' '}
+          and pass it via <code className="font-mono text-sm">adapter</code> instead.
+        </p>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">Request body</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`/**
+ * Represents the data submitted by the DSR request form.
+ */
+export interface DSRFormSubmission {
+  /** The selected request type identifier */
+  requestType: string;
+  /** Data subject personal information */
+  dataSubject: {
+    fullName: string;
+    email: string;
+    phone?: string;
+    identifierType: string;
+    identifierValue: string;
+  };
+  /** Additional information provided for the selected request type */
+  additionalInfo?: Record<string, string | number | boolean | null>;
+  /** Timestamp (ms) when the form was submitted */
+  submittedAt: number;
+}`}</code>
+        </pre>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">Example payload</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`{
+  "requestType": "access",
+  "dataSubject": {
+    "fullName": "Adaeze Okafor",
+    "email": "adaeze.okafor@example.ng",
+    "phone": "+2348012345678",
+    "identifierType": "nin",
+    "identifierValue": "12345678901"
+  },
+  "additionalInfo": {
+    "dataCategories": "account, billing, marketing",
+    "preferredFormat": "json",
+    "verifiedOwner": true
+  },
+  "submittedAt": 1748131200000
+}`}</code>
+        </pre>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">Recommended response shape</h3>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
+          The toolkit doesn&apos;t mandate a specific response, but the convention below lets the client
+          show a confirmation page, email a receipt, or poll for status. <code className="font-mono text-sm">onSubmitSuccess</code>{' '}
+          parses the body as JSON and passes it through as <code className="font-mono text-sm">body: unknown</code>,
+          so any shape works — this is the one the rest of the toolkit expects.
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`interface DSRSubmissionResponse {
+  /** Server-generated tracking ID returned to the data subject. */
+  referenceId: string;
+  /** Lifecycle stage of the request immediately after acceptance. */
+  status?: 'received' | 'processing' | 'completed';
+  /** ISO-8601 timestamp the data subject can expect a final response by. */
+  estimatedCompletionAt?: string;
+}`}</code>
+        </pre>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">Example backend handler (Next.js App Router)</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`// app/api/dsr/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(request: NextRequest) {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  const submission = body as {
+    requestType?: string;
+    dataSubject?: { fullName?: string; email?: string; identifierValue?: string };
+    submittedAt?: number;
+  };
+
+  if (
+    !submission?.requestType ||
+    !submission.dataSubject?.fullName ||
+    !submission.dataSubject?.email ||
+    !submission.dataSubject?.identifierValue ||
+    typeof submission.submittedAt !== 'number'
+  ) {
+    return NextResponse.json({ error: 'Missing required fields' }, { status: 422 });
+  }
+
+  const referenceId = 'DSR-' + Date.now().toString(36);
+  // await persistDSR(referenceId, submission);
+
+  return NextResponse.json({ referenceId, status: 'received' }, { status: 201 });
+}`}</code>
+        </pre>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">Client-side handling</h3>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
+          Use the <code className="text-foreground font-mono text-sm">onSubmitSuccess</code> and{' '}
+          <code className="text-foreground font-mono text-sm">onSubmitError</code> props on{' '}
+          <code className="text-foreground font-mono text-sm">NDPRSubjectRights</code> to react to the
+          response on the client. <code className="font-mono text-sm">onSubmitSuccess</code> parses the
+          response body as JSON before invoking your callback, so you can read{' '}
+          <code className="font-mono text-sm">referenceId</code> straight off{' '}
+          <code className="font-mono text-sm">body</code> (typed <code className="font-mono text-sm">unknown</code> —
+          narrow it before use). See the <a href="#api" className="text-primary hover:underline">API Reference</a>{' '}
+          below for the full prop list.
+        </p>
+      </section>
+
       <section id="api" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">API Reference</h2>
 

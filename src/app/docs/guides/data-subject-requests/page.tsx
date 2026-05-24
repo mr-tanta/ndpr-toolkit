@@ -614,6 +614,41 @@ function RequestTrackingPage() {
         </ul>
       </section>
 
+      <section id="accessibility" className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Accessibility</h2>
+        <p className="mb-4">
+          The DSR form follows WCAG 2.1 form best-practices so data subjects who rely on assistive technology can exercise their rights without help. The following guarantees are wired into <code className="bg-muted px-1 rounded">DSRRequestForm</code> itself — they survive <code className="bg-muted px-1 rounded">unstyled</code> mode and any <code className="bg-muted px-1 rounded">classNames</code> overrides.
+        </p>
+        <ul className="list-disc pl-6 mb-4 space-y-2 text-foreground">
+          <li>
+            <strong>Programmatic labels:</strong> every input, select, and textarea has an associated <code className="bg-muted px-1 rounded">&lt;label htmlFor&gt;</code> — full name, email, phone, request type, identifier type, identifier value, the additional-information textarea, and every dynamic field rendered from <code className="bg-muted px-1 rounded">requestTypes[].additionalFields</code>.
+          </li>
+          <li>
+            <strong>Required-field signalling:</strong> required fields carry both <code className="bg-muted px-1 rounded">aria-required=&quot;true&quot;</code> and a visible asterisk (<code className="bg-muted px-1 rounded">*</code>) next to the label, so the requirement is conveyed to screen readers, sighted users, and form-tooling alike.
+          </li>
+          <li>
+            <strong>Error announcements:</strong> validation errors render as <code className="bg-muted px-1 rounded">&lt;p role=&quot;alert&quot;&gt;</code> directly after the field. Screen readers announce the message the moment it appears, without waiting for focus to move.
+          </li>
+          <li>
+            <strong>Error wiring:</strong> when a field fails validation it toggles <code className="bg-muted px-1 rounded">aria-invalid=&quot;true&quot;</code> and points <code className="bg-muted px-1 rounded">aria-describedby</code> at the error message&apos;s <code className="bg-muted px-1 rounded">id</code>, so assistive tech reads the message as part of the field&apos;s description.
+          </li>
+          <li>
+            <strong>Submission state:</strong> the submit button reflects <code className="bg-muted px-1 rounded">isSubmitting</code> by disabling itself and swapping its label to &quot;Submitting…&quot;. After submission, the success view is wrapped in a region with <code className="bg-muted px-1 rounded">aria-live=&quot;polite&quot;</code> so the confirmation is announced without stealing focus.
+          </li>
+          <li>
+            <strong>Reduced motion:</strong> the bundled <code className="bg-muted px-1 rounded">styles.css</code> includes a <code className="bg-muted px-1 rounded">@media (prefers-reduced-motion: reduce)</code> block that neutralises animation and transition durations across every <code className="bg-muted px-1 rounded">.ndpr-*</code> element (WCAG 2.3.3).
+          </li>
+        </ul>
+        <h3 className="text-xl font-bold mb-2">Keyboard interaction</h3>
+        <p className="mb-4">
+          Tab walks through the form in source order — personal information, request details, identity verification, dynamic additional fields, then Submit and Reset. Enter inside any text field triggers the native form submission (which runs validation first). On validation failure the invalid fields receive <code className="bg-muted px-1 rounded">aria-invalid</code> and adjacent <code className="bg-muted px-1 rounded">role=&quot;alert&quot;</code> messages; consumers wanting to also <em>move focus</em> to the first error can do so inside <code className="bg-muted px-1 rounded">onValidationError</code> by focusing the matching <code className="bg-muted px-1 rounded">id</code> (e.g. <code className="bg-muted px-1 rounded">fullName</code>, <code className="bg-muted px-1 rounded">email</code>).
+        </p>
+        <h3 className="text-xl font-bold mb-2">If you customise the styling</h3>
+        <p>
+          The labels, ARIA attributes, <code className="bg-muted px-1 rounded">role=&quot;alert&quot;</code> messages, and live region all ship from the component — they remain in place whether you use the default styling, <code className="bg-muted px-1 rounded">unstyled</code>, or pass <code className="bg-muted px-1 rounded">classNames</code> to swap individual slots. The toolkit does <strong>not</strong> enforce color contrast, focus-ring visibility, or spacing on custom styles, so when you override the visual layer you are responsible for keeping focus indicators visible and contrast at WCAG AA (4.5:1 for body text, 3:1 for form controls and error states).
+        </p>
+      </section>
+
       <section id="resources" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Additional Resources</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
