@@ -1440,3 +1440,37 @@
 .ndpr-font-medium   { font-weight: 500; }
 .ndpr-font-semibold { font-weight: 600; }
 .ndpr-font-bold     { font-weight: 700; }
+
+/* ==========================================================================
+ * Accessibility — respect prefers-reduced-motion (WCAG 2.3.3)
+ *
+ * Users with vestibular-motion sensitivities can opt out of animation at the
+ * OS level. When they do, neutralise every animation and transition the
+ * toolkit ships so banners, dialogs, dashboards, and policy previews appear
+ * without movement. Applies to all toolkit elements via the `[data-ndpr-*]`
+ * attribute hooks that components emit, but we also widen to '*' below
+ * because not every animated element carries one.
+ * ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .ndpr-banner,
+  .ndpr-modal,
+  .ndpr-modal__panel,
+  .ndpr-modal__overlay,
+  .ndpr-dialog,
+  .ndpr-consent-banner,
+  .ndpr-consent-manager,
+  .ndpr-dsr-dashboard,
+  .ndpr-dpia-questionnaire,
+  .ndpr-breach-form,
+  .ndpr-policy-preview,
+  .animate-slide-in,
+  .animate-slide-in-top,
+  .animate-fade-in,
+  [class*="ndpr-"] *,
+  [data-ndpr-legal-notice] {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

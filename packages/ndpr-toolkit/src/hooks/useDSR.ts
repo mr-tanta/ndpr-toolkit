@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { DSRRequest, RequestStatus, RequestType } from '../types/dsr';
+import { DSRRequest, DSRStatus, RequestStatus, RequestType } from '../types/dsr';
 import { formatDSRRequest } from '../utils/dsr';
 import type { StorageAdapter } from '../adapters/types';
 import { localStorageAdapter } from '../adapters/local-storage';
@@ -52,9 +52,10 @@ export interface UseDSRReturn {
   requests: DSRRequest[];
 
   /**
-   * Submit a new request
+   * Submit a new request. The hook assigns `id`, `status`, `createdAt`,
+   * `updatedAt`, and `dueDate` — pass everything else.
    */
-  submitRequest: (requestData: Omit<DSRRequest, 'id' | 'status' | 'submittedAt' | 'updatedAt' | 'estimatedCompletionDate'>) => DSRRequest;
+  submitRequest: (requestData: Omit<DSRRequest, 'id' | 'status' | 'createdAt' | 'updatedAt' | 'dueDate'>) => DSRRequest;
 
   /**
    * Update an existing request
@@ -69,7 +70,12 @@ export interface UseDSRReturn {
   /**
    * Get requests by status
    */
-  getRequestsByStatus: (status: RequestStatus) => DSRRequest[];
+  /**
+   * Filter requests by status. Accepts both the modern `DSRStatus` union and
+   * the deprecated `RequestStatus` for backward compatibility — pass the
+   * modern values (`'pending' | 'awaitingVerification' | 'inProgress' | ...`).
+   */
+  getRequestsByStatus: (status: DSRStatus | RequestStatus) => DSRRequest[];
 
   /**
    * Get requests by type
@@ -165,7 +171,7 @@ export function useDSR({
   };
 
   // Submit a new request
-  const submitRequest = useCallback((requestData: Omit<DSRRequest, 'id' | 'status' | 'submittedAt' | 'updatedAt' | 'estimatedCompletionDate'>): DSRRequest => {
+  const submitRequest = useCallback((requestData: Omit<DSRRequest, 'id' | 'status' | 'createdAt' | 'updatedAt' | 'dueDate'>): DSRRequest => {
     // Find the request type to get the estimated completion time
     const requestType = requestTypes.find(type => type.id === requestData.type);
     const estimatedCompletionDays = requestType?.estimatedCompletionTime || 30; // Default to 30 days
@@ -173,16 +179,13 @@ export function useDSR({
     const now = Date.now();
     const estimatedCompletionDate = now + (estimatedCompletionDays * 24 * 60 * 60 * 1000);
 
-    // Extract any properties we want to override from requestData
-    const { createdAt, ...restRequestData } = requestData as Omit<DSRRequest, 'id' | 'status' | 'submittedAt' | 'updatedAt' | 'estimatedCompletionDate'> & { createdAt?: number };
-
     const newRequest: DSRRequest = {
       id: generateId(),
       status: 'pending',
       createdAt: now,
       updatedAt: now,
       dueDate: estimatedCompletionDate,
-      ...restRequestData,
+      ...requestData,
     };
 
     setRequests(prevRequests => {
@@ -235,7 +238,7 @@ export function useDSR({
   }, [requests]);
 
   // Get requests by status
-  const getRequestsByStatus = useCallback((status: RequestStatus): DSRRequest[] => {
+  const getRequestsByStatus = useCallback((status: DSRStatus | RequestStatus): DSRRequest[] => {
     return requests.filter(request => request.status === status);
   }, [requests]);
 

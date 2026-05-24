@@ -14,8 +14,8 @@ function getDataSubject(result: ReturnType<typeof formatDSRRequest>): FormattedD
   return result.formattedRequest.dataSubject as FormattedDataSubject | undefined;
 }
 
-describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
-  it('should format a DSR access request correctly per NDPA Section 30', () => {
+describe('formatDSRRequest (NDPA Part VI - Data Subject Rights)', () => {
+  it('should format a DSR access request correctly per NDPA Section 34(1)(a)', () => {
     const request: DSRRequest = {
       id: '123',
       type: 'access',
@@ -92,7 +92,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
     expect(result.formattedRequest.status).toBe('completed');
   });
 
-  it('should handle NDPA Section 29 information request type', () => {
+  it('should handle NDPA Section 27 information request type', () => {
     const request: DSRRequest = {
       id: '201',
       type: 'information',
@@ -113,7 +113,7 @@ describe('formatDSRRequest (NDPA Part IV - Data Subject Rights)', () => {
     expect(getDataSubject(result)!.name).toBe('Grace Obi');
   });
 
-  it('should handle NDPA Section 36 automated decision-making request type', () => {
+  it('should handle NDPA Section 37 automated decision-making request type', () => {
     const request: DSRRequest = {
       id: '202',
       type: 'automated_decision_making',

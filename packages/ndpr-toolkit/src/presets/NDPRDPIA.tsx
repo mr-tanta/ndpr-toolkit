@@ -3,6 +3,7 @@ import { DPIAQuestionnaire } from '../components/dpia/DPIAQuestionnaire';
 import type { DPIAQuestionnaireClassNames } from '../components/dpia/DPIAQuestionnaire';
 import type { DPIASection } from '../types/dpia';
 import type { StorageAdapter } from '../adapters/types';
+import type { DPIAAnswerMap, DPIAAnswerValue } from '../hooks/useDPIA';
 
 const DEFAULT_SECTIONS: DPIASection[] = [
   {
@@ -143,10 +144,10 @@ const DEFAULT_SECTIONS: DPIASection[] = [
 
 export interface NDPRDPIAProps {
   sections?: DPIASection[];
-  adapter?: StorageAdapter<Record<string, any>>;
+  adapter?: StorageAdapter<DPIAAnswerMap>;
   classNames?: DPIAQuestionnaireClassNames;
   unstyled?: boolean;
-  onComplete?: (answers: Record<string, any>) => void;
+  onComplete?: (answers: DPIAAnswerMap) => void;
 }
 
 export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
@@ -156,10 +157,10 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
   unstyled,
   onComplete = () => {},
 }) => {
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [answers, setAnswers] = useState<DPIAAnswerMap>({});
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
-  const handleAnswerChange = (questionId: string, value: any) => {
+  const handleAnswerChange = (questionId: string, value: DPIAAnswerValue) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 

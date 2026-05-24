@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BreachReport, RiskAssessment, RegulatoryNotification } from '../../types/breach';
 import { resolveClass } from '../../utils/styling';
+import { LEGAL_DISCLAIMER_LONG, LEGAL_DISCLAIMER_SHORT } from '../../utils/legal-notice';
 
 export interface RegulatoryReportGeneratorClassNames {
   root?: string;
@@ -200,12 +201,19 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
       year: 'numeric'
     });
     
+    // DPO contact prefers breach-level override, falls back to organisation default
+    const dpoName = breachData.dpoContact?.name || organizationInfo.dpoName;
+    const dpoEmail = breachData.dpoContact?.email || organizationInfo.dpoEmail;
+    const dpoPhone = breachData.dpoContact?.phone || organizationInfo.dpoPhone;
+
     return `
 NDPC DATA BREACH NOTIFICATION
 
 Date: ${formattedDate}
+${breachData.isPhasedReport ? 'Report Type: PHASED / INTERIM REPORT' : 'Report Type: Full Report'}
+${breachData.supplementsReportId ? `Supplements Report ID: ${breachData.supplementsReportId}` : ''}
 
-Reference: NDPA Section 40 - Breach Notification
+Reference: NDPA Section 40 - Personal Data Breaches
 
 ORGANIZATION DETAILS
 -------------------
@@ -214,11 +222,11 @@ ${organizationInfo.registrationNumber ? `Registration Number: ${organizationInfo
 Address: ${organizationInfo.address}
 ${organizationInfo.website ? `Website: ${organizationInfo.website}` : ''}
 
-DATA PROTECTION OFFICER
+DATA PROTECTION OFFICER (Section 32 contact point)
 ----------------------
-Name: ${organizationInfo.dpoName}
-Email: ${organizationInfo.dpoEmail}
-${organizationInfo.dpoPhone ? `Phone: ${organizationInfo.dpoPhone}` : ''}
+Name: ${dpoName}
+Email: ${dpoEmail}
+${dpoPhone ? `Phone: ${dpoPhone}` : ''}
 
 BREACH DETAILS
 -------------
@@ -227,7 +235,7 @@ Date Discovered: ${formatDate(breachData.discoveredAt)}
 ${breachData.occurredAt ? `Date Occurred: ${formatDate(breachData.occurredAt)}` : 'Date Occurred: Unknown'}
 Status: ${breachData.status.charAt(0).toUpperCase() + breachData.status.slice(1)}
 
-Description of the Breach:
+Nature of the Personal Data Breach (Section 40(2)):
 ${breachData.description}
 
 Affected Systems/Applications:
@@ -235,9 +243,16 @@ ${breachData.affectedSystems.join(', ')}
 
 Types of Personal Data Involved:
 ${breachData.dataTypes.join(', ')}
+${breachData.involvesSensitiveData ? 'Sensitive personal data (Section 30) involved: YES' : ''}
 
-Estimated Number of Data Subjects Affected:
-${breachData.estimatedAffectedSubjects || 'Unknown'}
+Categories of Data Subjects Affected (Section 40(2)):
+${breachData.dataSubjectCategories?.join(', ') || '[Not specified — required by NDPC]'}
+
+Approximate Number of Data Subjects Affected:
+${breachData.estimatedAffectedSubjects ?? 'Unknown'}
+
+Approximate Number of Personal Data Records Concerned (Section 40(2)):
+${breachData.approximateRecordCount ?? 'Unknown'}
 
 RISK ASSESSMENT
 --------------
@@ -250,26 +265,40 @@ Justification for Risk Assessment:
 ${assessmentData.justification}
 ` : 'Risk assessment has not been conducted yet.'}
 
-MEASURES TAKEN
+LIKELY CONSEQUENCES OF THE BREACH (Section 40(3))
+--------------------------------
+${breachData.likelyConsequences || '[Please describe likely consequences for affected data subjects — identity theft, financial loss, discrimination, etc.]'}
+
+MEASURES TAKEN OR PROPOSED
 -------------
-Measures taken or proposed to address the breach:
+Measures taken to address the breach:
 ${breachData.initialActions || 'To be determined'}
 
-Measures taken or proposed to mitigate possible adverse effects:
-[Please specify measures taken to mitigate adverse effects]
+Measures taken or proposed to mitigate possible adverse effects (Section 40(3)):
+${breachData.mitigationMeasures || '[Please specify mitigation measures]'}
 
-NOTIFICATION TO DATA SUBJECTS (NDPA Section 40(4))
+NOTIFICATION TO DATA SUBJECTS (Section 40(3))
 ----------------------------
 Have data subjects been notified: [Yes/No]
 If yes, date of notification: [Date]
 If no, planned date of notification: [Date]
 Reason for delay (if applicable): [Reason]
 
+${breachData.isPhasedReport ? `PHASED REPORT NOTE
+---------------------
+This report is submitted in phases under NDPA Section 40(2) because complete
+information was not available within 72 hours of discovery. A supplementary
+report will be filed once additional facts are confirmed.
+` : ''}
 ADDITIONAL INFORMATION
 ---------------------
 [Any additional information relevant to the breach]
 
 This notification is made in compliance with the Nigeria Data Protection Act (NDPA), Section 40.
+
+IMPORTANT NOTICE
+---------------------
+${LEGAL_DISCLAIMER_LONG}
     `;
   };
   
@@ -551,8 +580,11 @@ This notification is made in compliance with the Nigeria Data Protection Act (ND
                 Under the Nigeria Data Protection Act (NDPA), Section 40, data breaches that pose a risk to the rights and freedoms of data subjects must be reported to the NDPC within 72 hours of discovery.
                 This report will help you comply with this requirement.
               </p>
+              <p className="ndpr-text-muted text-xs mt-2 italic" role="note">
+                {LEGAL_DISCLAIMER_SHORT}
+              </p>
             </div>
-            
+
             {/* Submit Button */}
             <div className="mt-6">
               <button

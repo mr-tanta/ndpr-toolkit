@@ -84,10 +84,10 @@ export function validateProcessingActivity(activity: ProcessingActivity): Lawful
     }
   }
 
-  // Sensitive data requires a specific condition per NDPA Section 27
+  // Sensitive data requires a specific condition per NDPA Section 30
   if (activity.involvesSensitiveData && !activity.sensitiveDataCondition) {
     errors.push(
-      'Processing sensitive personal data requires specifying a condition under NDPA Section 27.'
+      'Processing sensitive personal data requires specifying a condition under NDPA Section 30.'
     );
   }
 
@@ -218,7 +218,7 @@ export function assessComplianceGaps(activities: ProcessingActivity[]): LawfulBa
         activityName: activity.name,
         type: 'missing_sensitive_condition',
         severity: 'high',
-        description: `Processing activity "${activity.name}" involves sensitive data but no condition under NDPA Section 27 has been specified.`,
+        description: `Processing activity "${activity.name}" involves sensitive data but no condition under NDPA Section 30 has been specified.`,
       });
     }
 

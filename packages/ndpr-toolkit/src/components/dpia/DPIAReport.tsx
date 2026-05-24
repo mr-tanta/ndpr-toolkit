@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { DPIAResult, DPIASection, DPIARisk } from '../../types/dpia';
 import { resolveClass } from '../../utils/styling';
+import { LEGAL_DISCLAIMER_SHORT } from '../../utils/legal-notice';
 
 export interface DPIAReportClassNames {
   /** Outermost wrapper */
@@ -416,9 +417,10 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
 
       {/* Footer */}
       <div className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm ndpr-text-muted">
-        <p>This DPIA was conducted in accordance with the Nigeria Data Protection Act (NDPA) 2023.</p>
+        <p>This DPIA was conducted in accordance with NDPA 2023 Section 28.</p>
         <p>DPIA Report Version: {result.version}</p>
         <p>Generated on: {generatedDate}</p>
+        <p className="mt-2 italic" role="note">{LEGAL_DISCLAIMER_SHORT}</p>
       </div>
     </div>
   );

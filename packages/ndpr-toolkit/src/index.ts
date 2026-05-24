@@ -65,9 +65,18 @@ export { sanitizeInput } from './utils/sanitize';
 export { useConsent } from './hooks/useConsent';
 export { useDSR } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
+export type { DPIAAnswerMap, DPIAAnswerValue } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
+export { useComplianceScore } from './hooks/useComplianceScore';
+export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
+export { useFocusTrap } from './hooks/useFocusTrap';
+export type { UseFocusTrapOptions } from './hooks/useFocusTrap';
+export type {
+  UseAdaptivePolicyWizardOptions,
+  UseAdaptivePolicyWizardReturn,
+} from './hooks/useAdaptivePolicyWizard';
 
 // Lawful Basis Tracking Components
 export { LawfulBasisTracker } from './components/lawful-basis/LawfulBasisTracker';
@@ -122,3 +131,12 @@ export type {
   EffortLevel,
   RegulatoryReference,
 } from './utils/compliance-score';
+
+// Legal notice
+export {
+  LEGAL_DISCLAIMER_SHORT,
+  LEGAL_DISCLAIMER_LONG,
+  legalDisclaimerBlock,
+} from './utils/legal-notice';
+export { LegalNotice } from './components/common/LegalNotice';
+export type { LegalNoticeProps } from './components/common/LegalNotice';

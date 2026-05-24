@@ -105,7 +105,7 @@ describe('validateProcessingActivity', () => {
 
     expect(result.isValid).toBe(false);
     expect(result.errors).toContain(
-      'Processing sensitive personal data requires specifying a condition under NDPA Section 27.'
+      'Processing sensitive personal data requires specifying a condition under NDPA Section 30.'
     );
   });
 

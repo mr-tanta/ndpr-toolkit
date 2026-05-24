@@ -55,7 +55,7 @@ export function assessDPIARisk(dpiaResult: DPIAResult): {
   }
   
   // Determine if NDPC consultation is required
-  // Under NDPA Section 39, prior consultation with the NDPC is required when residual risk is high
+  // Under NDPA Section 28(2), prior consultation with the NDPC is required when residual risk is high
   const requiresConsultation = overallRiskLevel === 'high' || overallRiskLevel === 'critical';
   
   // Determine if processing can proceed
@@ -75,7 +75,7 @@ export function assessDPIARisk(dpiaResult: DPIAResult): {
   
   if (requiresConsultation) {
     recommendations.push(
-      'Consult with the NDPC (Nigeria Data Protection Commission) before proceeding with this processing activity, as required by NDPA Section 39.'
+      'Consult with the NDPC (Nigeria Data Protection Commission) before proceeding with this processing activity, as required by NDPA Section 28(2).'
     );
   }
   

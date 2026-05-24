@@ -79,3 +79,14 @@ export type {
   ModuleScore, Recommendation, RegulatoryReference,
   RecommendationPriority, EffortLevel,
 } from './utils/compliance-score';
+
+// Legal notice (pure string constants — safe to import from any environment)
+export {
+  LEGAL_DISCLAIMER_SHORT,
+  LEGAL_DISCLAIMER_LONG,
+  legalDisclaimerBlock,
+} from './utils/legal-notice';
+
+// Storage adapter type — re-exported here for ergonomics. The concrete
+// adapter implementations live in `/adapters`.
+export type { StorageAdapter } from './adapters/types';

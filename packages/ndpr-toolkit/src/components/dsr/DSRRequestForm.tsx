@@ -161,7 +161,7 @@ export interface DSRRequestFormProps {
 }
 
 /**
- * Data Subject Request form component. Implements NDPA Part IV, Sections 29-36
+ * Data Subject Request form component. Implements NDPA Part VI (Sections 34-38)
  * covering data subject rights including access, rectification, erasure, and portability.
  */
 export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
@@ -169,7 +169,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   onSubmit,
   onValidationError,
   title = "Submit a Data Subject Request",
-  description = "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part IV, Sections 29-36.",
+  description = "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part VI.",
   submitButtonText = "Submit Request",
   className = "",
   buttonClassName = "",
@@ -189,6 +189,17 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   defaultValues,
   onReset
 }) => {
+  // Friendly runtime check — TypeScript already requires `requestTypes`, but
+  // consumers using untyped JS, dynamic imports, or test fixtures often hit a
+  // mysterious "Cannot read properties of undefined (reading 'find')" deep in
+  // a minified chunk. Raise it here with a clear, attributable message.
+  if (!Array.isArray(requestTypes)) {
+    throw new Error(
+      '[ndpr-toolkit] <DSRRequestForm requestTypes={...} /> requires an array of RequestType[]. ' +
+        'See https://ndprtoolkit.com.ng/docs/components/dsr#requesttypes — ' +
+        'or use the `<NDPRSubjectRights />` preset which ships sensible defaults.',
+    );
+  }
   const [selectedRequestType, setSelectedRequestType] = useState<string>(defaultValues?.requestType || "");
   const [fullName, setFullName] = useState<string>(defaultValues?.dataSubject?.fullName || "");
   const [email, setEmail] = useState<string>(defaultValues?.dataSubject?.email || "");

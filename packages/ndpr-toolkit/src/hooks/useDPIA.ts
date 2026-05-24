@@ -5,10 +5,10 @@ import type { StorageAdapter } from '../adapters/types';
 import { localStorageAdapter } from '../adapters/local-storage';
 
 /** Possible value types for a DPIA answer */
-type DPIAAnswerValue = string | number | boolean | string[];
+export type DPIAAnswerValue = string | number | boolean | string[];
 
 /** A map of question IDs to their answer values */
-type DPIAAnswerMap = Record<string, DPIAAnswerValue>;
+export type DPIAAnswerMap = Record<string, DPIAAnswerValue>;
 
 interface UseDPIAOptions {
   /**

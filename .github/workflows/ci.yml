@@ -33,8 +33,28 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
-      - name: Run tests
-        run: pnpm test
+      - name: Run tests with coverage
+        # Uses the root jest invocation (`jest --passWithNoTests`) which the
+        # 3.5.4 release already proved discovers the workspace test suite via
+        # Next.js test-globs. We just add coverage flags + scope the
+        # collectCoverageFrom paths to the library source.
+        run: |
+          pnpm test -- \
+            --coverage \
+            --coverageReporters=text-summary \
+            --coverageReporters=lcov \
+            --collectCoverageFrom='packages/ndpr-toolkit/src/**/*.ts' \
+            --collectCoverageFrom='packages/ndpr-toolkit/src/**/*.tsx' \
+            --collectCoverageFrom='!packages/ndpr-toolkit/src/**/*.d.ts' \
+            --collectCoverageFrom='!packages/ndpr-toolkit/src/__tests__/**'
+
+      - name: Upload coverage report
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
 
       - name: Build library
         run: pnpm build:lib

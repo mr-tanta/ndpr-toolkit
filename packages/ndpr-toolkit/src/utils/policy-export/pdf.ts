@@ -1,5 +1,6 @@
 import type { PrivacyPolicy } from '../../types/privacy';
 import type { PDFExportOptions } from '../../types/policy-engine';
+import { LEGAL_DISCLAIMER_LONG } from '../legal-notice';
 
 /**
  * Export a PrivacyPolicy to a PDF Blob using jspdf (optional peer dependency).
@@ -227,6 +228,30 @@ export async function exportPDF(
 
     yPos += 10; // gap between sections
   });
+
+  // ── Legal notice (own page if needed) ────────────────────────────────────
+  if (yPos > pageHeight - 60) {
+    doc.addPage();
+    yPos = margin;
+  }
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(0, 0, 0);
+  doc.text('Important Notice', margin, yPos);
+  yPos += 8;
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(80, 80, 80);
+  const noticeLines: string[] = doc.splitTextToSize(LEGAL_DISCLAIMER_LONG, contentWidth);
+  noticeLines.forEach((line: string) => {
+    if (yPos > pageHeight - 20) {
+      doc.addPage();
+      yPos = margin;
+    }
+    doc.text(line, margin, yPos);
+    yPos += 5;
+  });
+  doc.setTextColor(0, 0, 0);
 
   // ── Page footer on every page ────────────────────────────────────────────
   const totalPages: number = doc.getNumberOfPages();

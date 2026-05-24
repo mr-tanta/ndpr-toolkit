@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
 import { resolveClass } from '../../utils/styling';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 export interface ConsentAnalyticsEvent {
   action: 'shown' | 'accepted_all' | 'rejected_all' | 'customized' | 'dismissed';
@@ -205,7 +206,9 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   const [showCustomize, setShowCustomize] = useState<boolean>(false);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
   const [isMounted, setIsMounted] = useState(false);
-  const bannerRef = useRef<HTMLDivElement>(null);
+  // Shared trap hook handles focus capture + Tab cycling + focus restoration
+  // on close (WCAG 2.4.3). Returns a ref for us to attach to the banner.
+  const bannerRef = useFocusTrap<HTMLDivElement>({ active: isOpen });
   const customizePanelRef = useRef<HTMLDivElement>(null);
   const analyticsShownFired = useRef<boolean>(false);
 
@@ -386,57 +389,7 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
     }
   }, [isOpen, fireAnalytics]);
 
-  // Focus trap: keep Tab cycling within the banner and auto-focus first interactive element
-  useEffect(() => {
-    if (!isOpen || !bannerRef.current) return;
-
-    const FOCUSABLE_SELECTOR =
-      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-    // Auto-focus the first interactive element when the banner opens
-    const focusFirst = () => {
-      if (!bannerRef.current) return;
-      const focusable = bannerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-      if (focusable.length > 0) {
-        focusable[0].focus();
-      } else {
-        bannerRef.current.focus();
-      }
-    };
-
-    // Small delay to ensure DOM is painted (especially for customize panel transitions)
-    const timerId = setTimeout(focusFirst, 0);
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab' || !bannerRef.current) return;
-
-      const focusable = bannerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-      if (focusable.length === 0) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-
-      if (e.shiftKey) {
-        // Shift+Tab at first element -> wrap to last
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        // Tab at last element -> wrap to first
-        if (document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      clearTimeout(timerId);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, showCustomize]);
+  // Focus trap + restore-on-close are handled by useFocusTrap above.
 
   // Animate the customize panel with a slide/fade transition
   useEffect(() => {

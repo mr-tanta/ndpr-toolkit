@@ -2,6 +2,106 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.5.5](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.4...v3.5.5) (2026-05-24)
+
+### Features (tests + types)
+
+* **Tests:** 8 new tests for the 72-hour NDPC notification deadline (`useBreach.getBreachesRequiringNotification`) — covers 1h / 24h / 48h / 71.5h / expired / sort-by-urgency / already-notified cases. Test suite now at 1134 passing (up from 1126).
+* **CI:** Tests now run with `--coverage` and the report uploads as a workflow artifact on each run. Thresholds re-set as a ratchet (45% branches, 50% functions, 65% lines/statements — at or just below current to catch regressions, raised in follow-up patches).
+* **types:** `DPIAAnswerMap` and `DPIAAnswerValue` exported from `/` and `/hooks`. `DPIAProvider` and `<NDPRDPIA>` props now use these instead of `Record<string, any>`, restoring callsite type-safety on `onComplete`, `initialAnswers`, and `adapter`.
+
+### Bug Fixes (API contract)
+
+* **useDSR:** `submitRequest` previously declared `Omit<DSRRequest, 'id' | 'status' | 'submittedAt' | 'updatedAt' | 'estimatedCompletionDate'>` — but `submittedAt` and `estimatedCompletionDate` don't exist on `DSRRequest`. Corrected to `Omit<DSRRequest, 'id' | 'status' | 'createdAt' | 'updatedAt' | 'dueDate'>` so the type contract matches the implementation.
+* **useDSR:** `getRequestsByStatus` now accepts `DSRStatus | RequestStatus` instead of only the deprecated `RequestStatus`. Callers using the modern `DSRStatus` literals (e.g. `'awaitingVerification'`) no longer get a type error.
+
+## [3.5.4](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.3...v3.5.4) (2026-05-23)
+
+### Features (accessibility)
+
+* **useFocusTrap:** New shared hook that captures `document.activeElement` on activation, traps Tab cycling inside the container, optionally handles Escape, and restores focus on deactivation (WCAG 2.4.3). Exported from `/`, `/hooks`. Drops a previously-missing piece — closing `<ConsentBanner>` now correctly returns focus to whatever triggered it.
+* **prefers-reduced-motion:** Stylesheet now neutralises all toolkit animations (slide-in, fade-in, scale-in) and transitions when the user sets `prefers-reduced-motion: reduce` at the OS level (WCAG 2.3.3). Applies to banners, modals, dashboards, and policy previews.
+
+### Bug Fixes (accessibility)
+
+* **ConsentBanner:** Internal focus trap now restores focus on close (was previously leaving focus at `<body>`). Replaced the duplicated trap implementation with the new shared `useFocusTrap` hook.
+* **BreachReportForm:** Icon-only "remove attachment" button now has an accessible label (`aria-label="Remove attachment {filename}"`) and a 44×44 px touch target. SVG marked `aria-hidden`. WCAG 4.1.2 / 2.5.5.
+* **BreachReportForm:** `dataTypes` fieldset is now properly wired to its error message via `aria-invalid` + `aria-describedby="dataTypes-error"`. Required-asterisk now announced via `<span className="sr-only">(required)</span>` (was visual-only). WCAG 1.3.1 / 3.3.2.
+
+## [3.5.3](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.2...v3.5.3) (2026-05-23)
+
+### Bug Fixes (developer experience)
+
+* **dsr:** `<DSRRequestForm>` now throws a clear `[ndpr-toolkit] <DSRRequestForm requestTypes={...}> requires an array of RequestType[]` error when the required prop is missing — previously crashed deep in a minified chunk with `Cannot read properties of undefined (reading 'find')`. Points users at the `<NDPRSubjectRights>` preset for defaults.
+* **dsr:** Default form description updated from "NDPA Part IV, Sections 29-36" to "NDPA Part VI" (matching the 3.5.2 citation fixes).
+
+### Features
+
+* **package.json:** `sideEffects: ["*.css"]` is now declared on both root and workspace manifests — bundlers can reliably tree-shake unused subpaths.
+* **package.json:** `engines.node: ">=18.0.0"` declared. Quiets installer warnings on Node 16 setups and matches React 18/19 requirements.
+* **package.json:** `funding` field added (GitHub Sponsors URL).
+* **keywords:** Added high-intent search terms developers actually type — `ndpa-2023`, `nigeria-compliance`, `data-privacy`, `compliance-tools`, `nitda`, `gdpr`, `gdpr-nigeria`, `africa`, `cookie-banner`, `nextjs`. Improves npm search ranking for queries like "react NDPA" and "cookie consent Nigeria".
+* **root exports:** `useComplianceScore` and `useAdaptivePolicyWizard` now re-exported from the root entry. Previously only on `/hooks` — caused silent discoverability gap when users autocompleted from the bare `@tantainnovative/ndpr-toolkit`.
+
+## [3.5.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.1...v3.5.2) (2026-05-23)
+
+### ⚠️ Legal correctness — please re-review generated artifacts
+
+3.5.2 corrects NDPA 2023 section citations across the toolkit against the gazetted text of the Act. If you embedded any pre-3.5.2 output (privacy policy text, DPIA labels, breach report templates) in a regulatory submission, please regenerate or manually update the citations. See the migration table below.
+
+### Bug Fixes (legal correctness)
+
+* **dsr:** Right citations now follow NDPA Part VI as gazetted — access = Section 34(1)(a)–(b), rectification = Section 34(1)(c), erasure = Section 34(1)(d) + 34(2), restriction = Section 34(1)(e), withdraw consent = Section 35, object = Section 36, automated decisions = Section 37, portability = Section 38. Previously cited Sections 30–36 in a way that did not match the Act.
+* **dpia:** DPIA + NDPC prior-consultation citations corrected from Section 38/39 to **Section 28** (which covers both per Section 28(1) and 28(2)).
+* **cross-border:** Transfer-mechanism citations now follow NDPA Part VIII — adequacy decision = Section 42, SCCs / BCRs = Section 41(1)(a), NDPC-approved instruments = Section 42(5), and all derogations = Section 43(1)(a)–(f). Previously cited Sections 41–45 in a way that did not match the Act.
+* **lawful-basis, breach:** Sensitive personal data citation corrected from Section 27 to **Section 30**.
+* **policy:** Privacy notice provisions now cite Section 27 (provision of information) rather than Section 29 (controller obligations).
+* **country-adequacy:** Removed fabricated NDPC adequacy claims. NDPC has not (as of publication) published a Section 42 adequacy list. The 22 entries previously labelled `recognizedBy: 'NDPC'` are now `recognizedBy: 'self-assessment'` with a clear disclaimer in the module header.
+* **dsr (types):** DSRType union extends with `'withdraw_consent'` to reflect the explicit Section 35 right.
+
+### Features
+
+* **legal-notice:** New `LEGAL_DISCLAIMER_SHORT`, `LEGAL_DISCLAIMER_LONG`, and `legalDisclaimerBlock()` exports (from `/`, `/core`, `/server`), plus a `<LegalNotice>` component. Injected into all generated artifacts (HTML / Markdown / DOCX / PDF policy exports, regulatory breach report output, DPIA report footer, breach form preview).
+* **breach (NDPC report content):** `BreachReport` / `BreachFormSubmission` extended with the fields the NDPC actually requires under Section 40(2)–(3) — `approximateRecordCount`, `dataSubjectCategories`, `likelyConsequences`, `mitigationMeasures`, `dpoContact`, `isPhasedReport`, `supplementsReportId`. `BreachReportForm` now collects them; `RegulatoryReportGenerator` includes them in the printed NDPC report.
+* **core:** `StorageAdapter` is now re-exported from `/core` for ergonomics (the concrete adapters still live in `/adapters`).
+
+### Build / packaging
+
+* **build:** Sourcemaps are no longer published. Pass `NDPR_SOURCEMAPS=1` to emit them for local debugging. Cuts the published tarball by ~3 MB.
+* **build:** `dist/` is no longer tracked in git. CI rebuilds from source on every publish.
+* **packaging:** Workspace `packages/ndpr-toolkit/package.json` exports now match the root manifest (drops accidental `-entry` suffixes that pointed at non-existent files). Workspace tsup config also aligned.
+* **packaging:** README is now synced from the repo root via `prepublishOnly`, with absolute image URLs so npm renders the hero correctly.
+
+### Release pipeline
+
+* **publish workflow:** Now publishes with `--provenance` (sigstore attestation) and checks out the tagged commit (not main HEAD).
+* **repo:** `main` is now branch-protected — PRs + 1 approval + green CI required, no force-push, no deletions.
+
+### Docs
+
+* **README:** Fixed broken code examples — `Consent.Provider` uses `onChange` (not `onSave`); `getComplianceScore` example now includes all 8 required module inputs; `StorageAdapter` re-export documented.
+
+### Migration table — old → new NDPA citation
+
+| Concept | Old (pre-3.5.2) | Correct (3.5.2+) |
+|---|---|---|
+| Right of access | Section 30 | Section 34(1)(a)–(b) |
+| Right to rectification | Section 31 | Section 34(1)(c) |
+| Right to erasure | Section 32 | Section 34(1)(d), Section 34(2) |
+| Right to restrict processing | Section 33 | Section 34(1)(e) |
+| Right to portability | Section 34 | Section 38 |
+| Right to object | Section 35 | Section 36 |
+| Right to automated-decision opt-out | Section 36 | Section 37 |
+| Right to withdraw consent | (missing) | Section 35 |
+| DPIA + prior consultation | Section 38 / 39 | Section 28 |
+| Sensitive personal data | Section 27 | Section 30 |
+| Cross-border adequacy | Section 41 | Section 42 |
+| Cross-border SCCs / BCRs | Section 42 / 43 | Section 41(1)(a) |
+| Cross-border derogations | Section 45(a)–(e) | Section 43(1)(a)–(f) |
+| Right to complain to NDPC | (missing) | Section 46(1) |
+
+> The toolkit produces guidance artifacts only — not legal advice. Verify with your DPO or qualified Nigerian privacy counsel before relying on any output for a regulatory submission.
+
 ## [3.5.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.0...v3.5.1) (2026-05-03)
 
 

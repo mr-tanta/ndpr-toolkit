@@ -1,5 +1,6 @@
 import type { PrivacyPolicy } from '../../types/privacy';
 import type { HTMLExportOptions } from '../../types/policy-engine';
+import { LEGAL_DISCLAIMER_LONG } from '../legal-notice';
 
 /** Escape special HTML characters to prevent injection in text content. */
 function escapeHtml(text: string): string {
@@ -522,6 +523,11 @@ ${tocHtml}
 ${sectionsHtml}
 
     </article>
+
+    <aside class="policy-legal-notice" role="note" aria-label="Legal notice">
+      <h2>Important Notice</h2>
+      <p>${escapeHtml(LEGAL_DISCLAIMER_LONG)}</p>
+    </aside>
 
     <footer class="policy-footer" role="contentinfo">
       <div>${orgName}${websiteHtml ? ` &mdash; ${websiteHtml}` : ''}</div>

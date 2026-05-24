@@ -212,7 +212,7 @@ function evaluateDSR(input: ComplianceInput['dsr']): CheckDefinition[] {
       priority: 'high',
       effort: 'medium',
       recommendation: 'Enable data subjects to request and receive a copy of their personal data.',
-      ndpaSection: 'Section 34',
+      ndpaSection: 'Section 34(1)(a)–(b)',
       pass: input.supportsAccess,
     },
     {
@@ -221,7 +221,7 @@ function evaluateDSR(input: ComplianceInput['dsr']): CheckDefinition[] {
       priority: 'high',
       effort: 'medium',
       recommendation: 'Allow data subjects to request correction of inaccurate or incomplete personal data.',
-      ndpaSection: 'Section 35',
+      ndpaSection: 'Section 34(1)(c)',
       pass: input.supportsRectification,
     },
     {
@@ -230,7 +230,7 @@ function evaluateDSR(input: ComplianceInput['dsr']): CheckDefinition[] {
       priority: 'high',
       effort: 'high',
       recommendation: 'Implement processes to delete personal data upon valid erasure requests.',
-      ndpaSection: 'Section 36',
+      ndpaSection: 'Section 34(1)(d), Section 34(2)',
       pass: input.supportsErasure,
     },
     {
@@ -239,7 +239,7 @@ function evaluateDSR(input: ComplianceInput['dsr']): CheckDefinition[] {
       priority: 'medium',
       effort: 'high',
       recommendation: 'Provide personal data in a structured, machine-readable format upon request.',
-      ndpaSection: 'Section 37',
+      ndpaSection: 'Section 38',
       pass: input.supportsPortability,
     },
     {
@@ -248,7 +248,7 @@ function evaluateDSR(input: ComplianceInput['dsr']): CheckDefinition[] {
       priority: 'medium',
       effort: 'medium',
       recommendation: 'Honour objections to processing where no compelling legitimate grounds override the data subject\'s interests.',
-      ndpaSection: 'Section 38',
+      ndpaSection: 'Section 36',
       pass: input.supportsObjection,
     },
     {
@@ -256,8 +256,8 @@ function evaluateDSR(input: ComplianceInput['dsr']): CheckDefinition[] {
       label: 'DSR response within 30 days',
       priority: 'high',
       effort: 'medium',
-      recommendation: 'Reduce DSR response time to 30 days or less as required by the NDPA.',
-      ndpaSection: 'Section 39',
+      recommendation: 'Reduce DSR response time to 30 days or less per NDPC guidance (GAID 2025).',
+      ndpaSection: 'Section 34 (NDPC GAID 2025 timeline guidance)',
       pass: timelineOk,
     },
   ];
@@ -346,7 +346,7 @@ function evaluatePolicy(input: ComplianceInput['policy']): CheckDefinition[] {
       priority: 'critical',
       effort: 'high',
       recommendation: 'Draft and publish a comprehensive privacy policy that satisfies NDPA requirements.',
-      ndpaSection: 'Section 29',
+      ndpaSection: 'Section 27',
       pass: input.hasPrivacyPolicy,
     },
     {
@@ -355,7 +355,7 @@ function evaluatePolicy(input: ComplianceInput['policy']): CheckDefinition[] {
       priority: 'high',
       effort: 'low',
       recommendation: 'Make the privacy policy easily accessible to data subjects on your website or app.',
-      ndpaSection: 'Section 29',
+      ndpaSection: 'Section 27',
       pass: input.isPubliclyAccessible,
     },
     {
@@ -364,7 +364,7 @@ function evaluatePolicy(input: ComplianceInput['policy']): CheckDefinition[] {
       priority: 'medium',
       effort: 'medium',
       recommendation: 'Review and update the privacy policy at least annually to reflect current practices.',
-      ndpaSection: 'Section 29',
+      ndpaSection: 'Section 27',
       pass: policyUpToDate,
     },
     {
@@ -373,7 +373,7 @@ function evaluatePolicy(input: ComplianceInput['policy']): CheckDefinition[] {
       priority: 'high',
       effort: 'medium',
       recommendation: 'Ensure the privacy policy addresses all NDPA-mandated disclosures including lawful basis, retention, and subject rights.',
-      ndpaSection: 'Section 29',
+      ndpaSection: 'Section 27',
       pass: input.coversAllSections,
     },
   ];
@@ -409,8 +409,8 @@ function evaluateCrossBorder(input: ComplianceInput['crossBorder']): CheckDefini
       label: 'Transfer mechanisms in place',
       priority: 'critical',
       effort: 'high',
-      recommendation: 'Implement appropriate transfer mechanisms (SCCs, BCRs, or adequacy decisions) for all cross-border transfers.',
-      ndpaSection: 'Section 43',
+      recommendation: 'Implement appropriate transfer mechanisms (SCCs, BCRs, adequacy decisions, or Section 43 derogations) for all cross-border transfers.',
+      ndpaSection: 'Section 41',
       pass: input.hasTransferMechanisms,
     },
     {
@@ -419,7 +419,7 @@ function evaluateCrossBorder(input: ComplianceInput['crossBorder']): CheckDefini
       priority: 'high',
       effort: 'medium',
       recommendation: 'Assess whether the destination country provides an adequate level of data protection before transferring.',
-      ndpaSection: 'Section 43',
+      ndpaSection: 'Section 42',
       pass: input.adequacyAssessed,
     },
     {
@@ -427,8 +427,8 @@ function evaluateCrossBorder(input: ComplianceInput['crossBorder']): CheckDefini
       label: 'NDPC approval obtained where required',
       priority: 'high',
       effort: 'high',
-      recommendation: 'Obtain NDPC approval for transfers to countries without adequacy decisions where required.',
-      ndpaSection: 'Section 44',
+      recommendation: 'Obtain NDPC approval (e.g. for binding corporate rules, codes of conduct, or certification mechanisms) for transfers to countries without adequacy decisions where required.',
+      ndpaSection: 'Section 42(5)',
       pass: input.ndpcApprovalObtained,
     },
   ];
@@ -444,7 +444,7 @@ function evaluateROPA(input: ComplianceInput['ropa']): CheckDefinition[] {
       priority: 'critical',
       effort: 'high',
       recommendation: 'Create and maintain a comprehensive Record of Processing Activities (ROPA) as required by the NDPA.',
-      ndpaSection: 'Section 30',
+      ndpaSection: 'Section 29',
       pass: input.maintained,
     },
     {
@@ -453,7 +453,7 @@ function evaluateROPA(input: ComplianceInput['ropa']): CheckDefinition[] {
       priority: 'high',
       effort: 'medium',
       recommendation: 'Ensure the ROPA captures every processing activity across all departments and systems.',
-      ndpaSection: 'Section 30',
+      ndpaSection: 'Section 29',
       pass: input.includesAllProcessing,
     },
     {
@@ -462,7 +462,7 @@ function evaluateROPA(input: ComplianceInput['ropa']): CheckDefinition[] {
       priority: 'medium',
       effort: 'low',
       recommendation: 'Review and update the ROPA at least every six months to reflect changes in processing activities.',
-      ndpaSection: 'Section 30',
+      ndpaSection: 'Section 29',
       pass: ropaUpToDate,
     },
   ];
@@ -487,7 +487,7 @@ const MODULE_CONFIGS: ModuleConfig[] = [
   {
     name: 'dsr',
     weight: 0.15,
-    ndpaSections: ['Section 34', 'Section 35', 'Section 36', 'Section 37', 'Section 38', 'Section 39'],
+    ndpaSections: ['Section 34', 'Section 35', 'Section 36', 'Section 37', 'Section 38'],
     evaluate: (i) => evaluateDSR(i.dsr),
   },
   {
@@ -499,7 +499,7 @@ const MODULE_CONFIGS: ModuleConfig[] = [
   {
     name: 'policy',
     weight: 0.12,
-    ndpaSections: ['Section 29'],
+    ndpaSections: ['Section 27'],
     evaluate: (i) => evaluatePolicy(i.policy),
   },
   {
@@ -517,13 +517,13 @@ const MODULE_CONFIGS: ModuleConfig[] = [
   {
     name: 'crossBorder',
     weight: 0.08,
-    ndpaSections: ['Section 43', 'Section 44'],
+    ndpaSections: ['Section 41', 'Section 42', 'Section 43'],
     evaluate: (i) => evaluateCrossBorder(i.crossBorder),
   },
   {
     name: 'ropa',
     weight: 0.08,
-    ndpaSections: ['Section 30'],
+    ndpaSections: ['Section 29'],
     evaluate: (i) => evaluateROPA(i.ropa),
   },
 ];

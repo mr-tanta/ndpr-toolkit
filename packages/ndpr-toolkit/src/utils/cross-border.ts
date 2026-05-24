@@ -25,11 +25,13 @@ export interface TransferRiskResult {
 
 /**
  * Returns whether NDPC approval is required for a given transfer mechanism.
- * Approval is required for standard contractual clauses (Section 42),
- * binding corporate rules (Section 43), and specific NDPC authorization (Section 44).
+ * Under NDPA Section 42(5), the Commission may approve binding corporate rules,
+ * codes of conduct, certification mechanisms, or similar instruments. Standard
+ * contractual clauses are one of the appropriate safeguards under Section 41(1)(a)
+ * and the Commission may approve them per Section 42(4).
  *
  * @param mechanism The transfer mechanism
- * @returns Whether NDPC approval is required
+ * @returns Whether NDPC approval is typically required
  */
 export function isNDPCApprovalRequired(mechanism: TransferMechanism): boolean {
   return (
@@ -48,23 +50,23 @@ export function isNDPCApprovalRequired(mechanism: TransferMechanism): boolean {
 export function getTransferMechanismDescription(mechanism: TransferMechanism): string {
   const descriptions: Record<TransferMechanism, string> = {
     adequacy_decision:
-      'Adequacy Decision (NDPA Section 41) — Transfer to a country or territory that the NDPC has determined provides an adequate level of data protection.',
+      'Adequacy Decision (NDPA Section 42) — Transfer to a country, region, or specified sector that the NDPC has determined provides an adequate level of data protection.',
     standard_clauses:
-      'Standard Contractual Clauses (NDPA Section 42) — Transfer based on standard contractual clauses approved by the NDPC between the controller/processor and the recipient.',
+      'Standard Contractual Clauses (NDPA Section 41(1)(a)) — Transfer based on contractual clauses that afford adequate protection. The NDPC may approve such clauses under Section 42(4)–(5).',
     binding_corporate_rules:
-      'Binding Corporate Rules (NDPA Section 43) — Transfer within a group of undertakings based on binding corporate rules approved by the NDPC.',
+      'Binding Corporate Rules (NDPA Section 41(1)(a)) — Transfer within a group of undertakings based on binding corporate rules that afford adequate protection. The NDPC may approve BCRs under Section 42(5).',
     ndpc_authorization:
-      'NDPC Authorization (NDPA Section 44) — Transfer authorized by the Nigeria Data Protection Commission under specific conditions.',
+      'NDPC-Approved Instrument (NDPA Section 42(5)) — Transfer authorized by an NDPC-approved code of conduct, certification mechanism, or similar instrument that meets the protection standards of the Act.',
     explicit_consent:
-      'Explicit Consent (NDPA Section 45(a)) — Transfer based on the explicit and informed consent of the data subject after being informed of the risks.',
+      'Explicit Consent (NDPA Section 43(1)(a)) — Transfer based on the consent of the data subject after being informed of the possible risks due to the absence of adequate protections.',
     contract_performance:
-      'Contract Performance (NDPA Section 45(b)) — Transfer necessary for the performance of a contract between the data subject and the controller.',
+      'Contract Performance (NDPA Section 43(1)(b)) — Transfer necessary for the performance of a contract to which the data subject is a party, or for pre-contractual steps at the data subject\'s request.',
     public_interest:
-      'Public Interest (NDPA Section 45(c)) — Transfer necessary for important reasons of public interest.',
+      'Public Interest (NDPA Section 43(1)(d)) — Transfer necessary for important reasons of public interest.',
     legal_claims:
-      'Legal Claims (NDPA Section 45(d)) — Transfer necessary for the establishment, exercise, or defense of legal claims.',
+      'Legal Claims (NDPA Section 43(1)(e)) — Transfer necessary for the establishment, exercise, or defense of legal claims.',
     vital_interests:
-      'Vital Interests (NDPA Section 45(e)) — Transfer necessary to protect the vital interests of the data subject or other persons.',
+      'Vital Interests (NDPA Section 43(1)(f)) — Transfer necessary to protect the vital interests of a data subject or of other persons where the data subject is physically or legally incapable of giving consent.',
   };
 
   return descriptions[mechanism];
@@ -155,7 +157,7 @@ export function validateTransfer(transfer: CrossBorderTransfer): TransferValidat
   // Validate adequacy status alignment
   if (transfer.adequacyStatus === 'inadequate' && transfer.transferMechanism === 'adequacy_decision') {
     errors.push(
-      'Cannot rely on adequacy decision (Section 41) when the destination country is marked as inadequate.'
+      'Cannot rely on adequacy decision (Section 42) when the destination country is marked as inadequate.'
     );
   }
 

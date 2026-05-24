@@ -40,7 +40,7 @@ export interface ValidateDsrSubmissionOptions {
   /**
    * Allowed request types. When provided, the payload's `requestType`
    * must be one of these — useful for locking the server to a specific
-   * set of supported NDPA Part IV §29-36 rights.
+   * set of supported NDPA Part VI §34-38 (plus §35, §36, §37) data-subject rights.
    */
   allowedRequestTypes?: string[];
 }

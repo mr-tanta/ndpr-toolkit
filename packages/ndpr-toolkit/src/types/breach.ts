@@ -60,11 +60,59 @@ export interface BreachReport {
   /** Types of data involved in the breach */
   dataTypes: string[];
 
-  /** Whether sensitive personal data is involved (NDPA Section 27) */
+  /** Whether sensitive personal data is involved (NDPA Section 30) */
   involvesSensitiveData?: boolean;
 
   /** Estimated number of data subjects affected */
   estimatedAffectedSubjects?: number;
+
+  /**
+   * Approximate number of personal data RECORDS concerned (distinct from subject count).
+   * Required content under NDPA Section 40(1)(a) and Section 40(2).
+   */
+  approximateRecordCount?: number;
+
+  /**
+   * Categories of data subjects affected (e.g. customers, employees, minors, patients).
+   * Required content under NDPA Section 40(1)(a) and Section 40(2).
+   */
+  dataSubjectCategories?: string[];
+
+  /**
+   * Likely consequences of the breach for affected data subjects (e.g. identity theft,
+   * financial loss, reputational damage). Reported to the NDPC and, where applicable,
+   * communicated to data subjects under Section 40(3).
+   */
+  likelyConsequences?: string;
+
+  /**
+   * Measures taken or proposed to mitigate adverse effects of the breach.
+   * Required content for Section 40(3) communications to data subjects.
+   */
+  mitigationMeasures?: string;
+
+  /**
+   * Whether this is a phased / interim report submitted before full investigation
+   * is complete. The NDPC permits phased reporting where complete information is
+   * not available within 72 hours.
+   */
+  isPhasedReport?: boolean;
+
+  /**
+   * ID of the prior phased report this report supplements, if any.
+   */
+  supplementsReportId?: string;
+
+  /**
+   * Data Protection Officer contact details. The DPO is the named contact point
+   * for the NDPC per NDPA Section 32(3)(c). Required content in the regulatory
+   * report (Section 40(2)).
+   */
+  dpoContact?: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
 
   /** Whether the breach is ongoing or contained */
   status: 'ongoing' | 'contained' | 'resolved';

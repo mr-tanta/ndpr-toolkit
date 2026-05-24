@@ -1,17 +1,22 @@
 /**
- * Data Subject Rights types aligned with NDPA 2023 Part IV (Sections 29-36)
+ * Data Subject Rights types aligned with NDPA 2023 Part VI (Sections 34-38)
+ * and the related provisions in Part V (Section 27 — information to the data subject)
+ * and Part X (Section 46 — complaint to the Commission).
+ *
+ * Note: These are guidance labels — not legal advice. Verify with your DPO or counsel.
  */
 
 /**
- * Types of data subject requests per NDPA Part IV
- * - 'information': Right to be informed (Section 29)
- * - 'access': Right of access (Section 30)
- * - 'rectification': Right to rectification (Section 31)
- * - 'erasure': Right to erasure (Section 32)
- * - 'restriction': Right to restrict processing (Section 33)
- * - 'portability': Right to data portability (Section 34)
- * - 'objection': Right to object (Section 35)
- * - 'automated_decision_making': Rights related to automated decision-making (Section 36)
+ * Types of data subject requests per NDPA Part VI
+ * - 'information': Right to be informed (Section 27 — provision of information; Section 34(1)(a))
+ * - 'access': Right of access / confirmation + data copy (Section 34(1)(a)–(b))
+ * - 'rectification': Right to rectification (Section 34(1)(c))
+ * - 'erasure': Right to erasure (Section 34(1)(d), Section 34(2))
+ * - 'restriction': Right to restrict processing (Section 34(1)(e))
+ * - 'portability': Right to data portability (Section 38)
+ * - 'objection': Right to object (Section 36)
+ * - 'automated_decision_making': Rights re. automated decisions / profiling (Section 37)
+ * - 'withdraw_consent': Right to withdraw consent (Section 35)
  */
 export type DSRType =
   | 'information'
@@ -21,7 +26,8 @@ export type DSRType =
   | 'restriction'
   | 'portability'
   | 'objection'
-  | 'automated_decision_making';
+  | 'automated_decision_making'
+  | 'withdraw_consent';
 
 /**
  * Status of a data subject request
@@ -42,7 +48,9 @@ export interface RequestType {
   description: string;
 
   /**
-   * NDPA section reference (e.g., "Section 30" for access requests)
+   * NDPA 2023 section reference for this right
+   * (e.g., "Section 34(1)(a)" for access, "Section 38" for portability).
+   * Used for display purposes only — verify the exact subsection with counsel.
    */
   ndpaSection?: string;
 
