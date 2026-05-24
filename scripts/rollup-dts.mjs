@@ -32,6 +32,9 @@ const ENTRIES = [
   'ropa',
   'adapters',
   'presets',
+  'presets-consent',
+  'presets-dsr',
+  'presets-policy',
   'unstyled',
 ];
 
