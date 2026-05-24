@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PrivacyPolicy } from '../../types/privacy';
-import type { PolicyDraft } from '../../types/policy-engine';
+import type { PolicyDraft, TemplateContext } from '../../types/policy-engine';
 import type { StorageAdapter } from '../../adapters/types';
 import { resolveClass } from '../../utils/styling';
 import { useAdaptivePolicyWizard } from '../../hooks/useAdaptivePolicyWizard';
@@ -17,6 +17,12 @@ export interface AdaptivePolicyWizardProps {
   onComplete?: (policy: PrivacyPolicy) => void;
   classNames?: Record<string, string>;
   unstyled?: boolean;
+  /**
+   * Initial template context — seeds the wizard with a sector-specific
+   * pre-fill. Use `templateContextFor('saas' | 'ecommerce' | …)` from
+   * `/server` (or `/core`) to construct it.
+   */
+  initialContext?: TemplateContext;
 }
 
 export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
@@ -24,6 +30,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
   onComplete,
   classNames,
   unstyled,
+  initialContext,
 }) => {
   const {
     currentStep,
@@ -52,7 +59,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
     handleExportMarkdown,
     lastSavedAt,
     isLoading,
-  } = useAdaptivePolicyWizard({ adapter, onComplete });
+  } = useAdaptivePolicyWizard({ adapter, onComplete, initialContext });
 
   // -------------------------------------------------------------------
   // Export helpers — trigger browser download or clipboard copy

@@ -194,6 +194,44 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
     },
 
+    // Recipes (new in 3.7.0)
+    {
+      url: `${baseUrl}/docs/recipes`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/docs/recipes/ecommerce-consent`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${baseUrl}/docs/recipes/newsletter-consent`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${baseUrl}/docs/recipes/contact-form-disclosure`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${baseUrl}/docs/recipes/careers-rights`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${baseUrl}/docs/recipes/admin-dsr-management`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+
     // Demos index
     {
       url: `${baseUrl}/ndpr-demos`,

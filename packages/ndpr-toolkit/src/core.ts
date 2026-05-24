@@ -71,6 +71,15 @@ export type { TemplateContext, PolicyDraft, ComplianceResult, ComplianceGap, Cus
 export { createDefaultContext } from './types/policy-engine';
 export { evaluatePolicyCompliance } from './utils/policy-compliance';
 export { assemblePolicy } from './utils/policy-sections';
+export {
+  templateContextFor,
+  createOrgTemplate,
+  ORG_POLICY_TEMPLATE_REGISTRY,
+} from './utils/policy-templates-orgs';
+export type {
+  OrgPolicyTemplateId,
+  OrgPolicyTemplateOverrides,
+} from './utils/policy-templates-orgs';
 
 // Compliance score engine
 export { getComplianceScore } from './utils/compliance-score';

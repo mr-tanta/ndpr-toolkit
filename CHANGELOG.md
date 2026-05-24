@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.7.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.6.1...v3.7.0) (2026-05-24)
+
+Phase B — Template + Recipe Library. Closes the dev-feedback content gap (feedback items #7 and #9). New API additions are all backward-compatible — 3.6.x consumers upgrade without changes.
+
+### Features
+
+* **5 org-specific privacy-policy templates.** New `templateContextFor(id, overrides?)` factory exported from `/`, `/core`, `/server`, and `/policy`. Pre-fills a complete `TemplateContext` with sector-appropriate data categories, lawful-basis defaults, and the right flags for children/sensitive/financial/cross-border/automated-decisions:
+  - **`saas`** — startup-shape, cross-border on (overseas cloud), no sensitive
+  - **`ecommerce`** — financial on, cross-border on (payment processors), automated-decisions on (fraud)
+  - **`school`** — `hasChildrenData: true` (NDPA Section 31 parental consent), education industry
+  - **`healthcare`** — `hasSensitiveData: true` (Section 30 medical/biometric), financial on (insurance)
+  - **`procurement`** — government industry, financial on, BVN + gov IDs selected
+* **`<NDPRPrivacyPolicy template="…" />` prop.** Drop a template id and the wizard opens already populated. Optional `templateOverrides` for org name/DPO/address. Existing `adapter` + `onComplete` API unchanged.
+* **`ORG_POLICY_TEMPLATE_REGISTRY` constant** — listing of all 5 templates with id, label, description, and example org types. Useful for building a template-picker UI.
+* **`initialContext` prop** added to `<AdaptivePolicyWizard>` and `useAdaptivePolicyWizard()` — lets advanced consumers bypass the template lookup and seed with a hand-built `TemplateContext`.
+
+### Docs
+
+* **5 new recipe pages at `/docs/recipes/*`** — production-tested patterns drawn from real adopter feedback:
+  - `ecommerce-consent` — checkout flow, cart-abandonment cookies, marketing-pixel gating with `useConsent`
+  - `newsletter-consent` — Section 26 affirmative opt-in (no pre-checked boxes), double opt-in pattern, audit-trail snippet
+  - `contact-form-disclosure` — minimum-viable Section 27 notice on a public contact form, data-minimisation guidance
+  - `careers-rights` — applicant data lawful basis, retention by candidate outcome, automated CV-screening disclosure (Section 37)
+  - `admin-dsr-management` — DPO/staff-side workflow: queue, identity verification, 30-day deadline tracking, audit trail
+* **Recipes section added to docs nav + sitemap.** Each recipe page has full SEO meta and is canonicalised.
+
+### Tests
+
+* 12 new tests for the org templates (1 per template + override behaviour + registry consistency). Suite now at **1146 passing**.
+
 ## [3.6.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.6.0...v3.6.1) (2026-05-24)
 
 Phase A of the post-3.6.0 backlog — tooling foundation. Pure plumbing; no API changes on the main library, but `create-ndpr` (scoped) bumps to 0.2.0 and a new unscoped `create-ndpr` alias package ships.

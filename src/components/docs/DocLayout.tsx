@@ -78,6 +78,17 @@ const navigation: NavItem[] = [
       { title: 'CLI Scaffolder', href: '/docs/guides/cli-scaffolder' },
     ],
   },
+  {
+    title: 'Recipes',
+    href: '/docs/recipes',
+    children: [
+      { title: 'Ecommerce Consent', href: '/docs/recipes/ecommerce-consent', isNew: true },
+      { title: 'Newsletter Consent', href: '/docs/recipes/newsletter-consent', isNew: true },
+      { title: 'Contact Form Disclosure', href: '/docs/recipes/contact-form-disclosure', isNew: true },
+      { title: 'Careers / Applicant Rights', href: '/docs/recipes/careers-rights', isNew: true },
+      { title: 'Admin DSR Management', href: '/docs/recipes/admin-dsr-management', isNew: true },
+    ],
+  },
 ];
 
 /* ── Breadcrumbs ── */

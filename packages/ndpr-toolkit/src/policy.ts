@@ -26,3 +26,12 @@ export { assemblePolicy } from './utils/policy-sections';
 export { exportPDF, exportDOCX, exportHTML, exportMarkdown } from './utils/policy-export';
 export type { TemplateContext, PolicyDraft, ComplianceResult, ComplianceGap, CustomSection, DataCategory, ThirdPartyProcessor, Industry, OrgSize, ProcessingPurpose } from './types/policy-engine';
 export { createDefaultContext, DEFAULT_DATA_CATEGORIES } from './types/policy-engine';
+export {
+  templateContextFor,
+  createOrgTemplate,
+  ORG_POLICY_TEMPLATE_REGISTRY,
+} from './utils/policy-templates-orgs';
+export type {
+  OrgPolicyTemplateId,
+  OrgPolicyTemplateOverrides,
+} from './utils/policy-templates-orgs';
