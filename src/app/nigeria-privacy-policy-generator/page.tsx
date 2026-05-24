@@ -145,6 +145,22 @@ export default function NigeriaPrivacyPolicyGeneratorLanding() {
           </p>
         </section>
 
+        <section className="border-t border-border pt-10 pb-2 mb-10">
+          <div className="rounded-lg border border-primary/30 bg-primary/5 p-6">
+            <h2 className="text-xl font-bold mb-2">Not sure what to put in the policy?</h2>
+            <p className="text-base text-muted-foreground mb-4">
+              The free 5-minute audit walks you through every Section 27(1) disclosure — and 7 other
+              compliance areas — and tells you exactly what to add.
+            </p>
+            <Link
+              href="/score"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:opacity-90"
+            >
+              Run the free NDPA audit →
+            </Link>
+          </div>
+        </section>
+
         <section className="border-t border-border pt-12">
           <h2 className="text-2xl font-bold mb-6">Related</h2>
           <ul className="space-y-3">

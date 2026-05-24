@@ -121,3 +121,40 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+ * Print styles — strip site chrome so the /score PDF export looks clean.
+ * Targets the SiteHeader / SiteFooter and the right-rail sticky card so a
+ * single-flow document prints with just the questionnaire + score +
+ * recommendations.
+ * ────────────────────────────────────────────────────────────────────── */
+@media print {
+  header[data-site-header],
+  footer[data-site-footer],
+  nav[aria-label="Main navigation"],
+  [data-print-hide="true"] {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  /* The right-rail score panel is sticky on screen; in print, let it flow
+     naturally above the recommendations. */
+  aside.lg\:sticky {
+    position: static !important;
+    margin-bottom: 1.5rem;
+  }
+  /* Avoid awkward page breaks mid-card */
+  section, article, aside {
+    break-inside: avoid;
+  }
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+}

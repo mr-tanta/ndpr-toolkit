@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 const navLinks = [
+  { label: 'Audit', href: '/score' },
   { label: 'Docs', href: '/docs' },
   { label: 'Demos', href: '/ndpr-demos' },
   { label: 'Blog', href: '/blog' },

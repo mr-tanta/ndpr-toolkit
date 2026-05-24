@@ -24,6 +24,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
 
+    // /score audit lead-magnet (Phase C)
+    {
+      url: `${baseUrl}/score`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.95,
+    },
+
     // Long-tail SEO landing pages (Nigeria-specific queries)
     {
       url: `${baseUrl}/nigeria-cookie-consent`,
