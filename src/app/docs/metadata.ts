@@ -1,33 +1,34 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Documentation | NDPA Toolkit',
+  title: 'Nigeria NDPA 2023 Documentation — React & Next.js',
   description:
-    'Comprehensive NDPA 2023 compliance docs: component API reference, implementation guides, and NDPC best practices. Start building compliant apps now.',
+    'Documentation for the NDPR Toolkit: a React/TypeScript library for Nigeria Data Protection Act (NDPA) 2023 compliance. Component API, integration guides, and NDPC best practices for Nigerian fintech, insurtech, and SaaS.',
   keywords:
-    'NDPA documentation, Nigeria Data Protection docs, NDPC compliance guide, NDPA 2023 API reference, data protection implementation',
+    'Nigeria NDPA documentation, Nigeria Data Protection Act 2023 React, NDPR documentation, NDPC compliance guide, Nigeria privacy policy React, Nigeria cookie consent docs, Nigeria DPIA implementation',
+  alternates: { canonical: '/docs' },
   openGraph: {
-    title: 'Documentation | NDPA Toolkit',
+    title: 'Nigeria NDPA 2023 Documentation — NDPR Toolkit',
     description:
-      'Comprehensive NDPA 2023 compliance docs: component API reference, implementation guides, and NDPC best practices. Start building compliant apps now.',
+      'React & TypeScript docs for Nigeria NDPA 2023 compliance: consent, DSR, DPIA, breach notification, RoPA, and privacy-policy generator. Built for Nigerian apps.',
     url: 'https://ndprtoolkit.com.ng/docs',
-    siteName: 'NDPA Toolkit',
+    siteName: 'NDPR Toolkit',
     images: [
       {
         url: '/og-docs.png',
         width: 1200,
         height: 630,
-        alt: 'NDPA Toolkit Documentation',
+        alt: 'NDPR Toolkit — Nigeria NDPA Documentation',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Documentation | NDPA Toolkit',
+    title: 'Nigeria NDPA 2023 Documentation — NDPR Toolkit',
     description:
-      'Comprehensive NDPA 2023 compliance docs: component API reference, implementation guides, and NDPC best practices. Start building compliant apps now.',
+      'React/TypeScript docs for Nigeria NDPA 2023 compliance: consent, DSR, DPIA, breach, RoPA, privacy policy.',
     images: ['/og-docs.png'],
   },
 };

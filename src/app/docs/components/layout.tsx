@@ -1,33 +1,34 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Components Reference | NDPA Toolkit',
+  title: 'Nigeria NDPA Components — React API Reference',
   description:
-    'Browse all NDPA Toolkit components: consent banners, DSR portals, DPIA tools, breach workflows, and more. Build NDPC-compliant apps faster.',
+    'API reference for every NDPR Toolkit React component: cookie consent banner, DSR portal, DPIA questionnaire, 72-hour breach notification, RoPA, lawful-basis tracker, privacy-policy generator. NDPA 2023 compliant.',
   keywords:
-    'NDPA components, Nigeria Data Protection components, NDPC compliance React, NDPA toolkit API, data protection UI components',
+    'Nigeria NDPA components, NDPA React API, Nigeria cookie consent component, Nigeria DSR React, Nigeria DPIA React, Nigeria breach notification component, NDPC compliance components',
+  alternates: { canonical: '/docs/components' },
   openGraph: {
-    title: 'Components Reference | NDPA Toolkit',
+    title: 'Nigeria NDPA Components — React API Reference',
     description:
-      'Browse all NDPA Toolkit components: consent banners, DSR portals, DPIA tools, breach workflows, and more. Build NDPC-compliant apps faster.',
+      'Every NDPR Toolkit component: cookie consent, DSR portal, DPIA, 72-hour breach notification, RoPA, privacy-policy generator. Built for Nigeria NDPA 2023.',
     url: 'https://ndprtoolkit.com.ng/docs/components',
-    siteName: 'NDPA Toolkit',
+    siteName: 'NDPR Toolkit',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'NDPA Toolkit Components Reference',
+        alt: 'NDPR Toolkit — Nigeria NDPA Components Reference',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Components Reference | NDPA Toolkit',
+    title: 'Nigeria NDPA Components — React API Reference',
     description:
-      'Browse all NDPA Toolkit components: consent banners, DSR portals, DPIA tools, breach workflows, and more. Build NDPC-compliant apps faster.',
+      'Cookie consent, DSR portal, DPIA, breach notification, RoPA, and privacy-policy generator components for Nigeria NDPA 2023.',
     images: ['/og-image.png'],
   },
 };

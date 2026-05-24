@@ -3,33 +3,34 @@ import { SiteHeader } from '@/components/site/SiteHeader';
 import { SiteFooter } from '@/components/site/SiteFooter';
 
 export const metadata: Metadata = {
-  title: 'Interactive NDPA Demos | NDPA Toolkit',
+  title: 'Live Nigeria NDPA 2023 Compliance Demos — Try in Browser',
   description:
-    'Explore 8 interactive demos for NDPA 2023 compliance: consent management, DSR, DPIA, breach notification, and more. Try the NDPA Toolkit free.',
+    'Eight interactive demos for Nigeria NDPA 2023 compliance — cookie consent, DSR portal, DPIA questionnaire, 72-hour breach notification, RoPA, lawful-basis tracker, cross-border transfers, and privacy-policy generator. No install required.',
   keywords:
-    'NDPA demos, Nigeria Data Protection, NDPC compliance, NDPA 2023, interactive compliance tools',
+    'Nigeria NDPA demo, Nigeria cookie consent demo, Nigeria DSR demo, Nigeria DPIA tool, Nigeria breach notification demo, NDPC compliance demo, NDPA 2023 React demo',
+  alternates: { canonical: '/ndpr-demos' },
   openGraph: {
-    title: 'Interactive NDPA Demos | NDPA Toolkit',
+    title: 'Live Nigeria NDPA 2023 Compliance Demos — Try in Browser',
     description:
-      'Explore 8 interactive demos for NDPA 2023 compliance: consent management, DSR, DPIA, breach notification, and more. Try the NDPA Toolkit free.',
+      'Try Nigeria NDPA 2023 compliance components in your browser — consent, DSR, DPIA, breach, RoPA, privacy policy. Zero setup.',
     url: 'https://ndprtoolkit.com.ng/ndpr-demos',
-    siteName: 'NDPA Toolkit',
+    siteName: 'NDPR Toolkit',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'NDPA Toolkit Interactive Demos',
+        alt: 'NDPR Toolkit — Live Nigeria NDPA 2023 Demos',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Interactive NDPA Demos | NDPA Toolkit',
+    title: 'Live Nigeria NDPA Demos — Try in Browser',
     description:
-      'Explore 8 interactive demos for NDPA 2023 compliance: consent management, DSR, DPIA, breach notification, and more. Try the NDPA Toolkit free.',
+      'Eight zero-setup demos for Nigeria NDPA 2023 compliance: consent, DSR, DPIA, breach, RoPA, privacy policy.',
     images: ['/og-image.png'],
   },
 };

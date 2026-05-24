@@ -24,6 +24,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
 
+    // Long-tail SEO landing pages (Nigeria-specific queries)
+    {
+      url: `${baseUrl}/nigeria-cookie-consent`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/ndpa-dpia-tool`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/nigeria-privacy-policy-generator`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+
     // Docs index
     {
       url: `${baseUrl}/docs`,
