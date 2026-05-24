@@ -16,9 +16,38 @@
  */
 
 import { Router } from 'express';
+// {{#if ORM=prisma}}
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+// {{/if}}
+// {{#if ORM=drizzle}}
+import { db } from '@/drizzle';
+import { consentRecords, complianceAuditLog } from '@/drizzle/ndpr-schema';
+import { eq, and, isNull, desc } from 'drizzle-orm';
+// {{/if}}
+// {{#if ORM=none}}
+// TODO ({{ORG_NAME}}): wire this to your persistent store of choice. The
+// in-memory map below is enough to develop against locally but DOES NOT
+// satisfy NDPA Section 44 (record-keeping) or the auditability NDPC asks
+// about. Replace `consentStore`/`auditLog` with your DB / KV / API.
+interface ConsentRecord {
+  id: string;
+  subjectId: string;
+  consents: Record<string, boolean>;
+  version: string;
+  method: string;
+  lawfulBasis: string | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: Date;
+  revokedAt: Date | null;
+}
+const consentStore = new Map<string, ConsentRecord>();
+const auditLog: Array<{ id: string; module: string; action: string; entityId: string; at: Date }> = [];
+function newId() { return crypto.randomUUID(); }
+// {{/if}}
+
 export const consentRouter = Router();
 
 // GET /consent?subjectId=xxx
@@ -29,10 +58,25 @@ consentRouter.get('/', async (req, res) => {
     return res.status(400).json({ error: 'subjectId required' });
   }
 
+  // {{#if ORM=prisma}}
   const record = await prisma.consentRecord.findFirst({
     where: { subjectId, revokedAt: null },
     orderBy: { createdAt: 'desc' },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  const [record] = await db
+    .select()
+    .from(consentRecords)
+    .where(and(eq(consentRecords.subjectId, subjectId), isNull(consentRecords.revokedAt)))
+    .orderBy(desc(consentRecords.createdAt))
+    .limit(1);
+  // {{/if}}
+  // {{#if ORM=none}}
+  const record = [...consentStore.values()]
+    .filter((r) => r.subjectId === subjectId && r.revokedAt === null)
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0] ?? null;
+  // {{/if}}
 
   return res.json(record);
 });
@@ -45,6 +89,13 @@ consentRouter.post('/', async (req, res) => {
     return res.status(400).json({ error: 'subjectId, consents, and version are required' });
   }
 
+  const ipAddress =
+    (req.headers['x-forwarded-for'] as string)?.split(',')[0].trim() ??
+    req.socket.remoteAddress ??
+    null;
+  const userAgent = req.headers['user-agent'] ?? null;
+
+  // {{#if ORM=prisma}}
   // Revoke any previously active records (immutable-audit pattern — NDPA §44).
   await prisma.consentRecord.updateMany({
     where: { subjectId, revokedAt: null },
@@ -58,11 +109,8 @@ consentRouter.post('/', async (req, res) => {
       version,
       method: method ?? 'api',
       lawfulBasis: lawfulBasis ?? null,
-      ipAddress:
-        (req.headers['x-forwarded-for'] as string)?.split(',')[0].trim() ??
-        req.socket.remoteAddress ??
-        null,
-      userAgent: req.headers['user-agent'] ?? null,
+      ipAddress,
+      userAgent,
     },
   });
 
@@ -75,6 +123,47 @@ consentRouter.post('/', async (req, res) => {
       changes: { subjectId, version, consents },
     },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  await db.update(consentRecords).set({ revokedAt: new Date() }).where(and(eq(consentRecords.subjectId, subjectId), isNull(consentRecords.revokedAt)));
+
+  const [record] = await db.insert(consentRecords).values({
+    subjectId,
+    consents,
+    version,
+    method: method ?? 'api',
+    lawfulBasis: lawfulBasis ?? null,
+    ipAddress,
+    userAgent,
+  }).returning();
+
+  await db.insert(complianceAuditLog).values({
+    module: 'consent',
+    action: 'created',
+    entityId: record.id,
+    entityType: 'ConsentRecord',
+    changes: { subjectId, version, consents },
+  });
+  // {{/if}}
+  // {{#if ORM=none}}
+  for (const r of consentStore.values()) {
+    if (r.subjectId === subjectId && r.revokedAt === null) r.revokedAt = new Date();
+  }
+  const record: ConsentRecord = {
+    id: newId(),
+    subjectId,
+    consents,
+    version,
+    method: method ?? 'api',
+    lawfulBasis: lawfulBasis ?? null,
+    ipAddress,
+    userAgent,
+    createdAt: new Date(),
+    revokedAt: null,
+  };
+  consentStore.set(record.id, record);
+  auditLog.push({ id: newId(), module: 'consent', action: 'created', entityId: record.id, at: new Date() });
+  // {{/if}}
 
   return res.status(201).json(record);
 });
@@ -87,6 +176,7 @@ consentRouter.delete('/', async (req, res) => {
     return res.status(400).json({ error: 'subjectId required' });
   }
 
+  // {{#if ORM=prisma}}
   await prisma.consentRecord.updateMany({
     where: { subjectId, revokedAt: null },
     data: { revokedAt: new Date() },
@@ -100,6 +190,22 @@ consentRouter.delete('/', async (req, res) => {
       entityType: 'ConsentRecord',
     },
   });
+  // {{/if}}
+  // {{#if ORM=drizzle}}
+  await db.update(consentRecords).set({ revokedAt: new Date() }).where(and(eq(consentRecords.subjectId, subjectId), isNull(consentRecords.revokedAt)));
+  await db.insert(complianceAuditLog).values({
+    module: 'consent',
+    action: 'revoked',
+    entityId: subjectId,
+    entityType: 'ConsentRecord',
+  });
+  // {{/if}}
+  // {{#if ORM=none}}
+  for (const r of consentStore.values()) {
+    if (r.subjectId === subjectId && r.revokedAt === null) r.revokedAt = new Date();
+  }
+  auditLog.push({ id: newId(), module: 'consent', action: 'revoked', entityId: subjectId, at: new Date() });
+  // {{/if}}
 
   return res.json({ success: true });
 });
