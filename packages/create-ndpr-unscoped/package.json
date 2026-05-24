@@ -1,0 +1,47 @@
+{
+  "name": "create-ndpr",
+  "version": "1.0.0",
+  "description": "Thin alias for @tantainnovative/create-ndpr — the Nigeria Data Protection Act (NDPA) 2023 compliance scaffolder. Forwards to the scoped package so `npm create ndpr@latest` and `npx create-ndpr` work alongside the canonical `npx @tantainnovative/create-ndpr`.",
+  "keywords": [
+    "ndpa",
+    "ndpr",
+    "nigeria",
+    "nigeria-compliance",
+    "data-protection",
+    "ndpc",
+    "consent",
+    "dsr",
+    "dpia",
+    "scaffolder",
+    "create-app",
+    "react",
+    "nextjs"
+  ],
+  "homepage": "https://ndprtoolkit.com.ng",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mr-tanta/ndpr-toolkit.git",
+    "directory": "packages/create-ndpr-unscoped"
+  },
+  "bugs": "https://github.com/mr-tanta/ndpr-toolkit/issues",
+  "license": "MIT",
+  "author": {
+    "name": "Abraham Esandayinze Tanta",
+    "url": "https://linkedin.com/in/mr-tanta"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "type": "module",
+  "bin": {
+    "create-ndpr": "./bin/index.mjs"
+  },
+  "files": [
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

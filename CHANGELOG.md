@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.6.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.6.0...v3.6.1) (2026-05-24)
+
+Phase A of the post-3.6.0 backlog — tooling foundation. Pure plumbing; no API changes on the main library, but `create-ndpr` (scoped) bumps to 0.2.0 and a new unscoped `create-ndpr` alias package ships.
+
+### Companion packages
+
+* **`@tantainnovative/create-ndpr@0.2.0`** — scaffolder no longer emits broken Prisma imports when you pick `ORM=None`. Templates now support `{{#if ORM=prisma|drizzle|none}}` conditional blocks. The consent route template emits working code for all three ORMs (Prisma queries, Drizzle queries, or an in-memory stub with TODO comments). Other route templates (still hardcoded to Prisma) are skipped with a clear message when `ORM=none` instead of generating broken output. Also fixes the `StorageAdapter<unknown>` type error in the generated `ndpr-layout.tsx` (now correctly types the apiAdapter as `StorageAdapter<ConsentSettings>` and adds a CSRF header example).
+* **`create-ndpr@1.0.0` (NEW, unscoped)** — 30-line alias that delegates to the scoped CLI via `npx`. Lets `npm create ndpr@latest`, `npx create-ndpr`, `pnpm create ndpr`, and `bun create ndpr` all work alongside the existing `npx @tantainnovative/create-ndpr`.
+
+### Docs
+
+* README install block now shows all four idiomatic CLI invocations (`npm create ndpr@latest`, `npx create-ndpr`, the scoped form, pnpm and bun variants).
+* README header now has "Open in StackBlitz" and "Open in CodeSandbox" badges that boot `examples/nextjs-app` zero-install in either environment.
+* New "Bundle size guidance" subsection under "Available Import Paths" explains: (1) prefer narrow subpaths over root, (2) use `/presets/{consent,dsr,policy}` over the full `/presets` barrel when only one preset is needed, (3) the 3 manager components are heavy by design (they're full table+filter+modal UIs) — import from `/hooks` if you only need the hook, (4) `/server` carries zero React for SSR/edge/CI use.
+
+### No library code changes
+
+The main `@tantainnovative/ndpr-toolkit` package is unchanged from 3.6.0; the version bump is for changelog clarity and so the repo, npm, and CHANGELOG all reference the same version.
+
 ## [3.6.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.5.5...v3.6.0) (2026-05-24)
 
 ### Features (developer feedback)

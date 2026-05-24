@@ -196,12 +196,49 @@ async function askYesNo(rl, question, defaultYes = true) {
 // Template rendering
 // ---------------------------------------------------------------------------
 
+/**
+ * Render a template with `{{KEY}}` variable substitution and minimal
+ * conditional-block support.
+ *
+ * Conditional syntax:
+ *
+ *   // {{#if ORM=prisma}}
+ *   import { PrismaClient } from '@prisma/client';
+ *   // {{/if}}
+ *
+ *   // {{#if ORM=drizzle}}
+ *   import { db } from '@/drizzle';
+ *   // {{/if}}
+ *
+ *   // {{#if ORM=none}}
+ *   // TODO: wire to your storage of choice
+ *   const store = new Map();
+ *   // {{/if}}
+ *
+ * The block is kept when `vars[KEY] === value` (e.g. `vars.ORM === 'prisma'`),
+ * otherwise the block and its markers are stripped. Marker comments (with
+ * optional leading `//` and any trailing whitespace) are always removed.
+ */
 function renderTemplate(templateName, vars) {
   const templatePath = join(TEMPLATES_DIR, templateName);
   if (!existsSync(templatePath)) {
     throw new Error(`Template not found: ${templateName}`);
   }
   let content = readFileSync(templatePath, 'utf8');
+
+  // Conditional blocks first (so variable substitution doesn't munge the
+  // marker syntax). Pattern allows an optional `// ` prefix on the markers
+  // so templates can comment them out and remain valid TypeScript.
+  const ifPattern =
+    /(?:[ \t]*\/\/[ \t]*)?\{\{#if[ \t]+([A-Z_]+)=([a-zA-Z0-9_-]+)\}\}\s*([\s\S]*?)(?:[ \t]*\/\/[ \t]*)?\{\{\/if\}\}[ \t]*\n?/g;
+  content = content.replace(ifPattern, (_match, key, expected, body) => {
+    if (vars[key] === expected) {
+      // Keep the body; strip a trailing newline if it leaves a blank line
+      return body.endsWith('\n') ? body : body + '\n';
+    }
+    return '';
+  });
+
   for (const [key, value] of Object.entries(vars)) {
     content = content.replaceAll(`{{${key}}}`, value);
   }
@@ -379,6 +416,10 @@ async function main() {
     const vars = {
       ORG_NAME: orgName,
       DPO_EMAIL: dpoEmail,
+      // Drives `{{#if ORM=prisma}}` / `{{#if ORM=drizzle}}` / `{{#if ORM=none}}`
+      // conditional blocks in the route templates.
+      ORM: orm,
+      FRAMEWORK: framework,
     };
 
     // .env.example
@@ -400,6 +441,27 @@ async function main() {
       }
     }
 
+    // Routes that already support all 3 ORMs via per-{{#if ORM=...}} blocks.
+    // Add a template to this set as it gets ORM-aware. Other route templates
+    // still hard-code Prisma, so we skip them when orm === 'none' to avoid
+    // emitting code with a broken `@prisma/client` import.
+    const ORM_AWARE_TEMPLATES = new Set([
+      'nextjs-consent-route.ts',
+    ]);
+    const generateRoute = (dest, templateName) => {
+      if (orm === 'none' && !ORM_AWARE_TEMPLATES.has(templateName)) {
+        skip(
+          dest,
+          `template hardcodes Prisma; skipping because you chose ORM=none. ` +
+            `Re-run create-ndpr with ORM=prisma|drizzle or copy the template from ` +
+            `https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/create-ndpr/templates/${templateName} ` +
+            `and adapt it to your storage layer.`,
+        );
+        return;
+      }
+      generate(dest, templateName, vars);
+    };
+
     // Framework-specific files
     if (framework === 'nextjs-app') {
       const appDir = existsSync(join(CWD, 'src', 'app')) ? 'src/app' : 'app';
@@ -409,56 +471,64 @@ async function main() {
 
       // API routes per selected module
       if (selectedModules.includes('consent')) {
-        generate(`${appDir}/api/consent/route.ts`, 'nextjs-consent-route.ts', vars);
+        generateRoute(`${appDir}/api/consent/route.ts`, 'nextjs-consent-route.ts');
       }
       if (selectedModules.includes('dsr')) {
-        generate(`${appDir}/api/dsr/route.ts`, 'nextjs-dsr-route.ts', vars);
+        generateRoute(`${appDir}/api/dsr/route.ts`, 'nextjs-dsr-route.ts');
       }
       if (selectedModules.includes('breach')) {
-        generate(`${appDir}/api/breach/route.ts`, 'nextjs-breach-route.ts', vars);
+        generateRoute(`${appDir}/api/breach/route.ts`, 'nextjs-breach-route.ts');
       }
       if (selectedModules.includes('dpia')) {
-        generate(`${appDir}/api/dpia/route.ts`, 'nextjs-dpia-route.ts', vars);
+        generateRoute(`${appDir}/api/dpia/route.ts`, 'nextjs-dpia-route.ts');
       }
       if (selectedModules.includes('lawful-basis')) {
-        generate(`${appDir}/api/lawful-basis/route.ts`, 'nextjs-lawful-basis-route.ts', vars);
+        generateRoute(`${appDir}/api/lawful-basis/route.ts`, 'nextjs-lawful-basis-route.ts');
       }
       if (selectedModules.includes('cross-border')) {
-        generate(`${appDir}/api/cross-border/route.ts`, 'nextjs-cross-border-route.ts', vars);
+        generateRoute(`${appDir}/api/cross-border/route.ts`, 'nextjs-cross-border-route.ts');
       }
     } else if (framework === 'nextjs-pages') {
       console.log(yellow('  Note: Pages Router API routes generated under pages/api/'));
       if (selectedModules.includes('consent')) {
-        generate('pages/api/consent.ts', 'nextjs-consent-route.ts', vars);
+        generateRoute('pages/api/consent.ts', 'nextjs-consent-route.ts');
       }
       if (selectedModules.includes('dsr')) {
-        generate('pages/api/dsr.ts', 'nextjs-dsr-route.ts', vars);
+        generateRoute('pages/api/dsr.ts', 'nextjs-dsr-route.ts');
       }
       if (selectedModules.includes('breach')) {
-        generate('pages/api/breach.ts', 'nextjs-breach-route.ts', vars);
+        generateRoute('pages/api/breach.ts', 'nextjs-breach-route.ts');
       }
       if (selectedModules.includes('dpia')) {
-        generate('pages/api/dpia.ts', 'nextjs-dpia-route.ts', vars);
+        generateRoute('pages/api/dpia.ts', 'nextjs-dpia-route.ts');
       }
       if (selectedModules.includes('lawful-basis')) {
-        generate('pages/api/lawful-basis.ts', 'nextjs-lawful-basis-route.ts', vars);
+        generateRoute('pages/api/lawful-basis.ts', 'nextjs-lawful-basis-route.ts');
       }
       if (selectedModules.includes('cross-border')) {
-        generate('pages/api/cross-border.ts', 'nextjs-cross-border-route.ts', vars);
+        generateRoute('pages/api/cross-border.ts', 'nextjs-cross-border-route.ts');
       }
     } else if (framework === 'express') {
-      generate('src/ndpr/index.ts', 'express-setup.ts', vars);
+      if (orm !== 'none') {
+        generate('src/ndpr/index.ts', 'express-setup.ts', vars);
+      } else {
+        skip(
+          'src/ndpr/index.ts',
+          'Express setup template currently assumes Prisma; skipping for ORM=none. ' +
+            'See https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/create-ndpr/templates/express-setup.ts',
+        );
+      }
       if (selectedModules.includes('consent')) {
-        generate('src/ndpr/routes/consent.ts', 'express-consent-route.ts', vars);
+        generateRoute('src/ndpr/routes/consent.ts', 'express-consent-route.ts');
       }
       if (selectedModules.includes('dpia')) {
-        generate('src/ndpr/routes/dpia.ts', 'express-dpia-route.ts', vars);
+        generateRoute('src/ndpr/routes/dpia.ts', 'express-dpia-route.ts');
       }
       if (selectedModules.includes('lawful-basis')) {
-        generate('src/ndpr/routes/lawful-basis.ts', 'express-lawful-basis-route.ts', vars);
+        generateRoute('src/ndpr/routes/lawful-basis.ts', 'express-lawful-basis-route.ts');
       }
       if (selectedModules.includes('cross-border')) {
-        generate('src/ndpr/routes/cross-border.ts', 'express-cross-border-route.ts', vars);
+        generateRoute('src/ndpr/routes/cross-border.ts', 'express-cross-border-route.ts');
       }
     }
 

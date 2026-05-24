@@ -13,6 +13,9 @@ v3 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 
 **[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.4.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0)**
 
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app)
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/nextjs-app)
+
 > **What's new in 3.4.0:** components now ship styled defaults via a real stylesheet — Tailwind is no longer required. Add `import "@tantainnovative/ndpr-toolkit/styles";` once in your app entry. Plus a new `/server` subpath for RSC-safe pure-logic imports (validators, generators, scoring) with zero React in the import graph. Backward-compatible at the component API level. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0).
 
 <p align="center">
@@ -112,7 +115,14 @@ bun add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix
 Or scaffold instantly with the CLI:
 
 ```bash
+# Recommended (idiomatic):
+npm create ndpr@latest
+
+# Equivalent — pick whichever fits your muscle memory:
+npx create-ndpr
 npx @tantainnovative/create-ndpr
+pnpm create ndpr
+bun create ndpr
 ```
 
 ---
@@ -415,7 +425,10 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/server` | **Pure validators, generators, scoring, locales, adapters, types — zero React** | `tslib` | **Yes** |
 | `/core` | Types, utility functions, NDPRProvider | `react`[^core] | Partial |
 | `/hooks` | React hooks for all 8 modules | `react` | No |
-| `/presets` | Zero-config preset components | `react`, Radix peers | No |
+| `/presets` | All zero-config preset components (barrel) | `react`, Radix peers | No |
+| `/presets/consent` | **Just `NDPRConsent`** — narrower barrel for bundle size | `react`, Radix peers | No |
+| `/presets/dsr` | **Just `NDPRSubjectRights`** | `react`, Radix peers | No |
+| `/presets/policy` | **Just `NDPRPrivacyPolicy`** | `react`, Radix peers | No |
 | `/adapters` | Storage adapters (localStorage, sessionStorage, cookie, api, memory, composeAdapters) | none | Yes |
 | `/consent` | ConsentBanner, ConsentManager, `Consent.*` compound API, useConsent | `react` | No |
 | `/dsr` | DSR components + hook | `react` | No |
@@ -429,6 +442,23 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/styles` | Default CSS stylesheet — `import "@tantainnovative/ndpr-toolkit/styles"` once in your app entry | none | N/A |
 
 [^core]: `/core` re-exports the React `NDPRProvider` for backward compatibility. For strictly server-side imports use `/server` — it carries the same pure validators with no React surface.
+
+### Bundle size guidance
+
+The toolkit is published with `sideEffects: ["*.css"]`, so a modern bundler (Vite, Next.js / Webpack, esbuild, Bun) will tree-shake unused exports. A few practical rules to keep your bundle small:
+
+1. **Prefer narrow subpaths over the root.** `import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks'` is tighter than the same import from `.`. The root entry has more transitive exports and bundlers don't always trace them perfectly.
+
+2. **Use the per-preset subpaths when you only need one preset.** `import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets/consent'` is ~4 KB; the full `/presets` barrel is ~8 KB. Same for `/presets/dsr` and `/presets/policy`.
+
+3. **The 3 manager components are intentionally heavy** (each is ~50 KB src — full table + filter + modal + wizard UIs):
+   - `LawfulBasisTracker` (from `/lawful-basis`)
+   - `ROPAManager` (from `/ropa`)
+   - `CrossBorderTransferManager` (from `/cross-border`)
+
+   If your app only needs the hook (e.g. you're rendering ROPA records inside your own admin UI), import from `/hooks` instead of the feature subpath — the hook chunk doesn't drag the manager component into your bundle.
+
+4. **`/server` carries zero React.** For Server Actions, Route Handlers, scheduled jobs, or compliance-score computation in CI, prefer `/server` and you'll pay no React-tree cost.
 
 ---
 

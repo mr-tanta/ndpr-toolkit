@@ -27,6 +27,7 @@ import React from 'react';
 import { NDPRProvider } from '@tantainnovative/ndpr-toolkit/core';
 import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
 import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit/core';
 
 interface NDPRLayoutProps {
   children: React.ReactNode;
@@ -42,9 +43,17 @@ export default function NDPRLayout({ children, userId }: NDPRLayoutProps) {
   const subjectId = userId ?? 'anonymous';
 
   // apiAdapter connects the consent banner to the /api/consent route.
-  // Swap for prismaConsentAdapter or drizzleConsentAdapter for direct
-  // server-side usage in Server Components or Route Handlers.
-  const consentStorageAdapter = apiAdapter(`/api/consent?subjectId=${subjectId}`);
+  // Typed as <ConsentSettings> so the banner's onSave payload matches.
+  // For server-side usage in Server Components or Route Handlers, see
+  // the recipes under /docs/recipes/.
+  const consentStorageAdapter = apiAdapter<ConsentSettings>(
+    `/api/consent?subjectId=${subjectId}`,
+    {
+      credentials: 'same-origin',
+      // Add a CSRF header here if your app requires one:
+      // headers: () => ({ 'X-CSRF-Token': getCsrfToken() }),
+    },
+  );
 
   return (
     <NDPRProvider
