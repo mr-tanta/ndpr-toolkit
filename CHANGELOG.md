@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.9.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.8.1...v3.9.0) (2026-05-25)
+
+Examples expansion + Bun quickstart + SSR-safe storage docs. Fully additive — no breaking changes.
+
+### Runnable example apps
+
+- **`examples/ecommerce-starter`** — multi-page Next.js 15 / React 19 storefront ("Zuri Market") wiring the toolkit into a realistic Nigerian ecommerce flow: home page, checkout, privacy notice, data-subject rights portal (with `submitTo` + `onSubmitSuccess` rendering a server-issued reference), and an editable cookie preferences page using `useConsent`. Demonstrates the `/presets/consent`, `/presets/dsr`, `/presets/policy`, and `/hooks` subpaths together.
+- **`examples/ssr/nextjs-app-router`** — SSR-safe consent on Next.js 15. Layout reads the consent cookie via `next/headers`, parses it with a small typed helper, and passes the result to a client `ConsentRoot` so the banner hydrates already-resolved (no flash, no hydration warning).
+- **`examples/ssr/remix`** — the same cookie-bridge pattern wired from a Remix `loader` and Vite's `?url` asset import for the stylesheet.
+- **`examples/ssr/astro`** — `Astro.cookies.get` in the page frontmatter, then `<ConsentRoot client:load>` as a React island.
+
+Each example is self-contained (own `package.json`, `tsconfig.json`, `next.config.mjs` / `vite.config.ts` / `astro.config.mjs`) so you can copy a directory and `bun install && bun dev` to run it.
+
+### Bun quickstart in the README
+
+Root README now includes copy-pasteable Bun + Vite + React and Bun + Next.js 15 (App Router) recipes that go from zero to a working banner in three commands. The npm-published README also gets a one-line Bun install command alongside pnpm/npm.
+
+### SSR-safe storage guide
+
+New docs page at **`/docs/guides/server-side-storage`** documenting the cookie-bridge pattern in detail: why `localStorageAdapter` flashes on SSR, how `cookieAdapter` solves it, and worked examples for Next.js App Router, Remix, Astro, and SvelteKit. Wired into the docs sidebar under Implementation Guides.
+
+### npm-published README brought current (3.4.0 → 3.9.0)
+
+The README that ships to npm was stale at the 3.4.0 highlights. It now leads with a 3.9.0 "what's new", references back to 3.8.1 (`onSubmitSuccess`), 3.8.0 (Lite Manager variants), 3.6.0 (`onSubmitError`), and 3.5.x (focus management + reduced motion). Adds a "Runnable Examples" section, a typed DSR callbacks snippet in the Presets section, and a Bun install command. Screenshot URLs bumped from `v3.5.2` → `v3.9.0`. Tests badge bumped to 1173.
+
+### Verification
+
+- `tsc --noEmit` clean for the docs site
+- **Full Jest suite: 1173/1173 passing** (unchanged from 3.8.1 — no logic changes in the published package)
+- No changes to runtime exports, prop types, or storage adapters
+
 ## [3.8.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.8.0...v3.8.1) (2026-05-25)
 
 Documentation + small API addition patch. Fully additive — no breaking changes.

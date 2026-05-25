@@ -63,6 +63,7 @@ const navigation: NavItem[] = [
       { title: 'Lite vs Full managers', href: '/docs/guides/lite-vs-full', isNew: true },
       { title: 'Styling Architecture', href: '/docs/guides/styling-architecture', isNew: true },
       { title: 'Server Rendering & RSC', href: '/docs/guides/server-rendering', isNew: true },
+      { title: 'Server-Side Storage (SSR)', href: '/docs/guides/server-side-storage', isNew: true },
       { title: 'NDPA Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
       { title: 'Conducting a DPIA', href: '/docs/guides/conducting-dpia' },
       { title: 'Managing Consent', href: '/docs/guides/managing-consent' },

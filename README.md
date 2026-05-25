@@ -127,6 +127,101 @@ bun create ndpr
 
 ---
 
+## Bun quickstart
+
+Bun is a first-class runtime for the toolkit. Both common React app shapes work without extra config.
+
+### Bun + Vite + React
+
+```bash
+bun create vite@latest my-ndpr-app --template react-ts
+cd my-ndpr-app
+bun install
+bun add @tantainnovative/ndpr-toolkit
+```
+
+```tsx
+// src/App.tsx
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets/consent';
+import '@tantainnovative/ndpr-toolkit/styles';
+
+export default function App() {
+  return (
+    <>
+      <NDPRConsent
+        options={[
+          { id: 'essential', label: 'Essential', description: 'Required for the site to function', required: true, purpose: 'Site operation' },
+          { id: 'analytics', label: 'Analytics', description: 'Anonymous usage measurement', required: false, purpose: 'Product analytics' },
+          { id: 'marketing', label: 'Marketing', description: 'Personalised offers and ads', required: false, purpose: 'Marketing communications' },
+        ]}
+      />
+      <main className="p-6">
+        <h1 className="text-3xl font-semibold">My NDPA-compliant app</h1>
+      </main>
+    </>
+  );
+}
+```
+
+```bash
+bun dev
+```
+
+Vite is client-only by default — no extra wiring needed. The toolkit's preset components ship with the `"use client"` directive already injected.
+
+### Bun + Next.js 15 (App Router)
+
+```bash
+bun create next-app@latest my-ndpr-app --typescript --app --tailwind
+cd my-ndpr-app
+bun add @tantainnovative/ndpr-toolkit
+```
+
+The consent banner is a stateful client component. Mount it from a small client wrapper so the rest of your layout can stay in RSC:
+
+```tsx
+// app/ConsentRoot.tsx
+'use client';
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets/consent';
+
+export function ConsentRoot() {
+  return (
+    <NDPRConsent
+      options={[
+        { id: 'essential', label: 'Essential', description: 'Required for the site to function', required: true, purpose: 'Site operation' },
+        { id: 'analytics', label: 'Analytics', description: 'Anonymous usage measurement', required: false, purpose: 'Product analytics' },
+        { id: 'marketing', label: 'Marketing', description: 'Personalised offers and ads', required: false, purpose: 'Marketing communications' },
+      ]}
+    />
+  );
+}
+```
+
+```tsx
+// app/layout.tsx
+import '@tantainnovative/ndpr-toolkit/styles';
+import { ConsentRoot } from './ConsentRoot';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <ConsentRoot />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+```bash
+bun dev
+```
+
+You don't need to manually mark the import with `"use client"` from `app/layout.tsx` — the preset module already ships the directive in its bundled output, so React Server Components import it cleanly via the client wrapper. For RSC-safe, zero-React imports use `/server` or `/core` instead.
+
+---
+
 ## Choose Your Layer
 
 Pick exactly what your project needs.
@@ -356,6 +451,7 @@ Each module ships a minimal Next.js scaffold you can fork in StackBlitz or CodeS
 
 | Module | NDPA | Open in StackBlitz | Open in CodeSandbox |
 |---|---|---|---|
+| **Ecommerce starter (full app)** | §25–27, §34–38 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/ecommerce-starter) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/ecommerce-starter) |
 | Consent | §26 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/consent) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/consent) |
 | DSR | §34 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/dsr) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/dsr) |
 | DPIA | §28 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/dpia) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/dpia) |
@@ -366,6 +462,16 @@ Each module ships a minimal Next.js scaffold you can fork in StackBlitz or CodeS
 | RoPA | §29 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/ropa) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/ropa) |
 
 Or open the [all-in-one example](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app) that demos every module in a single app.
+
+### SSR-safe consent scaffolds
+
+Cookie-bridged consent that hydrates without a flash. Each scaffold reads the `ndpr-consent` cookie on the server, seeds the banner's `show` prop, then lets the browser `cookieAdapter` take over. See the [Server-Side Storage guide](https://ndprtoolkit.com.ng/docs/guides/server-side-storage) for the pattern.
+
+| Framework | Path | Open in StackBlitz |
+|---|---|---|
+| Next.js App Router | [`examples/ssr/nextjs-app-router`](./examples/ssr/nextjs-app-router) | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/nextjs-app-router) |
+| Remix | [`examples/ssr/remix`](./examples/ssr/remix) | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/remix) |
+| Astro | [`examples/ssr/astro`](./examples/ssr/astro) | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/astro) |
 
 ---
 
