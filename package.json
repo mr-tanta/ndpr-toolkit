@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "3.10.2",
+  "version": "3.10.3",
   "private": false,
   "description": "Nigeria Data Protection Toolkit — enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "pnpm": {
@@ -112,6 +112,11 @@
       "import": "./dist/hooks.mjs",
       "require": "./dist/hooks.js"
     },
+    "./headless": {
+      "types": "./dist/headless.d.ts",
+      "import": "./dist/headless.mjs",
+      "require": "./dist/headless.js"
+    },
     "./consent": {
       "types": "./dist/consent.d.ts",
       "import": "./dist/consent.mjs",
@@ -142,15 +147,30 @@
       "import": "./dist/lawful-basis.mjs",
       "require": "./dist/lawful-basis.js"
     },
+    "./lawful-basis/lite": {
+      "types": "./dist/lawful-basis-lite.d.ts",
+      "import": "./dist/lawful-basis-lite.mjs",
+      "require": "./dist/lawful-basis-lite.js"
+    },
     "./cross-border": {
       "types": "./dist/cross-border.d.ts",
       "import": "./dist/cross-border.mjs",
       "require": "./dist/cross-border.js"
     },
+    "./cross-border/lite": {
+      "types": "./dist/cross-border-lite.d.ts",
+      "import": "./dist/cross-border-lite.mjs",
+      "require": "./dist/cross-border-lite.js"
+    },
     "./ropa": {
       "types": "./dist/ropa.d.ts",
       "import": "./dist/ropa.mjs",
       "require": "./dist/ropa.js"
+    },
+    "./ropa/lite": {
+      "types": "./dist/ropa-lite.d.ts",
+      "import": "./dist/ropa-lite.mjs",
+      "require": "./dist/ropa-lite.js"
     },
     "./adapters": {
       "types": "./dist/adapters.d.ts",
@@ -202,6 +222,9 @@
       "hooks": [
         "./dist/hooks.d.ts"
       ],
+      "headless": [
+        "./dist/headless.d.ts"
+      ],
       "consent": [
         "./dist/consent.d.ts"
       ],
@@ -220,11 +243,20 @@
       "lawful-basis": [
         "./dist/lawful-basis.d.ts"
       ],
+      "lawful-basis/lite": [
+        "./dist/lawful-basis-lite.d.ts"
+      ],
       "cross-border": [
         "./dist/cross-border.d.ts"
       ],
+      "cross-border/lite": [
+        "./dist/cross-border-lite.d.ts"
+      ],
       "ropa": [
         "./dist/ropa.d.ts"
+      ],
+      "ropa/lite": [
+        "./dist/ropa-lite.d.ts"
       ],
       "adapters": [
         "./dist/adapters.d.ts"

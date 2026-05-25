@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.10.3](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.2...v3.10.3) (2026-05-25)
+
+### Bug fix: 4 missing subpath exports
+
+The published `exports` map in the root `package.json` was missing four subpaths whose dist files were always being built and shipped in the tarball but were never wired into the import resolver. Affected paths:
+
+- `./headless` — added in 3.10.0 (alias of `/hooks`)
+- `./lawful-basis/lite` — added in 3.8.0
+- `./cross-border/lite` — added in 3.8.0
+- `./ropa/lite` — added in 3.8.0
+
+Consumers running `import { … } from '@tantainnovative/ndpr-toolkit/headless'` (or any of the three `/lite` paths) on 3.8.0 through 3.10.2 got a Node resolution error despite the dist files being present in their `node_modules`. The bug was that the inner `packages/ndpr-toolkit/package.json` had the exports right, but only the root `package.json` is consumed by the publish workflow — and the root never got them.
+
+3.10.3 adds all four entries to both the `exports` map and the `typesVersions["*"]` block in the root `package.json`. Verified by inspecting the published 3.10.3 tarball's `package.json` to confirm `npm view @tantainnovative/ndpr-toolkit@3.10.3 exports` lists all 23 paths.
+
+### Docs
+
+- New **`/docs/guides/upgrading-3-7-to-3-10`** guide — concise upgrade path for the common case of consumers stuck on 3.7.0 (the last version that reached npm before the publish-pipeline regression). Covers what's new, what didn't change, the post-bump verify checklist, and the reason 3.10.3 is the right target rather than any intermediate.
+- README — compacted the "What's new" notice. The 700-word historical narrative is now a brief 3.10.x summary with links to the new upgrade guide and the full CHANGELOG. Reverted the StackBlitz / CodeSandbox "Open in" links from `examples/ecommerce-starter` back to `examples/nextjs-app` (the comprehensive all-in-one demo — the ecommerce-starter is great as a deeper example but `examples/nextjs-app` is the better headline first-look).
+
+### Verification
+
+- All 23 exports keys present in both `exports` and `typesVersions["*"]` (was 19 in 3.10.2)
+- Build outputs verified locally — every claimed import path resolves to an existing `dist/<name>.{js,mjs,d.ts}`
+- Tests: 1192 / 1192 passing (no runtime changes)
+- `tsc --noEmit` clean for the docs site
+
 ## [3.10.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.1...v3.10.2) (2026-05-25)
 
 README-only patch — runtime is byte-identical to 3.10.1. Fixes the npm-rendered README so it reflects the current state of the toolkit.
