@@ -22,6 +22,7 @@ const ENTRIES = [
   'core',
   'server',
   'hooks',
+  'headless',
   'consent',
   'dsr',
   'dpia',
@@ -104,23 +105,32 @@ for (const entry of ENTRIES) {
 // Clean up the temp config.
 if (existsSync(TMP_CONFIG)) unlinkSync(TMP_CONFIG);
 
-// Sweep up the now-orphaned chunk .d.ts and .d.mts files. They're inlined
-// into the rolled-up entries so consumers no longer reach them.
-const chunkFiles = (await fs.readdir(DIST))
-  .filter((f) => /^chunk-[A-Z0-9_-]+\.d\.m?ts$/.test(f));
-for (const f of chunkFiles) {
+// Sweep up every .d.ts / .d.mts file that ISN'T one of our published
+// entries. After dts-rollup runs, the entry files are fully self-contained
+// (every referenced declaration is inlined), so the per-symbol and chunk
+// files that tsup emitted alongside them are dead weight and broke IDE
+// "go to definition" links because their content-hashes rotate per release.
+//
+// We keep an explicit allowlist (built from ENTRIES + 'styles') instead of
+// pattern-matching the hash suffix. The older regex approach
+// (`-[A-Za-z0-9_-]{8,}\.d\.m?ts$`) accidentally matched legitimate
+// hyphenated entry names like `lawful-basis-lite.d.ts` and
+// `cross-border-lite.d.ts` — the trailing `basis-lite` / `border-lite`
+// segments fall inside the dash-inclusive 8-char window. That bug shipped
+// in 3.8.0 and silently failed every npm publish from 3.8.0 through
+// 3.10.0: the publish workflow's entry-points check then errored before
+// `npm publish` ever ran, leaving npm stuck on 3.7.0.
+const allowed = new Set([...ENTRIES, 'styles']);
+const allDts = (await fs.readdir(DIST))
+  .filter((f) => /\.d\.m?ts$/.test(f));
+let swept = 0;
+for (const f of allDts) {
+  const base = f.replace(/\.d\.m?ts$/, '');
+  if (allowed.has(base)) continue;
   await fs.unlink(path.join(DIST, f));
-}
-
-// Also sweep any remaining hash-suffixed component .d.{m,}ts files
-// (e.g. `useDefaultPrivacyPolicy-DkOqMg2e.d.ts`). These were the symptom
-// FINLAB flagged — broken doc links per release.
-const hashSuffixedFiles = (await fs.readdir(DIST))
-  .filter((f) => /-[A-Za-z0-9_-]{8,}\.d\.m?ts$/.test(f));
-for (const f of hashSuffixedFiles) {
-  await fs.unlink(path.join(DIST, f));
+  swept++;
 }
 
 console.log(
-  `\n  rolled up ${processed} entries, skipped ${skipped}, swept ${chunkFiles.length + hashSuffixedFiles.length} chunk/hash dts files`,
+  `\n  rolled up ${processed} entries, skipped ${skipped}, swept ${swept} chunk/hash dts files`,
 );

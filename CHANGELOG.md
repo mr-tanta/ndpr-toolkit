@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.10.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.0...v3.10.1) (2026-05-25)
+
+Hotfix release. Code and runtime are identical to 3.10.0 — this patch fixes the build/publish pipeline that silently failed every release from 3.8.0 onward, so 3.10.1 is the first version since 3.7.0 to actually reach npm.
+
+### Root cause
+
+The dts-rollup post-build step (`scripts/rollup-dts.mjs`) deletes "leftover" hash-suffixed declaration files that tsup emits alongside each rolled-up entry. The 3.8.0 release added new entry names with two hyphens (`lawful-basis-lite`, `cross-border-lite`) — and the hash-suffix regex `/-[A-Za-z0-9_-]{8,}\.d\.m?ts$/` matched those legitimate entries because the trailing `basis-lite` / `border-lite` segments fall inside the 8-char dash-inclusive window. The sweep then deleted `dist/lawful-basis-lite.d.ts` and `dist/cross-border-lite.d.ts` right after rollup, the workflow's entry-points check then failed, and `npm publish` never ran. The git tags / GitHub releases for 3.8.0, 3.8.1, 3.9.0, and 3.10.0 existed; only npm was stuck on 3.7.0.
+
+### Fix
+
+- Replaced the regex-based sweep with an explicit allowlist (`new Set([...ENTRIES, 'styles'])`). Any `.d.ts` / `.d.mts` whose basename isn't in the allowed entries gets swept. No more pattern matching against names.
+- Wired the 3.10.0 `/headless` entry into the root `tsup.config.ts` (it had only been wired in `packages/ndpr-toolkit/tsup.config.ts`, which the publish workflow doesn't use) and added it to `CLIENT_ENTRIES` so the `"use client"` banner is injected.
+- Workflow's `Verify entry points` step now covers 22 entries (was 21) — added `headless`.
+
+### Recovery
+
+After this patch lands and 3.10.1 publishes successfully, the failed tags (v3.8.0, v3.8.1, v3.9.0, v3.10.0) will be backfilled to npm by cherry-picking this fix onto each tagged commit and re-running the workflow.
+
 ## [3.10.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.9.0...v3.10.0) (2026-05-25)
 
 Phase J of the feedback work — new API surface (theme provider + headless alias) and a production-grade DSR backend reference. Fully additive — no breaking changes.

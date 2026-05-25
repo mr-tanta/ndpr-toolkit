@@ -15,6 +15,7 @@ const RSC_SAFE_ENTRIES = ["core", "server"];
 const CLIENT_ENTRIES = [
   "index",
   "hooks",
+  "headless",
   "consent",
   "dsr",
   "dpia",
@@ -39,6 +40,9 @@ export default defineConfig({
     core: `${PKG}/core.ts`,
     server: `${PKG}/server.ts`,
     hooks: `${PKG}/hooks-entry.ts`,
+    // Alias of /hooks under a more discoverable name (3.10.0). Re-exports
+    // every hook from hooks-entry.ts; same surface, different import path.
+    headless: `${PKG}/headless.ts`,
     consent: `${PKG}/consent.ts`,
     dsr: `${PKG}/dsr.ts`,
     dpia: `${PKG}/dpia.ts`,
