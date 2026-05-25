@@ -110,7 +110,7 @@ See `.env.example`.
 ```
 examples/dsr-backend-prod/
   README.md
-  package.json                # ^3.10.0 of @tantainnovative/ndpr-toolkit
+  package.json                # ^3.10.3 of @tantainnovative/ndpr-toolkit
   tsconfig.json
   next.config.mjs
   .env.example

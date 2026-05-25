@@ -10,7 +10,7 @@
     "prisma:migrate": "prisma migrate dev"
   },
   "dependencies": {
-    "@tantainnovative/ndpr-toolkit": "^3.10.0",
+    "@tantainnovative/ndpr-toolkit": "^3.10.3",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

@@ -11,17 +11,17 @@
 
 v3 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, and a **compliance score engine** — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
 
-**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.10.2 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.10.2)**
+**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.10.3 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.10.3)**
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/ecommerce-starter)
-[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/ecommerce-starter)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app)
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/nextjs-app)
 
-> **What's new in 3.10.x:** `NDPRThemeProvider` — a typed React Context that turns a JavaScript theme object into the `--ndpr-*` CSS variables the stylesheet already consumes. `/headless` subpath ships every hook with zero UI in the import graph (an alias of `/hooks` under a more discoverable name). A new production-grade DSR backend reference at `examples/dsr-backend-prod/` wires `NDPRSubjectRights` to Prisma persistence + Resend email confirmation behind dual-mode shims (no infra required to run). Three new docs guides: [theming](https://ndprtoolkit.com.ng/docs/guides/theming), [headless](https://ndprtoolkit.com.ng/docs/guides/headless), [production-dsr-backend](https://ndprtoolkit.com.ng/docs/guides/production-dsr-backend).
+> **What's new in 3.10.x:** Typed theming via `<NDPRThemeProvider>`, a `/headless` subpath alias of `/hooks` for headless-UI consumers, and a production-grade DSR backend reference at `examples/dsr-backend-prod/` (Prisma + Resend behind no-infra shims). New docs guides: [theming](https://ndprtoolkit.com.ng/docs/guides/theming), [headless](https://ndprtoolkit.com.ng/docs/guides/headless), [production-dsr-backend](https://ndprtoolkit.com.ng/docs/guides/production-dsr-backend).
 >
-> **3.9.0** shipped runnable example apps — `examples/ecommerce-starter` (Nigerian multi-page storefront) and SSR-safe cookie-bridge templates for Next.js App Router, Remix, and Astro under `examples/ssr/*`. Plus Bun + Vite and Bun + Next.js quickstarts in this README. **3.8.1** added a typed `onSubmitSuccess` callback to `NDPRSubjectRights`, a documented DSR submission payload contract, accessibility notes, and a 3.5 → 3.8 migration guide. **3.8.0** shipped Lite (read-only) variants of the heavy Manager components (`/lawful-basis/lite`, `/cross-border/lite`, `/ropa/lite`). **3.6.0** added a typed `onSubmitError({ error, response })` callback. **3.5.x** added focus management (`useFocusTrap`), escape-to-dismiss, and `prefers-reduced-motion` support. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.10.2).
+> **Upgrading from 3.7.x?** See the [3.7 → 3.10 upgrade guide](https://ndprtoolkit.com.ng/docs/guides/upgrading-3-7-to-3-10) — fully additive, no API breaks. Full changelog on [GitHub](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.2/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.3/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
 </p>
 
 ---
@@ -70,7 +70,7 @@ import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 That's it. NDPA-compliant consent with server-side persistence in under 20 lines.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.2/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.3/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
   <br />
   <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
 </p>
@@ -434,13 +434,13 @@ Every module has an interactive demo. No signup, no setup — try them instantly
 
 <p align="center">
   <a href="https://ndprtoolkit.com.ng/ndpr-demos">
-    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.2/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
+    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.3/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
   </a>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.2/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.2/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.3/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.3/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
 </p>
 
 <p align="center">
