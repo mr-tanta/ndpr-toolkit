@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.10.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.1...v3.10.2) (2026-05-25)
+
+README-only patch — runtime is byte-identical to 3.10.1. Fixes the npm-rendered README so it reflects the current state of the toolkit.
+
+### What was wrong
+
+The npm publish workflow runs `npm publish` from `working-directory: .` (the repo root), so the README that lands on the npm package page is **`/README.md`**, not `packages/ndpr-toolkit/README.md`. Three earlier releases (3.8.1, 3.9.0, 3.10.0) updated the inner README — wrong file — leaving the npm-visible header stuck at the v3.4.0 "What's new" notice with the v3.4.0 release link and the `1098 passing` tests badge.
+
+### What changed in this patch
+
+- "What's new" notice — v3.4.0 paragraph → consolidated 3.5 → 3.10.x highlights (NDPRThemeProvider, `/headless`, production DSR backend example, ecommerce starter, SSR-safe templates, Bun quickstart, typed DSR callbacks, Lite manager variants, focus management).
+- Header release link — `v3.4.0 Release` → `v3.10.1 Release`.
+- Tests badge — `1098 passing` → `1192 passing`.
+- StackBlitz / CodeSandbox "Open in" links — `examples/nextjs-app` (no longer exists) → `examples/ecommerce-starter`.
+- Screenshot image URLs — pinned tag `v3.5.2` → `v3.10.1` so the images come from the current release tree.
+
+The body of the README already had the correct content for everything below the header (Bun quickstart, Choose Your Layer, Adapters, Live Demos table, etc.).
+
 ## [3.10.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.0...v3.10.1) (2026-05-25)
 
 Hotfix release. Code and runtime are identical to 3.10.0 — this patch fixes the build/publish pipeline that silently failed every release from 3.8.0 onward, so 3.10.1 is the first version since 3.7.0 to actually reach npm.
