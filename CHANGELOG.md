@@ -2,6 +2,67 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.10.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.9.0...v3.10.0) (2026-05-25)
+
+Phase J of the feedback work — new API surface (theme provider + headless alias) and a production-grade DSR backend reference. Fully additive — no breaking changes.
+
+### `NDPRThemeProvider` — typed theme object → CSS variables
+
+A small React Context provider that takes a TypeScript theme object and injects matching `--ndpr-*` CSS custom properties on a wrapping `div`. Syntactic sugar over the existing CSS-variable theming model — unset fields fall through to stylesheet defaults.
+
+```tsx
+import { NDPRThemeProvider, type NDPRTheme } from '@tantainnovative/ndpr-toolkit';
+
+const theme: NDPRTheme = {
+  colors: { primary: '22 163 74', primaryHover: '21 128 61' },  // RGB triplets
+  radius: { base: '0.75rem' },
+  font: { sans: '"Inter", system-ui, sans-serif' },
+};
+
+<NDPRThemeProvider theme={theme}>
+  <App />
+</NDPRThemeProvider>
+```
+
+The `NDPRTheme` interface keys are derived 1:1 from the variables actually defined in `styles.css` — no inventing tokens. Setting `mode: 'dark'` stamps `data-theme="dark"` on the wrapper to activate the stylesheet's dark-mode block. **6 new tests** cover variable injection, key isolation, dark-mode wiring, and className passthrough. Exported from the default entry only (not `/core`) to keep the RSC-safe surface clean.
+
+### `/headless` subpath — alias of `/hooks` for discoverability
+
+A pure rename of the existing `/hooks` entry under a more discoverable name. Same exports, same source, same identifiers — `export *` from `hooks-entry.ts`. Useful when consumers grep for "headless" looking for a hooks-only API.
+
+```tsx
+import { useConsent, useDSR, useFocusTrap } from '@tantainnovative/ndpr-toolkit/headless';
+```
+
+**12 new tests** verify that `/headless` and `/hooks` export identical keys and identity-equal values (so the alias can never silently drift). Wired into `package.json` exports, `typesVersions`, and `tsup.config.ts`.
+
+### `examples/dsr-backend-prod/` — production-grade DSR backend
+
+A 14-file Next.js 15 / React 19 reference implementation that wires `NDPRSubjectRights` to a real backend pipeline:
+
+1. **Validate** via `validateDsrSubmission` from `/server` — 400 with `{ error, fields }` on invalid payloads.
+2. **Defense-in-depth** disposable-email blocklist (configurable via `DSR_BLOCKED_EMAIL_DOMAINS`).
+3. **Persist** to a Prisma `DSRRequest` model with a 30-day `estimatedCompletionAt` (NDPA Part IV §29-36).
+4. **Confirm** by sending a Resend transactional email — best-effort: the request still succeeds if email fails.
+
+Both Prisma and Resend are wrapped in **dual-mode shims**: real clients when `DATABASE_URL` / `RESEND_API_KEY` are set, otherwise a Map-backed mock and a stdout logger. The example runs out of the box with no infrastructure.
+
+The 201 response is exactly `{ referenceId, status, estimatedCompletionAt }` — the shape `NDPRSubjectRights.onSubmitSuccess` consumers read from `body` per the 3.8.1 contract.
+
+### Three new docs guides
+
+Wired into the Implementation Guides sidebar:
+
+- `/docs/guides/theming` — `NDPRThemeProvider`, the full `NDPRTheme` reference, RGB-triplet convention, dark mode, when not to use the provider
+- `/docs/guides/headless` — `/headless` quickstart, the 10 hooks it exposes, adapter wiring, bundle-size note, the relationship to `/hooks`
+- `/docs/guides/production-dsr-backend` — walks through the `examples/dsr-backend-prod` pipeline, response contract, and how to swap in your own database/email stack
+
+### Verification
+
+- `tsc --noEmit` clean for the docs site
+- **Full Jest suite: 1192/1192 passing** (was 1173 — +19: 6 ThemeProvider + 12 headless-parity + 1 default-entry exports check)
+- No changes to existing prop types, hook signatures, or storage adapters
+
 ## [3.9.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.8.1...v3.9.0) (2026-05-25)
 
 Examples expansion + Bun quickstart + SSR-safe storage docs. Fully additive — no breaking changes.

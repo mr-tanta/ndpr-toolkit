@@ -21,6 +21,7 @@ describe('Entry point: index', () => {
     'PolicyPreview',
     'PolicyExporter',
     'NDPRProvider',
+    'NDPRThemeProvider',
     'useDSR',
     'useConsent',
     'useDPIA',
@@ -184,6 +185,38 @@ describe('Entry point: hooks', () => {
     'useAdaptivePolicyWizard',
   ])('exports %s', (name) => {
     expect(mod[name]).toBeDefined();
+  });
+});
+
+describe('Entry point: headless', () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const mod = require('../../src/headless');
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const hooksMod = require('../../src/hooks-entry');
+
+  it.each([
+    'useConsent',
+    'useDSR',
+    'useDPIA',
+    'useBreach',
+    'useLawfulBasis',
+    'useCrossBorderTransfer',
+    'useROPA',
+    'useComplianceScore',
+    'useAdaptivePolicyWizard',
+    'useFocusTrap',
+  ])('exports %s', (name) => {
+    expect(mod[name]).toBeDefined();
+  });
+
+  it('mirrors the /hooks entry exactly (same exported keys)', () => {
+    expect(new Set(Object.keys(mod))).toEqual(new Set(Object.keys(hooksMod)));
+  });
+
+  it('exports the same hook references as /hooks (alias, not redefinition)', () => {
+    for (const key of Object.keys(hooksMod)) {
+      expect(mod[key]).toBe(hooksMod[key]);
+    }
   });
 });
 

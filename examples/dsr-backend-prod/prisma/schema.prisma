@@ -1,0 +1,50 @@
+// Production-grade DSR persistence model.
+//
+// Mirrors the response contract returned by app/api/dsr/route.ts:
+//   { referenceId, estimatedCompletionAt }
+//
+// `referenceId` is a cuid because it's user-visible (printed in the
+// confirmation email and the success card) and we don't want sequential
+// IDs that leak request volume. `id` is the primary key for internal joins.
+//
+// Status values mirror DSRStatus in @tantainnovative/ndpr-toolkit/dsr —
+// stored as a string for portability across SQLite/Postgres/MySQL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // SQLite by default so `pnpm prisma migrate dev` works without infra.
+  // Swap to "postgresql" for production.
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model DSRRequest {
+  id                    String   @id @default(cuid())
+  referenceId           String   @unique @default(cuid())
+
+  // Data subject identity (NDPA Section 34 — verification before disclosure).
+  fullName              String
+  email                 String
+  requestType           String
+  identifierType        String
+  identifierValue       String
+
+  description           String?
+
+  // Lifecycle. Default 'received' lines up with the route handler's
+  // response status. Move through 'inProgress' → 'completed' or 'rejected'
+  // in your downstream case-management workflow.
+  status                String   @default("received")
+
+  receivedAt            DateTime @default(now())
+  // received + 30 days per NDPA Part VI §34 (response window).
+  estimatedCompletionAt DateTime
+
+  @@index([status])
+  @@index([email])
+  @@index([referenceId])
+  @@map("ndpr_dsr_requests")
+}

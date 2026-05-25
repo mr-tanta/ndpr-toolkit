@@ -513,7 +513,23 @@ import "@tantainnovative/ndpr-toolkit/styles";
 }
 ```
 
-Light + dark mode auto-switch via `prefers-color-scheme`, plus an explicit opt-in via `data-theme="dark"` or `.dark` on any ancestor.
+**Theme via typed JS object — `NDPRThemeProvider` (new in 3.10.0):**
+```tsx
+import { NDPRThemeProvider, type NDPRTheme } from '@tantainnovative/ndpr-toolkit';
+
+const theme: NDPRTheme = {
+  colors: { primary: '22 163 74', primaryHover: '21 128 61' },
+  radius: { base: '0.75rem' },
+  font: { sans: '"Inter", system-ui, sans-serif' },
+};
+
+<NDPRThemeProvider theme={theme}>
+  <App />
+</NDPRThemeProvider>
+```
+The provider wraps children in a single `div` with the `--ndpr-*` variables set inline. Every `NDPRTheme` field is optional and maps 1:1 to a CSS variable defined in the stylesheet — unset fields fall through to defaults. Same end result as raw CSS overrides; pick what fits your codebase. Full reference in [the theming guide](https://ndprtoolkit.com.ng/docs/guides/theming).
+
+Light + dark mode auto-switch via `prefers-color-scheme`, plus an explicit opt-in via `data-theme="dark"` or `.dark` on any ancestor (or `mode: 'dark'` on `NDPRThemeProvider`).
 
 **Per-instance override via slot map:**
 ```tsx
@@ -548,6 +564,7 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/server` | **Pure validators, generators, scoring, locales, adapters, types — zero React** | `tslib` | **Yes** |
 | `/core` | Types, utility functions, NDPRProvider | `react`[^core] | Partial |
 | `/hooks` | React hooks for all 8 modules | `react` | No |
+| `/headless` | **Alias of `/hooks`** — identical exports under a more discoverable name (3.10.0) | `react` | No |
 | `/presets` | All zero-config preset components (barrel) | `react`, Radix peers | No |
 | `/presets/consent` | **Just `NDPRConsent`** — narrower barrel for bundle size | `react`, Radix peers | No |
 | `/presets/dsr` | **Just `NDPRSubjectRights`** | `react`, Radix peers | No |
