@@ -1,0 +1,31 @@
+---
+import "@tantainnovative/ndpr-toolkit/styles";
+import { ConsentRoot } from "../components/ConsentRoot";
+import { CONSENT_COOKIE, parseConsentCookie } from "../lib/parse-consent-cookie";
+
+const initialConsent = parseConsentCookie(Astro.cookies.get(CONSENT_COOKIE)?.value);
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>NDPR Toolkit — Astro SSR consent</title>
+  </head>
+  <body style="font-family: system-ui, sans-serif; margin: 0">
+    <main style="max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem">
+      <h1 style="font-size: 1.875rem; margin-bottom: 0.75rem">
+        SSR-safe consent on Astro
+      </h1>
+      <p style="color: #475569; line-height: 1.6; margin-bottom: 1rem">
+        The Astro frontmatter reads <code>ndpr-consent</code> via <code>Astro.cookies.get</code>,
+        parses it, and passes the result to a React island. The banner hydrates already showing
+        or already hidden — no flash.
+      </p>
+      <p style="color: #64748b; font-size: 0.875rem">
+        Accept categories and refresh: the server-rendered HTML comes back with the banner
+        closed.
+      </p>
+    </main>
+    <ConsentRoot client:load initialConsent={initialConsent} />
+  </body>
+</html>

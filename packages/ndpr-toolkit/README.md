@@ -6,17 +6,19 @@
 [![npm downloads](https://img.shields.io/npm/dm/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-3178C6.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-1098%20passing-brightgreen.svg)](#)
+[![Tests](https://img.shields.io/badge/tests-1173%20passing-brightgreen.svg)](#)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
 v3 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, and a **compliance score engine** — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
 
-**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.4.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0)**
+**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.9.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.9.0)**
 
-> **What's new in 3.4.0:** components now ship styled defaults via a real stylesheet — Tailwind is no longer required. Add `import "@tantainnovative/ndpr-toolkit/styles";` once in your app entry. Plus a new `/server` subpath for RSC-safe pure-logic imports (validators, generators, scoring) with zero React in the import graph. Backward-compatible at the component API level. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.4.0).
+> **What's new in 3.9.0:** runnable example apps — a full multi-page Nigerian ecommerce starter (`examples/ecommerce-starter`) and SSR-safe cookie-bridge templates for Next.js App Router, Remix, and Astro (`examples/ssr/*`). README now ships a Bun + Vite and Bun + Next.js 15 quickstart. A new docs guide at `/docs/guides/server-side-storage` covers the SSR consent pattern end-to-end. Fully additive on top of 3.8.x — no breaking changes.
+>
+> **3.8.1** added a typed `onSubmitSuccess` callback to `NDPRSubjectRights`, a documented DSR submission payload contract, accessibility notes on the banner + DSR form, and a 3.5 → 3.8 migration guide. **3.8.0** shipped Lite (read-only) variants of the heavy Manager components for read paths (`/lawful-basis/lite`, `/cross-border/lite`, `/ropa/lite`). **3.6.0** added a typed `onSubmitError({ error, response })` callback. **3.5.x** added focus management (`useFocusTrap`), escape-to-dismiss, and `prefers-reduced-motion` support across all overlays. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.9.0).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
 </p>
 
 ---
@@ -65,7 +67,7 @@ import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 That's it. NDPA-compliant consent with server-side persistence in under 20 lines.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
   <br />
   <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
 </p>
@@ -76,6 +78,10 @@ That's it. NDPA-compliant consent with server-side persistence in under 20 lines
 
 ```bash
 pnpm add @tantainnovative/ndpr-toolkit
+# or
+bun add @tantainnovative/ndpr-toolkit
+# or
+npm install @tantainnovative/ndpr-toolkit
 ```
 
 Add the stylesheet import once in your app entry so components render with default styles:
@@ -118,6 +124,29 @@ import {
   NDPRDPIA,              // DPIA questionnaire
   NDPRComplianceDashboard, // Visual compliance dashboard
 } from '@tantainnovative/ndpr-toolkit/presets';
+```
+
+The DSR preset wires submission directly to your backend with typed success and error callbacks (3.6.0 + 3.8.1):
+
+```tsx
+<NDPRSubjectRights
+  submitTo="/api/dsr"
+  onSubmitSuccess={({ response, data, body }) => {
+    const ref = (body as { referenceId?: string })?.referenceId;
+    if (ref) router.push(`/dsr-confirmation?ref=${ref}`);
+  }}
+  onSubmitError={({ error, response }) => {
+    console.error('DSR submit failed', error, response?.status);
+  }}
+/>
+```
+
+For read-only Manager surfaces (audits, dashboards) where the editing UI is overkill, the **Lite** variants ship a much smaller subset (3.8.0):
+
+```tsx
+import { LawfulBasisLite } from '@tantainnovative/ndpr-toolkit/lawful-basis/lite';
+import { CrossBorderTransferLite } from '@tantainnovative/ndpr-toolkit/cross-border/lite';
+import { ROPALite } from '@tantainnovative/ndpr-toolkit/ropa/lite';
 ```
 
 ### Components — compound pattern
@@ -311,18 +340,34 @@ Every module has an interactive demo. No signup, no setup — try them instantly
 
 <p align="center">
   <a href="https://ndprtoolkit.com.ng/ndpr-demos">
-    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
+    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
   </a>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.5.2/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
 </p>
 
 <p align="center">
   <em>Left: Data Subject Rights portal with 8 NDPA rights. Right: Breach notification with 72-hour NDPC deadline countdown.</em>
 </p>
+
+---
+
+## Runnable Examples
+
+Self-contained starter apps in the [examples/](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples) directory. Clone, install, run.
+
+| Example | What it shows | Stack |
+|---------|--------------|-------|
+| [`examples/ecommerce-starter`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/ecommerce-starter) | Multi-page Nigerian ecommerce with consent banner, privacy notice, DSR portal, and editable cookie preferences | Next.js 15 App Router + React 19 |
+| [`examples/ssr/nextjs-app-router`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/nextjs-app-router) | SSR-safe consent: cookie read on the server, banner hydrates already-resolved (no flash) | Next.js 15 App Router |
+| [`examples/ssr/remix`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/remix) | Same cookie-bridge pattern from a Remix `loader` | Remix + Vite |
+| [`examples/ssr/astro`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/astro) | Cookie read in Astro frontmatter, banner mounted as a `client:load` React island | Astro + React |
+| [`examples/stackblitz/consent`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/consent) | Minimal sandbox-ready consent banner | Next.js |
+
+Full SSR pattern documented at **[`/docs/guides/server-side-storage`](https://ndprtoolkit.com.ng/docs/guides/server-side-storage)**.
 
 ---
 
