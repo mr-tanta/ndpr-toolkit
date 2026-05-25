@@ -184,7 +184,6 @@
   },
   "files": [
     "dist",
-    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {
