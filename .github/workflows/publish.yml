@@ -78,6 +78,15 @@ jobs:
           fi
           echo "Version verified: $PKG_VERSION"
 
+      # Tarball-level integration test: build a packed tarball, install it
+      # into a fresh sandbox, then resolve every documented subpath via
+      # ESM import, CJS require, /styles asset path, and TypeScript tsc.
+      # Closes the gap that let 3.8.0 through 3.10.2 silently ship with
+      # missing exports — see scripts/verify-tarball.mjs for full rationale.
+      # If this step fails, the publish does not happen.
+      - name: Verify tarball — every subpath resolves (ESM + CJS + TS)
+        run: pnpm verify:tarball --skip-build
+
       # Authentication: npm Trusted Publishing via OIDC.
       # Uses `npm publish` (not `pnpm publish`) because pnpm doesn't yet
       # implement npm's `/auth/oidc` token-exchange endpoint. `npm publish`
