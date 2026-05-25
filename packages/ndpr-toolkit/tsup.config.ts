@@ -55,6 +55,7 @@ export default defineConfig([
     ...sharedOptions,
     entry: {
       index: 'src/index.ts',
+      headless: 'src/headless.ts',
       hooks: 'src/hooks-entry.ts',
       consent: 'src/consent.ts',
       dsr: 'src/dsr.ts',

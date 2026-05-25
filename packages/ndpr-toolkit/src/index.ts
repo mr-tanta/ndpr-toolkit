@@ -49,6 +49,10 @@ export type { PolicySection, PolicyTemplate, PolicyVariable, OrganizationInfo, P
 export { NDPRProvider, useNDPRConfig } from './components/NDPRProvider';
 export type { NDPRConfig } from './components/NDPRProvider';
 
+// Theme Provider (ergonomic wrapper over --ndpr-* CSS custom properties)
+export { NDPRThemeProvider } from './components/theme/NDPRThemeProvider';
+export type { NDPRTheme, NDPRThemeProviderProps } from './components/theme/NDPRThemeProvider';
+
 // Utility Functions
 export { resolveClass } from './utils/styling';
 export { validateConsent, validateConsentOptions } from './utils/consent';

@@ -6,19 +6,19 @@
 [![npm downloads](https://img.shields.io/npm/dm/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-3178C6.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-1173%20passing-brightgreen.svg)](#)
+[![Tests](https://img.shields.io/badge/tests-1192%20passing-brightgreen.svg)](#)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
 v3 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, and a **compliance score engine** — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
 
-**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.9.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.9.0)**
+**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.10.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.10.0)**
 
-> **What's new in 3.9.0:** runnable example apps — a full multi-page Nigerian ecommerce starter (`examples/ecommerce-starter`) and SSR-safe cookie-bridge templates for Next.js App Router, Remix, and Astro (`examples/ssr/*`). README now ships a Bun + Vite and Bun + Next.js 15 quickstart. A new docs guide at `/docs/guides/server-side-storage` covers the SSR consent pattern end-to-end. Fully additive on top of 3.8.x — no breaking changes.
+> **What's new in 3.10.0:** `NDPRThemeProvider` — a typed React Context that turns a JavaScript theme object into the `--ndpr-*` CSS variables the stylesheet already consumes. `/headless` subpath ships every hook with zero UI in the import graph (an alias of `/hooks` under a more discoverable name). A new production-grade DSR backend reference at `examples/dsr-backend-prod/` wires `NDPRSubjectRights` to Prisma persistence + Resend email confirmation behind dual-mode shims (no infra required to run). Three new docs guides: `/docs/guides/theming`, `/docs/guides/headless`, `/docs/guides/production-dsr-backend`. Fully additive — no breaking changes.
 >
-> **3.8.1** added a typed `onSubmitSuccess` callback to `NDPRSubjectRights`, a documented DSR submission payload contract, accessibility notes on the banner + DSR form, and a 3.5 → 3.8 migration guide. **3.8.0** shipped Lite (read-only) variants of the heavy Manager components for read paths (`/lawful-basis/lite`, `/cross-border/lite`, `/ropa/lite`). **3.6.0** added a typed `onSubmitError({ error, response })` callback. **3.5.x** added focus management (`useFocusTrap`), escape-to-dismiss, and `prefers-reduced-motion` support across all overlays. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.9.0).
+> **3.9.0** shipped runnable example apps — ecommerce starter (`examples/ecommerce-starter`) and SSR-safe cookie-bridge templates for Next.js App Router, Remix, and Astro (`examples/ssr/*`), plus the Bun + Vite and Bun + Next.js quickstarts. **3.8.1** added a typed `onSubmitSuccess` callback to `NDPRSubjectRights`, a documented DSR submission payload contract, accessibility notes, and a 3.5 → 3.8 migration guide. **3.8.0** shipped Lite (read-only) variants of the heavy Manager components (`/lawful-basis/lite`, `/cross-border/lite`, `/ropa/lite`). **3.6.0** added a typed `onSubmitError({ error, response })` callback. **3.5.x** added focus management (`useFocusTrap`), escape-to-dismiss, and `prefers-reduced-motion` support. Full notes on the [release page](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.10.0).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
 </p>
 
 ---
@@ -67,7 +67,7 @@ import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 That's it. NDPA-compliant consent with server-side persistence in under 20 lines.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.0/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
   <br />
   <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
 </p>
@@ -169,10 +169,11 @@ import { Consent } from '@tantainnovative/ndpr-toolkit/consent';
 
 ### Hooks — headless
 
-Stateful hooks for every module. Bring your own UI entirely.
+Stateful hooks for every module. Bring your own UI entirely. New in 3.10.0, the same hooks are also exported under a more discoverable `/headless` subpath — identical surface, pick whichever name fits your codebase.
 
 ```tsx
-import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+import { useConsent } from '@tantainnovative/ndpr-toolkit/headless';
+// or: from '@tantainnovative/ndpr-toolkit/hooks' — same thing
 
 const { hasConsent, acceptAll, rejectAll, shouldShowBanner } = useConsent({ options });
 ```
@@ -340,13 +341,13 @@ Every module has an interactive demo. No signup, no setup — try them instantly
 
 <p align="center">
   <a href="https://ndprtoolkit.com.ng/ndpr-demos">
-    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
+    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.0/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
   </a>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.9.0/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.0/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.10.0/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
 </p>
 
 <p align="center">
@@ -361,6 +362,7 @@ Self-contained starter apps in the [examples/](https://github.com/mr-tanta/ndpr-
 
 | Example | What it shows | Stack |
 |---------|--------------|-------|
+| [`examples/dsr-backend-prod`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/dsr-backend-prod) | **Production DSR backend reference** — validate (toolkit) → Prisma persist → Resend email confirmation, both behind dual-mode shims that run without infrastructure | Next.js 15 App Router + Prisma + Resend |
 | [`examples/ecommerce-starter`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/ecommerce-starter) | Multi-page Nigerian ecommerce with consent banner, privacy notice, DSR portal, and editable cookie preferences | Next.js 15 App Router + React 19 |
 | [`examples/ssr/nextjs-app-router`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/nextjs-app-router) | SSR-safe consent: cookie read on the server, banner hydrates already-resolved (no flash) | Next.js 15 App Router |
 | [`examples/ssr/remix`](https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/remix) | Same cookie-bridge pattern from a Remix `loader` | Remix + Vite |
@@ -409,6 +411,22 @@ import "@tantainnovative/ndpr-toolkit/styles";
 }
 ```
 
+**Theme via typed JS object (new in 3.10.0):**
+```tsx
+import { NDPRThemeProvider, type NDPRTheme } from '@tantainnovative/ndpr-toolkit';
+
+const theme: NDPRTheme = {
+  colors: { primary: '22 163 74', primaryHover: '21 128 61' },
+  radius: { base: '0.75rem' },
+  font: { sans: '"Inter", system-ui, sans-serif' },
+};
+
+<NDPRThemeProvider theme={theme}>
+  <App />
+</NDPRThemeProvider>
+```
+The provider wraps children in a single `div` with the `--ndpr-*` variables set inline. Unset fields fall through to stylesheet defaults. Same underlying mechanism as the CSS approach — pick whichever ergonomics fit. Full docs at [`/docs/guides/theming`](https://ndprtoolkit.com.ng/docs/guides/theming).
+
 Light + dark mode auto-switch via `prefers-color-scheme`, plus an explicit opt-in via `data-theme="dark"` or `.dark` on any ancestor.
 
 **Per-instance override via slot map:**
@@ -444,6 +462,7 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/server` | **Pure validators, generators, scoring, locales, adapters, types — zero React** | `tslib` | **Yes** |
 | `/core` | Types, utility functions, NDPRProvider | `react`[^core] | Partial |
 | `/hooks` | React hooks for all 8 modules | `react` | No |
+| `/headless` | **Alias of `/hooks`** — identical exports under a more discoverable name | `react` | No |
 | `/presets` | Zero-config preset components | `react`, Radix peers | No |
 | `/adapters` | Storage adapters (localStorage, sessionStorage, cookie, api, memory, composeAdapters) | none | Yes |
 | `/consent` | ConsentBanner, ConsentManager, `Consent.*` compound API, useConsent | `react` | No |
