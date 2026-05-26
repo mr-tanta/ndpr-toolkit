@@ -4,7 +4,7 @@
  * Implements StorageAdapter<CrossBorderTransfer[]> backed by the
  * `ndpr_cross_border_transfer_records` Drizzle table.
  *
- * Under NDPA Part VI (Sections 41-45), personal data may only be transferred
+ * Under NDPA Part VIII (Sections 41-43), personal data may only be transferred
  * outside Nigeria under specific conditions. This adapter tracks every
  * cross-border transfer, the mechanism relied upon, and NDPC approval status.
  *

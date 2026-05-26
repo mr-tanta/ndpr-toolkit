@@ -152,11 +152,11 @@ We do not use student information for targeted advertising purposes or sell stud
 
 1. **Data Protection Officer**: We have appointed a Data Protection Officer responsible for overseeing our data protection strategy and implementation.
 
-2. **Data Protection Impact Assessments**: We conduct DPIAs for high-risk processing activities as required by NDPA Section 38.
+2. **Data Protection Impact Assessments**: We conduct DPIAs for high-risk processing activities as required by NDPA Section 28.
 
 3. **Registration and Compliance Audit**: We maintain our registration with the Nigeria Data Protection Commission (NDPC) and conduct annual compliance audits as required by NDPA Section 46.
 
-4. **Data Subject Access Request Procedure**: We have implemented a clear procedure for handling data subject access requests in accordance with NDPA Section 30.
+4. **Data Subject Access Request Procedure**: We have implemented a clear procedure for handling data subject access requests in accordance with NDPA Section 34.
 
 5. **Data Breach Notification**: We have established procedures to notify the Nigeria Data Protection Commission (NDPC) and affected data subjects of any data breaches within 72 hours, as required by NDPA Section 40.
 

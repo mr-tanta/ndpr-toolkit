@@ -422,7 +422,7 @@ export default function DSRDemoPage() {
       <DemoLayout
         title="Data Subject Rights"
         description="Exercise and manage the eight fundamental rights granted to data subjects under the Nigeria Data Protection Act."
-        ndpaSection="Part IV — Sections 29–36"
+        ndpaSection="Part VI — Sections 34–38"
       >
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-muted rounded w-64" />
@@ -441,7 +441,7 @@ export default function DSRDemoPage() {
     <DemoLayout
       title="Data Subject Rights"
       description="Exercise and manage the eight fundamental rights granted to data subjects under the Nigeria Data Protection Act. Submit requests, track progress, and ensure compliance within the 30-day window."
-      ndpaSection="Part IV — Sections 29–36"
+      ndpaSection="Part VI — Sections 34–38"
       code={`import { DSRForm, DSRTracker } from '@tantainnovative/ndpr-toolkit/dsr';
 
 // Submit a DSR request

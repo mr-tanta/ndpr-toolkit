@@ -200,12 +200,12 @@ const REQUIREMENTS: Requirement[] = [
       fixLabel: 'Add missing rights',
       suggestedContent:
         'Under the NDPA 2023, you have the following rights:\n' +
-        '1. Right of Access (Section 34)\n' +
-        '2. Right to Rectification (Section 35)\n' +
-        '3. Right to Erasure (Section 36)\n' +
-        '4. Right to Restrict Processing (Section 37)\n' +
+        '1. Right of Access (Section 34(1)(a)–(b))\n' +
+        '2. Right to Rectification (Section 34(1)(c))\n' +
+        '3. Right to Erasure (Section 34(1)(d), Section 34(2))\n' +
+        '4. Right to Restrict Processing (Section 34(1)(e))\n' +
         '5. Right to Data Portability (Section 38)\n' +
-        '6. Right to Object (Section 37)',
+        '6. Right to Object (Section 36)',
     }),
   },
   {
@@ -249,7 +249,7 @@ const REQUIREMENTS: Requirement[] = [
   {
     id: 'cross-border-safeguards',
     name: 'Cross-Border Transfer Safeguards',
-    ndpaSection: 'NDPA Sections 43-44',
+    ndpaSection: 'NDPA Part VIII (Sections 41-43)',
     severity: 'important',
     points: 7,
     check: (policy, context) => {
@@ -262,13 +262,13 @@ const REQUIREMENTS: Requirement[] = [
       fixType: 'add_section',
       fixLabel: 'Add cross-border section',
       suggestedContent:
-        'Where we transfer personal data outside Nigeria, we ensure compliance with Sections 43 and 44 of the NDPA 2023 by implementing appropriate safeguards, including adequacy assessments and Standard Contractual Clauses.',
+        'Where we transfer personal data outside Nigeria, we ensure compliance with Part VIII (Sections 41-43) of the NDPA 2023 by implementing appropriate safeguards, including adequacy assessments and Standard Contractual Clauses.',
     }),
   },
   {
     id: 'automated-decision-disclosure',
     name: 'Automated Decision-Making Disclosure',
-    ndpaSection: 'NDPA Section 39',
+    ndpaSection: 'NDPA Section 37',
     severity: 'important',
     points: 7,
     check: (policy, context) => {
@@ -281,7 +281,7 @@ const REQUIREMENTS: Requirement[] = [
       fixType: 'add_section',
       fixLabel: 'Add automated decisions section',
       suggestedContent:
-        'We use automated decision-making in certain processes. You have the right to request human intervention, express your point of view, and contest automated decisions, in accordance with Section 39 of the NDPA 2023.',
+        'We use automated decision-making in certain processes. You have the right to request human intervention, express your point of view, and contest automated decisions, in accordance with Section 37 of the NDPA 2023.',
     }),
   },
 

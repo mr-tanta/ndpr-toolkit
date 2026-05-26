@@ -1,6 +1,6 @@
 /**
  * Cross-Border Data Transfer module
- * NDPA Part VI (Sections 41-45) — international transfer assessment and documentation
+ * NDPA Part VIII (Sections 41-43) — international transfer assessment and documentation
  */
 export { CrossBorderTransferManager } from './components/cross-border/CrossBorderTransferManager';
 export { useCrossBorderTransfer } from './hooks/useCrossBorderTransfer';

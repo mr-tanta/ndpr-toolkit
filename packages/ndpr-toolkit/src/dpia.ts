@@ -1,6 +1,6 @@
 /**
  * Data Protection Impact Assessment module
- * NDPA Section 38 (DPIA requirements) and Section 39 (NDPC consultation)
+ * NDPA Section 28 (Data Protection Impact Assessment, including Section 28(2) NDPC consultation)
  */
 export { DPIAQuestionnaire } from './components/dpia/DPIAQuestionnaire';
 export { DPIAReport } from './components/dpia/DPIAReport';

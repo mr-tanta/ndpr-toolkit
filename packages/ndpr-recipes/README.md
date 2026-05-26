@@ -380,7 +380,7 @@ The `apiAdapter` hits your `/api/consent` route handler (from `src/nextjs/app-ro
 | Table | Description | NDPA reference |
 |---|---|---|
 | `ndpr_consent_records` | Immutable consent audit trail. `revokedAt` marks withdrawal — rows are never deleted. | §25–26 |
-| `ndpr_dsr_requests` | Data subject rights requests. Tracks type, status, and 30-day response deadline. | Part IV §29–36 |
+| `ndpr_dsr_requests` | Data subject rights requests. Tracks type, status, and 30-day response deadline. | Part VI §34–38 |
 | `ndpr_breach_reports` | Breach incident records with 72-hour NDPC notification tracking. | §40 |
 | `ndpr_processing_records` | Record of Processing Activities (ROPA). | Accountability principle |
 | `ndpr_audit_log` | Append-only compliance event log. | §44 |
@@ -396,7 +396,7 @@ The consent table follows an immutable-audit pattern: when a subject updates or 
 | Module | NDPA provision |
 |---|---|
 | Consent | Sections 25–26 (lawful basis, consent withdrawal) |
-| Data Subject Rights | Part IV, Sections 29–36 (access, erasure, portability, etc.) |
+| Data Subject Rights | Part VI, Sections 34–38 (access, erasure, portability, etc.) |
 | Breach Notification | Section 40 (72-hour notification to NDPC) |
 | ROPA | Accountability principle; Schedule 1, Part 1 |
 | Audit Log | Section 44 (accountability and record-keeping) |

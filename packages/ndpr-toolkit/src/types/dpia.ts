@@ -1,5 +1,5 @@
 /**
- * Data Protection Impact Assessment types aligned with NDPA 2023 Sections 38-39
+ * Data Protection Impact Assessment types aligned with NDPA 2023 Section 28
  * A DPIA is required when processing is likely to result in high risk to data subjects
  */
 
@@ -159,7 +159,7 @@ export interface DPIAResult {
 
   /**
    * Whether prior consultation with NDPC is required
-   * Per NDPA Section 39, consultation is required when DPIA indicates high residual risk
+   * Per NDPA Section 28(2), consultation is required when DPIA indicates high residual risk
    */
   ndpcConsultationRequired?: boolean;
 

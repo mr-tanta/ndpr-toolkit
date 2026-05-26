@@ -1,5 +1,6 @@
 "use client";
 
+import "@tantainnovative/ndpr-toolkit/styles";
 import { NDPRProvider } from "@tantainnovative/ndpr-toolkit";
 import { NDPRConsent } from "@tantainnovative/ndpr-toolkit/presets";
 import { apiAdapter } from "@tantainnovative/ndpr-toolkit/adapters";

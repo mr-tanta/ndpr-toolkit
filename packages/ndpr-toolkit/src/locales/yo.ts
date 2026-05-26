@@ -17,7 +17,7 @@ export const yorubaLocale: Required<{
   },
   dsr: {
     title: 'Fi Ìbéèrè Oní-dátà Sílẹ̀',
-    description: 'Lo fọ́ọ̀mù yìí láti lo àwọn ẹ̀tọ́ rẹ lábẹ́ Òfin Ìdáàbòbò Dátà ti Nàìjíríà (NDPA), Apá Kẹrin, Abala 29-36.',
+    description: 'Lo fọ́ọ̀mù yìí láti lo àwọn ẹ̀tọ́ rẹ lábẹ́ Òfin Ìdáàbòbò Dátà ti Nàìjíríà (NDPA), Apá Kẹfà, Abala 34-38.',
     submitRequest: 'Fi Ìbéèrè Sílẹ̀',
     reset: 'Tún Bẹ̀rẹ̀',
     fullName: 'Orúkọ Kíkún',

@@ -85,7 +85,7 @@ const NDPC_APPROVAL_MECHANISMS: ReadonlySet<TransferMechanism> = new Set<Transfe
 export const CrossBorderTransferManagerLite: React.FC<CrossBorderTransferManagerLiteProps> = ({
   transfers,
   title = 'Cross-Border Data Transfer Manager',
-  description = 'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VI (Sections 41-45).',
+  description = 'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VIII (Sections 41-43).',
   className = '',
   classNames,
   unstyled,

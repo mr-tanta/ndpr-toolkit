@@ -482,13 +482,13 @@ Cookie-bridged consent that hydrates without a flash. Each scaffold reads the `n
 | Module | Import path | NDPA reference | Key exports |
 |--------|-------------|----------------|-------------|
 | Consent Management | `/consent` | Sections 25–26 | `ConsentBanner`, `ConsentManager`, `Consent.*`, `useConsent` |
-| Data Subject Rights | `/dsr` | Part IV §29–36 | `DSRRequestForm`, `DSRDashboard`, `useDSR` |
-| DPIA | `/dpia` | Sections 38–39 | `DPIAQuestionnaire`, `DPIAReport`, `useDPIA` |
+| Data Subject Rights | `/dsr` | Part VI §34–38 | `DSRRequestForm`, `DSRDashboard`, `useDSR` |
+| DPIA | `/dpia` | Section 28 | `DPIAQuestionnaire`, `DPIAReport`, `useDPIA` |
 | Breach Notification | `/breach` | Section 40 | `BreachReportForm`, `BreachRiskAssessment`, `useBreach` |
-| Privacy Policy | `/policy` | Sections 27–28 | `PolicyGenerator`, `PolicyPreview`, `PolicyExporter` |
+| Privacy Policy | `/policy` | Section 27 | `PolicyGenerator`, `PolicyPreview`, `PolicyExporter` |
 | Lawful Basis | `/lawful-basis` | Section 25 | `LawfulBasisTracker`, `useLawfulBasis` |
-| Cross-Border Transfers | `/cross-border` | Part VI §41–45 | `CrossBorderTransferManager`, `useCrossBorderTransfer` |
-| ROPA | `/ropa` | Section 28(2) | `ROPAManager`, `useROPA`, `exportROPAToCSV` |
+| Cross-Border Transfers | `/cross-border` | Part VIII §41–43 | `CrossBorderTransferManager`, `useCrossBorderTransfer` |
+| ROPA | `/ropa` | Section 29 | `ROPAManager`, `useROPA`, `exportROPAToCSV` |
 
 ---
 
@@ -621,7 +621,7 @@ The **Nigeria Data Protection Act (NDPA) 2023** replaced the NDPR 2019 and estab
 | Data subject rights | 6 rights | 8 rights (added information + automated decision-making) |
 | Cross-border transfers | Basic provisions | Comprehensive framework with adequacy decisions |
 | Breach notification | 72 hours to NITDA | 72 hours to NDPC (Section 40) |
-| DPIA | Recommended | Required for high-risk processing (Section 38) |
+| DPIA | Recommended | Required for high-risk processing (Section 28) |
 
 ---
 

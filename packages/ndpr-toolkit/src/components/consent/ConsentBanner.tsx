@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
 import { resolveClass } from '../../utils/styling';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface ConsentAnalyticsEvent {
   action: 'shown' | 'accepted_all' | 'rejected_all' | 'customized' | 'dismissed';
@@ -181,12 +182,19 @@ export interface ConsentBannerProps {
 export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   options,
   onSave,
-  title = "We Value Your Privacy",
-  description = "We use cookies and similar technologies to provide our services and enhance your experience. Your consent is collected in accordance with NDPA Sections 25-26.",
-  acceptAllButtonText = "Accept All",
-  rejectAllButtonText = "Reject All",
-  customizeButtonText = "Customize",
-  saveButtonText = "Save Preferences",
+  // The text-override props below default to `undefined` so the i18n
+  // fallback chain below can pick the right value:
+  //   1. explicit prop (consumer override at the call site)
+  //   2. useNDPRLocale() (consumer's `<NDPRProvider locale={...}>`)
+  //   3. English default (this component's hardcoded fallback)
+  // Pre-3.10.4 these defaulted directly to English, so the locale prop on
+  // NDPRProvider had no effect on this component.
+  title,
+  description,
+  acceptAllButtonText,
+  rejectAllButtonText,
+  customizeButtonText,
+  saveButtonText,
   position = "bottom",
   variant = "bar",
   zIndex = 9999,
@@ -202,6 +210,20 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   unstyled,
   onAnalytics
 }) => {
+  // Resolve the i18n strings once per render. `useNDPRLocale` returns the
+  // merged English+override locale with all keys present, so each lookup is
+  // safe without optional chaining.
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.consent.title ?? "We Value Your Privacy";
+  const resolvedDescription =
+    description ?? locale.consent.description ??
+    "We use cookies and similar technologies to provide our services and enhance your experience. Your consent is collected in accordance with NDPA Sections 25-26.";
+  const resolvedAcceptAll = acceptAllButtonText ?? locale.consent.acceptAll ?? "Accept All";
+  const resolvedRejectAll = rejectAllButtonText ?? locale.consent.rejectAll ?? "Reject All";
+  const resolvedCustomize = customizeButtonText ?? locale.consent.customize ?? "Customize";
+  const resolvedSave = saveButtonText ?? locale.consent.savePreferences ?? "Save Preferences";
+  const resolvedSelectAll = locale.consent.selectAll ?? "Select All";
+  const resolvedDeselectAll = locale.consent.deselectAll ?? "Deselect All";
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showCustomize, setShowCustomize] = useState<boolean>(false);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
@@ -461,8 +483,8 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
       aria-describedby="consent-banner-description"
     >
       <div className={resolveClass('ndpr-consent-banner__container', classNames?.container, unstyled)}>
-        <h2 id="consent-banner-title" className={resolveClass('ndpr-consent-banner__title', classNames?.title, unstyled)}>{title}</h2>
-        <p id="consent-banner-description" className={resolveClass('ndpr-consent-banner__description', classNames?.description, unstyled)}>{description}</p>
+        <h2 id="consent-banner-title" className={resolveClass('ndpr-consent-banner__title', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+        <p id="consent-banner-description" className={resolveClass('ndpr-consent-banner__description', classNames?.description, unstyled)}>{resolvedDescription}</p>
 
         {showCustomize && (
           <div
@@ -483,7 +505,7 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
                   unstyled
                 )}
               >
-                {allSelected ? 'Deselect All' : 'Select All'}
+                {allSelected ? resolvedDeselectAll : resolvedSelectAll}
               </button>
             </div>
 
@@ -514,13 +536,13 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
                 onClick={handleSavePreferences}
                 className={resolveClass(resolvedSaveButton, classNames?.saveButton, unstyled)}
               >
-                {saveButtonText}
+                {resolvedSave}
               </button>
               <button
                 onClick={() => setShowCustomize(false)}
                 className={resolveClass(resolvedRejectButton, classNames?.rejectButton, unstyled)}
               >
-                Back
+                {locale.common.back ?? 'Back'}
               </button>
             </div>
           </div>
@@ -532,19 +554,19 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
               onClick={handleAcceptAll}
               className={resolveClass(resolvedAcceptButton, classNames?.acceptButton, unstyled)}
             >
-              {acceptAllButtonText}
+              {resolvedAcceptAll}
             </button>
             <button
               onClick={handleRejectAll}
               className={resolveClass(resolvedRejectButton, classNames?.rejectButton, unstyled)}
             >
-              {rejectAllButtonText}
+              {resolvedRejectAll}
             </button>
             <button
               onClick={() => setShowCustomize(true)}
               className={resolveClass(resolvedCustomizeButton, classNames?.customizeButton, unstyled)}
             >
-              {customizeButtonText}
+              {resolvedCustomize}
             </button>
           </div>
         )}

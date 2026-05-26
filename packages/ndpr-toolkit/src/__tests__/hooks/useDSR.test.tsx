@@ -64,7 +64,7 @@ describe('useDSR (NDPA Data Subject Rights Hook)', () => {
     expect(result.current.requests).toEqual([]);
   });
 
-  it('should submit a new DSR request per NDPA Part IV', () => {
+  it('should submit a new DSR request per NDPA Part VI', () => {
     const { result } = renderHook(() => useDSR({
       requestTypes: mockRequestTypes,
       storageKey: 'test-dsr',

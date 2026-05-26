@@ -68,7 +68,7 @@ export interface CrossBorderTransferManagerProps {
 
   /**
    * Description text displayed on the manager
-   * @default "Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VI (Sections 41-45)."
+   * @default "Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VIII (Sections 41-43)."
    */
   description?: string;
 
@@ -195,7 +195,7 @@ const INITIAL_FORM_DATA: TransferFormData = {
 };
 
 /**
- * Cross-border data transfer management component. Implements NDPA Sections 41-45 requirements
+ * Cross-border data transfer management component. Implements NDPA Sections 41-43 requirements
  * for managing international data transfers, including adequacy decisions, standard contractual
  * clauses, and NDPC authorization.
  */
@@ -206,7 +206,7 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   onRemoveTransfer,
   summary,
   title = 'Cross-Border Data Transfer Manager',
-  description = 'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VI (Sections 41-45).',
+  description = 'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VIII (Sections 41-43).',
   className = '',
   buttonClassName = '',
   showSummary = true,

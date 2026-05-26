@@ -372,7 +372,7 @@ export default function CrossBorderDemoPage() {
       <DemoLayout
         title="Cross-Border Transfer Assessment"
         description="Assess, document, and manage international transfers of personal data outside Nigeria. Ensure compliance with NDPA cross-border transfer requirements."
-        ndpaSection="Sections 41-45"
+        ndpaSection="Part VIII §41-43"
         code={`import { CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/cross-border';`}
       >
         <div className="flex items-center justify-center py-20">
@@ -386,7 +386,7 @@ export default function CrossBorderDemoPage() {
     <DemoLayout
       title="Cross-Border Transfer Assessment"
       description="Assess, document, and manage international transfers of personal data outside Nigeria. Ensure compliance with NDPA cross-border transfer requirements."
-      ndpaSection="Sections 41-45"
+      ndpaSection="Part VIII §41-43"
       code={`import { CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/cross-border';`}
     >
       <div
@@ -1026,7 +1026,7 @@ export default function CrossBorderDemoPage() {
             <div>
               <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-1">NDPA Compliance Reference</h3>
               <p className="text-sm text-blue-800/80 dark:text-blue-300/80">
-                Cross-border data transfer management is governed by <strong>NDPA Part VI (Sections 41-45)</strong>.
+                Cross-border data transfer management is governed by <strong>NDPA Part VIII (Sections 41-43)</strong>.
                 Data controllers must ensure that personal data transferred outside Nigeria receives an adequate level
                 of protection. The <strong>Nigeria Data Protection Commission (NDPC)</strong> has authority to issue
                 adequacy decisions, approve transfer mechanisms, and authorize specific transfers.

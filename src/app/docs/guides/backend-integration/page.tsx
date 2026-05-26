@@ -97,7 +97,7 @@ cp -r ndpr-toolkit/packages/ndpr-recipes/src ./ndpr`}</code></pre>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">ndpr_dsr_requests</td>
                 <td className="border border-border px-4 py-2 text-foreground">Data subject rights requests. Tracks type, status, and 30-day response deadline.</td>
-                <td className="border border-border px-4 py-2 text-foreground">Part IV §29–36</td>
+                <td className="border border-border px-4 py-2 text-foreground">Part VI §34–38</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">ndpr_breach_reports</td>
