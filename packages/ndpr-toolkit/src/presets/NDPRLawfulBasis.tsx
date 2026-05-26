@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LawfulBasisTracker } from '../components/lawful-basis/LawfulBasisTracker';
 import type { LawfulBasisTrackerClassNames } from '../components/lawful-basis/LawfulBasisTracker';
 import type { ProcessingActivity } from '../types/lawful-basis';
@@ -17,6 +17,9 @@ export const NDPRLawfulBasis: React.FC<NDPRLawfulBasisProps> = ({
   classNames,
   unstyled,
 }) => {
+  // Synchronous seed: only honoured for sync adapters (localStorage,
+  // memory). Async adapters (cookie, api) return a Promise which we ignore
+  // here and rehydrate via the effect below.
   const [activities, setActivities] = useState<ProcessingActivity[]>(() => {
     if (adapter) {
       const saved = adapter.load();
@@ -24,6 +27,25 @@ export const NDPRLawfulBasis: React.FC<NDPRLawfulBasisProps> = ({
     }
     return initialActivities;
   });
+
+  // Async hydrate: covers cookieAdapter / apiAdapter / any adapter that
+  // returns a Promise. Mirrors the pattern used by NDPRROPA. Without this
+  // pass, async-stored activities never seeded after mount.
+  useEffect(() => {
+    if (!adapter) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const saved = await adapter.load();
+        if (!cancelled && saved) setActivities(saved);
+      } catch {
+        // Adapter failure shouldn't break the UI — keep the in-memory state.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [adapter]);
 
   const persist = (updated: ProcessingActivity[]) => {
     if (adapter) adapter.save(updated);

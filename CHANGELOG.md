@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.10.4](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.3...v3.10.4) (2026-05-26)
+
+A 20-agent audit surfaced six ship-blocker-class issues. All six are fixed in this patch.
+
+### Security: XSS in policy export
+
+`exportHTML` rendered `policy.organizationInfo.website` straight into an `<a href="...">` after HTML-escaping but without URL-scheme validation. A `javascript:`, `data:`, or `vbscript:` URL would execute on click. The risk escalated to critical for multi-tenant SaaS where one tenant's policy is rendered to another tenant's users.
+
+Fix: added an explicit `http` / `https` / `mailto` allowlist (`safeUrl()` helper in `utils/policy-export/html.ts`). Disallowed schemes are stripped — the original text still renders, just not as a clickable link. 6 new tests cover `javascript:`, `data:`, `vbscript:`, scheme-less URLs (auto-upgraded to `https://`), and mailto local-part smuggling attempts.
+
+### Bug: NDPA section citations contradicted each other across files
+
+Multiple modules had different statutory citations in different files. The CHANGELOG of 3.5.2 declared corrections that were only partially applied. After this patch, the canonical mapping is enforced everywhere:
+
+- **DPIA**: Section 28 (was inconsistently §28 / §38 / §39)
+- **DSR**: Part VI §34-38 (was Part IV §29-36 in several files)
+- **Cross-border**: Part VIII §41-43 (was Part VI §41-45)
+- **ROPA**: Section 29 (was §28(2) in some places)
+- **Privacy Policy**: Section 27
+- **Breach**: Section 40
+
+39 files updated covering library source, types, demos, docs, examples, Yoruba/Igbo/Hausa locales, and the regulatoryReferences table in `compliance-score.ts` (which had a systematically misaligned section-to-right mapping). Two test assertions updated to match. CHANGELOG history and the `migrating-3-5-to-3-8` guide deliberately left intact since they are historical records.
+
+### Bug: docs taught fictitious API names
+
+Two guide pages documented symbols that don't exist:
+
+- `/docs/guides/compound-components` referenced `useConsentContext`, `Consent.Title`, `Consent.Description`, `Consent.CategoryList`, `Consent.AcceptAllButton`, `Consent.RejectAllButton`, `Consent.PreferencesButton` — none of which are exported.
+- `/docs/guides/presets` invented `ndprPreset`, `ConsentPreset`, `DSRPreset`, `DPIAPreset`, `BreachPreset`, `PrivacyPolicyPreset`, `LawfulBasisPreset`, `ROPAPreset` and an `NDPRProvider preset={...}` prop that doesn't exist.
+
+Both rewritten against the real API: `Consent.Provider` / `.OptionList` / `.AcceptButton` / `.RejectButton` / `.SaveButton` / `.Banner` / `.Settings` / `.Storage`, plus `useConsentCompound`; the 9 real presets (`NDPRConsent`, `NDPRSubjectRights`, `NDPRBreachReport`, `NDPRPrivacyPolicy`, `NDPRDPIA`, `NDPRLawfulBasis`, `NDPRCrossBorder`, `NDPRROPA`, `NDPRComplianceDashboard`). The rewrites also document gaps honestly — e.g. only `NDPRConsent` exposes a typed `copy` prop today; only `consent`/`dsr`/`policy` have narrowed subpaths.
+
+### Bug: `examples/nextjs-app` (the headline StackBlitz CTA) was broken
+
+The example linked from the README's "Open in StackBlitz" / "Open in CodeSandbox" header buttons had two issues:
+
+- `app/layout.tsx` was missing `import "@tantainnovative/ndpr-toolkit/styles"` — the consent banner and every toolkit component rendered unstyled.
+- `app/dsr/page.tsx` alerted `submission.id` — a field that doesn't exist on `DSRFormSubmission` (the form-level payload has no server-issued reference). The alert printed `undefined`.
+
+Both fixed. The DSR handler now reports the requester's own email instead, and points users at `examples/dsr-backend-prod` for the full server-side flow.
+
+### Bug: async storage adapters silently failed in two presets
+
+`NDPRLawfulBasis` and `NDPRCrossBorder` called `adapter.load()` synchronously and ignored the returned Promise. With `cookieAdapter` or `apiAdapter` (both async), saved state never seeded after mount — the presets always rendered with empty `initialActivities` / `initialTransfers`, no warning, no error. Only `NDPRROPA` did it correctly.
+
+Fix: both presets now mirror the `NDPRROPA` pattern — a `useEffect` that awaits `adapter.load()` and rehydrates state when the Promise resolves. The synchronous fast-path is preserved for sync adapters (localStorage, memory) so there's no flash. 3 new regression tests confirm async adapters now seed correctly.
+
+### Bug: `<NDPRProvider locale={...}>` had no visible effect
+
+The toolkit shipped 5 locale files (English, Yoruba, Igbo, Hausa, Pidgin), `NDPRProvider` exposed a `locale` prop, and `useNDPRLocale()` was exported and documented — but **no component actually consumed the hook**. Passing a locale to the provider changed nothing visible. The i18n docs page misled consumers.
+
+Fix: wired `useNDPRLocale()` into the three most-visible components — `ConsentBanner`, `DSRRequestForm`, `BreachReportForm`. Resolution chain: **explicit prop wins, then provider locale, then English default**. Existing consumers passing per-prop overrides see no change; consumers passing a locale to the provider now see their translations rendered. 10 new tests cover the three precedence cases plus partial-locale fallback. Wiring the remaining 15+ components is a tracked follow-up for 3.11.x.
+
+### Verification
+
+- **Jest: 1211 / 1211 passing** (was 1192 — +19 new tests: 6 XSS, 3 async-adapter, 10 i18n)
+- `tsc --noEmit` clean for the docs site and the toolkit package
+- `verify:tarball` gate passes (would have run on tag push)
+
 ## [3.10.3](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.2...v3.10.3) (2026-05-25)
 
 ### Bug fix: 4 missing subpath exports

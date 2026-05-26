@@ -86,7 +86,7 @@ export interface DPIAReportProps {
 }
 
 /**
- * DPIA report component. Implements NDPA Sections 38-39 requirements for documenting
+ * DPIA report component. Implements NDPA Section 28 requirements for documenting
  * and presenting Data Protection Impact Assessment findings, risks, and recommendations.
  */
 export const DPIAReport: React.FC<DPIAReportProps> = ({

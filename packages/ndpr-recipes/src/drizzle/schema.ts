@@ -112,12 +112,12 @@ export const consentRecords = pgTable(
  * Data Subject Rights (DSR) request tracking.
  *
  * Records every DSR request submitted by a data subject. Status transitions
- * follow the NDPA 30-day response window (NDPA Section 29–36):
+ * follow the NDPA 30-day response window (NDPA Sections 34–38):
  *
  *   pending → in_progress → completed
  *                         → rejected
  *
- * NDPA reference: Part IV, Sections 29–36
+ * NDPA reference: Part VI, Sections 34–38
  */
 export const dsrRequests = pgTable(
   'ndpr_dsr_requests',
@@ -398,14 +398,14 @@ export const processingRecords = pgTable(
 /**
  * Data Protection Impact Assessment (DPIA) records.
  *
- * Under NDPA Sections 38-39, a DPIA is required when processing is likely to
+ * Under NDPA Section 28, a DPIA is required when processing is likely to
  * result in high risk to data subjects. This table stores the assessment results,
  * risk scores, and approval status.
  *
  * Records are never deleted — draft assessments are superseded by newer versions,
  * and completed assessments are retained for the audit trail.
  *
- * NDPA reference: Sections 38–39 (DPIA and prior consultation)
+ * NDPA reference: Section 28 (DPIA, including Section 28(2) prior consultation)
  */
 export const dpiaRecords = pgTable(
   'ndpr_dpia_records',
@@ -535,13 +535,13 @@ export const lawfulBasisRecords = pgTable(
 /**
  * Cross-border data transfer records.
  *
- * Under NDPA Part VI (Sections 41-45), personal data may only be transferred
+ * Under NDPA Part VIII (Sections 41-43), personal data may only be transferred
  * outside Nigeria under specific conditions. This table tracks every cross-border
  * transfer, the mechanism relied upon, NDPC approval status, and risk assessment.
  *
  * Records are never deleted — terminated transfers are retained for the audit trail.
  *
- * NDPA reference: Part VI, Sections 41–45
+ * NDPA reference: Part VIII, Sections 41–43
  */
 export const crossBorderTransferRecords = pgTable(
   'ndpr_cross_border_transfer_records',

@@ -1,6 +1,6 @@
 /**
  * Data Subject Rights module
- * NDPA Part IV (Sections 29-36) — all 8 data subject rights
+ * NDPA Part VI (Sections 34-38) — all 8 data subject rights
  */
 export { DSRRequestForm } from './components/dsr/DSRRequestForm';
 export { DSRDashboard } from './components/dsr/DSRDashboard';

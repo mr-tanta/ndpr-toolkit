@@ -153,9 +153,9 @@ const componentGuides = [
   },
   {
     title: 'Data Subject Rights',
-    description: 'DSR forms, dashboards, and request tracking for NDPA S.34–40.',
+    description: 'DSR forms, dashboards, and request tracking for NDPA Part VI §34–38.',
     href: '/docs/components/data-subject-rights',
-    badge: 'S.34–40',
+    badge: 'Part VI §34–38',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -167,9 +167,9 @@ const componentGuides = [
   },
   {
     title: 'DPIA Questionnaire',
-    description: 'Risk scoring, templates, and regulatory guidance for NDPA S.28–30.',
+    description: 'Risk scoring, templates, and regulatory guidance for NDPA Section 28.',
     href: '/docs/components/dpia-questionnaire',
-    badge: 'S.28–30',
+    badge: 'S.28',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 11l3 3L22 4" />
@@ -181,7 +181,7 @@ const componentGuides = [
     title: 'Breach Notification',
     description: 'Notification workflows, severity assessment, and NDPC reporting timelines.',
     href: '/docs/components/breach-notification',
-    badge: 'S.40–41',
+    badge: 'S.40',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
@@ -194,7 +194,7 @@ const componentGuides = [
     title: 'Privacy Policy Generator',
     description: 'Generate, preview, and manage privacy policies with full NDPA clause coverage.',
     href: '/docs/components/privacy-policy-generator',
-    badge: 'S.24',
+    badge: 'S.27',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -220,7 +220,7 @@ const componentGuides = [
     title: 'Cross-Border Transfers',
     description: 'Adequacy checks and safeguard recommendations for international transfers.',
     href: '/docs/components/cross-border-transfers',
-    badge: 'S.41–45',
+    badge: 'Part VIII §41–43',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />

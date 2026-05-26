@@ -130,6 +130,92 @@ describe('exportHTML', () => {
     expect(typeof result).toBe('string');
   });
 
+  // ── URL-scheme allowlist (XSS hardening) ────────────────────────────────
+  describe('URL scheme safety', () => {
+    it('rejects javascript: URLs in website (no href emitted)', () => {
+      const result = exportHTML(
+        makePolicy({
+          organizationInfo: {
+            name: 'Acme',
+            website: 'javascript:alert(document.cookie)',
+            privacyEmail: 'privacy@acme.example.com',
+          },
+        }),
+      );
+      // The raw text appears (escaped) for the user to see, but never inside an href.
+      expect(result).not.toMatch(/href="javascript:/i);
+      expect(result).toContain('javascript:alert(document.cookie)');
+    });
+
+    it('rejects data: URLs in website', () => {
+      const result = exportHTML(
+        makePolicy({
+          organizationInfo: {
+            name: 'Acme',
+            website: 'data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==',
+            privacyEmail: 'privacy@acme.example.com',
+          },
+        }),
+      );
+      expect(result).not.toMatch(/href="data:/i);
+    });
+
+    it('rejects vbscript: URLs in website', () => {
+      const result = exportHTML(
+        makePolicy({
+          organizationInfo: {
+            name: 'Acme',
+            website: 'vbscript:msgbox("x")',
+            privacyEmail: 'privacy@acme.example.com',
+          },
+        }),
+      );
+      expect(result).not.toMatch(/href="vbscript:/i);
+    });
+
+    it('accepts https: URLs unchanged', () => {
+      const result = exportHTML(
+        makePolicy({
+          organizationInfo: {
+            name: 'Acme',
+            website: 'https://acme.example.com/privacy',
+            privacyEmail: 'privacy@acme.example.com',
+          },
+        }),
+      );
+      expect(result).toContain('href="https://acme.example.com/privacy"');
+    });
+
+    it('upgrades scheme-less URLs to https://', () => {
+      const result = exportHTML(
+        makePolicy({
+          organizationInfo: {
+            name: 'Acme',
+            website: 'acme.example.com',
+            privacyEmail: 'privacy@acme.example.com',
+          },
+        }),
+      );
+      expect(result).toContain('href="https://acme.example.com"');
+    });
+
+    it('rejects javascript: smuggled into the email local-part', () => {
+      const result = exportHTML(
+        makePolicy({
+          organizationInfo: {
+            name: 'Acme',
+            website: 'https://acme.example.com',
+            // Real mailto: validation rejects this — there's no scheme stacking.
+            privacyEmail: 'javascript:alert(1)@example.com',
+          },
+        }),
+      );
+      // mailto: prefix is added, so this should be valid mailto but not run JS.
+      // The link, if present, must have a mailto: href, not javascript:.
+      expect(result).not.toMatch(/href="javascript:/i);
+    });
+  });
+
   it('produces a valid HTML document shell', () => {
     const result = exportHTML(makePolicy());
     expect(result).toContain('<!DOCTYPE html>');

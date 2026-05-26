@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BreachCategory } from '../../types/breach';
 import { resolveClass } from '../../utils/styling';
 import { sanitizeInput } from '../../utils/sanitize';
+import { useNDPRLocale } from '../NDPRProvider';
 
 /**
  * Represents the data submitted by the breach report form.
@@ -218,9 +219,12 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   categories,
   onSubmit,
   onValidationError,
-  title = "Report a Data Breach",
-  formDescription = "Use this form to report a suspected or confirmed data breach in accordance with NDPA Section 40. All fields marked with * are required.",
-  submitButtonText = "Submit Report",
+  // Text-override props default to `undefined` so the i18n fallback chain
+  // (prop → useNDPRLocale → English default) works. Pre-3.10.4 these
+  // defaulted directly to English.
+  title,
+  formDescription,
+  submitButtonText,
   className = "",
   buttonClassName = "",
   classNames: cn = {},
@@ -235,6 +239,14 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   defaultValues,
   onReset
 }) => {
+  // i18n: explicit prop > provider locale > English default.
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.breach.title ?? 'Report a Data Breach';
+  const resolvedFormDescription =
+    formDescription ?? locale.breach.description ??
+    'Use this form to report a suspected or confirmed data breach in accordance with NDPA Section 40. All fields marked with * are required.';
+  const resolvedSubmit = submitButtonText ?? locale.breach.submitReport ?? 'Submit Report';
+
   // Helper to format a timestamp (ms) to datetime-local string
   const formatDateTimeLocal = (timestamp?: number): string => {
     if (!timestamp) return "";
@@ -533,8 +545,8 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
-      <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{title}</h2>
-      <p className='ndpr-card__subtitle'>{formDescription}</p>
+      <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{resolvedTitle}</h2>
+      <p className='ndpr-card__subtitle'>{resolvedFormDescription}</p>
 
       <form onSubmit={handleSubmit} className={resolveClass("", cn.form, unstyled)}>
         <div className='ndpr-form-section'>
@@ -1012,7 +1024,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
               disabled={isSubmitting}
               className={resolveClass(`px-6 py-3 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] focus:ring-offset-2 ${buttonClassName} ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`, cn.primaryButton || cn.submitButton, unstyled)}
             >
-              {isSubmitting ? 'Submitting...' : submitButtonText}
+              {isSubmitting ? 'Submitting...' : resolvedSubmit}
             </button>
             <button
               type="button"

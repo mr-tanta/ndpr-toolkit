@@ -17,7 +17,7 @@ export const pidginLocale: Required<{
   },
   dsr: {
     title: 'Send Data Subject Request',
-    description: 'Use this form take exercise your rights under the Nigeria Data Protection Act (NDPA), Part IV, Sections 29-36.',
+    description: 'Use this form take exercise your rights under the Nigeria Data Protection Act (NDPA), Part VI, Sections 34-38.',
     submitRequest: 'Send Your Request',
     reset: 'Start Again',
     fullName: 'Your Full Name',

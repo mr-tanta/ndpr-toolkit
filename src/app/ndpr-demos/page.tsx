@@ -33,7 +33,7 @@ const demos = [
     description:
       'DSR request forms, real-time dashboards, and request tracking for access, rectification, and erasure.',
     href: '/ndpr-demos/dsr',
-    badge: 'NDPA S.34–40',
+    badge: 'NDPA Part VI §34–38',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -48,7 +48,7 @@ const demos = [
     description:
       'Data Protection Impact Assessments with live risk scoring, guided templates, and regulatory guidance.',
     href: '/ndpr-demos/dpia',
-    badge: 'NDPA S.28–30',
+    badge: 'NDPA S.28',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M9 11l3 3L22 4" />
@@ -61,7 +61,7 @@ const demos = [
     description:
       'Breach notification workflows, severity assessment, and NDPC 72-hour reporting timeline tracking.',
     href: '/ndpr-demos/breach',
-    badge: 'NDPA S.40–41',
+    badge: 'NDPA S.40',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
@@ -75,7 +75,7 @@ const demos = [
     description:
       'Generate, preview, and manage NDPA-compliant privacy policies with full clause coverage.',
     href: '/ndpr-demos/policy',
-    badge: 'NDPA S.24',
+    badge: 'NDPA S.27',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -103,7 +103,7 @@ const demos = [
     description:
       'Assess international data transfers with adequacy checks and safeguard recommendations.',
     href: '/ndpr-demos/cross-border',
-    badge: 'NDPA S.41–45',
+    badge: 'NDPA Part VIII §41–43',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />

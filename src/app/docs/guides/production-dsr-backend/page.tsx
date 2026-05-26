@@ -42,7 +42,7 @@ export default function ProductionDsrBackendGuide() {
           <li>
             <strong>Persistence (Prisma)</strong> — a <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">DSRRequest</code> row is created with a server-generated
             <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> referenceId</code>, the submitter&apos;s details, and an
-            <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> estimatedCompletionAt</code> 30 days out (per NDPA Part IV §29-36).
+            <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> estimatedCompletionAt</code> 30 days out (per NDPA Part VI §34-38).
           </li>
           <li>
             <strong>Confirmation (Resend)</strong> — a confirmation e-mail with the reference number and

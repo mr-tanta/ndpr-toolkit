@@ -17,7 +17,7 @@ export const igboLocale: Required<{
   },
   dsr: {
     title: 'Tinye Arịrịọ Onye Nwe Data',
-    description: 'Jiri fọọmụ a mee ka ikike gị n\'okpuru Iwu Nchedo Data nke Naịjirịa (NDPA), Nkebi Anọ, Ngalaba 29-36 rụọ ọrụ.',
+    description: 'Jiri fọọmụ a mee ka ikike gị n\'okpuru Iwu Nchedo Data nke Naịjirịa (NDPA), Nkebi Isii, Ngalaba 34-38 rụọ ọrụ.',
     submitRequest: 'Tinye Arịrịọ',
     reset: 'Malitegharịa',
     fullName: 'Aha Zuru Oke',

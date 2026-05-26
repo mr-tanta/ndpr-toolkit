@@ -6,8 +6,12 @@ import type { DSRFormSubmission } from "@tantainnovative/ndpr-toolkit";
 export default function DSRPage() {
   const handleSubmit = (submission: DSRFormSubmission) => {
     console.log("DSR request submitted:", submission);
+    // `DSRFormSubmission` is the form-level payload — it has no server-issued
+    // reference yet. Surface the requester's own contact so they know we got it;
+    // in a real app, POST to /api/dsr and route to a confirmation page with the
+    // server-generated reference (see `examples/dsr-backend-prod`).
     alert(
-      `Your ${submission.requestType} request has been submitted. Reference: ${submission.id}`
+      `Your ${submission.requestType} request was received. We'll respond to ${submission.dataSubject.email} within 30 days.`
     );
   };
 

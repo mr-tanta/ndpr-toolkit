@@ -17,7 +17,7 @@ export const defaultLocale: Required<{
   },
   dsr: {
     title: 'Submit a Data Subject Request',
-    description: 'Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part IV, Sections 29-36.',
+    description: 'Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part VI, Sections 34-38.',
     submitRequest: 'Submit Request',
     reset: 'Reset',
     fullName: 'Full Name',

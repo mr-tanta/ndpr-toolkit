@@ -35,7 +35,7 @@ export default function CrossBorderTransfersGuide() {
           <h4 className="text-primary font-medium mb-2">Why This Matters</h4>
           <p className="text-muted-foreground text-sm mb-0">
             Many Nigerian businesses use international cloud services, payment processors, and SaaS platforms that process
-            data outside Nigeria. Each of these transfers must comply with Sections 41-45 of the NDPA 2023.
+            data outside Nigeria. Each of these transfers must comply with Part VIII (Sections 41-43) of the NDPA 2023.
           </p>
         </div>
       </section>

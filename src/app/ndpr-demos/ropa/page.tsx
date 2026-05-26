@@ -434,7 +434,7 @@ export default function ROPADemoPage() {
       <DemoLayout
         title="Record of Processing Activities"
         description="Maintain a comprehensive ROPA to demonstrate compliance with the Nigeria Data Protection Act. The central register for all personal data processing activities."
-        ndpaSection="Section 28(2)"
+        ndpaSection="Section 29"
         code={`import { ROPAManager } from '@tantainnovative/ndpr-toolkit/ropa';`}
       >
         <div className="flex items-center justify-center py-20">
@@ -448,7 +448,7 @@ export default function ROPADemoPage() {
     <DemoLayout
       title="Record of Processing Activities"
       description="Maintain a comprehensive ROPA to demonstrate compliance with the Nigeria Data Protection Act. The central register for all personal data processing activities."
-      ndpaSection="Section 28(2)"
+      ndpaSection="Section 29"
       code={`import { ROPAManager } from '@tantainnovative/ndpr-toolkit/ropa';`}
     >
       <div

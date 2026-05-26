@@ -629,7 +629,7 @@ export default function DPIADemoPage() {
     <DemoLayout
       title="Data Protection Impact Assessment"
       description="Conduct a structured impact assessment for processing activities likely to result in high risk to data subjects. Where residual risk remains high, prior consultation with the NDPC is mandatory."
-      ndpaSection="Sections 38-39"
+      ndpaSection="Section 28"
       code={`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit/dpia';
 
 <DPIAQuestionnaire
@@ -879,7 +879,7 @@ export default function DPIADemoPage() {
                       Prior Consultation with the NDPC Is Required
                     </h3>
                     <p className="text-sm text-red-700 dark:text-red-400 mt-1">
-                      Under <strong>NDPA Section 39</strong>, when a DPIA indicates that the processing would result
+                      Under <strong>NDPA Section 28(2)</strong>, when a DPIA indicates that the processing would result
                       in a high risk in the absence of measures taken by the controller to mitigate the risk, the
                       controller must consult the Nigeria Data Protection Commission (NDPC) before commencing
                       the processing.
@@ -1014,7 +1014,7 @@ export default function DPIADemoPage() {
                       Prior Consultation with the NDPC Is Required
                     </h3>
                     <p className="text-sm text-red-700 dark:text-red-400 mt-1">
-                      This assessment has identified residual high risk. Under <strong>NDPA Section 39</strong>,
+                      This assessment has identified residual high risk. Under <strong>NDPA Section 28(2)</strong>,
                       you must consult the Nigeria Data Protection Commission before commencing this processing activity.
                       Submit this report as part of your consultation.
                     </p>
@@ -1049,7 +1049,7 @@ export default function DPIADemoPage() {
                       Data Protection Impact Assessment
                     </h1>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                      Prepared in accordance with the Nigeria Data Protection Act (NDPA), Sections 38 &ndash; 39
+                      Prepared in accordance with the Nigeria Data Protection Act (NDPA), Section 28
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Date: {new Date().toLocaleDateString('en-NG', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -1185,7 +1185,7 @@ export default function DPIADemoPage() {
                               Based on the assessment, the identified risks have been adequately addressed through the
                               proposed mitigation measures. The processing activity may proceed subject to the
                               implementation and ongoing monitoring of all mitigation measures. This DPIA should be
-                              reviewed periodically as required by NDPA Section 38.
+                              reviewed periodically as required by NDPA Section 28.
                             </p>
                           </div>
                         </div>
@@ -1197,7 +1197,7 @@ export default function DPIADemoPage() {
                           <div>
                             <h3 className="font-semibold text-red-800 dark:text-red-300">Processing Cannot Proceed Without NDPC Consultation</h3>
                             <p className="text-sm text-red-700 dark:text-red-400 mt-1">
-                              The residual risk remains high after mitigation. Under NDPA Section 39, prior consultation
+                              The residual risk remains high after mitigation. Under NDPA Section 28(2), prior consultation
                               with the Nigeria Data Protection Commission is required before this processing activity
                               commences. Submit this DPIA report to the NDPC as part of the consultation process.
                               {mitigationProgress < 80 && (
@@ -1235,7 +1235,7 @@ export default function DPIADemoPage() {
                         <li className="flex items-start gap-2">
                           <span className="text-red-400 mt-1">&#8226;</span>
                           <span className="text-red-700 dark:text-red-400 font-medium">
-                            Consult the NDPC prior to processing as required by NDPA Section 39
+                            Consult the NDPC prior to processing as required by NDPA Section 28(2)
                           </span>
                         </li>
                       )}

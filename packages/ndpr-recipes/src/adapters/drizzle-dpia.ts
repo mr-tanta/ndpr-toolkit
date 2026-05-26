@@ -93,7 +93,7 @@ export function drizzleDPIAAdapter(db: any): StorageAdapter<DPIAResult[]> {
     /**
      * Soft-delete draft and in-progress assessments by marking them as 'rejected'.
      * Completed and approved assessments are left untouched to preserve the
-     * NDPA Sections 38-39 compliance audit trail.
+     * NDPA Section 28 compliance audit trail.
      */
     async remove(): Promise<void> {
       await db

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CrossBorderTransferManager } from '../components/cross-border/CrossBorderTransferManager';
 import type { CrossBorderTransferManagerClassNames } from '../components/cross-border/CrossBorderTransferManager';
 import type { CrossBorderTransfer } from '../types/cross-border';
@@ -17,6 +17,9 @@ export const NDPRCrossBorder: React.FC<NDPRCrossBorderProps> = ({
   classNames,
   unstyled,
 }) => {
+  // Synchronous seed: only honoured for sync adapters (localStorage,
+  // memory). Async adapters (cookie, api) return a Promise which we ignore
+  // here and rehydrate via the effect below.
   const [transfers, setTransfers] = useState<CrossBorderTransfer[]>(() => {
     if (adapter) {
       const saved = adapter.load();
@@ -24,6 +27,25 @@ export const NDPRCrossBorder: React.FC<NDPRCrossBorderProps> = ({
     }
     return initialTransfers;
   });
+
+  // Async hydrate: covers cookieAdapter / apiAdapter / any adapter that
+  // returns a Promise. Without this pass, async-stored transfers never
+  // seeded after mount.
+  useEffect(() => {
+    if (!adapter) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const saved = await adapter.load();
+        if (!cancelled && saved) setTransfers(saved);
+      } catch {
+        // Adapter failure shouldn't break the UI — keep in-memory state.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [adapter]);
 
   const persist = (updated: CrossBorderTransfer[]) => {
     if (adapter) adapter.save(updated);

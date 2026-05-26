@@ -108,7 +108,7 @@ export interface UseCrossBorderTransferReturn {
 }
 
 /**
- * Hook for managing cross-border data transfers in compliance with NDPA Part VI (Sections 41-45)
+ * Hook for managing cross-border data transfers in compliance with NDPA Part VIII (Sections 41-43)
  */
 export function useCrossBorderTransfer({
   initialTransfers = [],

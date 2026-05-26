@@ -8,8 +8,8 @@ export default function PolicyDemoPage() {
   return (
     <DemoLayout
       title="Privacy Policy Generator"
-      description="Generate NDPA-compliant privacy policies with a step-by-step wizard. Covers all mandatory disclosures under Sections 27-28 of the Nigeria Data Protection Act 2023."
-      ndpaSection="Sections 27-28"
+      description="Generate NDPA-compliant privacy policies with a step-by-step wizard. Covers all mandatory disclosures under Section 27 of the Nigeria Data Protection Act 2023."
+      ndpaSection="Section 27"
       code={`import { NDPRPrivacyPolicy } from '@tantainnovative/ndpr-toolkit/presets';
 
 // Zero-config — renders the full adaptive wizard

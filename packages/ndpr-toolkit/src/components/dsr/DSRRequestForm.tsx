@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RequestType } from '../../types/dsr';
 import { resolveClass } from '../../utils/styling';
 import { sanitizeInput } from '../../utils/sanitize';
+import { useNDPRLocale } from '../NDPRProvider';
 
 /**
  * Represents the data submitted by the DSR request form.
@@ -65,7 +66,7 @@ export interface DSRRequestFormProps {
   
   /**
    * Description text displayed on the form
-   * @default "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part IV, Sections 29-36."
+   * @default "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part VI, Sections 34-38."
    */
   description?: string;
   
@@ -168,9 +169,12 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   requestTypes,
   onSubmit,
   onValidationError,
-  title = "Submit a Data Subject Request",
-  description = "Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part VI.",
-  submitButtonText = "Submit Request",
+  // Text-override props default to `undefined` so the i18n fallback chain
+  // (prop → useNDPRLocale → English default) works. See ConsentBanner for
+  // the same pattern. Pre-3.10.4 these defaulted directly to English.
+  title,
+  description,
+  submitButtonText,
   className = "",
   buttonClassName = "",
   showConfirmation = true,
@@ -200,6 +204,15 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
         'or use the `<NDPRSubjectRights />` preset which ships sensible defaults.',
     );
   }
+
+  // i18n: explicit prop > provider locale > English default.
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.dsr.title ?? 'Submit a Data Subject Request';
+  const resolvedDescription =
+    description ?? locale.dsr.description ??
+    'Use this form to exercise your rights under the Nigeria Data Protection Act (NDPA), Part VI.';
+  const resolvedSubmit = submitButtonText ?? locale.dsr.submitRequest ?? 'Submit Request';
+
   const [selectedRequestType, setSelectedRequestType] = useState<string>(defaultValues?.requestType || "");
   const [fullName, setFullName] = useState<string>(defaultValues?.dataSubject?.fullName || "");
   const [email, setEmail] = useState<string>(defaultValues?.dataSubject?.email || "");
@@ -346,8 +359,8 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
       data-ndpr-component="dsr-request-form"
       className={resolveClass(`ndpr-dsr-form${className ? ` ${className}` : ''}`, classNames?.root, unstyled)}
     >
-      <h2 className={resolveClass('ndpr-dsr-form__title', classNames?.title, unstyled)}>{title}</h2>
-      <p className={resolveClass('ndpr-dsr-form__description', classNames?.description, unstyled)}>{description}</p>
+      <h2 className={resolveClass('ndpr-dsr-form__title', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+      <p className={resolveClass('ndpr-dsr-form__description', classNames?.description, unstyled)}>{resolvedDescription}</p>
 
       <form onSubmit={handleSubmit} className={resolveClass('', classNames?.form, unstyled)}>
         <div className={resolveClass('ndpr-dsr-form__sections', classNames?.fieldGroup, unstyled)}>
@@ -634,7 +647,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
               disabled={isSubmitting}
               className={resolveClass(defaultPrimaryButton, classNames?.primaryButton || classNames?.submitButton, unstyled)}
             >
-              {isSubmitting ? 'Submitting...' : (labels.submit || submitButtonText)}
+              {isSubmitting ? 'Submitting...' : (labels.submit || resolvedSubmit)}
             </button>
             <button
               type="button"

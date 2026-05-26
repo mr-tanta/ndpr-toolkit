@@ -263,7 +263,7 @@ export const yorubaLocale: NDPRLocale = {
   },
   dsr: {
     title: 'Fi ìbéèrè Ẹ̀tọ́ Àwọn Dátà Rẹ Sílẹ̀',
-    description: 'Lo fọ́ọ̀mù yìí láti lo ẹ̀tọ́ rẹ lábẹ́ NDPA apá IV, àwọn abala 29-36.',
+    description: 'Lo fọ́ọ̀mù yìí láti lo ẹ̀tọ́ rẹ lábẹ́ NDPA apá VI, àwọn abala 34-38.',
     submitRequest: 'Firanṣẹ Ìbéèrè',
     reset: 'Tún Bẹ̀rẹ̀',
     fullName: 'Orúkọ Ni Kikun',

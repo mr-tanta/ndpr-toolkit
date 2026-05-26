@@ -17,7 +17,7 @@ export const hausaLocale: Required<{
   },
   dsr: {
     title: 'Ƙaddamar da Buƙatar Mai Bayanan',
-    description: 'Yi amfani da wannan fom don aiwatar da haƙƙoƙin ka a ƙarƙashin Dokar Kare Bayanan Nijeriya (NDPA), Bangare na Huɗu, Sashe 29-36.',
+    description: 'Yi amfani da wannan fom don aiwatar da haƙƙoƙin ka a ƙarƙashin Dokar Kare Bayanan Nijeriya (NDPA), Bangare na Shida, Sashe 34-38.',
     submitRequest: 'Ƙaddamar da Buƙata',
     reset: 'Sake Saiti',
     fullName: 'Sunan Cikakke',
