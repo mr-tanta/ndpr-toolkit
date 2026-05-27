@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DSRRequest, DSRStatus, DSRType } from '../../types/dsr';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface DSRTrackerClassNames {
   root?: string;
@@ -96,8 +97,9 @@ export interface DSRTrackerProps {
 export const DSRTracker: React.FC<DSRTrackerProps> = ({
   requests,
   onSelectRequest,
-  title = "DSR Request Tracker",
-  description = "Track the status and progress of data subject requests as required by NDPA Part IV.",
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = "",
   buttonClassName = "",
   showSummaryStats = true,
@@ -108,6 +110,11 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
   classNames,
   unstyled = false
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.dsr.trackerTitle ?? 'DSR Request Tracker';
+  const resolvedDescription =
+    description ?? locale.dsr.trackerDescription ??
+    'Track the status and progress of data subject requests as required by NDPA Part IV.';
   const [selectedTimeframe, setSelectedTimeframe] = useState<'7days' | '30days' | '90days' | 'all'>('30days');
   const [filteredRequests, setFilteredRequests] = useState<DSRRequest[]>(requests);
   const [overdueRequests, setOverdueRequests] = useState<DSRRequest[]>([]);
@@ -623,8 +630,8 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass("flex flex-col md:flex-row md:justify-between md:items-center mb-6", classNames?.header, unstyled)}>
         <div>
-          <h2 className={resolveClass("text-xl font-bold mb-2", classNames?.title, unstyled)}>{title}</h2>
-          <p className="text-gray-600 dark:text-gray-300">{description}</p>
+          <h2 className={resolveClass("text-xl font-bold mb-2", classNames?.title, unstyled)}>{resolvedTitle}</h2>
+          <p className="text-gray-600 dark:text-gray-300">{resolvedDescription}</p>
         </div>
         
         <div className="mt-4 md:mt-0">

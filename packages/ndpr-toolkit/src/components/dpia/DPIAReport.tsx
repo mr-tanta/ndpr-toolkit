@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { DPIAResult, DPIASection, DPIARisk } from '../../types/dpia';
 import { resolveClass } from '../../utils/styling';
 import { LEGAL_DISCLAIMER_SHORT } from '../../utils/legal-notice';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface DPIAReportClassNames {
   /** Outermost wrapper */
@@ -101,6 +102,8 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
   classNames = {},
   unstyled = false,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedReportTitle = locale.dpia.reportTitle ?? 'Data Protection Impact Assessment Report';
   const generatedDate = useMemo(() => new Date().toLocaleDateString(), []);
 
   const cx = (defaultClass: string, key?: keyof DPIAReportClassNames) => {
@@ -192,7 +195,7 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
         <div className="flex justify-between items-start">
           <div>
             <h1 className={cx('ndpr-card__title', 'title')}>
-              Data Protection Impact Assessment Report
+              {resolvedReportTitle}
             </h1>
             <h2 className="text-xl ndpr-text-muted mb-4">
               {result.title}

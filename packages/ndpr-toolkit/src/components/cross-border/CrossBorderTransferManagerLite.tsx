@@ -5,6 +5,7 @@ import {
   AdequacyStatus,
 } from '../../types/cross-border';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface CrossBorderTransferManagerLiteClassNames {
   root?: string;
@@ -84,8 +85,9 @@ const NDPC_APPROVAL_MECHANISMS: ReadonlySet<TransferMechanism> = new Set<Transfe
  */
 export const CrossBorderTransferManagerLite: React.FC<CrossBorderTransferManagerLiteProps> = ({
   transfers,
-  title = 'Cross-Border Data Transfer Manager',
-  description = 'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VIII (Sections 41-43).',
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = '',
   classNames,
   unstyled,
@@ -93,6 +95,11 @@ export const CrossBorderTransferManagerLite: React.FC<CrossBorderTransferManager
   showRiskAlerts = true,
   onTransferClick,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.crossBorder.title ?? 'Cross-Border Data Transfer Manager';
+  const resolvedDescription =
+    description ?? locale.crossBorder.description ??
+    'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VIII (Sections 41-43).';
   const sortedTransfers = useMemo(
     () => [...transfers].sort((a, b) => b.updatedAt - a.updatedAt),
     [transfers],
@@ -123,8 +130,8 @@ export const CrossBorderTransferManagerLite: React.FC<CrossBorderTransferManager
       className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}
     >
       <div className={resolveClass('', classNames?.header, unstyled)}>
-        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
-        <p className="ndpr-card__subtitle">{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+        <p className="ndpr-card__subtitle">{resolvedDescription}</p>
       </div>
 
       {showSummary && (

@@ -3,6 +3,7 @@ import { generatePolicyText } from '../../utils/privacy';
 import { resolveClass } from '../../utils/styling';
 import { PolicySection, PolicyVariable } from '../../types/privacy';
 import { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES } from '../../utils/policy-templates';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface PolicyGeneratorClassNames {
   /** Root container */
@@ -107,16 +108,23 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   sections: initialSections = DEFAULT_POLICY_SECTIONS,
   variables: initialVariables = DEFAULT_POLICY_VARIABLES,
   onGenerate,
-  title = "NDPA Privacy Policy Generator",
-  description = "Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24.",
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = "",
   buttonClassName = "",
-  generateButtonText = "Generate Policy",
+  generateButtonText,
   showPreview = true,
   allowEditing = true,
   classNames,
   unstyled = false
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.policy.generatorTitle ?? 'NDPA Privacy Policy Generator';
+  const resolvedDescription =
+    description ?? locale.policy.generatorDescription ??
+    'Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24.';
+  const resolvedGenerateButton = generateButtonText ?? locale.policy.generate ?? 'Generate Policy';
   const instanceId = useId();
   const [sections, setSections] = useState<PolicySection[]>(initialSections);
   const [variables, setVariables] = useState<PolicyVariable[]>(initialVariables);
@@ -398,7 +406,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
             onClick={generatePolicy}
             className={resolveClass(`px-4 py-2 bg-[rgb(var(--ndpr-primary))] text-white rounded hover:bg-[rgb(var(--ndpr-primary-hover))] ${buttonClassName}`, classNames?.primaryButton || classNames?.generateButton, unstyled)}
           >
-            {generateButtonText}
+            {resolvedGenerateButton}
           </button>
         </div>
       </div>
@@ -478,8 +486,8 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass('mb-6', classNames?.header, unstyled)}>
-        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
-        <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+        <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{resolvedDescription}</p>
       </div>
       
       {/* Steps Indicator */}

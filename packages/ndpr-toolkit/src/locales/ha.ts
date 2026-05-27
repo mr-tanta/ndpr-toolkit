@@ -14,6 +14,9 @@ export const hausaLocale: Required<{
     deselectAll: 'Cire Duka',
     required: 'Wajibi Ne',
     cookieNotice: 'Ta hanyar danna "Karɓi Duka", ka yarda da amfani da dukkan kukis. Ziyarci Manufar Kukis don ƙarin bayani.',
+    managerTitle: 'Sarrafa Saitunan Sirrinka',
+    managerDescription: 'Sabunta zaɓuɓɓukan yardar ka a kowane lokaci. Ba za a iya kashe kukis na wajibi ba domin suna da muhimmanci ga yadda gidan yanar gizo ke aiki. Ana samar da sarrafa yarda bisa ga Sashe na 25-26 na NDPA.',
+    resetToDefaults: 'Sake Saiti zuwa Tsoffi',
   },
   dsr: {
     title: 'Ƙaddamar da Buƙatar Mai Bayanan',
@@ -30,6 +33,10 @@ export const hausaLocale: Required<{
     identifierValue: 'Darajar Ganewa',
     privacyNotice: 'Za a yi amfani da bayanan da ka bayar a cikin wannan fom ne kawai don sarrafa buƙatar mai bayanan ka.',
     successMessage: 'An ƙaddamar da buƙatar ka cikin nasara.',
+    dashboardTitle: 'Dandalin Buƙatun Masu Bayanan',
+    dashboardDescription: 'Bibiyar da sarrafa buƙatun masu bayanan bisa ga buƙatun Bangare na IV na NDPA.',
+    trackerTitle: 'Mai Bin Diddigin Buƙatun DSR',
+    trackerDescription: 'Bin diddigin matsayi da ci gaban buƙatun masu bayanan kamar yadda Bangare na IV na NDPA ya buƙata.',
   },
   breach: {
     title: 'Bayar da Rahoton Karya Bayanan',
@@ -39,6 +46,12 @@ export const hausaLocale: Required<{
     category: 'Rukunin',
     discoveredAt: 'Ranar da Aka Gano',
     detailedDescription: 'Cikakken Bayani',
+    riskAssessmentTitle: 'Tantance Haɗarin Karya Bayanan',
+    riskAssessmentDescription: 'Tantance matakin haɗarin karya bayanan don tantance buƙatun sanarwa a ƙarƙashin Sashe na 40 na NDPA.',
+    notificationManagerTitle: 'Mai Sarrafa Sanarwar Karya Bayanan',
+    notificationManagerDescription: 'Sarrafa sanarwar karya bayanan da bin diddigin bin doka tare da buƙatun Sashe na 40 na NDPA.',
+    regulatoryReportTitle: 'Ƙirƙiri Rahoton Sanarwa na NDPC',
+    regulatoryReportDescription: 'Ƙirƙiri rahoto don ƙaddamarwa ga NDPC bisa ga buƙatun sanarwar karya bayanan na Sashe na 40 na NDPA.',
   },
   dpia: {
     title: 'Tantance Tasirin Kare Bayanan',
@@ -46,6 +59,8 @@ export const hausaLocale: Required<{
     previous: 'Na Baya',
     complete: 'Kammala Tantancewa',
     progress: 'Ci Gaba',
+    submit: 'Ƙaddamar',
+    reportTitle: 'Rahoton Tantance Tasirin Kare Bayanan',
   },
   policy: {
     title: 'Mai Ƙirƙirar Manufar Sirri',
@@ -54,6 +69,25 @@ export const hausaLocale: Required<{
     export: 'Fitar',
     sections: 'Sassa',
     variables: 'Masu Canjin',
+    generatorTitle: 'Mai Ƙirƙirar Manufar Sirri ta NDPA',
+    generatorDescription: 'Ƙirƙiri manufar sirri da ke bin NDPA don kungiyar ka bisa ga Sashe na 24 na NDPA.',
+    previewTitle: 'Dubawar Manufar Sirri',
+    previewDescription: 'Duba manufar sirrin ka da ke bin NDPA kafin fitarwa.',
+    exporterTitle: 'Manufar Sirri',
+    exporterDescription: 'Fitar da manufar sirrin ka da ke bin NDPA a tsare-tsare daban-daban.',
+    wizardTitle: 'Mai Gina Manufar Sirri',
+  },
+  lawfulBasis: {
+    title: 'Mai Bin Diddigin Tushen Doka',
+    description: 'Rubuta da bin diddigin tushen doka don kowane aikin sarrafa bisa ga Sashe na 25 na NDPA 2023.',
+  },
+  crossBorder: {
+    title: 'Mai Sarrafa Canja Wurin Bayanan Ƙetare',
+    description: 'Sarrafa da rubuta canja wurin bayanan na sirri ƙetare bisa ga NDPA 2023 Bangare na VIII (Sashe 41-43).',
+  },
+  ropa: {
+    title: 'Bayanin Ayyukan Sarrafa (ROPA)',
+    description: 'Kiyaye cikakken bayanai na duk ayyukan sarrafa bayanan kamar yadda ka\'idar ɗaukar nauyi ta NDPA ta buƙata.',
   },
   compliance: {
     score: 'Makin Bin Doka',

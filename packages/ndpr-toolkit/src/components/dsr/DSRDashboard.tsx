@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DSRRequest, DSRStatus, DSRType } from '../../types/dsr';
 import { formatDSRRequest } from '../../utils/dsr';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface DSRDashboardClassNames {
   root?: string;
@@ -101,8 +102,9 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   onSelectRequest,
   onUpdateStatus,
   onAssignRequest,
-  title = "Data Subject Request Dashboard",
-  description = "Track and manage data subject requests in compliance with NDPA Part IV requirements.",
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = "",
   buttonClassName = "",
   showRequestDetails = true,
@@ -112,6 +114,11 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   classNames,
   unstyled = false
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.dsr.dashboardTitle ?? 'Data Subject Request Dashboard';
+  const resolvedDescription =
+    description ?? locale.dsr.dashboardDescription ??
+    'Track and manage data subject requests in compliance with NDPA Part IV requirements.';
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [filteredRequests, setFilteredRequests] = useState<DSRRequest[]>(requests);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -479,8 +486,8 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass("", classNames?.header, unstyled)}>
-        <h2 className={resolveClass("text-xl font-bold mb-2", classNames?.title, unstyled)}>{title}</h2>
-        <p className="mb-6 text-gray-600 dark:text-gray-300">{description}</p>
+        <h2 className={resolveClass("text-xl font-bold mb-2", classNames?.title, unstyled)}>{resolvedTitle}</h2>
+        <p className="mb-6 text-gray-600 dark:text-gray-300">{resolvedDescription}</p>
       </div>
 
       {/* Filters and Search */}

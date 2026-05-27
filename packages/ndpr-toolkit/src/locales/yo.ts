@@ -14,6 +14,9 @@ export const yorubaLocale: Required<{
     deselectAll: 'Yọ Gbogbo Kúrò',
     required: 'Kò Ṣe Yẹra Fún',
     cookieNotice: 'Nípa títẹ "Gba Gbogbo", o fohùn ṣọ̀kan pẹ̀lú lílo gbogbo kúkì. Ṣàbẹ̀wò Ìlànà Kúkì wa láti kẹ́kọ̀ọ́ síi.',
+    managerTitle: 'Ṣàkóso Àwọn Ètò Àṣírí Rẹ',
+    managerDescription: 'Ṣàtúnṣe àwọn àṣàyàn ìfohùnṣọ̀kan rẹ nígbàkigbà. A kò lè pa àwọn kúkì tí a nílò mọ́ nítorí pé wọ́n ṣe pàtàkì fún ìṣiṣẹ́ wẹ́ẹ̀bùsáìtì. A ń pèsè ìṣàkóso ìfohùnṣọ̀kan gẹ́gẹ́ bí Abala 25-26 ti NDPA.',
+    resetToDefaults: 'Tún Padà sí Àpapọ̀',
   },
   dsr: {
     title: 'Fi Ìbéèrè Oní-dátà Sílẹ̀',
@@ -30,6 +33,10 @@ export const yorubaLocale: Required<{
     identifierValue: 'Iye Ìdánimọ̀',
     privacyNotice: 'Àwọn ìròyìn tí o bá pèsè nínú fọ́ọ̀mù yìí ni a ó lò fún ète ṣíṣe àbójútó ìbéèrè oní-dátà rẹ nìkan.',
     successMessage: 'A ti fi ìbéèrè rẹ sílẹ̀ dáradára.',
+    dashboardTitle: 'Pápá Iṣẹ́ Ìbéèrè Oní-dátà',
+    dashboardDescription: 'Tọpa àti ṣàkóso àwọn ìbéèrè oní-dátà gẹ́gẹ́ bí ìbéèrè NDPA Apá Kẹrin.',
+    trackerTitle: 'Olùtọpa Ìbéèrè DSR',
+    trackerDescription: 'Tọpa ipò àti ìlọsíwájú àwọn ìbéèrè oní-dátà gẹ́gẹ́ bí NDPA Apá Kẹrin béèrè.',
   },
   breach: {
     title: 'Ṣe Ìròyìn Ìrúfin Dátà',
@@ -39,6 +46,12 @@ export const yorubaLocale: Required<{
     category: 'Ẹ̀ka',
     discoveredAt: 'Ọjọ́ Tí A Rí I',
     detailedDescription: 'Àlàyé Kíkún',
+    riskAssessmentTitle: 'Ìgbéléwọ̀n Ewu Ìrúfin',
+    riskAssessmentDescription: 'Ṣe ìgbéléwọ̀n ipele ewu ti ìrúfin dátà yìí láti pinnu ìbéèrè ìfitónilétí lábẹ́ Abala 40 NDPA.',
+    notificationManagerTitle: 'Olùṣàkóso Ìfitónilétí Ìrúfin',
+    notificationManagerDescription: 'Ṣàkóso àwọn ìfitónilétí ìrúfin dátà àti tọpa ìbámu pẹ̀lú àwọn ìbéèrè Abala 40 NDPA.',
+    regulatoryReportTitle: 'Ṣẹ̀dá Àkójọ Ìfitónilétí NDPC',
+    regulatoryReportDescription: 'Ṣẹ̀dá àkójọ fún ìfisíhàn sí NDPC ní ìbámu pẹ̀lú àwọn ìbéèrè ìfitónilétí ìrúfin Abala 40 NDPA.',
   },
   dpia: {
     title: 'Ìgbéléwọ̀n Ipa Ìdáàbòbò Dátà',
@@ -46,6 +59,8 @@ export const yorubaLocale: Required<{
     previous: 'Sẹ́yìn',
     complete: 'Parí Ìgbéléwọ̀n',
     progress: 'Ìlọsíwájú',
+    submit: 'Fi Sílẹ̀',
+    reportTitle: 'Àkójọ Ìgbéléwọ̀n Ipa Ìdáàbòbò Dátà',
   },
   policy: {
     title: 'Olùpilẹ̀ṣẹ̀ Ìlànà Àṣírí',
@@ -54,6 +69,25 @@ export const yorubaLocale: Required<{
     export: 'Gbé Jáde',
     sections: 'Àwọn Abala',
     variables: 'Àwọn Oníyípadà',
+    generatorTitle: 'Olùpilẹ̀ṣẹ̀ Ìlànà Àṣírí NDPA',
+    generatorDescription: 'Ṣẹ̀dá ìlànà àṣírí tí ó bá NDPA mu fún àjọ rẹ ní ìbámu pẹ̀lú Abala 24 NDPA.',
+    previewTitle: 'Àyẹ̀wò Ìlànà Àṣírí',
+    previewDescription: 'Yẹ ìlànà àṣírí rẹ tí ó bá NDPA mu wo ṣáájú gbígbé jáde.',
+    exporterTitle: 'Ìlànà Àṣírí',
+    exporterDescription: 'Gbé ìlànà àṣírí rẹ tí ó bá NDPA mu jáde ní oríṣiríṣi ọ̀nà.',
+    wizardTitle: 'Olùkọ́ Ìlànà Àṣírí',
+  },
+  lawfulBasis: {
+    title: 'Olùtọpa Ìpilẹ̀ Òfin',
+    description: 'Ṣe àkọsílẹ̀ àti tọpa ìpilẹ̀ òfin fún iṣẹ́ ṣíṣe ìṣàkóso kọ̀ọ̀kan gẹ́gẹ́ bí Abala 25 NDPA 2023 béèrè.',
+  },
+  crossBorder: {
+    title: 'Olùṣàkóso Gbígbé Dátà Kọjá-Ààlà',
+    description: 'Ṣàkóso àti ṣe àkọsílẹ̀ gbígbé dátà oníra ẹnìkọ̀ọ̀kan kọjá-ààlà ní ìbámu pẹ̀lú NDPA 2023 Apá Kẹjọ (Abala 41-43).',
+  },
+  ropa: {
+    title: 'Àkọsílẹ̀ Àwọn Iṣẹ́ Ìṣàkóso (ROPA)',
+    description: 'Pa àkọsílẹ̀ kíkún ti gbogbo iṣẹ́ ṣíṣe ìṣàkóso dátà mọ́ gẹ́gẹ́ bí ìlànà ìjíhàn NDPA béèrè.',
   },
   compliance: {
     score: 'Àmì Ìbámu',

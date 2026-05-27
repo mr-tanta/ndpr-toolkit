@@ -66,6 +66,12 @@ interface NDPRErrorBoundaryProps {
   fallback?: ReactNode | ((error: Error, reset: () => void) => ReactNode);
   /** Called when an error is caught. */
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  /**
+   * Heading shown above the error message in the default fallback UI.
+   * NDPRProvider passes the locale-resolved `common.error` string here.
+   * @default "Something went wrong"
+   */
+  errorTitle?: string;
 }
 
 interface NDPRErrorBoundaryState {
@@ -122,7 +128,7 @@ export class NDPRErrorBoundary extends Component<NDPRErrorBoundaryProps, NDPRErr
             color: '#c53030',
           }}
         >
-          <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Something went wrong</h3>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>{this.props.errorTitle ?? 'Something went wrong'}</h3>
           <p style={{ margin: 0, fontSize: '14px' }}>{error.message}</p>
         </div>
       );
@@ -163,9 +169,14 @@ export const NDPRProvider: React.FC<NDPRConfig & { children: React.ReactNode }> 
     return Object.keys(vars).length > 0 ? (vars as React.CSSProperties) : undefined;
   }, [config.theme]);
 
+  // Resolve the error-boundary heading once per render. The class component
+  // can't call hooks, so we feed it the locale-derived string as a prop.
+  const resolvedLocale = useMemo(() => mergeLocale(config.locale), [config.locale]);
+  const errorTitle = resolvedLocale.common.error ?? 'Something went wrong';
+
   return (
     <NDPRContext.Provider value={config}>
-      <NDPRErrorBoundary fallback={fallback} onError={onError}>
+      <NDPRErrorBoundary fallback={fallback} onError={onError} errorTitle={errorTitle}>
         {style ? <div style={style}>{children}</div> : children}
       </NDPRErrorBoundary>
     </NDPRContext.Provider>

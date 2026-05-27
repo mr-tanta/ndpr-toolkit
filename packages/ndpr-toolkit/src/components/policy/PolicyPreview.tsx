@@ -1,6 +1,7 @@
 import React, { useState, useId } from 'react';
 import { resolveClass } from '../../utils/styling';
 import { PolicySection, PolicyVariable } from '../../types/privacy';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface PolicyPreviewClassNames {
   /** Root container */
@@ -123,8 +124,9 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   variables,
   onExport,
   onEdit,
-  title = "Privacy Policy Preview",
-  description = "Preview your NDPA-compliant privacy policy before exporting.",
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = "",
   buttonClassName = "",
   showExportOptions = true,
@@ -136,6 +138,11 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   classNames,
   unstyled = false
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.policy.previewTitle ?? 'Privacy Policy Preview';
+  const resolvedDescription =
+    description ?? locale.policy.previewDescription ??
+    'Preview your NDPA-compliant privacy policy before exporting.';
   const instanceId = useId();
   const [activeTab, setActiveTab] = useState<'preview' | 'markdown'>('preview');
   const previewTabId = `${instanceId}-tab-preview`;
@@ -293,8 +300,8 @@ export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass('flex justify-between items-start mb-6', classNames?.header, unstyled)}>
         <div>
-          <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
-          <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{description}</p>
+          <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+          <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{resolvedDescription}</p>
         </div>
         
         {showEditButton && onEdit && (

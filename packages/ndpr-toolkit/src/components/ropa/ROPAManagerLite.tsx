@@ -4,6 +4,7 @@ import type { ProcessingRecord, RecordOfProcessingActivities } from '../../types
 import type { ROPAComplianceGap } from '../../utils/ropa';
 import { generateROPASummary, identifyComplianceGaps } from '../../utils/ropa';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface ROPAManagerLiteClassNames {
   root?: string;
@@ -59,8 +60,9 @@ function isReviewOverdue(record: ProcessingRecord): boolean {
 
 export const ROPAManagerLite: React.FC<ROPAManagerLiteProps> = ({
   records,
-  title = 'Record of Processing Activities (ROPA)',
-  description = 'Maintain a comprehensive record of all data processing activities as required by the NDPA accountability principle.',
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = '',
   classNames,
   unstyled,
@@ -68,6 +70,11 @@ export const ROPAManagerLite: React.FC<ROPAManagerLiteProps> = ({
   showComplianceGaps = true,
   onRecordClick,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.ropa.title ?? 'Record of Processing Activities (ROPA)';
+  const resolvedDescription =
+    description ?? locale.ropa.description ??
+    'Maintain a comprehensive record of all data processing activities as required by the NDPA accountability principle.';
   const ropaStub = useMemo<RecordOfProcessingActivities>(
     () => ({
       id: 'lite',
@@ -89,8 +96,8 @@ export const ROPAManagerLite: React.FC<ROPAManagerLiteProps> = ({
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass('', classNames?.header, unstyled)}>
-        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
-        <p className='ndpr-card__subtitle'>{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+        <p className='ndpr-card__subtitle'>{resolvedDescription}</p>
       </div>
 
       {showSummary && (

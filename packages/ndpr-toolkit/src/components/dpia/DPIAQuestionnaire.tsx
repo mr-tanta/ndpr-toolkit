@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DPIASection, DPIAQuestion } from '../../types/dpia';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface DPIAQuestionnaireClassNames {
   /** Outermost wrapper */
@@ -148,14 +149,19 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
   readOnly = false,
   className = "",
   buttonClassName = "",
-  nextButtonText = "Next",
-  prevButtonText = "Previous",
-  submitButtonText = "Submit",
+  // i18n: explicit prop > provider locale > English default.
+  nextButtonText,
+  prevButtonText,
+  submitButtonText,
   showProgress = true,
   progress,
   classNames = {},
   unstyled = false,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedNext = nextButtonText ?? locale.dpia.next ?? 'Next';
+  const resolvedPrev = prevButtonText ?? locale.dpia.previous ?? 'Previous';
+  const resolvedSubmit = submitButtonText ?? locale.dpia.submit ?? 'Submit';
   const currentSection = sections[currentSectionIndex];
   const isLastSection = currentSectionIndex === sections.length - 1;
 
@@ -421,7 +427,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
           disabled={currentSectionIndex === 0 || readOnly}
           className={`${cx('ndpr-button ndpr-button--secondary', 'prevButton')} ${buttonClassName}`}
         >
-          {prevButtonText}
+          {resolvedPrev}
         </button>
 
         <button
@@ -430,7 +436,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
           disabled={readOnly}
           className={`${cx('ndpr-button ndpr-button--primary', 'nextButton')} ${buttonClassName}`}
         >
-          {isLastSection ? submitButtonText : nextButtonText}
+          {isLastSection ? resolvedSubmit : resolvedNext}
         </button>
       </div>
     </div>

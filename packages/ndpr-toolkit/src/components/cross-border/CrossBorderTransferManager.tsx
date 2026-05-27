@@ -13,6 +13,7 @@ import {
   TransferValidationResult,
 } from '../../utils/cross-border';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface CrossBorderTransferManagerClassNames {
   root?: string;
@@ -227,8 +228,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   onUpdateTransfer,
   onRemoveTransfer,
   summary,
-  title = 'Cross-Border Data Transfer Manager',
-  description = 'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VIII (Sections 41-43).',
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = '',
   buttonClassName = '',
   showSummary = true,
@@ -236,6 +238,11 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   classNames,
   unstyled,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.crossBorder.title ?? 'Cross-Border Data Transfer Manager';
+  const resolvedDescription =
+    description ?? locale.crossBorder.description ??
+    'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VIII (Sections 41-43).';
   const [selectedTransferId, setSelectedTransferId] = useState<string | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransferId, setEditingTransferId] = useState<string | null>(null);
@@ -1232,8 +1239,8 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
-      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
-      <p className='ndpr-card__subtitle'>{description}</p>
+      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+      <p className='ndpr-card__subtitle'>{resolvedDescription}</p>
 
       {/* Compliance Summary */}
       {showSummary && renderSummary()}

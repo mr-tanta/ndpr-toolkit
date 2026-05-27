@@ -4,6 +4,7 @@ import type { PolicyDraft, TemplateContext } from '../../types/policy-engine';
 import type { StorageAdapter } from '../../adapters/types';
 import { resolveClass } from '../../utils/styling';
 import { useAdaptivePolicyWizard } from '../../hooks/useAdaptivePolicyWizard';
+import { useNDPRLocale } from '../NDPRProvider';
 import { PolicyStepIndicator } from './PolicyStepIndicator';
 import { PolicyStepAbout } from './PolicyStepAbout';
 import { PolicyStepData } from './PolicyStepData';
@@ -32,6 +33,10 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
   unstyled,
   initialContext,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedWizardTitle = locale.policy.wizardTitle ?? 'Privacy Policy Builder';
+  const resolvedBack = locale.common.back ?? 'Back';
+  const resolvedNext = locale.common.next ?? 'Next';
   const {
     currentStep,
     nextStep,
@@ -164,7 +169,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
               unstyled,
             )}
           >
-            Privacy Policy Builder
+            {resolvedWizardTitle}
           </h1>
           <DraftSaveIndicator
             lastSavedAt={lastSavedAt}
@@ -271,7 +276,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
                   unstyled,
                 )}
               >
-                Back
+                {resolvedBack}
               </button>
 
               <div className="flex items-center gap-2">
@@ -297,7 +302,7 @@ export const AdaptivePolicyWizard: React.FC<AdaptivePolicyWizardProps> = ({
                     unstyled,
                   )}
                 >
-                  Next
+                  {resolvedNext}
                 </button>
               ) : (
                 <span />

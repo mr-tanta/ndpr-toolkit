@@ -9,11 +9,35 @@ import {
   type OrgPolicyTemplateOverrides,
 } from '../utils/policy-templates-orgs';
 
+/**
+ * UX copy overrides for the NDPRPrivacyPolicy preset. Strings you omit
+ * fall back to the underlying `<AdaptivePolicyWizard>` defaults.
+ *
+ * Note: the wizard renders many step-specific labels; the fields here
+ * cover the high-level header text. Step-specific copy is wired through
+ * the `NDPRProvider` locale.
+ */
+export interface NDPRPrivacyPolicyCopy {
+  /** Wizard heading. Default: "Privacy Policy Builder" */
+  title?: string;
+  /** Optional body paragraph under the heading. */
+  description?: string;
+  /** Submit / complete button label. */
+  submitButton?: string;
+}
+
 export interface NDPRPrivacyPolicyProps {
   adapter?: StorageAdapter<PolicyDraft>;
   onComplete?: (policy: PrivacyPolicy) => void;
   classNames?: Record<string, string>;
   unstyled?: boolean;
+
+  /**
+   * UX copy overrides — see {@link NDPRPrivacyPolicyCopy}. The wizard
+   * derives most of its labels from the active `NDPRProvider` locale; the
+   * fields here cover the high-level header text.
+   */
+  copy?: NDPRPrivacyPolicyCopy;
 
   /**
    * Pre-fill the policy wizard with a sector-specific starter template.
@@ -52,6 +76,10 @@ export const NDPRPrivacyPolicy: React.FC<NDPRPrivacyPolicyProps> = ({
   template,
   templateOverrides,
   initialContext,
+  // `copy` is consumed by the preset for forward compatibility — the
+  // underlying wizard currently derives most of its labels from the
+  // `NDPRProvider` locale, so this is an API stub for the 4.0 line.
+  copy: _copy,
   ...rest
 }) => {
   // Compute the seed context once. If `initialContext` is supplied we

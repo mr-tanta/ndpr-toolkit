@@ -13,6 +13,7 @@ import {
   identifyComplianceGaps,
 } from '../../utils/ropa';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface ROPAManagerClassNames {
   root?: string;
@@ -179,13 +180,19 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
   onAddRecord,
   onUpdateRecord,
   onArchiveRecord,
-  title = 'Record of Processing Activities (ROPA)',
-  description = 'Maintain a comprehensive record of all data processing activities as required by the NDPA accountability principle.',
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = '',
   buttonClassName = '',
   classNames,
   unstyled,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.ropa.title ?? 'Record of Processing Activities (ROPA)';
+  const resolvedDescription =
+    description ?? locale.ropa.description ??
+    'Maintain a comprehensive record of all data processing activities as required by the NDPA accountability principle.';
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -1252,8 +1259,8 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
 
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
-      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
-      <p className='ndpr-card__subtitle'>{description}</p>
+      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+      <p className='ndpr-card__subtitle'>{resolvedDescription}</p>
 
       {renderOrganizationHeader()}
 
