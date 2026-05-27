@@ -119,8 +119,23 @@ export async function POST(request: Request) {
   } catch (err) {
     // Persistence failure IS a data-loss problem — fail the request so the
     // consumer can retry.
+    //
+    // PII-safe logging: Prisma's error.meta frequently contains the failing
+    // column VALUES (email, fullName, identifierValue). Don't spread `err`
+    // here — pluck only the safe fields (code + truncated message).
+    const safeErr = (() => {
+      if (err instanceof Error) {
+        // Prisma errors carry a `code` field on the error object.
+        const code = (err as Error & { code?: string }).code;
+        return {
+          code: code ?? null,
+          message: err.message.length > 200 ? `${err.message.slice(0, 200)}…` : err.message,
+        };
+      }
+      return { code: null, message: String(err).slice(0, 200) };
+    })();
     // eslint-disable-next-line no-console
-    console.error("[dsr] failed to persist DSR submission:", err);
+    console.error("[dsr] persist failed:", safeErr);
     return NextResponse.json(
       { error: "We couldn't record your request. Please try again.", fields: {} },
       { status: 500 },

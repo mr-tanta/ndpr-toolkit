@@ -55,6 +55,12 @@ export async function sendDsrConfirmationEmail(
   }
 
   // MOCK: stdout transport. Swap by setting RESEND_API_KEY + DSR_FROM_EMAIL.
+  //
+  // PII-safe by default since 3.10.5 of the toolkit: prints the metadata
+  // (from, to, subject) but NOT the full email body, which contains the
+  // requester's full name and reference number. Set
+  // `DSR_MOCK_PRINT_BODY=1` if you really want the body printed in dev.
+  const includeBody = process.env.DSR_MOCK_PRINT_BODY === "1";
   // eslint-disable-next-line no-console
   console.log(
     [
@@ -63,11 +69,13 @@ export async function sendDsrConfirmationEmail(
       `From:    ${from}`,
       `To:      ${to}`,
       `Subject: ${subject}`,
-      "",
-      text,
+      includeBody ? "" : "(body omitted — set DSR_MOCK_PRINT_BODY=1 to include)",
+      includeBody ? text : "",
       "─────────────────────────────────────────────────────────",
       "",
-    ].join("\n"),
+    ]
+      .filter((line, i, arr) => !(line === "" && arr[i - 1] === ""))
+      .join("\n"),
   );
   return { delivered: true, mode: "stdout" };
 }

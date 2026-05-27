@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
 import { resolveClass } from '../../utils/styling';
 
@@ -149,7 +149,22 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
     };
   }, []);
 
-  // Initialize consents from settings or options
+  // Initialize consents from settings or options.
+  //
+  // The dependency key is a stable hash of (option-id + defaultValue) pairs,
+  // not the `options` reference itself. Parents commonly pass an inline
+  // array literal like `<ConsentManager options={[{id:'analytics',...}]}>`
+  // which creates a new reference on every parent render — depending on
+  // `options` directly would silently reset every user toggle. Depending on
+  // the SHAPE means re-init only fires when the consumer actually changed
+  // the option list.
+  const optionsKey = useMemo(
+    () =>
+      options
+        .map(o => `${o.id}:${o.defaultValue ? '1' : '0'}`)
+        .join('|'),
+    [options],
+  );
   useEffect(() => {
     if (settings && settings.consents) {
       setConsents(settings.consents);
@@ -160,7 +175,11 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
       });
       setConsents(initialConsents);
     }
-  }, [options, settings]);
+    // `optionsKey` stands in for `options` so a fresh array literal with the
+    // same option ids does not retrigger initialisation. `settings` keeps
+    // its place because a real settings update SHOULD overwrite local state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [optionsKey, settings]);
   
   const handleToggleConsent = (id: string, value: boolean) => {
     setConsents(prev => ({
