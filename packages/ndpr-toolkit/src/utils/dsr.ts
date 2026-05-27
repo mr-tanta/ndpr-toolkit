@@ -52,7 +52,22 @@ export interface ValidateDsrSubmissionOptions {
   allowedRequestTypes?: string[];
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Backtracking-free email check. Splits on `@` and validates each side with
+// linear scans — avoids the polynomial-time worst case of the earlier
+// `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` regex on adversarial input.
+// RFC 5321 caps total length at 254.
+function isValidEmail(value: string): boolean {
+  if (value.length === 0 || value.length > 254) return false;
+  const at = value.indexOf('@');
+  if (at <= 0 || at !== value.lastIndexOf('@')) return false;
+  const local = value.slice(0, at);
+  const domain = value.slice(at + 1);
+  if (local.length === 0 || domain.length === 0) return false;
+  if (/\s/.test(value)) return false;
+  if (!domain.includes('.')) return false;
+  if (domain.startsWith('.') || domain.endsWith('.')) return false;
+  return true;
+}
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -171,7 +186,7 @@ export function validateDsrSubmission(
     }
     if (!isNonEmptyString(dataSubject.email)) {
       errors['dataSubject.email'] = 'Email address is required';
-    } else if (!EMAIL_RE.test(dataSubject.email)) {
+    } else if (!isValidEmail(dataSubject.email)) {
       errors['dataSubject.email'] = 'Email address format is invalid';
     }
     if (dataSubject.phone !== undefined && typeof dataSubject.phone !== 'string') {
@@ -404,7 +419,7 @@ export function validateDsrSubmissionStructured(
         code: 'email_required',
         message: 'Email address is required',
       });
-    } else if (!EMAIL_RE.test(dataSubject.email)) {
+    } else if (!isValidEmail(dataSubject.email)) {
       errors.push({
         field: 'dataSubject.email',
         code: 'email_invalid_format',
