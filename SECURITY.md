@@ -37,7 +37,7 @@ file a private advisory at <https://github.com/mr-tanta/ndpr-toolkit/security/ad
 ## What's in scope
 
 - Anything in the published `@tantainnovative/ndpr-toolkit` npm package.
-- The reference DSR backend at `examples/dsr-backend-prod/` (issues that
+- The reference DSR backend at `examples/dsr-backend-reference/` (issues that
   consumers would inherit by copying it as a starting point).
 - The docs site if the bug leaks PII or facilitates a CSRF / XSS against
   visitors.

@@ -1,14 +1,27 @@
-# DSR backend — production reference
+# DSR backend — submission and receipt reference
 
-A runnable Next.js 15 reference implementation of a **production-grade DSR
-submission backend** that pairs with the `NDPRSubjectRights` preset and its
-typed `onSubmitSuccess` / `onSubmitError` callbacks (toolkit 3.6.0 + 3.8.1
-contract).
+> Renamed from `dsr-backend-prod` in toolkit 4.0. The "prod" name oversold what this example actually does. The real thing — identity verification, audit logging, status transitions, request-type-specific fulfilment, deadline tracking, DPO routing — is **out of scope** here. See "What you still need to build" below.
 
-The other examples (`ecommerce-starter`, `nextjs-app`, `ssr/*`) ship in-memory
-toy `route.ts` snippets. This one shows the real thing: server-side
-validation, Prisma persistence, and Resend email confirmation — with
-zero-config mocks so it runs out of the box.
+A runnable Next.js 15 reference implementation of a DSR **submission and receipt** backend that pairs with the `NDPRSubjectRights` preset and its typed `onSubmitSuccess` / `onSubmitError` callbacks (toolkit 3.6.0 + 3.8.1 contract).
+
+The other examples (`ecommerce-starter`, `nextjs-app`, `ssr/*`) ship in-memory toy `route.ts` snippets. This one shows the realistic-ish thing: server-side validation, Prisma persistence, and Resend email confirmation — with zero-config mocks so it runs out of the box.
+
+## What this example deliberately does NOT do
+
+For honesty's sake. A real NDPA-compliant DSR system has to do all of these; the example covers exactly the receipt-and-confirmation step:
+
+| # | Concern | Status here |
+|---|---|---|
+| 1 | **Identity verification** (out-of-band email magic-link or NIN/BVN match before fulfilling) | **MISSING.** Anyone can submit a DSR for any email address. |
+| 2 | **Audit logging** (NDPA §39 accountability — who created, accessed, transitioned each request) | **MISSING.** No audit model in the schema. |
+| 3 | **Status transitions / worker queue** (received → identity-verified → in-progress → fulfilled/rejected) | **MISSING.** Status stays at `"received"` forever. |
+| 4 | **Request-type-specific handling** (the actual data-export for `access`, cascade-delete for `erasure`, etc.) | **MISSING.** All request types flow through the same code path. |
+| 5 | **30-day deadline tracking** (NDPA §34 — escalations as the deadline approaches, the §34 extension flow) | **STUB.** `estimatedCompletionAt` is computed and stored, but nothing monitors it. |
+| 6 | **Rate limiting / abuse prevention** | **MISSING.** No throttle, no CAPTCHA. The blocklist is the only abuse control. |
+| 7 | **Notifications on status changes / rejection / extension** | **MISSING.** Only the receipt confirmation email exists. |
+| 8 | **DPO routing** (NDPA §32 — assignment to a Data Protection Officer) | **MISSING.** No `assignedTo` field. |
+
+For production, build all eight on top of the receipt step shown here. The toolkit's `validateDsrSubmission` + the `onSubmitSuccess` contract are the stable anchors; everything between is yours.
 
 ## Run it
 

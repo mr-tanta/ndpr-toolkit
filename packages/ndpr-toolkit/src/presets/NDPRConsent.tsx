@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { ConsentBanner } from '../components/consent/ConsentBanner';
 import type { ConsentBannerClassNames } from '../components/consent/ConsentBanner';
 import type { ConsentOption, ConsentSettings } from '../types/consent';
@@ -41,7 +41,11 @@ export interface NDPRConsentCopy {
 }
 
 export interface NDPRConsentProps {
-  extraOptions?: ConsentOption[];
+  /**
+   * Consent categories to present. When omitted, the toolkit's
+   * default options are used. (4.0: legacy `extraOptions` was removed —
+   * pass the full options array here instead.)
+   */
   options?: ConsentOption[];
   adapter?: StorageAdapter<ConsentSettings>;
   position?: 'top' | 'bottom' | 'center' | 'inline';
@@ -56,27 +60,10 @@ export interface NDPRConsentProps {
 }
 
 export const NDPRConsent: React.FC<NDPRConsentProps> = ({
-  extraOptions, options, adapter, position = 'bottom',
+  options, adapter, position = 'bottom',
   classNames, unstyled, onSave, copy,
 }) => {
-  // Dev-only deprecation warning: `extraOptions` is a one-off pattern.
-  // Pass the full options array via `options` instead.
-  const warnedExtraOptionsRef = useRef(false);
-  useEffect(() => {
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      extraOptions !== undefined &&
-      !warnedExtraOptionsRef.current
-    ) {
-      warnedExtraOptionsRef.current = true;
-      // eslint-disable-next-line no-console
-      console.warn(
-        "[ndpr-toolkit/consent] NDPRConsentProps.extraOptions is deprecated; pass the full options array via 'options' instead. Will be removed in 4.0.",
-      );
-    }
-  }, [extraOptions]);
-
-  const resolvedOptions = options ?? [...DEFAULT_OPTIONS, ...(extraOptions ?? [])];
+  const resolvedOptions = options ?? DEFAULT_OPTIONS;
   const handleSave = (settings: ConsentSettings) => {
     if (adapter) adapter.save(settings);
     onSave?.(settings);

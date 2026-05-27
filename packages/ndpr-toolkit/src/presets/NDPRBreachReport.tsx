@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { BreachReportForm } from '../components/breach/BreachReportForm';
 import type { BreachReportFormClassNames, BreachFormSubmission } from '../components/breach/BreachReportForm';
 import type { BreachCategory } from '../types/breach';
@@ -64,14 +64,7 @@ export interface NDPRBreachReportProps {
   copy?: NDPRBreachReportCopy;
 
   /**
-   * @deprecated Renamed to `copy.description`. Will be removed in 4.0.
-   * If both are set, `copy.description` wins.
-   */
-  formDescription?: string;
-
-  /**
-   * Body paragraph under the heading. Canonical name in 3.13+. Takes
-   * precedence over `formDescription`.
+   * Body paragraph under the heading.
    */
   description?: string;
 
@@ -128,30 +121,12 @@ export const NDPRBreachReport: React.FC<NDPRBreachReportProps> = ({
   unstyled,
   onSubmit = () => {},
   copy,
-  formDescription,
   description,
   submitTo,
   submitOptions,
   onSubmitError,
   onSubmitSuccess,
 }) => {
-  // Deprecation warning for `formDescription` — dev only, fire-once per instance.
-  const warnedFormDescriptionRef = useRef(false);
-  useEffect(() => {
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      formDescription !== undefined &&
-      description === undefined &&
-      !warnedFormDescriptionRef.current
-    ) {
-      warnedFormDescriptionRef.current = true;
-      // eslint-disable-next-line no-console
-      console.warn(
-        "[ndpr-toolkit/breach] NDPRBreachReportProps.formDescription is deprecated; rename to 'description'. Will be removed in 4.0.",
-      );
-    }
-  }, [formDescription, description]);
-
   const handleSubmit = async (data: BreachFormSubmission) => {
     if (submitTo) {
       const headers = typeof submitOptions?.headers === 'function'
@@ -185,8 +160,9 @@ export const NDPRBreachReport: React.FC<NDPRBreachReportProps> = ({
     onSubmit(data);
   };
 
-  // description (new) wins; copy.description wins over both forms; formDescription is legacy.
-  const resolvedDescription = copy?.description ?? description ?? formDescription;
+  // copy.description wins; otherwise `description` prop; otherwise the
+  // underlying form supplies the locale-aware default.
+  const resolvedDescription = copy?.description ?? description;
 
   return (
     <BreachReportForm
@@ -195,7 +171,7 @@ export const NDPRBreachReport: React.FC<NDPRBreachReportProps> = ({
       classNames={classNames}
       unstyled={unstyled}
       title={copy?.title}
-      formDescription={resolvedDescription}
+      description={resolvedDescription}
       submitButtonText={copy?.submitButton}
     />
   );

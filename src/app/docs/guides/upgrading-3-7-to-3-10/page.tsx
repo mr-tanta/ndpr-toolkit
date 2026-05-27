@@ -113,7 +113,7 @@ import { ROPAManagerLite } from '@tantainnovative/ndpr-toolkit/ropa/lite';`}</co
 
         <h3 className="text-xl font-semibold text-foreground mt-8 mb-3">From 3.10.0 — Production DSR backend reference</h3>
         <p className="mb-4 text-foreground leading-relaxed">
-          <Link href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/dsr-backend-prod" className="text-primary hover:underline">examples/dsr-backend-prod</Link> — a Next.js 15 / React 19 reference wiring <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRSubjectRights</code> to Prisma persistence and Resend email confirmation, both behind dual-mode shims so it runs without infrastructure. Full walkthrough: <Link href="/docs/guides/production-dsr-backend" className="text-primary hover:underline">Production DSR backend</Link>.
+          <Link href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/examples/dsr-backend-reference" className="text-primary hover:underline">examples/dsr-backend-reference</Link> — a Next.js 15 / React 19 reference wiring <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRSubjectRights</code> to Prisma persistence and Resend email confirmation, both behind dual-mode shims so it runs without infrastructure. Full walkthrough: <Link href="/docs/guides/production-dsr-backend" className="text-primary hover:underline">Production DSR backend</Link>.
         </p>
       </section>
 

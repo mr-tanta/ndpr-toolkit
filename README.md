@@ -18,7 +18,7 @@ v3 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 
 > **What's new in 3.11.0:** Every component's `Props` interface is now re-exported from the root (consumers can finally wrap toolkit components without copying types). Adapter ecosystem types (`ApiAdapterErrorContext`, `StorageAdapter<T>`, …) and DSR validator types reachable from `/server` + root. 9 new component docs pages cover `NDPRThemeProvider`, `NDPRProvider`, `NDPRDashboard`, `AdaptivePolicyWizard`, `PolicyPage`, the 3 Lite manager variants, and `LegalNotice`.
 >
-> **3.10.x highlights:** Typed theming via `<NDPRThemeProvider>`, a `/headless` subpath alias of `/hooks`, the production-grade DSR backend reference at `examples/dsr-backend-prod/`, plus the `verify:tarball` CI gate that catches broken exports at PR time. Upgrading from 3.7.x? See the [3.7 → 3.10 upgrade guide](https://ndprtoolkit.com.ng/docs/guides/upgrading-3-7-to-3-10). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
+> **3.10.x highlights:** Typed theming via `<NDPRThemeProvider>`, a `/headless` subpath alias of `/hooks`, the production-grade DSR backend reference at `examples/dsr-backend-reference/`, plus the `verify:tarball` CI gate that catches broken exports at PR time. Upgrading from 3.7.x? See the [3.7 → 3.10 upgrade guide](https://ndprtoolkit.com.ng/docs/guides/upgrading-3-7-to-3-10). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.11.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />

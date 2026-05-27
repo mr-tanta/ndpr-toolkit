@@ -23,10 +23,14 @@ describe('NDPRConsent preset', () => {
     expect(adapter.load()).not.toBeNull();
   });
 
-  it('accepts extraOptions', () => {
+  it('accepts a custom options array', () => {
+    // 4.0: the legacy `extraOptions` prop was removed. Consumers wanting
+    // to extend the defaults must now pass the full options array via
+    // `options`.
     render(
       <NDPRConsent
-        extraOptions={[
+        options={[
+          { id: 'essential', label: 'Essential', description: 'Required', purpose: 'Site operation', required: true },
           { id: 'research', label: 'Research', description: 'For research', purpose: 'Research', required: false },
         ]}
       />

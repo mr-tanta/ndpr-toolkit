@@ -114,11 +114,11 @@ describe('Async adapter hydration — presets (3.10.4 fix)', () => {
     expect(adapter.loadCalls()).toBeGreaterThanOrEqual(1);
   });
 
-  it('NDPRLawfulBasis keeps initialActivities when adapter.load resolves null', async () => {
+  it('NDPRLawfulBasis keeps initialData when adapter.load resolves null', async () => {
     const adapter = makeAsyncAdapter<ProcessingActivity[]>(null);
     const seeded = [makeActivity({ id: 'init-1', name: 'Initial activity (sync seed)' })];
 
-    render(<NDPRLawfulBasis adapter={adapter} initialActivities={seeded} />);
+    render(<NDPRLawfulBasis adapter={adapter} initialData={seeded} />);
 
     expect(screen.getAllByText(/Initial activity \(sync seed\)/i).length).toBeGreaterThan(0);
     await waitFor(() => expect(adapter.loadCalls()).toBeGreaterThanOrEqual(1));

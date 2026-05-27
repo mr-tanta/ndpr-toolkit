@@ -1,5 +1,5 @@
 {
-  "name": "ndpr-dsr-backend-prod",
+  "name": "ndpr-dsr-backend-reference",
   "version": "0.1.0",
   "private": true,
   "scripts": {

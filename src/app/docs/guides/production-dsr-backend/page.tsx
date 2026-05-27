@@ -14,7 +14,7 @@ export default function ProductionDsrBackendGuide() {
         <p className="mb-4 text-foreground leading-relaxed">
           The quickstart route handler stores DSR submissions in an in-memory <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">let store = null</code> —
           fine for demos, useless for production. This guide describes the reference implementation under
-          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> examples/dsr-backend-prod/</code> in the repo: a Next.js 15 App Router app that wires
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> examples/dsr-backend-reference/</code> in the repo: a Next.js 15 App Router app that wires
           the toolkit&apos;s validator, a Prisma model, and Resend email confirmations into a single endpoint.
         </p>
         <p className="mb-4 text-foreground leading-relaxed">
@@ -75,7 +75,7 @@ export default function ProductionDsrBackendGuide() {
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Run the example locally</h2>
         <pre className="bg-card border border-border rounded-md p-4 overflow-x-auto text-sm mb-4">
           <code>{`git clone https://github.com/mr-tanta/ndpr-toolkit.git
-cd ndpr-toolkit/examples/dsr-backend-prod
+cd ndpr-toolkit/examples/dsr-backend-reference
 bun install   # or pnpm / npm
 bun dev`}</code>
         </pre>
