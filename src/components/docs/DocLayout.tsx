@@ -71,6 +71,7 @@ const navigation: NavItem[] = [
       { title: 'Migrating 3.5 → 3.8', href: '/docs/guides/migrating-3-5-to-3-8', isNew: true },
       { title: 'Upgrading 3.7 → 3.10', href: '/docs/guides/upgrading-3-7-to-3-10', isNew: true },
       { title: 'Migrating 3.13 → 4.0', href: '/docs/guides/migrating-3-13-to-4-0', isNew: true },
+      { title: 'Migrating 4.1 → 5.0', href: '/docs/guides/migrating-4-1-to-5-0', isNew: true },
       { title: 'Lite vs Full managers', href: '/docs/guides/lite-vs-full', isNew: true },
       { title: 'Styling Architecture', href: '/docs/guides/styling-architecture', isNew: true },
       { title: 'Server Rendering & RSC', href: '/docs/guides/server-rendering', isNew: true },

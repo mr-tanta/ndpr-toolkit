@@ -104,7 +104,7 @@ describe('NDPRBreachReport onSubmit', () => {
   });
 });
 
-describe('NDPRDPIA onComplete', () => {
+describe('NDPRDPIA onResult', () => {
   const oneSection: DPIASection[] = [
     {
       id: 'only-section',
@@ -122,9 +122,9 @@ describe('NDPRDPIA onComplete', () => {
     },
   ];
 
-  it('fires onComplete with the collected answers once the last section is submitted', () => {
-    const onComplete = jest.fn();
-    render(<NDPRDPIA sections={oneSection} onComplete={onComplete} />);
+  it('fires onResult with the full DPIAResult once the last section is submitted', () => {
+    const onResult = jest.fn();
+    render(<NDPRDPIA sections={oneSection} onResult={onResult} />);
 
     // Optional answer — exercise onAnswerChange before submitting.
     const input = screen.getByLabelText(/describe the processing activity/i) as HTMLInputElement;
@@ -134,8 +134,11 @@ describe('NDPRDPIA onComplete', () => {
     const submitBtn = screen.getByRole('button', { name: /submit|complete|finish/i });
     fireEvent.click(submitBtn);
 
-    expect(onComplete).toHaveBeenCalledTimes(1);
-    expect(onComplete.mock.calls[0][0]).toEqual({ q1: 'Processing user account data' });
+    expect(onResult).toHaveBeenCalledTimes(1);
+    const result = onResult.mock.calls[0][0];
+    expect(result.answers).toEqual({ q1: 'Processing user account data' });
+    expect(result.overallRiskLevel).toBeDefined();
+    expect(typeof result.canProceed).toBe('boolean');
   });
 });
 

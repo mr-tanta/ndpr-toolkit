@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   CrossBorderTransfer,
   CrossBorderSummary,
@@ -42,44 +42,18 @@ export interface CrossBorderTransferManagerProps {
   transfers: CrossBorderTransfer[];
 
   /**
-   * Callback when a new transfer is added
-   * @deprecated Renamed to `onAdd` in 4.1. The legacy name still fires
-   * for backward compatibility and will be removed in 5.0.
-   */
-  onAddTransfer?: (transfer: Omit<CrossBorderTransfer, 'id' | 'createdAt' | 'updatedAt'>) => void;
-
-  /**
-   * Callback when a transfer is updated
-   * @deprecated Renamed to `onUpdate` in 4.1. The legacy name still fires
-   * for backward compatibility and will be removed in 5.0.
-   */
-  onUpdateTransfer?: (id: string, updates: Partial<CrossBorderTransfer>) => void;
-
-  /**
-   * Callback when a transfer is removed
-   * @deprecated Renamed to `onArchive` in 4.1 (NDPA prefers soft-delete
-   * over hard delete). The legacy name still fires for backward
-   * compatibility and will be removed in 5.0.
-   */
-  onRemoveTransfer?: (id: string) => void;
-
-  /**
-   * Callback when a new transfer is added (uniform 4.1+ name).
-   * Takes precedence over `onAddTransfer` when both are provided.
+   * Callback when a new transfer is added.
    */
   onAdd?: (transfer: Omit<CrossBorderTransfer, 'id' | 'createdAt' | 'updatedAt'>) => void;
 
   /**
-   * Callback when a transfer is updated (uniform 4.1+ name).
-   * Takes precedence over `onUpdateTransfer` when both are provided.
+   * Callback when a transfer is updated.
    */
   onUpdate?: (id: string, updates: Partial<CrossBorderTransfer>) => void;
 
   /**
-   * Callback when a transfer is archived (uniform 4.1+ name). NDPA
-   * preference is soft-delete over hard-delete; consumers should treat
-   * this as an archive signal. Takes precedence over `onRemoveTransfer`
-   * when both are provided.
+   * Callback when a transfer is archived. NDPA preference is soft-delete
+   * over hard-delete; consumers should treat this as an archive signal.
    */
   onArchive?: (id: string) => void;
 
@@ -251,9 +225,6 @@ const INITIAL_FORM_DATA: TransferFormData = {
  */
 export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProps> = ({
   transfers,
-  onAddTransfer,
-  onUpdateTransfer,
-  onRemoveTransfer,
   onAdd,
   onUpdate,
   onArchive,
@@ -268,21 +239,6 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   classNames,
   unstyled,
 }) => {
-  // Fire-once dev warning for legacy callback names.
-  const warnedLegacyRef = useRef(false);
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'production' || warnedLegacyRef.current) return;
-    const legacyUsed: string[] = [];
-    if (onAddTransfer !== undefined && onAdd === undefined) legacyUsed.push('onAddTransfer -> onAdd');
-    if (onUpdateTransfer !== undefined && onUpdate === undefined) legacyUsed.push('onUpdateTransfer -> onUpdate');
-    if (onRemoveTransfer !== undefined && onArchive === undefined) legacyUsed.push('onRemoveTransfer -> onArchive');
-    if (legacyUsed.length > 0) {
-      warnedLegacyRef.current = true;
-      console.warn(
-        `[ndpr-toolkit/cross-border] Deprecated callback prop name(s): ${legacyUsed.join(', ')}. Will be removed in 5.0.`
-      );
-    }
-  }, [onAddTransfer, onUpdateTransfer, onRemoveTransfer, onAdd, onUpdate, onArchive]);
   const locale = useNDPRLocale();
   const resolvedTitle = title ?? locale.crossBorder.title ?? 'Cross-Border Data Transfer Manager';
   const resolvedDescription =
@@ -451,17 +407,14 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
     }
 
     if (editingTransferId) {
-      // New uniform name wins; legacy still fans out for back-compat.
       onUpdate?.(editingTransferId, transferData);
-      onUpdateTransfer?.(editingTransferId, transferData);
     } else {
       onAdd?.(transferData);
-      onAddTransfer?.(transferData);
     }
 
     resetForm();
     setIsFormOpen(false);
-  }, [buildTransferFromForm, editingTransferId, onUpdateTransfer, onAddTransfer, onUpdate, onAdd, resetForm]);
+  }, [buildTransferFromForm, editingTransferId, onUpdate, onAdd, resetForm]);
 
   // Handle cancel form
   const handleCancelForm = useCallback(() => {
@@ -472,11 +425,10 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
   // Handle remove
   const handleRemove = useCallback((id: string) => {
     onArchive?.(id);
-    onRemoveTransfer?.(id);
     if (selectedTransferId === id) {
       setSelectedTransferId(null);
     }
-  }, [onRemoveTransfer, onArchive, selectedTransferId]);
+  }, [onArchive, selectedTransferId]);
 
   // Render risk badge — lookup table is hoisted to module scope.
   const renderRiskBadge = useCallback((riskLevel: 'low' | 'medium' | 'high') => {

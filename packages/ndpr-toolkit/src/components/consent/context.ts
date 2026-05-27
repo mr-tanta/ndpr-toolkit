@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { ConsentOption, ConsentSettings } from '../../types/consent';
+import type { StructuredValidationError } from '../../utils/consent';
 
 export interface ConsentContextValue {
   options: ConsentOption[];
@@ -10,7 +11,7 @@ export interface ConsentContextValue {
   rejectAll: () => void;
   shouldShowBanner: boolean;
   isValid: boolean;
-  validationErrors: string[];
+  validationErrors: StructuredValidationError[];
   resetConsent: () => void;
   isLoading: boolean;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ROPAManagerLite } from '../../../components/ropa/ROPAManagerLite';
-import type { ProcessingRecord } from '../../../types/ropa';
+import type { ProcessingRecord, RecordOfProcessingActivities } from '../../../types/ropa';
 
 const NOW = 1_700_000_000_000;
 
@@ -35,9 +35,19 @@ const createRecord = (overrides: Partial<ProcessingRecord> = {}): ProcessingReco
   ...overrides,
 });
 
+const createRopa = (records: ProcessingRecord[]): RecordOfProcessingActivities => ({
+  id: 'ropa-001',
+  organizationName: 'NaijaTech Solutions Ltd',
+  organizationContact: 'privacy@naijatech.example.com',
+  organizationAddress: '15 Broad Street, Lagos',
+  records,
+  lastUpdated: NOW,
+  version: '1.0',
+});
+
 describe('ROPAManagerLite', () => {
   it('renders default title and description, and overrides when provided', () => {
-    const { rerender } = render(<ROPAManagerLite records={[createRecord()]} />);
+    const { rerender } = render(<ROPAManagerLite ropa={createRopa([createRecord()])} />);
     expect(
       screen.getByRole('heading', { name: /Record of Processing Activities/i }),
     ).toBeInTheDocument();
@@ -45,7 +55,7 @@ describe('ROPAManagerLite', () => {
 
     rerender(
       <ROPAManagerLite
-        records={[createRecord()]}
+        ropa={createRopa([createRecord()])}
         title="Custom ROPA Title"
         description="Custom ROPA description"
       />,
@@ -60,7 +70,7 @@ describe('ROPAManagerLite', () => {
       createRecord({ id: 'r-2', name: 'Recruiting' }),
       createRecord({ id: 'r-3', name: 'Marketing CRM' }),
     ];
-    render(<ROPAManagerLite records={records} showSummary={false} showComplianceGaps={false} />);
+    render(<ROPAManagerLite ropa={createRopa(records)} showSummary={false} showComplianceGaps={false} />);
     const rows = screen.getAllByRole('row');
     // 1 header row + 3 body rows
     expect(rows).toHaveLength(4);
@@ -71,13 +81,13 @@ describe('ROPAManagerLite', () => {
 
   it('shows the summary when showSummary is true and hides it when false', () => {
     const { rerender } = render(
-      <ROPAManagerLite records={[createRecord()]} showComplianceGaps={false} />,
+      <ROPAManagerLite ropa={createRopa([createRecord()])} showComplianceGaps={false} />,
     );
     expect(screen.getByText('Total Records')).toBeInTheDocument();
     expect(screen.getByText('By Lawful Basis')).toBeInTheDocument();
 
     rerender(
-      <ROPAManagerLite records={[createRecord()]} showSummary={false} showComplianceGaps={false} />,
+      <ROPAManagerLite ropa={createRopa([createRecord()])} showSummary={false} showComplianceGaps={false} />,
     );
     expect(screen.queryByText('Total Records')).not.toBeInTheDocument();
     expect(screen.queryByText('By Lawful Basis')).not.toBeInTheDocument();
@@ -92,13 +102,13 @@ describe('ROPAManagerLite', () => {
       dataCategories: [],
       securityMeasures: [],
     });
-    render(<ROPAManagerLite records={[recordWithGaps]} showSummary={false} />);
+    render(<ROPAManagerLite ropa={createRopa([recordWithGaps])} showSummary={false} />);
     expect(screen.getByRole('status')).toBeInTheDocument();
     expect(screen.getByText(/Compliance Gaps Detected/i)).toBeInTheDocument();
   });
 
   it('renders no write-path buttons (no add/edit/delete/archive/export/save/submit affordances)', () => {
-    render(<ROPAManagerLite records={[createRecord(), createRecord({ id: 'r-2' })]} />);
+    render(<ROPAManagerLite ropa={createRopa([createRecord(), createRecord({ id: 'r-2' })])} />);
     const writeButtons = screen
       .queryAllByRole('button')
       .filter(el => /add|edit|delete|archive|export|save|submit/i.test(el.textContent || ''));
@@ -110,14 +120,14 @@ describe('ROPAManagerLite', () => {
     const onRecordClick = jest.fn();
 
     const { rerender } = render(
-      <ROPAManagerLite records={[record]} showSummary={false} showComplianceGaps={false} />,
+      <ROPAManagerLite ropa={createRopa([record])} showSummary={false} showComplianceGaps={false} />,
     );
     // No handler => no row buttons.
     expect(screen.queryAllByRole('button')).toHaveLength(0);
 
     rerender(
       <ROPAManagerLite
-        records={[record]}
+        ropa={createRopa([record])}
         showSummary={false}
         showComplianceGaps={false}
         onRecordClick={onRecordClick}
@@ -132,7 +142,7 @@ describe('ROPAManagerLite', () => {
 
   it('renders the root with no default tailwind classes when unstyled is true (only consumer classNames)', () => {
     const { container } = render(
-      <ROPAManagerLite records={[createRecord()]} unstyled classNames={{ root: 'my-ropa-root' }} />,
+      <ROPAManagerLite ropa={createRopa([createRecord()])} unstyled classNames={{ root: 'my-ropa-root' }} />,
     );
     const root = container.firstChild as HTMLElement;
     expect(root).toHaveClass('my-ropa-root');

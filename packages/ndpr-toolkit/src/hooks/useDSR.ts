@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { DSRRequest, DSRStatus, RequestStatus, RequestType } from '../types/dsr';
-import { formatDSRRequest } from '../utils/dsr';
+import { formatDSRRequestStructured } from '../utils/dsr';
 import type { StorageAdapter } from '../adapters/types';
 import { localStorageAdapter } from '../adapters/local-storage';
 
@@ -288,7 +288,7 @@ export function useDSR({
 
   // Format a request for display or submission
   const formatRequest = useCallback((request: DSRRequest): Record<string, unknown> => {
-    const { formattedRequest } = formatDSRRequest(request);
+    const { formattedRequest } = formatDSRRequestStructured(request);
     return formattedRequest;
   }, []);
 

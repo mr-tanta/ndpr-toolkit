@@ -6,11 +6,11 @@ export { DSRRequestForm } from './components/dsr/DSRRequestForm';
 export { DSRDashboard } from './components/dsr/DSRDashboard';
 export { DSRTracker } from './components/dsr/DSRTracker';
 export { useDSR } from './hooks/useDSR';
-export { formatDSRRequest, validateDsrSubmission } from './utils/dsr';
+export { formatDSRRequestStructured, validateDsrSubmissionStructured } from './utils/dsr';
 export type {
   DsrSubmissionPayload,
-  DsrSubmissionValidationResult,
   ValidateDsrSubmissionOptions,
+  FormatDSRRequestStructuredResult,
 } from './utils/dsr';
 export type { DSRRequest, RequestType, DSRStatus, DSRType, RequestStatus } from './types/dsr';
 export type { DSRRequestFormClassNames, DSRFormSubmission } from './components/dsr/DSRRequestForm';

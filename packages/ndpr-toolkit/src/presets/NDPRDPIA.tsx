@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { DPIAQuestionnaire } from '../components/dpia/DPIAQuestionnaire';
 import type { DPIAQuestionnaireClassNames } from '../components/dpia/DPIAQuestionnaire';
 import type { DPIAQuestion, DPIAResult, DPIARisk, DPIASection } from '../types/dpia';
@@ -170,17 +170,8 @@ export interface NDPRDPIAProps {
   unstyled?: boolean;
 
   /**
-   * Fired when the questionnaire is submitted, with the raw answer map.
-   * @deprecated Use `onResult` (4.1+) to receive a full `DPIAResult`
-   * containing the computed risk score. `onComplete` will be removed in
-   * 5.0.
-   */
-  onComplete?: (answers: DPIAAnswerMap) => void;
-
-  /**
    * Fired when the questionnaire is submitted, with the full `DPIAResult`
    * including risks, overall risk level, conclusion, and recommendations.
-   * Replaces `onComplete` from 4.1+.
    */
   onResult?: (result: DPIAResult) => void;
 
@@ -197,7 +188,7 @@ export interface NDPRDPIAProps {
    * - the questionnaire does NOT require an `adapter`
    * - on completion, the toolkit POSTs the JSON-serialised `DPIAAnswerMap`
    *   to this URL (with `Content-Type: application/json`)
-   * - your `onComplete` callback still fires (after the POST resolves)
+   * - your `onResult` callback still fires (after the POST resolves)
    * - submit failures are surfaced via `onSubmitError`
    *
    * @example
@@ -319,7 +310,6 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
   adapter,
   classNames,
   unstyled,
-  onComplete,
   onResult,
   copy,
   submitTo,
@@ -329,18 +319,6 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
 }) => {
   const [answers, setAnswers] = useState<DPIAAnswerMap>({});
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
-
-  // Fire-once dev warning for the deprecated `onComplete` prop.
-  const warnedLegacyRef = useRef(false);
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'production' || warnedLegacyRef.current) return;
-    if (onComplete !== undefined && onResult === undefined) {
-      warnedLegacyRef.current = true;
-      console.warn(
-        "[ndpr-toolkit/dpia] `onComplete` is deprecated; use `onResult` to receive the full DPIAResult. Will be removed in 5.0."
-      );
-    }
-  }, [onComplete, onResult]);
 
   const handleAnswerChange = (questionId: string, value: DPIAAnswerValue) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -376,11 +354,7 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
     } else if (adapter) {
       adapter.save(finalAnswers);
     }
-    // New uniform name wins; legacy still fans out for back-compat.
-    if (onResult) {
-      onResult(buildDPIAResult(sections, finalAnswers));
-    }
-    onComplete?.(finalAnswers);
+    onResult?.(buildDPIAResult(sections, finalAnswers));
   };
 
   const handleNextSection = () => {

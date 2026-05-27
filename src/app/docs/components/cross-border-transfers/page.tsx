@@ -103,7 +103,7 @@ function TransferManagement() {
   return (
     <CrossBorderTransferManager
       transfers={transfers}
-      onAddTransfer={addTransfer}
+      onAdd={addTransfer}
       summary={getSummary()}
     />
   );

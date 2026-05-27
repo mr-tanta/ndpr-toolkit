@@ -58,9 +58,9 @@ const SKIP_TS = process.argv.includes("--skip-ts");
  * a CSS file and has no JS export surface).
  */
 const PROBES = {
-  ".": ["ConsentBanner", "validateConsent", "NDPRThemeProvider"],
-  "./core": ["NDPRProvider", "validateConsent", "getComplianceScore"],
-  "./server": ["validateConsent", "generatePolicyText", "getComplianceScore"],
+  ".": ["ConsentBanner", "validateConsentStructured", "NDPRThemeProvider"],
+  "./core": ["NDPRProvider", "validateConsentStructured", "getComplianceScore"],
+  "./server": ["validateConsentStructured", "generatePolicyText", "getComplianceScore"],
   "./hooks": ["useConsent", "useDSR", "useDPIA"],
   "./headless": ["useConsent", "useDSR", "useDPIA"],
   "./adapters": ["cookieAdapter", "apiAdapter", "localStorageAdapter"],
