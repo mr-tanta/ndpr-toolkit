@@ -45,6 +45,8 @@ export { yorubaLocale } from './locales/yo';
 export { igboLocale } from './locales/ig';
 export { hausaLocale } from './locales/ha';
 export { pidginLocale } from './locales/pcm';
+export { arabicLocale } from './locales/ar';
+export { frenchLocale } from './locales/fr';
 export { mergeLocale } from './utils/locale';
 
 // All utility functions

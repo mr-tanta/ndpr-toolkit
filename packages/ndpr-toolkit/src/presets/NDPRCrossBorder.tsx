@@ -108,9 +108,9 @@ export const NDPRCrossBorder: React.FC<NDPRCrossBorderProps> = ({
   return (
     <CrossBorderTransferManager
       transfers={transfers}
-      onAddTransfer={handleAddTransfer}
-      onUpdateTransfer={handleUpdateTransfer}
-      onRemoveTransfer={handleRemoveTransfer}
+      onAdd={handleAddTransfer}
+      onUpdate={handleUpdateTransfer}
+      onArchive={handleRemoveTransfer}
       classNames={classNames}
       unstyled={unstyled}
       title={copy?.title}

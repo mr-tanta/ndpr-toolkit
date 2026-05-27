@@ -110,9 +110,9 @@ export const NDPRLawfulBasis: React.FC<NDPRLawfulBasisProps> = ({
   return (
     <LawfulBasisTracker
       activities={activities}
-      onAddActivity={handleAddActivity}
-      onUpdateActivity={handleUpdateActivity}
-      onArchiveActivity={handleArchiveActivity}
+      onAdd={handleAddActivity}
+      onUpdate={handleUpdateActivity}
+      onArchive={handleArchiveActivity}
       classNames={classNames}
       unstyled={unstyled}
       title={copy?.title}

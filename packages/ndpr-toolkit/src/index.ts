@@ -55,10 +55,20 @@ export type { NDPRTheme, NDPRThemeProviderProps } from './components/theme/NDPRT
 
 // Utility Functions
 export { resolveClass } from './utils/styling';
-export { validateConsent, validateConsentOptions } from './utils/consent';
+export {
+  validateConsent,
+  validateConsentOptions,
+  validateConsentStructured,
+  validateConsentOptionsStructured,
+} from './utils/consent';
+export type {
+  StructuredValidationError,
+  StructuredValidationResult,
+} from './utils/consent';
 export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
 export type { ConsentAuditEntry } from './utils/consent-audit';
-export { formatDSRRequest } from './utils/dsr';
+export { formatDSRRequest, formatDSRRequestStructured } from './utils/dsr';
+export type { FormatDSRRequestStructuredResult } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
 export { generatePolicyText } from './utils/privacy';
@@ -189,7 +199,7 @@ export type { CookieAdapterOptions } from './adapters/cookie';
 // Re-exported here so the validator's types are discoverable from the default
 // entry as well.
 // ---------------------------------------------------------------------------
-export { validateDsrSubmission } from './utils/dsr';
+export { validateDsrSubmission, validateDsrSubmissionStructured } from './utils/dsr';
 export type {
   DsrSubmissionPayload,
   DsrSubmissionValidationResult,

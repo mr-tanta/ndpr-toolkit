@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.1.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v4.0.0...v4.1.0) (2026-05-27)
+
+Additive minor. Closes the post-4.0 audit work and opens the deprecation window for 5.0. No breaks: every change here is opt-in or a new alias. If your 4.0 install is clean, drop in 4.1 with no code changes — then if you're using any of the legacy callback names below, your dev console will tell you what to rename ahead of 5.0.
+
+### Features
+
+#### Two new shipped locales: Arabic + French
+
+`ar` (Modern Standard Arabic, neutral register; "NDPA"/"NDPC" kept as identifiers; Western Arabic numerals for NDPA section references per Nigerian legal convention) and `fr` (Francophone West African register; uses GDPR-equivalent French terms — "personne concernée", "AIPD" — where they carry meaning).
+
+```ts
+import { ar, fr } from '@tantainnovative/ndpr-toolkit/locales';
+<NDPRProvider locale={ar}>...</NDPRProvider>
+```
+
+Both export from the `/locales` subpath and roll up into `NDPRLocale` without type changes.
+
+#### RTL-correct CSS via logical properties
+
+Converted 13 physical directional declarations in `styles/styles.css` to logical equivalents (`margin-left` → `margin-inline-start`, `text-align: left` → `text-align: start`, `left: 0; right: 0` → `inset-inline: 0`, etc.). Setting `dir="rtl"` on a parent now mirrors the layout correctly — Arabic users no longer see consent banner buttons hanging off the wrong edge.
+
+#### Uniform `onAdd` / `onUpdate` / `onArchive` callbacks across list managers
+
+`LawfulBasisTracker`, `CrossBorderTransferManager`, `ROPAManager`, and the `useROPA` hook each gain `onAdd` / `onUpdate` / `onArchive` callback names. The legacy module-specific names (`onAddActivity`, `onAddTransfer`, `onAddRecord`, `onRecordAdd`, etc.) still fire — both are called when set, so consumer code doesn't break — but they emit a one-shot dev-only deprecation warn.
+
+**Slated for 5.0 removal:** `onAddActivity`, `onUpdateActivity`, `onArchiveActivity`, `onAddTransfer`, `onUpdateTransfer`, `onRemoveTransfer`, `onAddRecord`, `onUpdateRecord`, `onArchiveRecord`, and the matching `useROPA` options `onRecordAdd`, `onRecordUpdate`, `onRecordArchive`.
+
+#### `NDPRDPIA` gains `onResult(result: DPIAResult)`
+
+The preset previously fired `onComplete(answers)` with just the raw answer map, discarding the computed risk score. The new `onResult` callback receives the full `DPIAResult` — `overallRiskLevel`, `canProceed`, `conclusion`, `recommendations`, all of it — so consumers can branch on the outcome without re-running the assessment client-side. `onComplete` still fires for back-compat (and dev-warns ahead of 5.0).
+
+#### `ROPAManagerLite` accepts the full `ropa` shape
+
+`ROPAManagerLite` now accepts a `ropa?: RecordOfProcessingActivities` prop alongside the legacy `records?: ProcessingRecord[]`. When `ropa` is set, it wins; otherwise the component wraps the legacy `records` array in a stub. This matches the full `ROPAManager` API. Legacy `records` dev-warns for 5.0.
+
+#### Structured validator family — `validate*Structured()`
+
+New sibling functions return `{ valid; errors: Array<{ field; code; message }>; data? }` instead of `string[]`:
+
+- `validateConsentStructured` (codes: `consents_required`, `timestamp_required`, `timestamp_invalid`, `version_required`, `method_required`, `has_interacted_required`, `consent_stale`)
+- `validateConsentOptionsStructured` (`options_required`, `purpose_required`)
+- `validateDsrSubmissionStructured` (`payload_not_object`, `request_type_required`, `request_type_not_allowed`, `data_subject_required`, `full_name_required`, `email_required`, `email_invalid_format`, `phone_invalid_type`, `identifier_type_required`, `identifier_value_required`, `submitted_at_invalid`, `additional_info_invalid_type`, `payload_final_narrowing_failed`)
+- `formatDSRRequestStructured` (`request_id_required`, `request_type_required`, `request_status_required`, `created_at_required`, `subject_name_required`, `subject_email_required`)
+
+Consumers can now branch on stable `code` values instead of regex-matching English strings — and the new shape is locale-independent. Legacy string-returning versions still work and dev-warn once per module-load. **Slated for 5.0 removal:** legacy string-returning shape.
+
+### Repo hygiene
+
+- Deleted six dead inner config files from `packages/ndpr-toolkit/` (`tsup.config.ts`, `tsconfig.json`, `tsconfig.lib.json`, `eslint.config.mjs`, `jest.config.js`, `rollup.config.js`). All build/test/lint config lives at the repo root; the inner copies haven't been read by any tool since 3.7. The inner `package.json` stays for now (still `private: true`) — its `exports` field is referenced by some IDE tooling for jump-to-definition.
+
+### Verification
+
+- `pnpm jest --no-coverage` — 1277 pass / 90 suites / 0 fail (+14 new structured-validator cases)
+- `pnpm verify:tarball` — all 22 subpaths resolve in ESM + CJS + TS
+- `npx tsc --noEmit -p tsconfig.json` — clean
+
 ## [4.0.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.13.0...v4.0.0) (2026-05-27)
 
 The consolidated breaking-change window. Every removal here was already deprecated and dev-warned in 3.13.x — if your 3.13.x dev console was clean, your 4.0 upgrade is a one-line bump. Full migration table in [`/docs/guides/migrating-3-13-to-4-0`](https://ndprtoolkit.com.ng/docs/guides/migrating-3-13-to-4-0).
