@@ -142,7 +142,16 @@ export type { StorageAdapter } from './adapters/types';
 // Validators
 // ---------------------------------------------------------------------------
 
-export { validateConsent, validateConsentOptions } from './utils/consent';
+export {
+  validateConsent,
+  validateConsentOptions,
+  validateConsentStructured,
+  validateConsentOptionsStructured,
+} from './utils/consent';
+export type {
+  StructuredValidationError,
+  StructuredValidationResult,
+} from './utils/consent';
 export {
   validateProcessingActivity,
   getLawfulBasisDescription,
@@ -166,11 +175,17 @@ export {
 // Domain utilities
 // ---------------------------------------------------------------------------
 
-export { formatDSRRequest, validateDsrSubmission } from './utils/dsr';
+export {
+  formatDSRRequest,
+  formatDSRRequestStructured,
+  validateDsrSubmission,
+  validateDsrSubmissionStructured,
+} from './utils/dsr';
 export type {
   DsrSubmissionPayload,
   DsrSubmissionValidationResult,
   ValidateDsrSubmissionOptions,
+  FormatDSRRequestStructuredResult,
 } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
@@ -244,6 +259,8 @@ export { yorubaLocale } from './locales/yo';
 export { igboLocale } from './locales/ig';
 export { hausaLocale } from './locales/ha';
 export { pidginLocale } from './locales/pcm';
+export { arabicLocale } from './locales/ar';
+export { frenchLocale } from './locales/fr';
 export { mergeLocale } from './utils/locale';
 
 // ---------------------------------------------------------------------------

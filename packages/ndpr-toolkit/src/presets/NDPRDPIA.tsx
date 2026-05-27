@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DPIAQuestionnaire } from '../components/dpia/DPIAQuestionnaire';
 import type { DPIAQuestionnaireClassNames } from '../components/dpia/DPIAQuestionnaire';
-import type { DPIASection } from '../types/dpia';
+import type { DPIAQuestion, DPIAResult, DPIARisk, DPIASection } from '../types/dpia';
+import { assessDPIARisk } from '../utils/dpia';
 import type { StorageAdapter } from '../adapters/types';
 import type { DPIAAnswerMap, DPIAAnswerValue } from '../hooks/useDPIA';
 
@@ -167,7 +168,21 @@ export interface NDPRDPIAProps {
   adapter?: StorageAdapter<DPIAAnswerMap>;
   classNames?: DPIAQuestionnaireClassNames;
   unstyled?: boolean;
+
+  /**
+   * Fired when the questionnaire is submitted, with the raw answer map.
+   * @deprecated Use `onResult` (4.1+) to receive a full `DPIAResult`
+   * containing the computed risk score. `onComplete` will be removed in
+   * 5.0.
+   */
   onComplete?: (answers: DPIAAnswerMap) => void;
+
+  /**
+   * Fired when the questionnaire is submitted, with the full `DPIAResult`
+   * including risks, overall risk level, conclusion, and recommendations.
+   * Replaces `onComplete` from 4.1+.
+   */
+  onResult?: (result: DPIAResult) => void;
 
   /**
    * UX copy overrides — see {@link NDPRDPIACopy}.
@@ -220,12 +235,92 @@ export interface NDPRDPIAProps {
   }) => void;
 }
 
+/**
+ * Builds a complete `DPIAResult` from the raw answer map by replaying the
+ * same risk-identification + risk-assessment pipeline that `useDPIA` uses.
+ * Keeps the preset surface independent of the hook while still producing
+ * the canonical result shape.
+ */
+function buildDPIAResult(sections: DPIASection[], answers: DPIAAnswerMap): DPIAResult {
+  const risks: DPIARisk[] = [];
+
+  const visitQuestion = (question: DPIAQuestion) => {
+    const answer = answers[question.id];
+    if (answer === undefined || answer === null) return;
+    if (!question.riskLevel) return;
+
+    if (['select', 'radio', 'checkbox'].includes(question.type) && question.options) {
+      const selectedOptions = Array.isArray(answer) ? answer : [answer];
+      selectedOptions.forEach((selected) => {
+        const option = question.options?.find((opt) => opt.value === selected);
+        if (option?.riskLevel) {
+          const riskLevel = option.riskLevel;
+          const likelihood = riskLevel === 'low' ? 1 : riskLevel === 'medium' ? 3 : 5;
+          const impact = riskLevel === 'low' ? 1 : riskLevel === 'medium' ? 3 : 5;
+          risks.push({
+            id: `risk_${risks.length + 1}`,
+            description: `${question.text} - ${option.label}`,
+            likelihood,
+            impact,
+            score: likelihood * impact,
+            level: riskLevel,
+            mitigated: false,
+            relatedQuestionIds: [question.id],
+          });
+        }
+      });
+    } else {
+      const riskLevel = question.riskLevel;
+      const likelihood = riskLevel === 'low' ? 1 : riskLevel === 'medium' ? 3 : 5;
+      const impact = riskLevel === 'low' ? 1 : riskLevel === 'medium' ? 3 : 5;
+      risks.push({
+        id: `risk_${risks.length + 1}`,
+        description: question.text,
+        likelihood,
+        impact,
+        score: likelihood * impact,
+        level: riskLevel,
+        mitigated: false,
+        relatedQuestionIds: [question.id],
+      });
+    }
+  };
+
+  sections.forEach((section) => section.questions.forEach(visitQuestion));
+
+  const now = Date.now();
+  const result: DPIAResult = {
+    id: `dpia_${now}`,
+    title: '',
+    processingDescription: '',
+    startedAt: now,
+    completedAt: now,
+    assessor: { name: '', role: '', email: '' },
+    answers,
+    risks,
+    overallRiskLevel: 'low',
+    canProceed: true,
+    conclusion: '',
+    version: '1.0',
+  };
+
+  const assessment = assessDPIARisk(result);
+  result.overallRiskLevel = assessment.overallRiskLevel;
+  result.canProceed = assessment.canProceed;
+  result.conclusion = assessment.canProceed
+    ? 'Based on the assessment, the processing can proceed with appropriate safeguards.'
+    : 'Based on the assessment, the processing should not proceed without further mitigation measures.';
+  result.recommendations = assessment.recommendations;
+  return result;
+}
+
 export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
   sections = DEFAULT_SECTIONS,
   adapter,
   classNames,
   unstyled,
-  onComplete = () => {},
+  onComplete,
+  onResult,
   copy,
   submitTo,
   submitOptions,
@@ -234,6 +329,18 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
 }) => {
   const [answers, setAnswers] = useState<DPIAAnswerMap>({});
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+
+  // Fire-once dev warning for the deprecated `onComplete` prop.
+  const warnedLegacyRef = useRef(false);
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production' || warnedLegacyRef.current) return;
+    if (onComplete !== undefined && onResult === undefined) {
+      warnedLegacyRef.current = true;
+      console.warn(
+        "[ndpr-toolkit/dpia] `onComplete` is deprecated; use `onResult` to receive the full DPIAResult. Will be removed in 5.0."
+      );
+    }
+  }, [onComplete, onResult]);
 
   const handleAnswerChange = (questionId: string, value: DPIAAnswerValue) => {
     setAnswers(prev => ({ ...prev, [questionId]: value }));
@@ -269,7 +376,11 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
     } else if (adapter) {
       adapter.save(finalAnswers);
     }
-    onComplete(finalAnswers);
+    // New uniform name wins; legacy still fans out for back-compat.
+    if (onResult) {
+      onResult(buildDPIAResult(sections, finalAnswers));
+    }
+    onComplete?.(finalAnswers);
   };
 
   const handleNextSection = () => {

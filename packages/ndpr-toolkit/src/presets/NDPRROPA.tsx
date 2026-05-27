@@ -99,9 +99,9 @@ export const NDPRROPA: React.FC<NDPRROPAProps> = ({
   return (
     <ROPAManager
       ropa={ropa}
-      onAddRecord={handleAddRecord}
-      onUpdateRecord={handleUpdateRecord}
-      onArchiveRecord={handleArchiveRecord}
+      onAdd={handleAddRecord}
+      onUpdate={handleUpdateRecord}
+      onArchive={handleArchiveRecord}
       classNames={classNames}
       unstyled={unstyled}
       title={copy?.title}

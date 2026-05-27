@@ -27,18 +27,42 @@ export interface UseROPAOptions {
 
   /**
    * Callback when a record is added
+   * @deprecated Renamed to `onAdd` in 4.1. The legacy name still fires
+   * for backward compatibility and will be removed in 5.0.
    */
   onRecordAdd?: (record: ProcessingRecord) => void;
 
   /**
    * Callback when a record is updated
+   * @deprecated Renamed to `onUpdate` in 4.1. The legacy name still fires
+   * for backward compatibility and will be removed in 5.0.
    */
   onRecordUpdate?: (id: string, updates: Partial<ProcessingRecord>) => void;
 
   /**
    * Callback when a record is archived
+   * @deprecated Renamed to `onArchive` in 4.1. The legacy name still fires
+   * for backward compatibility and will be removed in 5.0.
    */
   onRecordArchive?: (id: string) => void;
+
+  /**
+   * Callback when a record is added (uniform 4.1+ name).
+   * Takes precedence over `onRecordAdd` when both are provided.
+   */
+  onAdd?: (record: ProcessingRecord) => void;
+
+  /**
+   * Callback when a record is updated (uniform 4.1+ name).
+   * Takes precedence over `onRecordUpdate` when both are provided.
+   */
+  onUpdate?: (id: string, updates: Partial<ProcessingRecord>) => void;
+
+  /**
+   * Callback when a record is archived (uniform 4.1+ name).
+   * Takes precedence over `onRecordArchive` when both are provided.
+   */
+  onArchive?: (id: string) => void;
 }
 
 export interface UseROPAReturn {
@@ -140,12 +164,31 @@ export function useROPA({
   onRecordAdd,
   onRecordUpdate,
   onRecordArchive,
+  onAdd,
+  onUpdate,
+  onArchive,
 }: UseROPAOptions): UseROPAReturn {
   const adapterRef = useRef(adapter);
   adapterRef.current = adapter;
 
   const [ropa, setROPA] = useState<RecordOfProcessingActivities>(initialData);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Fire-once dev warning for legacy callback names.
+  const warnedLegacyRef = useRef(false);
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production' || warnedLegacyRef.current) return;
+    const legacyUsed: string[] = [];
+    if (onRecordAdd !== undefined && onAdd === undefined) legacyUsed.push('onRecordAdd -> onAdd');
+    if (onRecordUpdate !== undefined && onUpdate === undefined) legacyUsed.push('onRecordUpdate -> onUpdate');
+    if (onRecordArchive !== undefined && onArchive === undefined) legacyUsed.push('onRecordArchive -> onArchive');
+    if (legacyUsed.length > 0) {
+      warnedLegacyRef.current = true;
+      console.warn(
+        `[ndpr-toolkit/useROPA] Deprecated callback option(s): ${legacyUsed.join(', ')}. Will be removed in 5.0.`
+      );
+    }
+  }, [onRecordAdd, onRecordUpdate, onRecordArchive, onAdd, onUpdate, onArchive]);
 
   // When adapter is provided, load initial state on mount (falling back to initialData)
   useEffect(() => {
@@ -200,9 +243,11 @@ export function useROPA({
         persistROPA(updated);
         return updated;
       });
+      // New uniform name wins; legacy still fans out for back-compat.
+      onAdd?.(record);
       onRecordAdd?.(record);
     },
-    [onRecordAdd, persistROPA]
+    [onRecordAdd, onAdd, persistROPA]
   );
 
   const updateRecord = useCallback(
@@ -220,9 +265,10 @@ export function useROPA({
         persistROPA(updated);
         return updated;
       });
+      onUpdate?.(id, updates);
       onRecordUpdate?.(id, updates);
     },
-    [onRecordUpdate, persistROPA]
+    [onRecordUpdate, onUpdate, persistROPA]
   );
 
   const archiveRecord = useCallback(
@@ -240,9 +286,10 @@ export function useROPA({
         persistROPA(updated);
         return updated;
       });
+      onArchive?.(id);
       onRecordArchive?.(id);
     },
-    [onRecordArchive, persistROPA]
+    [onRecordArchive, onArchive, persistROPA]
   );
 
   const getRecord = useCallback(
