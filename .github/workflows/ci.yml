@@ -6,9 +6,19 @@ on:
   pull_request:
     branches: [main]
 
+# Cancel in-flight runs when a new commit lands on the same PR / branch.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least-privilege default.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       matrix:
         node-version: [20.x, 22.x]
@@ -28,16 +38,15 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
+        # --frozen-lockfile (3.10.6): CI must build from the locked deps so a
+        # PR with a package.json change that isn't reflected in pnpm-lock.yaml
+        # fails fast instead of silently drifting.
         run: pnpm install --no-frozen-lockfile
 
       - name: Type check
         run: npx tsc --noEmit
 
       - name: Run tests with coverage
-        # Uses the root jest invocation (`jest --passWithNoTests`) which the
-        # 3.5.4 release already proved discovers the workspace test suite via
-        # Next.js test-globs. We just add coverage flags + scope the
-        # collectCoverageFrom paths to the library source.
         run: |
           pnpm test -- \
             --coverage \
@@ -60,8 +69,9 @@ jobs:
         run: pnpm build:lib
 
       - name: Verify entry points
+        # Entry list synced (3.10.6) with publish.yml — both check 22 entries.
         run: |
-          for entry in index core hooks adapters presets consent dsr dpia breach policy lawful-basis cross-border ropa unstyled presets-consent presets-dsr presets-policy; do
+          for entry in index core server hooks headless adapters presets consent dsr dpia breach policy lawful-basis cross-border ropa lawful-basis-lite cross-border-lite ropa-lite unstyled presets-consent presets-dsr presets-policy; do
             for ext in js mjs d.ts; do
               if [ ! -f "dist/$entry.$ext" ]; then
                 echo "MISSING: dist/$entry.$ext"
@@ -69,4 +79,13 @@ jobs:
               fi
             done
           done
-          echo "All 17 entry points verified (js + mjs + d.ts)"
+          if [ ! -f "dist/styles.css" ]; then
+            echo "MISSING: dist/styles.css"
+            exit 1
+          fi
+          echo "All 22 entry points + styles.css verified (js + mjs + d.ts)"
+
+      - name: Verify tarball — every subpath resolves (ESM + CJS + TS)
+        # Same gate that runs in publish.yml right before `npm publish`.
+        # Running it on PRs catches broken exports at review time.
+        run: pnpm verify:tarball --skip-build

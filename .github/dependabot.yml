@@ -1,0 +1,51 @@
+# Dependabot config — automated PRs for outdated dependencies.
+# See https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  # GitHub Actions ecosystem — keeps actions/checkout@v4 etc. fresh and
+  # surfaces SHA-pinning opportunities.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(actions)"
+      include: "scope"
+
+  # npm ecosystem — root package.json + all workspace example apps.
+  # Grouped to avoid PR storms; security updates always open their own PR.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    groups:
+      dev-tooling:
+        patterns:
+          - "@types/*"
+          - "eslint*"
+          - "prettier*"
+          - "ts-*"
+          - "jest*"
+          - "@testing-library/*"
+        update-types:
+          - "minor"
+          - "patch"
+      docs-site:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+          - "tailwindcss"
+        update-types:
+          - "patch"

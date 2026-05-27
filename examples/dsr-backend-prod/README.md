@@ -70,7 +70,7 @@ response.json()` to surface field-level errors next to inputs.
 ### Real Prisma
 
 ```bash
-# 1. Pick a database — SQLite is the schema default, swap to postgresql for prod.
+# 1. Pick a database — SQLite is the schema default for local dev.
 echo 'DATABASE_URL="file:./dev.db"' >> .env.local
 
 # 2. Generate the client and run the first migration.
@@ -82,6 +82,24 @@ pnpm prisma:migrate
 the real `@prisma/client` automatically. The mock prints
 `[prisma] using in-memory MOCK`; the real client prints `[prisma] using real
 @prisma/client`.
+
+#### Switching to PostgreSQL for production
+
+The schema ships with `provider = "sqlite"` for zero-friction local dev. For
+production, edit `prisma/schema.prisma`:
+
+```diff
+ datasource db {
+-  provider = "sqlite"
++  provider = "postgresql"
+   url      = env("DATABASE_URL")
+ }
+```
+
+Then set `DATABASE_URL` to a Postgres connection string
+(`postgresql://user:pass@host:5432/dbname`) and re-run `pnpm prisma:generate`
++ `pnpm prisma:migrate dev --name init`. No code changes required — the
+shim and the route handler talk to whatever Prisma points at.
 
 ### Real Resend
 
