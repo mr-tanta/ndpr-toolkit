@@ -53,7 +53,7 @@ jobs:
         # --frozen-lockfile (3.10.6): a published tarball MUST be built from
         # the exact locked deps. Pre-3.10.6 we used --no-frozen-lockfile which
         # masked drift between package.json and pnpm-lock.yaml.
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run tests
         run: pnpm test

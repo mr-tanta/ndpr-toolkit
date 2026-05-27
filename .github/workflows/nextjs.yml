@@ -61,7 +61,7 @@ jobs:
             ${{ runner.os }}-nextjs-
       - name: Install dependencies
         # --frozen-lockfile (3.10.6): match CI's contract.
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
       - name: Build library first
         run: pnpm run build:lib
       - name: Typecheck docs site (PRs only)

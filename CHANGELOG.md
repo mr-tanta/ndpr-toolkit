@@ -9,7 +9,6 @@ Release 2 of 6 on the post-audit roadmap. CI / repo plumbing only — zero `dist
 ### CI workflows hardened
 
 - **`ci.yml`** — synced the `Verify entry points` loop with `publish.yml` (17 → 22 entries). Pre-3.10.6 a PR could pass CI while failing the publish workflow at release time. Both now check the same 22 entries plus `dist/styles.css`. Also added the **`verify:tarball` step**: the same ESM + CJS + TS resolution gate that runs in `publish.yml` now runs on every PR, so the 3.8.0–3.10.2 missing-exports class of bug can never reach a tag again.
-- **`--frozen-lockfile`** in all three workflows (`ci`, `publish`, `nextjs`). Pre-3.10.6 we used `--no-frozen-lockfile`, which masked drift between `package.json` and `pnpm-lock.yaml`.
 - **`concurrency:` groups + `timeout-minutes:`** added to all three workflows.
 - **`publish.yml`** — `npm install -g npm@11` (was `npm@latest`). Pin deliberately so a future npm major can't break release day.
 - **`nextjs.yml`** — moved `id-token: write` from workflow-level to the `deploy` job only (least privilege). Added a docs-site typecheck step on PR builds, closing the "docs site never typechecks" gap. PRs build without deploying.
@@ -33,9 +32,13 @@ Release 2 of 6 on the post-audit roadmap. CI / repo plumbing only — zero `dist
 
 - Tests badge swapped from a static `tests-1192 passing` shield to a live `CI` badge driven by the actual workflow status.
 
+### Known follow-up
+
+- The plan called for switching all three workflows to `--frozen-lockfile`. Defer: significant pre-existing lockfile drift (next 16.2.2 → 16.2.6, the docs-site self-dep, `@phosphor-icons/react` addition all pre-date proper lockfile maintenance). Tightening alongside the lockfile regeneration warrants its own dedicated release rather than risking unrelated breakage here.
+
 ### Verification
 
-- Workflow YAML lints; `--frozen-lockfile` works against the existing lockfile.
+- Workflow YAML lints; CI green on the new entry-point loop and verify-tarball step.
 - Jest: 1212 / 1212 passing (no functional changes).
 - `tsc --noEmit -p tsconfig.json` clean for the docs site.
 - `pnpm verify:tarball` clean across all 22 subpaths.
