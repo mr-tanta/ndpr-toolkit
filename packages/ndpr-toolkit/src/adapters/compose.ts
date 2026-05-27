@@ -1,5 +1,30 @@
 import type { StorageAdapter } from './types';
 
+/**
+ * Compose a primary adapter with one or more secondary adapters. Reads
+ * always go to the primary; writes (`save` / `remove`) fan out to the
+ * primary first, then each secondary. Secondary failures are logged but
+ * never propagated.
+ *
+ * Useful for shadowing localStorage to an API endpoint, mirroring consent
+ * to a cookie for SSR, or building offline-first sync.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   composeAdapters,
+ *   localStorageAdapter,
+ *   apiAdapter,
+ * } from '@tantainnovative/ndpr-toolkit/adapters';
+ * import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * const adapter = composeAdapters(
+ *   localStorageAdapter('ndpr_consent'),
+ *   apiAdapter('/api/consent'),
+ * );
+ * useConsent({ options, adapter });
+ * ```
+ */
 export function composeAdapters<T = unknown>(
   primary: StorageAdapter<T>,
   ...secondaries: StorageAdapter<T>[]

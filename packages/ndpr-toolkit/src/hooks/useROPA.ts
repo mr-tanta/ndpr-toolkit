@@ -94,6 +94,21 @@ export interface UseROPAReturn {
  *
  * Provides state management and utility functions for maintaining
  * a comprehensive register of all data processing activities.
+ *
+ * @example
+ * ```tsx
+ * import { useROPA } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function ROPARegister({ initialData }) {
+ *   const { ropa, addRecord, exportCSV } = useROPA({ initialData });
+ *   return (
+ *     <div>
+ *       <p>{ropa.records.length} processing records</p>
+ *       <button onClick={() => download(exportCSV())}>Export CSV</button>
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useROPA({
   initialData,

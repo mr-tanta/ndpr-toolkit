@@ -8,6 +8,24 @@ export interface CookieAdapterOptions {
   sameSite?: 'Strict' | 'Lax' | 'None';
 }
 
+/**
+ * Storage adapter backed by a browser cookie. Useful for consent state that
+ * needs to be shared with server-side rendering, or for cross-subdomain
+ * persistence via the `domain` option.
+ *
+ * @example
+ * ```ts
+ * import { cookieAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+ * import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * const adapter = cookieAdapter('ndpr_consent', {
+ *   domain: '.example.com',
+ *   sameSite: 'Lax',
+ *   expires: 180,
+ * });
+ * useConsent({ options, adapter });
+ * ```
+ */
 export function cookieAdapter<T = unknown>(
   key: string,
   options: CookieAdapterOptions = {}

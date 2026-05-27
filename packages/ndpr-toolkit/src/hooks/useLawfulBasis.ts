@@ -15,7 +15,7 @@ function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAd
   return localStorageAdapter<ProcessingActivity[]>(storageKey);
 }
 
-interface UseLawfulBasisOptions {
+export interface UseLawfulBasisOptions {
   /**
    * Initial processing activities to load
    */
@@ -101,6 +101,16 @@ export interface UseLawfulBasisReturn {
 /**
  * Hook for managing lawful basis documentation for processing activities
  * in compliance with NDPA 2023 Section 25.
+ *
+ * @example
+ * ```tsx
+ * import { useLawfulBasis } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function LawfulBasisRegistry() {
+ *   const { activities, addActivity } = useLawfulBasis();
+ *   return <p>{activities.length} processing activities documented.</p>;
+ * }
+ * ```
  */
 export function useLawfulBasis({
   initialActivities = [],

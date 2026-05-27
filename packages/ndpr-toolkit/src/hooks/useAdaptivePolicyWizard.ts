@@ -126,6 +126,28 @@ function buildPrivacyPolicy(
   };
 }
 
+/**
+ * Multi-step privacy-policy authoring hook that adapts the generated draft
+ * to the supplied template context (industry, processing purposes, data
+ * categories, processors). Auto-persists a draft via the supplied adapter
+ * and surfaces a live compliance score against the configured rule set.
+ *
+ * @example
+ * ```tsx
+ * import { useAdaptivePolicyWizard } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function PolicyWizard() {
+ *   const { currentStep, nextStep, policy, complianceScore } = useAdaptivePolicyWizard();
+ *   return (
+ *     <div>
+ *       <p>Step {currentStep} — compliance: {complianceScore}%</p>
+ *       <button onClick={nextStep}>Next</button>
+ *       {policy && <pre>{policy.title}</pre>}
+ *     </div>
+ *   );
+ * }
+ * ```
+ */
 export function useAdaptivePolicyWizard(
   options: UseAdaptivePolicyWizardOptions = {},
 ): UseAdaptivePolicyWizardReturn {

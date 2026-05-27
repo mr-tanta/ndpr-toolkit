@@ -4,6 +4,12 @@ export { sessionStorageAdapter } from './session-storage';
 export { cookieAdapter } from './cookie';
 export type { CookieAdapterOptions } from './cookie';
 export { apiAdapter } from './api';
-export type { ApiAdapterOptions } from './api';
+export type {
+  ApiAdapterOptions,
+  ApiAdapterErrorContext,
+  ApiAdapterSuccessContext,
+  ApiAdapterRetryConfig,
+  ApiAdapterMethod,
+} from './api';
 export { memoryAdapter } from './memory';
 export { composeAdapters } from './compose';

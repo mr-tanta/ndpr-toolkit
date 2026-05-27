@@ -216,9 +216,8 @@ function DSRPortal() {
     requests,
     submitRequest,
     updateRequest,
-    deleteRequest,
-    getRequestById
-  } = useDSR();
+    getRequest,
+  } = useDSR({ requestTypes });
 
   const handleSubmitRequest = (request) => {
     const newRequest = submitRequest({
@@ -429,7 +428,7 @@ export async function POST(request: NextRequest) {
             <tbody>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">onSubmit</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`(request: DSRFormData) => void`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`(submission: DSRFormSubmission) => void`}</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Callback function when form is submitted</td>
               </tr>
@@ -463,17 +462,18 @@ export async function POST(request: NextRequest) {
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">useDSR Hook</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
+          <code className="text-sm text-foreground font-mono">{`import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
 
 const {
-  requests,                // Array of all DSR requests
-  submitRequest,           // Function to submit a new request
-  updateRequest,           // Function to update an existing request
-  deleteRequest,           // Function to delete a request
-  getRequestById,          // Function to get a request by ID
-  filterRequestsByStatus,  // Function to filter requests by status
-  filterRequestsByType     // Function to filter requests by type
-} = useDSR();
+  requests,             // Array of all DSR requests
+  submitRequest,        // Submit a new request
+  updateRequest,        // Update an existing request
+  getRequest,           // Get a request by id (was: getRequestById)
+  getRequestsByStatus,  // Filter requests by status (was: filterRequestsByStatus)
+  getRequestsByType,    // Filter requests by type (was: filterRequestsByType)
+  clearRequests,        // Clear all requests
+  isLoading,            // Loading state for async adapters
+} = useDSR({ requestTypes });
 
 // Submit a new request
 const newRequest = submitRequest({

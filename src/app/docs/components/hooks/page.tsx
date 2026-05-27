@@ -110,13 +110,14 @@ function ConsentManager() {
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
 
 function DSRManager() {
-  const { 
-    requests,            // List of DSR requests
-    submitRequest,       // Function to submit a new request
-    updateRequest,       // Function to update an existing request
-    getRequestById,      // Function to get a request by ID
-    filterRequests       // Function to filter requests by criteria
-  } = useDSR();
+  const {
+    requests,             // List of DSR requests
+    submitRequest,        // Submit a new request
+    updateRequest,        // Update an existing request
+    getRequest,           // Get a request by id
+    getRequestsByStatus,  // Filter requests by status
+    getRequestsByType,    // Filter requests by type
+  } = useDSR({ requestTypes });
   
   // Example usage
   const handleSubmit = (formData) => {

@@ -2,6 +2,71 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.11.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.6...v3.11.0) (2026-05-27)
+
+Release 3 of 6 on the post-audit roadmap. Strictly additive — every change here adds to the public surface or fixes a docs lie. Existing consumers keep working without changes.
+
+### Type-export baseline — `*Props` interfaces, adapter ecosystem types, hook return types now reachable
+
+Every component's `Props` interface is now re-exported from `src/index.ts` (the default entry):
+
+`ConsentBannerProps`, `ConsentManagerProps`, `ConsentStorageProps`, `DSRRequestFormProps`, `DSRDashboardProps`, `DSRTrackerProps`, `DPIAQuestionnaireProps`, `DPIAReportProps`, `StepIndicatorProps`, `BreachReportFormProps`, `BreachRiskAssessmentProps`, `BreachNotificationManagerProps`, `RegulatoryReportGeneratorProps`, `PolicyGeneratorProps`, `PolicyPreviewProps`, `PolicyExporterProps`, `LawfulBasisTrackerProps`, `CrossBorderTransferManagerProps`, `ROPAManagerProps`.
+
+Consumers can now type-safely wrap the toolkit's components — e.g.
+
+```ts
+import type { ConsentBannerProps, NDPRThemeProvider } from '@tantainnovative/ndpr-toolkit';
+
+function MyConsentBanner(props: ConsentBannerProps & { brand?: string }) { … }
+```
+
+Adapter ecosystem types reachable too:
+- `ApiAdapterErrorContext<T>`, `ApiAdapterSuccessContext<T>`, `ApiAdapterRetryConfig`, `ApiAdapterMethod` from `/adapters` and root
+- `CookieAdapterOptions`, `StorageAdapter<T>` from `/adapters` and root
+
+DSR validator types reachable:
+- `DsrSubmissionPayload`, `DsrSubmissionValidationResult`, `ValidateDsrSubmissionOptions` from `/server` (canonical) and root
+
+Hook option/return interfaces promoted to `export interface` and re-exported through `hooks-entry.ts` (auto-flows to `/headless`):
+- `UseConsentOptions`/`Return`, `UseDSROptions`, `UseBreachOptions`, `UseDPIAOptions`, `UseLawfulBasisOptions`, `UseCrossBorderTransferOptions`, `UseComplianceScoreOptions`, `UsePrivacyPolicyOptions`.
+
+### JSDoc `@example` blocks on every public hook + adapter
+
+Added `@example` blocks to all 10 public hooks (`useConsent`, `useDSR`, `useBreach`, `useDPIA`, `useLawfulBasis`, `useCrossBorderTransfer`, `usePrivacyPolicy`, `useROPA`, `useAdaptivePolicyWizard`, `useComplianceScore`) and 5 adapters (`cookieAdapter`, `localStorageAdapter`, `sessionStorageAdapter`, `memoryAdapter`, `composeAdapters`). `useComplianceScore` previously had zero JSDoc; full block added (description + `@param` + `@returns` + `@example`).
+
+### Internal: `validateDsrSubmission` type-guard refactor
+
+Replaced the `as string` cast chain in `utils/dsr.ts` with a `isDsrPayloadRaw(payload): payload is DsrPayloadRaw` type guard. External signature unchanged. Safer narrowing; no consumer-visible difference.
+
+### Docs
+
+**9 new component pages** under `src/app/docs/components/`, all wired into the sidebar nav:
+
+- `ndpr-theme-provider`, `ndpr-provider`, `ndpr-dashboard`, `adaptive-policy-wizard`, `policy-page`, `legal-notice` (previously had no dedicated pages)
+- `lawful-basis-tracker-lite`, `cross-border-transfer-manager-lite`, `ropa-manager-lite` (Lite variants previously only mentioned inline)
+
+**Fixed broken docs** that taught fictitious symbol names:
+- 5 `useDSR()` calls without the required `requestTypes` arg, in `components/data-subject-rights/page.tsx`, `components/hooks/page.tsx`, and `guides/data-subject-requests/page.tsx`. All now show `useDSR({ requestTypes })` with the correct API.
+- `getRequestById` → `getRequest`, `filterRequestsByStatus` → `getRequestsByStatus`, `filterRequestsByType` → `getRequestsByType` (the docs were inventing names that don't exist). `deleteRequest` removed — no such function ships.
+- `onSubmit` prop on the DSR component page now typed `DSRFormSubmission`, not the fictitious `DSRFormData`.
+
+### README compact pass
+
+- Bumped version refs `v3.10.3` → `v3.11.0` (6 occurrences: header release link + 5 screenshot URL tags).
+- Replaced the 3-File Quickstart's throwaway `let store: unknown = null` API route with a clean 2-file quickstart that uses `localStorageAdapter` by default and shows `cookieAdapter` / `apiAdapter` / `composeAdapters` as opt-ins. The throwaway demo always looked unprofessional next to claims of production-readiness.
+- New **"When NOT to use this toolkit"** section between Adapters and Pluggable Storage. Honest framing: non-React stacks, banner-only use cases, GDPR-primary regimes, enterprise CMP shoppers should pick something else. Builds trust with the people who are the right fit.
+- "What's new" notice rewritten for 3.11.0 (less narrative, more skimmable).
+
+### CONTRIBUTING.md rewritten
+
+The previous file was generic boilerplate. The new one covers the practical things contributors actually need: pnpm 10 / Node ≥20 setup, repo layout (with a callout that the root `package.json` is the publish surface, not the inner one), how to run a single test, the `verify:tarball` gate, the release flow, branch conventions, patch/minor/major decision table, i18n contribution guide.
+
+### Verification
+
+- Jest: **1212 / 1212 passing** (no behaviour changes)
+- `tsc --noEmit -p tsconfig.json` — clean
+- `pnpm verify:tarball --skip-ts` — clean across all 22 subpaths
+
 ## [3.10.6](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.5...v3.10.6) (2026-05-27)
 
 Release 2 of 6 on the post-audit roadmap. CI / repo plumbing only — zero `dist/` changes, zero behaviour changes for consumers.

@@ -4,7 +4,7 @@ import { formatDSRRequest } from '../utils/dsr';
 import type { StorageAdapter } from '../adapters/types';
 import { localStorageAdapter } from '../adapters/local-storage';
 
-interface UseDSROptions {
+export interface UseDSROptions {
   /**
    * Initial requests to load
    */
@@ -111,7 +111,27 @@ function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAd
 }
 
 /**
- * Hook for managing Data Subject Requests in compliance with the NDPA
+ * Hook for managing Data Subject Requests in compliance with the NDPA.
+ *
+ * @example
+ * ```tsx
+ * import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function DSRPanel() {
+ *   const { requests, submitRequest } = useDSR({
+ *     requestTypes: [
+ *       { id: 'access', name: 'Access', description: 'Request access', estimatedCompletionTime: 30 },
+ *     ],
+ *   });
+ *   return (
+ *     <ul>
+ *       {requests.map((r) => (
+ *         <li key={r.id}>{r.type} — {r.status}</li>
+ *       ))}
+ *     </ul>
+ *   );
+ * }
+ * ```
  */
 export function useDSR({
   initialRequests = [],
