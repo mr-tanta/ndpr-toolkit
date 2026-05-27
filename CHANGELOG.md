@@ -31,7 +31,7 @@ The catch-all "An error occurred during export. Please try again." string masked
 
 - `next` bumped to `^16.2.6` (clears 7 dev-only High advisories).
 - `lucide-react` removed from root `peerDependencies` + `peerDependenciesMeta`. Zero internal importers exist, so listing it as a peer was bloat for consumers (an optional install they'd never actually use).
-- Root `package.json#devDependencies` self-reference to `"@tantainnovative/ndpr-toolkit": "^3.7.0"` removed — vestigial from when the docs site consumed the published lib instead of `packages/ndpr-toolkit/src`.
+- Root `package.json#devDependencies` self-reference to `@tantainnovative/ndpr-toolkit` widened from `^3.7.0` to `^3.10.0`. (Initially attempted removal — turns out the docs site's `import …from '@tantainnovative/ndpr-toolkit/{core,policy,server}'` paths rely on the self-dep for TS resolution under pnpm. Properly killing it requires switching to `tsconfig.paths` mapping at the docs site, deferred to 3.11.0.)
 - `packages/ndpr-toolkit/package.json` marked `"private": true` so it's clear it's the drift surface, not the publish surface. Slated for full removal in 4.0.
 - Deleted 3 dead root tsconfigs (`tsconfig.lib.json`, `tsconfig.lib-check.json`, `tsconfig.declarations.json`) — referenced from nowhere.
 - Deleted orphan files: `examples/consent-examples.tsx`, `UPGRADE_SUMMARY.md` (April-2025 doc superseded by the docs site upgrade guides), `public/screenshots/dpia-demo.png` (referenced from nowhere).
