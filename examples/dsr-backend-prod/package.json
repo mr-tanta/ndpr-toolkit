@@ -25,5 +25,8 @@
     "@types/react-dom": "^19.0.0",
     "prisma": "^5.20.0",
     "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.10.6](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.5...v3.10.6) (2026-05-27)
+
+Release 2 of 6 on the post-audit roadmap. CI / repo plumbing only — zero `dist/` changes, zero behaviour changes for consumers.
+
+### CI workflows hardened
+
+- **`ci.yml`** — synced the `Verify entry points` loop with `publish.yml` (17 → 22 entries). Pre-3.10.6 a PR could pass CI while failing the publish workflow at release time. Both now check the same 22 entries plus `dist/styles.css`. Also added the **`verify:tarball` step**: the same ESM + CJS + TS resolution gate that runs in `publish.yml` now runs on every PR, so the 3.8.0–3.10.2 missing-exports class of bug can never reach a tag again.
+- **`--frozen-lockfile`** in all three workflows (`ci`, `publish`, `nextjs`). Pre-3.10.6 we used `--no-frozen-lockfile`, which masked drift between `package.json` and `pnpm-lock.yaml`.
+- **`concurrency:` groups + `timeout-minutes:`** added to all three workflows.
+- **`publish.yml`** — `npm install -g npm@11` (was `npm@latest`). Pin deliberately so a future npm major can't break release day.
+- **`nextjs.yml`** — moved `id-token: write` from workflow-level to the `deploy` job only (least privilege). Added a docs-site typecheck step on PR builds, closing the "docs site never typechecks" gap. PRs build without deploying.
+
+### New workflows
+
+- **`.github/workflows/codeql.yml`** — CodeQL SAST on push + PR + weekly cron.
+- **`.github/dependabot.yml`** — weekly automated PRs for `github-actions` + `npm`, grouped.
+
+### Governance docs
+
+- `SECURITY.md`, `CODE_OF_CONDUCT.md`, `.github/FUNDING.yml`, `CODEOWNERS`, `.github/PULL_REQUEST_TEMPLATE.md`, `.github/ISSUE_TEMPLATE/{bug_report,feature_request,config}.{md,yml}`.
+
+### Example apps hygiene
+
+- `engines.node: >=20.0.0` added to all **14** example `package.json` files (was 2 of 14).
+- `.gitignore` added to `examples/ssr/{remix,astro}`. `examples/ssr/remix/public/.gitkeep` so the conventional dir exists.
+- `examples/dsr-backend-prod/README.md` — added a "Switching to PostgreSQL for production" subsection with the schema diff.
+
+### README
+
+- Tests badge swapped from a static `tests-1192 passing` shield to a live `CI` badge driven by the actual workflow status.
+
+### Verification
+
+- Workflow YAML lints; `--frozen-lockfile` works against the existing lockfile.
+- Jest: 1212 / 1212 passing (no functional changes).
+- `tsc --noEmit -p tsconfig.json` clean for the docs site.
+- `pnpm verify:tarball` clean across all 22 subpaths.
+
 ## [3.10.5](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.4...v3.10.5) (2026-05-27)
 
 First of six releases on the post-audit roadmap (3.10.5 → 3.10.6 → 3.11.0 → 3.12.0 → 3.13.0 → 4.0.0). This patch covers the "real bugs consumers actively hit" tier — no API changes observable to consumers.

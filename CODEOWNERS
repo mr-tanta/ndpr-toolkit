@@ -1,0 +1,17 @@
+# Code owners — auto-requested on every PR.
+# See https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything.
+*       @mr-tanta
+
+# Library source — extra scrutiny.
+/packages/ndpr-toolkit/src/     @mr-tanta
+
+# Build + publish pipeline (3.8.0-3.10.2 incident sensitivity).
+/scripts/                       @mr-tanta
+/.github/workflows/             @mr-tanta
+/tsup.config.ts                 @mr-tanta
+/package.json                   @mr-tanta
+
+# Security policy — must be reviewed by the maintainer.
+/SECURITY.md                    @mr-tanta

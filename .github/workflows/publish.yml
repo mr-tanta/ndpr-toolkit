@@ -4,9 +4,16 @@ on:
   release:
     types: [published]
 
+# Block concurrent publishes — if two releases are tagged seconds apart,
+# only one runs at a time to prevent racing for the npm version.
+concurrency:
+  group: publish-${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       id-token: write
@@ -35,14 +42,18 @@ jobs:
 
       - name: Upgrade npm to a version that supports Trusted Publishing OIDC
         # Node 22 ships with npm 10.x; npm Trusted Publishing (the GitHub
-        # OIDC → npm token exchange) requires npm 11.5.1 or later. Without
-        # this step, `npm publish --provenance` signs the sigstore
-        # attestation but never exchanges the OIDC token, then hits the
-        # registry unauthenticated and gets a misleading 404.
-        run: npm install -g npm@latest
+        # OIDC → npm token exchange) requires npm 11.5.1 or later.
+        #
+        # Pinned to npm@11 (3.10.6) instead of npm@latest — a future major
+        # npm release could break publish on the day it lands. Bump this
+        # pin deliberately.
+        run: npm install -g npm@11
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        # --frozen-lockfile (3.10.6): a published tarball MUST be built from
+        # the exact locked deps. Pre-3.10.6 we used --no-frozen-lockfile which
+        # masked drift between package.json and pnpm-lock.yaml.
+        run: pnpm install --frozen-lockfile
 
       - name: Run tests
         run: pnpm test
@@ -97,8 +108,7 @@ jobs:
       # Requires a registered trusted publisher at:
       #   https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit/access
       #
-      # `--provenance` adds the sigstore attestation; both pnpm and npm
-      # publish support that flag identically.
+      # `--provenance` adds the sigstore attestation.
       - name: Publish to npm (Trusted Publishing + provenance attestation)
         working-directory: .
         run: npm publish --access public --provenance
