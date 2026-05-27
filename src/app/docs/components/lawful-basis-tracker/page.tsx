@@ -103,7 +103,7 @@ function LawfulBasisPage() {
   return (
     <LawfulBasisTracker
       activities={activities}
-      onAddActivity={addActivity}
+      onAdd={addActivity}
       summary={getSummary()}
     />
   );

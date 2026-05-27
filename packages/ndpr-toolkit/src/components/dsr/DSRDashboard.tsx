@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DSRRequest, DSRStatus, DSRType } from '../../types/dsr';
-import { formatDSRRequest } from '../../utils/dsr';
+import { formatDSRRequestStructured } from '../../utils/dsr';
 import { resolveClass } from '../../utils/styling';
 import { useNDPRLocale } from '../NDPRProvider';
 
@@ -773,7 +773,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
                 <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-md">
                   <pre className="whitespace-pre-wrap text-sm font-mono text-gray-800 dark:text-gray-200">
                     <pre>
-                      {JSON.stringify(formatDSRRequest(selectedRequest), null, 2)}
+                      {JSON.stringify(formatDSRRequestStructured(selectedRequest).formattedRequest, null, 2)}
                     </pre>
                   </pre>
                 </div>

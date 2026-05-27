@@ -56,8 +56,6 @@ export type { NDPRTheme, NDPRThemeProviderProps } from './components/theme/NDPRT
 // Utility Functions
 export { resolveClass } from './utils/styling';
 export {
-  validateConsent,
-  validateConsentOptions,
   validateConsentStructured,
   validateConsentOptionsStructured,
 } from './utils/consent';
@@ -67,7 +65,7 @@ export type {
 } from './utils/consent';
 export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
 export type { ConsentAuditEntry } from './utils/consent-audit';
-export { formatDSRRequest, formatDSRRequestStructured } from './utils/dsr';
+export { formatDSRRequestStructured } from './utils/dsr';
 export type { FormatDSRRequestStructuredResult } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
@@ -195,13 +193,11 @@ export type {
 export type { CookieAdapterOptions } from './adapters/cookie';
 
 // ---------------------------------------------------------------------------
-// DSR server-side validation types (3.11.0) — also reachable from /server.
-// Re-exported here so the validator's types are discoverable from the default
-// entry as well.
+// DSR server-side validation types — also reachable from /server. Re-exported
+// here so the validator's types are discoverable from the default entry as well.
 // ---------------------------------------------------------------------------
-export { validateDsrSubmission, validateDsrSubmissionStructured } from './utils/dsr';
+export { validateDsrSubmissionStructured } from './utils/dsr';
 export type {
   DsrSubmissionPayload,
-  DsrSubmissionValidationResult,
   ValidateDsrSubmissionOptions,
 } from './utils/dsr';

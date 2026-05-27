@@ -2,6 +2,73 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v4.1.0...v5.0.0) (2026-05-27)
+
+Closes the deprecation window opened by 4.1.0. Every removal here was already deprecated and dev-warned in 4.1, so if your 4.1.x dev console was clean, your 5.0 upgrade is a one-line bump. Full migration table in [`/docs/guides/migrating-4-1-to-5-0`](https://ndprtoolkit.com.ng/docs/guides/migrating-4-1-to-5-0).
+
+### Breaking changes
+
+#### Uniform list-manager callbacks — legacy module-specific names removed
+
+The three list-manager components and the `useROPA` hook now use `onAdd` / `onUpdate` / `onArchive` exclusively. The legacy module-specific aliases are gone.
+
+| Component / Hook | Removed | Use instead |
+|---|---|---|
+| `LawfulBasisTracker` | `onAddActivity`, `onUpdateActivity`, `onArchiveActivity` | `onAdd`, `onUpdate`, `onArchive` |
+| `CrossBorderTransferManager` | `onAddTransfer`, `onUpdateTransfer`, `onRemoveTransfer` | `onAdd`, `onUpdate`, `onArchive` |
+| `ROPAManager` | `onAddRecord`, `onUpdateRecord`, `onArchiveRecord` | `onAdd`, `onUpdate`, `onArchive` |
+| `useROPA` (hook options) | `onRecordAdd`, `onRecordUpdate`, `onRecordArchive` | `onAdd`, `onUpdate`, `onArchive` |
+| `ROPAProvider` (compound) | `onRecordAdd`, `onRecordUpdate`, `onRecordArchive` | `onAdd`, `onUpdate`, `onArchive` |
+
+The 4.1 dev-warn pointed at every renamed callsite. The new names are short, locale-independent, and match across all three modules.
+
+#### `NDPRDPIA.onComplete(answers)` removed; use `onResult(result)`
+
+The 4.x `onComplete(answers)` callback only delivered the raw answer map, discarding the computed risk assessment. 4.1 added `onResult(result: DPIAResult)` alongside it. 5.0 drops `onComplete`.
+
+```diff
+- <NDPRDPIA onComplete={(answers) => save(answers)} />
++ <NDPRDPIA onResult={(result) => save(result)} />
+```
+
+`DPIAResult` exposes `answers`, `overallRiskLevel`, `canProceed`, `conclusion`, and `recommendations` — branch on the outcome without re-running the assessment.
+
+#### `ROPAManagerLite.records` removed; `ropa` is now required
+
+`ROPAManagerLite` previously accepted a flat `records: ProcessingRecord[]`. The full `ROPAManager` always took `ropa: RecordOfProcessingActivities`. 5.0 unifies on the richer shape.
+
+```diff
+- <ROPAManagerLite records={records} />
++ <ROPAManagerLite ropa={{ records, lastUpdated: Date.now(), version: '1.0', /* ... */ }} />
+```
+
+#### Legacy string-returning validators removed
+
+Four validators previously returned `string[]` or `Record<string, string>` of English error messages. 4.1 added structured-result siblings (`{ field, code, message }[]`). 5.0 removes the legacy shapes.
+
+| Removed | Use instead |
+|---|---|
+| `validateConsent` | `validateConsentStructured` |
+| `validateConsentOptions` | `validateConsentOptionsStructured` |
+| `validateDsrSubmission` | `validateDsrSubmissionStructured` |
+| `formatDSRRequest` | `formatDSRRequestStructured` |
+
+The structured shape is locale-independent — consumers can branch on stable `code` values (`email_invalid_format`, `consent_stale`, etc.) instead of regex-matching English strings. `useConsent().validationErrors` is now `StructuredValidationError[]` (was `string[]`); the same change applies to the `Consent.Provider` compound context.
+
+Also removed: the `DsrSubmissionValidationResult` type (replaced by `StructuredValidationResult<DsrSubmissionPayload>`).
+
+### Internal
+
+- `useConsent` and `Consent.Provider` switched their internal validation call from `validateConsent` to `validateConsentStructured`. `validationErrors` now exposes structured `{ field, code, message }` entries throughout.
+- `useDSR.formatRequest` and `DSRDashboard` switched to `formatDSRRequestStructured` internally; the consumer-facing `formatRequest()` return shape is unchanged.
+- `scripts/verify-tarball.mjs` PROBES updated to assert `validateConsentStructured` on the `.`/`./core`/`./server` subpaths.
+
+### Verification
+
+- `pnpm jest --no-coverage` — 1249 pass / 90 suites / 0 fail (-28 from legacy-validator and `onComplete` test removals)
+- `pnpm verify:tarball` — all 22 subpaths resolve in ESM + CJS + TS
+- `npx tsc --noEmit -p tsconfig.json` — clean
+
 ## [4.1.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v4.0.0...v4.1.0) (2026-05-27)
 
 Additive minor. Closes the post-4.0 audit work and opens the deprecation window for 5.0. No breaks: every change here is opt-in or a new alias. If your 4.0 install is clean, drop in 4.1 with no code changes — then if you're using any of the legacy callback names below, your dev console will tell you what to rename ahead of 5.0.

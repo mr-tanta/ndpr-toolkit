@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   LawfulBasis,
   ProcessingActivity,
@@ -42,41 +42,17 @@ export interface LawfulBasisTrackerProps {
   activities: ProcessingActivity[];
 
   /**
-   * Callback when a new activity is created
-   * @deprecated Renamed to `onAdd` in 4.1. The legacy name still fires
-   * for backward compatibility and will be removed in 5.0.
-   */
-  onAddActivity?: (activity: Omit<ProcessingActivity, 'id' | 'createdAt' | 'updatedAt'>) => void;
-
-  /**
-   * Callback when an activity is updated
-   * @deprecated Renamed to `onUpdate` in 4.1. The legacy name still fires
-   * for backward compatibility and will be removed in 5.0.
-   */
-  onUpdateActivity?: (id: string, updates: Partial<ProcessingActivity>) => void;
-
-  /**
-   * Callback when an activity is archived
-   * @deprecated Renamed to `onArchive` in 4.1. The legacy name still fires
-   * for backward compatibility and will be removed in 5.0.
-   */
-  onArchiveActivity?: (id: string) => void;
-
-  /**
-   * Callback when a new activity is created (uniform 4.1+ name).
-   * Takes precedence over `onAddActivity` when both are provided.
+   * Callback when a new activity is created.
    */
   onAdd?: (activity: Omit<ProcessingActivity, 'id' | 'createdAt' | 'updatedAt'>) => void;
 
   /**
-   * Callback when an activity is updated (uniform 4.1+ name).
-   * Takes precedence over `onUpdateActivity` when both are provided.
+   * Callback when an activity is updated.
    */
   onUpdate?: (id: string, updates: Partial<ProcessingActivity>) => void;
 
   /**
-   * Callback when an activity is archived (uniform 4.1+ name).
-   * Takes precedence over `onArchiveActivity` when both are provided.
+   * Callback when an activity is archived.
    */
   onArchive?: (id: string) => void;
 
@@ -237,9 +213,6 @@ const BASIS_BADGE_LABELS: Record<LawfulBasis, string> = {
  */
 export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   activities,
-  onAddActivity,
-  onUpdateActivity,
-  onArchiveActivity,
   onAdd,
   onUpdate,
   onArchive,
@@ -253,22 +226,6 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   classNames,
   unstyled,
 }) => {
-  // Fire-once dev warning for legacy callback names. Shared flag avoids
-  // spamming the console with multiple warnings per render.
-  const warnedLegacyRef = useRef(false);
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'production' || warnedLegacyRef.current) return;
-    const legacyUsed: string[] = [];
-    if (onAddActivity !== undefined && onAdd === undefined) legacyUsed.push('onAddActivity -> onAdd');
-    if (onUpdateActivity !== undefined && onUpdate === undefined) legacyUsed.push('onUpdateActivity -> onUpdate');
-    if (onArchiveActivity !== undefined && onArchive === undefined) legacyUsed.push('onArchiveActivity -> onArchive');
-    if (legacyUsed.length > 0) {
-      warnedLegacyRef.current = true;
-      console.warn(
-        `[ndpr-toolkit/lawful-basis] Deprecated callback prop name(s): ${legacyUsed.join(', ')}. Will be removed in 5.0.`
-      );
-    }
-  }, [onAddActivity, onUpdateActivity, onArchiveActivity, onAdd, onUpdate, onArchive]);
   const locale = useNDPRLocale();
   const resolvedTitle = title ?? locale.lawfulBasis.title ?? 'Lawful Basis Tracker';
   const resolvedDescription =
@@ -404,25 +361,21 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     }
 
     if (editingId) {
-      // New uniform name wins; legacy still fans out for back-compat.
       onUpdate?.(editingId, activityData);
-      onUpdateActivity?.(editingId, activityData);
     } else {
       onAdd?.(activityData);
-      onAddActivity?.(activityData);
     }
 
     setFormData(EMPTY_FORM);
     setEditingId(null);
     setFormErrors([]);
     setViewMode('list');
-  }, [formData, editingId, onUpdateActivity, onAddActivity, onUpdate, onAdd, parseList]);
+  }, [formData, editingId, onUpdate, onAdd, parseList]);
 
   // Handle archiving
   const handleArchiveActivity = useCallback((id: string) => {
     onArchive?.(id);
-    onArchiveActivity?.(id);
-  }, [onArchiveActivity, onArchive]);
+  }, [onArchive]);
 
   // View activity detail
   const handleViewDetail = useCallback((id: string) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import type { LawfulBasis } from '../../types/lawful-basis';
 import type { ProcessingRecord, RecordOfProcessingActivities } from '../../types/ropa';
 import type { ROPAComplianceGap } from '../../utils/ropa';
@@ -22,19 +22,9 @@ export interface ROPAManagerLiteClassNames {
 
 export interface ROPAManagerLiteProps {
   /**
-   * Flat list of processing records.
-   * @deprecated Use `ropa` (4.1+) to pass the full
-   * `RecordOfProcessingActivities` object, matching the full
-   * `ROPAManager` API. The `records` prop will be removed in 5.0.
+   * Full Record of Processing Activities — matches the full `ROPAManager` API.
    */
-  records?: ProcessingRecord[];
-
-  /**
-   * Full Record of Processing Activities (4.1+). Takes precedence over
-   * `records` when both are provided. This will become the canonical
-   * shape in 5.0.
-   */
-  ropa?: RecordOfProcessingActivities;
+  ropa: RecordOfProcessingActivities;
 
   title?: string;
   description?: string;
@@ -73,7 +63,6 @@ function isReviewOverdue(record: ProcessingRecord): boolean {
 }
 
 export const ROPAManagerLite: React.FC<ROPAManagerLiteProps> = ({
-  records,
   ropa,
   // i18n: explicit prop > provider locale > English default.
   title,
@@ -91,41 +80,11 @@ export const ROPAManagerLite: React.FC<ROPAManagerLiteProps> = ({
     description ?? locale.ropa.description ??
     'Maintain a comprehensive record of all data processing activities as required by the NDPA accountability principle.';
 
-  // Fire-once dev warning when consumers pass the legacy `records` prop
-  // without the new canonical `ropa` prop.
-  const warnedLegacyRef = useRef(false);
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'production' || warnedLegacyRef.current) return;
-    if (records !== undefined && ropa === undefined) {
-      warnedLegacyRef.current = true;
-      console.warn(
-        "[ndpr-toolkit/ropa] ROPAManagerLite `records` is deprecated; pass the full `ropa` object instead. Will be removed in 5.0."
-      );
-    }
-  }, [records, ropa]);
-
-  // New `ropa` prop wins when both are provided; otherwise fall back to
-  // the legacy `records` prop wrapped in a stub.
-  const resolvedRecords = useMemo<ProcessingRecord[]>(
-    () => (ropa ? ropa.records : records ?? []),
-    [ropa, records]
-  );
-  const ropaStub = useMemo<RecordOfProcessingActivities>(
-    () => ropa ?? {
-      id: 'lite',
-      organizationName: '',
-      organizationContact: '',
-      organizationAddress: '',
-      records: resolvedRecords,
-      lastUpdated: 0,
-      version: '0',
-    },
-    [ropa, resolvedRecords]
-  );
-  const summary = useMemo(() => generateROPASummary(ropaStub), [ropaStub]);
+  const resolvedRecords = ropa.records;
+  const summary = useMemo(() => generateROPASummary(ropa), [ropa]);
   const complianceGaps = useMemo<ROPAComplianceGap[]>(
-    () => identifyComplianceGaps(ropaStub),
-    [ropaStub]
+    () => identifyComplianceGaps(ropa),
+    [ropa]
   );
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type { LawfulBasis } from '../../types/lawful-basis';
 import type {
   ProcessingRecord,
@@ -45,41 +45,17 @@ export interface ROPAManagerProps {
   ropa: RecordOfProcessingActivities;
 
   /**
-   * Callback when a new record is added
-   * @deprecated Renamed to `onAdd` in 4.1. The legacy name still fires
-   * for backward compatibility and will be removed in 5.0.
-   */
-  onAddRecord?: (record: ProcessingRecord) => void;
-
-  /**
-   * Callback when a record is updated
-   * @deprecated Renamed to `onUpdate` in 4.1. The legacy name still fires
-   * for backward compatibility and will be removed in 5.0.
-   */
-  onUpdateRecord?: (id: string, updates: Partial<ProcessingRecord>) => void;
-
-  /**
-   * Callback when a record is archived
-   * @deprecated Renamed to `onArchive` in 4.1. The legacy name still fires
-   * for backward compatibility and will be removed in 5.0.
-   */
-  onArchiveRecord?: (id: string) => void;
-
-  /**
-   * Callback when a new record is added (uniform 4.1+ name).
-   * Takes precedence over `onAddRecord` when both are provided.
+   * Callback when a new record is added.
    */
   onAdd?: (record: ProcessingRecord) => void;
 
   /**
-   * Callback when a record is updated (uniform 4.1+ name).
-   * Takes precedence over `onUpdateRecord` when both are provided.
+   * Callback when a record is updated.
    */
   onUpdate?: (id: string, updates: Partial<ProcessingRecord>) => void;
 
   /**
-   * Callback when a record is archived (uniform 4.1+ name).
-   * Takes precedence over `onArchiveRecord` when both are provided.
+   * Callback when a record is archived.
    */
   onArchive?: (id: string) => void;
 
@@ -201,9 +177,6 @@ function formatDate(timestamp: number | undefined): string {
  */
 export const ROPAManager: React.FC<ROPAManagerProps> = ({
   ropa,
-  onAddRecord,
-  onUpdateRecord,
-  onArchiveRecord,
   onAdd,
   onUpdate,
   onArchive,
@@ -215,21 +188,6 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
   classNames,
   unstyled,
 }) => {
-  // Fire-once dev warning for legacy callback names.
-  const warnedLegacyRef = useRef(false);
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'production' || warnedLegacyRef.current) return;
-    const legacyUsed: string[] = [];
-    if (onAddRecord !== undefined && onAdd === undefined) legacyUsed.push('onAddRecord -> onAdd');
-    if (onUpdateRecord !== undefined && onUpdate === undefined) legacyUsed.push('onUpdateRecord -> onUpdate');
-    if (onArchiveRecord !== undefined && onArchive === undefined) legacyUsed.push('onArchiveRecord -> onArchive');
-    if (legacyUsed.length > 0) {
-      warnedLegacyRef.current = true;
-      console.warn(
-        `[ndpr-toolkit/ropa] Deprecated callback prop name(s): ${legacyUsed.join(', ')}. Will be removed in 5.0.`
-      );
-    }
-  }, [onAddRecord, onUpdateRecord, onArchiveRecord, onAdd, onUpdate, onArchive]);
   const locale = useNDPRLocale();
   const resolvedTitle = title ?? locale.ropa.title ?? 'Record of Processing Activities (ROPA)';
   const resolvedDescription =
@@ -365,23 +323,19 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
     // Check if this is a new record or an update
     const existingRecord = ropa.records.find((r) => r.id === recordToSave.id);
     if (existingRecord) {
-      // New uniform name wins; legacy still fans out for back-compat.
       onUpdate?.(recordToSave.id, recordToSave);
-      onUpdateRecord?.(recordToSave.id, recordToSave);
     } else {
       onAdd?.(recordToSave);
-      onAddRecord?.(recordToSave);
     }
 
     setEditingRecord(null);
     setFormErrors([]);
     setViewMode('list');
-  }, [editingRecord, purposesInput, dataCategoriesInput, sensitiveDataInput, subjectCategoriesInput, recipientsInput, securityMeasuresInput, systemsUsedInput, ropa.records, onUpdateRecord, onAddRecord, onUpdate, onAdd]);
+  }, [editingRecord, purposesInput, dataCategoriesInput, sensitiveDataInput, subjectCategoriesInput, recipientsInput, securityMeasuresInput, systemsUsedInput, ropa.records, onUpdate, onAdd]);
 
   const handleArchiveRecord = useCallback((id: string) => {
     onArchive?.(id);
-    onArchiveRecord?.(id);
-  }, [onArchiveRecord, onArchive]);
+  }, [onArchive]);
 
   const handleExportCSV = useCallback(() => {
     const csv = exportROPAToCSV(ropa);

@@ -10,7 +10,8 @@ export type { ConsentManagerClassNames } from './components/consent/ConsentManag
 export type { ConsentStorageClassNames } from './components/consent/ConsentStorage';
 export { useConsent } from './hooks/useConsent';
 export { resolveClass } from './utils/styling';
-export { validateConsent, validateConsentOptions } from './utils/consent';
+export { validateConsentStructured, validateConsentOptionsStructured } from './utils/consent';
+export type { StructuredValidationError, StructuredValidationResult } from './utils/consent';
 export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
 export type { ConsentAuditEntry } from './utils/consent-audit';
 export type { ConsentOption, ConsentSettings, ConsentStorageOptions, LawfulBasisType } from './types/consent';

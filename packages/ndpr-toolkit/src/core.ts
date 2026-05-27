@@ -3,21 +3,21 @@
  *
  * What this entry contains:
  * - All NDPA-related TypeScript types (no runtime cost in JS).
- * - Pure validators / generators (validateConsent, generatePolicyText, etc.).
+ * - Pure validators / generators (validateConsentStructured, generatePolicyText, etc.).
  * - Locale data (defaultLocale, yorubaLocale, ...) and the mergeLocale helper.
  * - NDPRProvider plus its `useNDPRConfig` / `useNDPRLocale` hooks. These
  *   pull in React Context — they are *client-only* and bring React into the
  *   import graph wherever this entry is consumed.
  *
  * RSC guidance:
- * Importing `validateConsent` (or any pure utility above) from a Server
- * Component file is fine — bundlers tree-shake the Provider out of the
- * server bundle as long as you do not also call the hooks. For a strictly
+ * Importing `validateConsentStructured` (or any pure utility above) from a
+ * Server Component file is fine — bundlers tree-shake the Provider out of
+ * the server bundle as long as you do not also call the hooks. For a strictly
  * zero-React surface (no Provider, no hooks, no transitive React import),
  * use `@tantainnovative/ndpr-toolkit/server`.
  *
  * @example
- *   import { validateConsent } from '@tantainnovative/ndpr-toolkit/core';
+ *   import { validateConsentStructured } from '@tantainnovative/ndpr-toolkit/core';
  *   import { NDPRProvider } from '@tantainnovative/ndpr-toolkit'; // root entry
  */
 
@@ -50,14 +50,15 @@ export { frenchLocale } from './locales/fr';
 export { mergeLocale } from './utils/locale';
 
 // All utility functions
-export { validateConsent, validateConsentOptions } from './utils/consent';
+export { validateConsentStructured, validateConsentOptionsStructured } from './utils/consent';
+export type { StructuredValidationError, StructuredValidationResult } from './utils/consent';
 export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
 export type { ConsentAuditEntry } from './utils/consent-audit';
-export { formatDSRRequest, validateDsrSubmission } from './utils/dsr';
+export { formatDSRRequestStructured, validateDsrSubmissionStructured } from './utils/dsr';
 export type {
   DsrSubmissionPayload,
-  DsrSubmissionValidationResult,
   ValidateDsrSubmissionOptions,
+  FormatDSRRequestStructuredResult,
 } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';

@@ -19,7 +19,7 @@
  * @example
  * ```ts
  * // app/api/dsr/route.ts (Next.js Server Action)
- * import { formatDSRRequest, sanitizeInput } from '@tantainnovative/ndpr-toolkit/server';
+ * import { formatDSRRequestStructured, sanitizeInput } from '@tantainnovative/ndpr-toolkit/server';
  * ```
  *
  * If you need React components or hooks, import from the package root,
@@ -143,8 +143,6 @@ export type { StorageAdapter } from './adapters/types';
 // ---------------------------------------------------------------------------
 
 export {
-  validateConsent,
-  validateConsentOptions,
   validateConsentStructured,
   validateConsentOptionsStructured,
 } from './utils/consent';
@@ -176,14 +174,11 @@ export {
 // ---------------------------------------------------------------------------
 
 export {
-  formatDSRRequest,
   formatDSRRequestStructured,
-  validateDsrSubmission,
   validateDsrSubmissionStructured,
 } from './utils/dsr';
 export type {
   DsrSubmissionPayload,
-  DsrSubmissionValidationResult,
   ValidateDsrSubmissionOptions,
   FormatDSRRequestStructuredResult,
 } from './utils/dsr';

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ConsentOption, ConsentSettings, ConsentStorageOptions } from '../types/consent';
-import { validateConsent } from '../utils/consent';
+import { validateConsentStructured } from '../utils/consent';
+import type { StructuredValidationError } from '../utils/consent';
 import type { StorageAdapter } from '../adapters/types';
 import { localStorageAdapter } from '../adapters/local-storage';
 import { sessionStorageAdapter } from '../adapters/session-storage';
@@ -72,9 +73,10 @@ export interface UseConsentReturn {
   isValid: boolean;
 
   /**
-   * Validation errors (if any)
+   * Validation errors (if any). Each entry is a structured `{ field, code,
+   * message }` so consumers can switch on `code` across locales.
    */
-  validationErrors: string[];
+  validationErrors: StructuredValidationError[];
 
   /**
    * Reset consent settings (clear from storage)
@@ -100,13 +102,13 @@ function applyLoaded(
   version: string,
   setSettings: (s: ConsentSettings | null) => void,
   setIsValid: (v: boolean) => void,
-  setValidationErrors: (e: string[]) => void,
+  setValidationErrors: (e: StructuredValidationError[]) => void,
   setShouldShowBanner: (v: boolean) => void,
   setIsLoading: (v: boolean) => void,
 ) {
   if (loaded) {
     setSettings(loaded);
-    const { valid, errors } = validateConsent(loaded);
+    const { valid, errors } = validateConsentStructured(loaded);
     setIsValid(valid);
     setValidationErrors(errors);
     setShouldShowBanner(!(valid && loaded.version === version));
@@ -155,7 +157,7 @@ export function useConsent({
   const [settings, setSettings] = useState<ConsentSettings | null>(null);
   const [shouldShowBanner, setShouldShowBanner] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [validationErrors, setValidationErrors] = useState<StructuredValidationError[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Load consent settings from storage on mount
@@ -197,7 +199,7 @@ export function useConsent({
   const saveSettings = useCallback(
     (newSettings: ConsentSettings) => {
       // Update state synchronously first
-      const { valid, errors } = validateConsent(newSettings);
+      const { valid, errors } = validateConsentStructured(newSettings);
       setIsValid(valid);
       setValidationErrors(errors);
       onChange?.(newSettings);

@@ -7,26 +7,26 @@ import type { StorageAdapter } from '../../adapters/types';
 export interface ROPAProviderProps {
   initialData: RecordOfProcessingActivities;
   adapter?: StorageAdapter<RecordOfProcessingActivities>;
-  onRecordAdd?: (record: ProcessingRecord) => void;
-  onRecordUpdate?: (id: string, updates: Partial<ProcessingRecord>) => void;
-  onRecordArchive?: (id: string) => void;
+  onAdd?: (record: ProcessingRecord) => void;
+  onUpdate?: (id: string, updates: Partial<ProcessingRecord>) => void;
+  onArchive?: (id: string) => void;
   children: React.ReactNode;
 }
 
 export const ROPAProvider: React.FC<ROPAProviderProps> = ({
   initialData,
   adapter,
-  onRecordAdd,
-  onRecordUpdate,
-  onRecordArchive,
+  onAdd,
+  onUpdate,
+  onArchive,
   children,
 }) => {
   const ropa = useROPA({
     initialData,
     adapter,
-    onRecordAdd,
-    onRecordUpdate,
-    onRecordArchive,
+    onAdd,
+    onUpdate,
+    onArchive,
   });
   return (
     <ROPACompoundContext.Provider value={ropa}>

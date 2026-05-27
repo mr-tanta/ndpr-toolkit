@@ -130,7 +130,7 @@ function ProcessingRecords() {
     <div>
       <ROPAManager
         records={ropa.records}
-        onAddRecord={addRecord}
+        onAdd={addRecord}
         summary={getSummary()}
       />
       <button onClick={() => exportROPAToCSV(ropa.records)}>
