@@ -2,6 +2,81 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [4.0.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.13.0...v4.0.0) (2026-05-27)
+
+The consolidated breaking-change window. Every removal here was already deprecated and dev-warned in 3.13.x — if your 3.13.x dev console was clean, your 4.0 upgrade is a one-line bump. Full migration table in [`/docs/guides/migrating-3-13-to-4-0`](https://ndprtoolkit.com.ng/docs/guides/migrating-3-13-to-4-0).
+
+### Breaking changes
+
+#### React 17 dropped from peer range
+
+`peerDependencies.react` is now `^18.0.0 || ^19.0.0` (was `^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0`). The toolkit uses `React.useId` (18+) in several components, so the previous claim was a lie — React 17 consumers installed cleanly then hit cryptic errors at runtime. This release just makes the peer range match reality.
+
+**Migration:** if you're on React 17 or earlier, upgrade your app to React 18+ before bumping. React 18 / 19 consumers: no action.
+
+#### `formDescription` removed; use `description`
+
+`BreachReportForm` and `NDPRBreachReport` previously accepted both `description` and a legacy `formDescription` alias (with a dev warn). The alias is gone.
+
+**Migration:** rename every `formDescription` to `description`. (3.13's dev warn told you where.)
+
+#### `initialActivities` / `initialTransfers` removed; use `initialData`
+
+`NDPRLawfulBasis` and `NDPRCrossBorder` presets now accept `initialData` only, matching `NDPRROPA`. The module-specific aliases are gone.
+
+**Migration:**
+```diff
+- <NDPRLawfulBasis initialActivities={activities} />
++ <NDPRLawfulBasis initialData={activities} />
+
+- <NDPRCrossBorder initialTransfers={transfers} />
++ <NDPRCrossBorder initialData={transfers} />
+```
+
+#### `extraOptions` removed from `NDPRConsent`
+
+The one-off pattern that extended the toolkit's default options is gone. Pass the full options array via `options` instead.
+
+**Migration:** copy the default option set (or build your own) and pass it via `options`. Example in the migration guide.
+
+#### `useDSR` default storage flipped to in-memory
+
+`useDSR` is the admin tracker hook — its state contains data subjects' PII. The previous default (`useLocalStorage: true`) persisted that PII to the admin's browser's localStorage, which is rarely appropriate. The default is now `useLocalStorage: false`.
+
+**Migration:**
+- If you intentionally relied on localStorage persistence, pass `useLocalStorage: true` explicitly (and reconsider whether you actually want it).
+- If you want production persistence, pass `adapter: apiAdapter('/api/dsr')` (or any other `StorageAdapter`).
+- If you don't need persistence, no action — the tracker now starts empty on every reload, which is correct for most admin UI use cases.
+
+#### `examples/dsr-backend-prod` renamed to `examples/dsr-backend-reference`
+
+The "prod" name oversold what the example does. It demonstrates DSR receipt and confirmation — not the full fulfilment pipeline (identity verification, audit logging, status transitions, request-type-specific handling, deadline tracking, DPO routing). The renamed example ships a "What you still need to build" checklist in its README so consumers don't ship it as-is.
+
+**Migration:** if you bookmarked or cloned `examples/dsr-backend-prod/`, update to `examples/dsr-backend-reference/`. The contents and contract are unchanged.
+
+### New
+
+- New migration guide page at `/docs/guides/migrating-3-13-to-4-0` walks through each break with diffs.
+
+### Not in this 4.0
+
+The plan originally also included:
+
+- list-manager callback rename (`onArchiveActivity` / `onRemoveTransfer` / `onArchiveRecord` → uniform `onArchive`)
+- `NDPRDPIA.onComplete(result: DPIAResult)` instead of `onComplete(answers)`
+- `ROPAManagerLite` accepts `ropa: RecordOfProcessingActivities` instead of `records: ProcessingRecord[]`
+- pure structured validator returns (legacy string returns removed)
+- discriminated-union `onSubmitError`
+- delete the inner `packages/ndpr-toolkit/{tsup.config.ts, tsconfig.json, etc.}` (already marked `private: true` in 3.10.5)
+
+Each adds API churn for marginal gain. Deferred to **4.1** so 4.0 stays focused on the items already deprecated in the 3.13 window. The inner-package deletion can land any time; behaviour change otherwise.
+
+### Verification
+
+- Jest: **1258 / 1258 passing** (no test count drift — deprecated-prop tests were updated to use the canonical names)
+- `tsc --noEmit -p tsconfig.json` clean
+- `pnpm verify:tarball --skip-ts` clean across all 22 subpaths
+
 ## [3.13.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.12.0...v3.13.0) (2026-05-27)
 
 Release 5 of 6 on the post-audit roadmap. The **deprecation-window minor** — strictly additive, but every prop alias and behavior change that 4.0 will commit to gets fired here first as a dev-mode warning. Existing 3.x consumers see no breakage; new code can adopt the canonical surface.

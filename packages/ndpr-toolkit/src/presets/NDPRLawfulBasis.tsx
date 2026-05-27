@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LawfulBasisTracker } from '../components/lawful-basis/LawfulBasisTracker';
 import type { LawfulBasisTrackerClassNames } from '../components/lawful-basis/LawfulBasisTracker';
 import type { ProcessingActivity } from '../types/lawful-basis';
@@ -18,16 +18,10 @@ export interface NDPRLawfulBasisCopy {
 
 export interface NDPRLawfulBasisProps {
   /**
-   * Initial activities to seed the tracker. Canonical name in 3.13+.
-   * Takes precedence over `initialActivities` if both are set.
+   * Initial activities to seed the tracker. (4.0: the legacy
+   * `initialActivities` alias was removed.)
    */
   initialData?: ProcessingActivity[];
-
-  /**
-   * @deprecated Renamed to `initialData`. Will be removed in 4.0.
-   * If both are set, `initialData` wins.
-   */
-  initialActivities?: ProcessingActivity[];
 
   adapter?: StorageAdapter<ProcessingActivity[]>;
   classNames?: LawfulBasisTrackerClassNames;
@@ -41,31 +35,12 @@ export interface NDPRLawfulBasisProps {
 
 export const NDPRLawfulBasis: React.FC<NDPRLawfulBasisProps> = ({
   initialData,
-  initialActivities,
   adapter,
   classNames,
   unstyled,
   copy,
 }) => {
-  // Dev-only deprecation warning: `initialActivities` is the 3.x name;
-  // `initialData` is the canonical 3.13+ name. Fire-once per instance.
-  const warnedInitialActivitiesRef = useRef(false);
-  useEffect(() => {
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      initialActivities !== undefined &&
-      initialData === undefined &&
-      !warnedInitialActivitiesRef.current
-    ) {
-      warnedInitialActivitiesRef.current = true;
-      // eslint-disable-next-line no-console
-      console.warn(
-        "[ndpr-toolkit/lawful-basis] NDPRLawfulBasisProps.initialActivities is deprecated; rename to 'initialData'. Will be removed in 4.0.",
-      );
-    }
-  }, [initialActivities, initialData]);
-
-  const resolvedInitial: ProcessingActivity[] = initialData ?? initialActivities ?? [];
+  const resolvedInitial: ProcessingActivity[] = initialData ?? [];
 
   // Synchronous seed: only honoured for sync adapters (localStorage,
   // memory). Async adapters (cookie, api) return a Promise which we ignore

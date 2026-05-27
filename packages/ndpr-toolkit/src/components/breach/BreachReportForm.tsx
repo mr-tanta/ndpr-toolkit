@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { BreachCategory } from '../../types/breach';
 import { resolveClass } from '../../utils/styling';
 import { sanitizeInput } from '../../utils/sanitize';
@@ -124,17 +124,11 @@ export interface BreachReportFormProps {
   title?: string;
   
   /**
-   * Description text displayed on the form. Canonical name in 3.13+.
-   * Takes precedence over `formDescription` if both are set.
+   * Description text displayed on the form.
+   *
    * @default "Use this form to report a suspected or confirmed data breach in accordance with NDPA Section 40. All fields marked with * are required."
    */
   description?: string;
-
-  /**
-   * @deprecated Renamed to `description`. Will be removed in 4.0.
-   * If both are set, `description` wins.
-   */
-  formDescription?: string;
   
   /**
    * Text for the submit button
@@ -231,7 +225,6 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   // defaulted directly to English.
   title,
   description,
-  formDescription,
   submitButtonText,
   className = "",
   buttonClassName = "",
@@ -247,30 +240,12 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   defaultValues,
   onReset
 }) => {
-  // Dev-only deprecation warning: `formDescription` is the 3.x name;
-  // `description` is the canonical 3.13+ name. Fire-once per instance.
-  const warnedFormDescriptionRef = useRef(false);
-  useEffect(() => {
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      formDescription !== undefined &&
-      description === undefined &&
-      !warnedFormDescriptionRef.current
-    ) {
-      warnedFormDescriptionRef.current = true;
-      // eslint-disable-next-line no-console
-      console.warn(
-        "[ndpr-toolkit/breach] BreachReportFormProps.formDescription is deprecated; rename to 'description'. Will be removed in 4.0.",
-      );
-    }
-  }, [formDescription, description]);
-
   // i18n: explicit prop > provider locale > English default.
-  // `description` (3.13+) wins over the legacy `formDescription`.
+  // (4.0: legacy `formDescription` alias removed — use `description`.)
   const locale = useNDPRLocale();
   const resolvedTitle = title ?? locale.breach.title ?? 'Report a Data Breach';
   const resolvedFormDescription =
-    description ?? formDescription ?? locale.breach.description ??
+    description ?? locale.breach.description ??
     'Use this form to report a suspected or confirmed data breach in accordance with NDPA Section 40. All fields marked with * are required.';
   const resolvedSubmit = submitButtonText ?? locale.breach.submitReport ?? 'Submit Report';
 

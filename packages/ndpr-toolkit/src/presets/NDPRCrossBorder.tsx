@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CrossBorderTransferManager } from '../components/cross-border/CrossBorderTransferManager';
 import type { CrossBorderTransferManagerClassNames } from '../components/cross-border/CrossBorderTransferManager';
 import type { CrossBorderTransfer } from '../types/cross-border';
@@ -18,16 +18,10 @@ export interface NDPRCrossBorderCopy {
 
 export interface NDPRCrossBorderProps {
   /**
-   * Initial transfers to seed the manager. Canonical name in 3.13+.
-   * Takes precedence over `initialTransfers` if both are set.
+   * Initial transfers to seed the manager. (4.0: the legacy
+   * `initialTransfers` alias was removed.)
    */
   initialData?: CrossBorderTransfer[];
-
-  /**
-   * @deprecated Renamed to `initialData`. Will be removed in 4.0.
-   * If both are set, `initialData` wins.
-   */
-  initialTransfers?: CrossBorderTransfer[];
 
   adapter?: StorageAdapter<CrossBorderTransfer[]>;
   classNames?: CrossBorderTransferManagerClassNames;
@@ -41,31 +35,12 @@ export interface NDPRCrossBorderProps {
 
 export const NDPRCrossBorder: React.FC<NDPRCrossBorderProps> = ({
   initialData,
-  initialTransfers,
   adapter,
   classNames,
   unstyled,
   copy,
 }) => {
-  // Dev-only deprecation warning: `initialTransfers` is the 3.x name;
-  // `initialData` is the canonical 3.13+ name. Fire-once per instance.
-  const warnedInitialTransfersRef = useRef(false);
-  useEffect(() => {
-    if (
-      process.env.NODE_ENV !== 'production' &&
-      initialTransfers !== undefined &&
-      initialData === undefined &&
-      !warnedInitialTransfersRef.current
-    ) {
-      warnedInitialTransfersRef.current = true;
-      // eslint-disable-next-line no-console
-      console.warn(
-        "[ndpr-toolkit/cross-border] NDPRCrossBorderProps.initialTransfers is deprecated; rename to 'initialData'. Will be removed in 4.0.",
-      );
-    }
-  }, [initialTransfers, initialData]);
-
-  const resolvedInitial: CrossBorderTransfer[] = initialData ?? initialTransfers ?? [];
+  const resolvedInitial: CrossBorderTransfer[] = initialData ?? [];
 
   // Synchronous seed: only honoured for sync adapters (localStorage,
   // memory). Async adapters (cookie, api) return a Promise which we ignore
