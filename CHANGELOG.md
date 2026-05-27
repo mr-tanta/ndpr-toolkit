@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.0.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.0.0...v5.0.1) (2026-05-28)
+
+Docs-only patch. No runtime code change.
+
+- README refresh for 5.0: structured-result validator examples (route-handler + client branching), new Internationalization section listing all seven shipped locales (en, yo, ig, ha, pcm, ar, fr) with RTL guidance, `/server` and `/core` import examples switched to `validateConsentStructured`, `cookieAdapter` default documented as 180 days with NDPA Section 26 rationale, and every `raw.githubusercontent.com/.../vN.N.N/...` image URL pinned to the v5.0.0 tag.
+
+The npm page now matches the v5 surface. No code, types, or exports changed — `^5.0.0` consumers do not need to upgrade unless they want the new README on their npm page.
+
 ## [5.0.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v4.1.0...v5.0.0) (2026-05-27)
 
 Closes the deprecation window opened by 4.1.0. Every removal here was already deprecated and dev-warned in 4.1, so if your 4.1.x dev console was clean, your 5.0 upgrade is a one-line bump. Full migration table in [`/docs/guides/migrating-4-1-to-5-0`](https://ndprtoolkit.com.ng/docs/guides/migrating-4-1-to-5-0).
