@@ -9,19 +9,19 @@
 [![CI](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
-v3 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, and a **compliance score engine** — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
+v5 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
 
-**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v3.11.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v3.11.0)**
+**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v5.0.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v5.0.0)**
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app)
 [![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/nextjs-app)
 
-> **What's new in 3.11.0:** Every component's `Props` interface is now re-exported from the root (consumers can finally wrap toolkit components without copying types). Adapter ecosystem types (`ApiAdapterErrorContext`, `StorageAdapter<T>`, …) and DSR validator types reachable from `/server` + root. 9 new component docs pages cover `NDPRThemeProvider`, `NDPRProvider`, `NDPRDashboard`, `AdaptivePolicyWizard`, `PolicyPage`, the 3 Lite manager variants, and `LegalNotice`.
+> **What's new in 5.0:** Structured-result validators are now the only shape — `validateConsentStructured`, `validateDsrSubmissionStructured`, `formatDSRRequestStructured`, etc. return `{ field, code, message }[]` so consumers can switch on stable, locale-independent codes (`email_invalid_format`, `consent_stale`, …) instead of regex-matching English strings. Uniform `onAdd` / `onUpdate` / `onArchive` callbacks across `LawfulBasisTracker`, `CrossBorderTransferManager`, `ROPAManager`, and `useROPA`. `NDPRDPIA.onResult(result)` replaces `onComplete(answers)` — the callback now receives the full computed `DPIAResult` (risk level, can-proceed verdict, recommendations). Upgrading from 4.1? See the [4.1 → 5.0 migration guide](https://ndprtoolkit.com.ng/docs/guides/migrating-4-1-to-5-0).
 >
-> **3.10.x highlights:** Typed theming via `<NDPRThemeProvider>`, a `/headless` subpath alias of `/hooks`, the production-grade DSR backend reference at `examples/dsr-backend-reference/`, plus the `verify:tarball` CI gate that catches broken exports at PR time. Upgrading from 3.7.x? See the [3.7 → 3.10 upgrade guide](https://ndprtoolkit.com.ng/docs/guides/upgrading-3-7-to-3-10). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
+> **Recent highlights:** Arabic + French locales with RTL-correct CSS (4.1.0). React 17 dropped from peers; `^18 || ^19` is the honest range (4.0.0). 17 components wired through `useNDPRLocale()` for full Yoruba / Igbo / Hausa / Pidgin coverage (3.13.0). Typed theming via `<NDPRThemeProvider>`, `verify:tarball` CI gate that catches broken exports at PR time (3.10.x). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.11.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
 </p>
 
 ---
@@ -71,7 +71,7 @@ import { cookieAdapter, apiAdapter, composeAdapters, localStorageAdapter } from 
 The full SSR pattern (cookie read server-side → banner hydrates already-resolved, no flash) is in the [Server-Side Storage guide](https://ndprtoolkit.com.ng/docs/guides/server-side-storage).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.11.0/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
   <br />
   <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
 </p>
@@ -278,7 +278,8 @@ The recommended entry for backend and serverless contexts. Pure validators, gene
 
 ```ts
 import {
-  validateConsent,
+  validateConsentStructured,
+  validateDsrSubmissionStructured,
   generatePolicyText,
   exportHTML,
   getComplianceScore,
@@ -292,7 +293,7 @@ Build-output guard tests assert this entry never carries a `"use client"` direct
 Adds the `NDPRProvider` React Context on top of `/server`'s pure surface. Use when you want types and validators alongside the provider in the same import.
 
 ```ts
-import { NDPRProvider, validateConsent, getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
+import { NDPRProvider, validateConsentStructured, getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
 ```
 
 ### Adapters — pluggable storage
@@ -357,8 +358,43 @@ import { composeAdapters, apiAdapter, localStorageAdapter } from '@tantainnovati
 
 **Cookie (server-readable, for SSR consent gating):**
 ```tsx
-<NDPRConsent adapter={cookieAdapter('ndpr_consent', { expires: 365 })} />
+<NDPRConsent adapter={cookieAdapter('ndpr_consent', { expires: 180 })} />
 ```
+
+`expires` defaults to **180 days** (since 3.10.5). NDPA Section 26 doesn't pin a number, but 6 months is the common practice for non-essential cookies and matches what regulators have published elsewhere — long enough to avoid daily re-prompting, short enough that consent stays meaningful.
+
+---
+
+## Structured-Result Validators
+
+Every validator returns a typed `{ field, code, message }[]` so client and server code can branch on stable, locale-independent codes — not regex-matched English strings.
+
+**Next.js Route Handler:**
+```ts
+import { validateDsrSubmissionStructured } from '@tantainnovative/ndpr-toolkit/server';
+
+export async function POST(req: Request) {
+  const { valid, errors, data } = validateDsrSubmissionStructured(await req.json());
+  if (!valid) {
+    return Response.json({ errors }, { status: 422 });
+    // errors: Array<{ field: 'dataSubject.email', code: 'email_invalid_format', message: '...' }>
+  }
+  // `data` is the narrowed `DsrSubmissionPayload`
+  await dsrStore.create(data);
+  return Response.json({ ok: true }, { status: 201 });
+}
+```
+
+**Client-side branching:**
+```ts
+import { validateConsentStructured } from '@tantainnovative/ndpr-toolkit';
+
+const { valid, errors } = validateConsentStructured(settings);
+const stale = errors.find((e) => e.code === 'consent_stale');
+if (stale) showRefreshBanner();
+```
+
+The full code catalogue lives in the [validator API docs](https://ndprtoolkit.com.ng/docs/server). The legacy string-returning shapes (`validateConsent`, `validateDsrSubmission`, `formatDSRRequest`, `validateConsentOptions`) were removed in 5.0 — see the [4.1 → 5.0 migration guide](https://ndprtoolkit.com.ng/docs/guides/migrating-4-1-to-5-0) if you're upgrading.
 
 ---
 
@@ -448,13 +484,13 @@ Every module has an interactive demo. No signup, no setup — try them instantly
 
 <p align="center">
   <a href="https://ndprtoolkit.com.ng/ndpr-demos">
-    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.11.0/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
+    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
   </a>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.11.0/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v3.11.0/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
 </p>
 
 <p align="center">
@@ -488,6 +524,34 @@ Cookie-bridged consent that hydrates without a flash. Each scaffold reads the `n
 | Next.js App Router | [`examples/ssr/nextjs-app-router`](./examples/ssr/nextjs-app-router) | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/nextjs-app-router) |
 | Remix | [`examples/ssr/remix`](./examples/ssr/remix) | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/remix) |
 | Astro | [`examples/ssr/astro`](./examples/ssr/astro) | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/ssr/astro) |
+
+---
+
+## Internationalization
+
+Wrap your app in `<NDPRProvider locale={...}>` and every shipped component picks up the translation:
+
+```tsx
+import { NDPRProvider, arabicLocale, frenchLocale } from '@tantainnovative/ndpr-toolkit/core';
+
+<NDPRProvider locale={arabicLocale}>
+  <App />
+</NDPRProvider>
+```
+
+Seven locales ship out of the box:
+
+| Locale | Export | Notes |
+|---|---|---|
+| English | `defaultLocale` | Default |
+| Yoruba | `yorubaLocale` | |
+| Igbo | `igboLocale` | |
+| Hausa | `hausaLocale` | |
+| Nigerian Pidgin | `pidginLocale` | |
+| Arabic | `arabicLocale` | Modern Standard; RTL-aware. Set `dir="rtl"` on a parent and `styles.css` mirrors correctly (logical properties as of 4.1). |
+| French | `frenchLocale` | Francophone West African register; uses GDPR-equivalent French terms where they carry meaning. |
+
+Override individual strings via `mergeLocale(base, partial)`. Component prop overrides (`title`, `description`, etc.) still win over the provider locale — the resolution order is **prop → provider locale → English default**.
 
 ---
 
