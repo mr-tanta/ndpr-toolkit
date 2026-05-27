@@ -79,6 +79,31 @@ describe('NDPRThemeProvider', () => {
     expect(wrapper.getAttribute('data-theme')).toBe('dark');
   });
 
+  it('sets data-theme="light" when mode is light', () => {
+    const { container } = render(
+      <NDPRThemeProvider theme={{ mode: 'light' }}>
+        <span>x</span>
+      </NDPRThemeProvider>
+    );
+
+    const wrapper = container.firstChild as HTMLElement;
+    expect(wrapper.getAttribute('data-theme')).toBe('light');
+  });
+
+  it('produces no style attribute when theme is an empty object', () => {
+    const { container } = render(
+      <NDPRThemeProvider theme={{}}>
+        <span>x</span>
+      </NDPRThemeProvider>
+    );
+
+    const wrapper = container.firstChild as HTMLElement;
+    // No CSS variables are emitted because no fields are set.
+    expect(wrapper.getAttribute('style')).toBeNull();
+    // data-theme is not set either because mode is undefined.
+    expect(wrapper.getAttribute('data-theme')).toBeNull();
+  });
+
   it('applies className to the wrapper', () => {
     const { container } = render(
       <NDPRThemeProvider className="my-app-shell">

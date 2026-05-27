@@ -176,6 +176,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 'stepPending',
               );
 
+        const isInteractive = clickable && !!onStepClick;
         return (
           <React.Fragment key={step.id}>
             <div
@@ -183,7 +184,11 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
                 `${isVertical ? 'flex items-start' : 'flex flex-col items-center'} ${clickable ? 'cursor-pointer' : ''}`,
                 'step',
               )}
-              onClick={() => handleStepClick(step.id)}
+              role={isInteractive ? 'button' : undefined}
+              tabIndex={isInteractive ? 0 : undefined}
+              aria-label={isInteractive ? `Go to step ${index + 1}: ${step.label}` : undefined}
+              onClick={isInteractive ? () => handleStepClick(step.id) : undefined}
+              onKeyDown={isInteractive ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleStepClick(step.id); } } : undefined}
               aria-current={step.active ? 'step' : undefined}
             >
               <div className={`

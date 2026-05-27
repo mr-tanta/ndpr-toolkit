@@ -115,6 +115,29 @@ const DATA_SOURCE_OPTIONS: Array<{ value: ProcessingRecord['dataSource']; label:
   { value: 'other', label: 'Other' },
 ];
 
+// Module-scope lookup tables — previously allocated inside renderStatusBadge /
+// renderBasisBadge on every render. Hoisting cuts allocations per row.
+const ROPA_STATUS_BADGE_CLASSES: Record<ProcessingRecord['status'], string> = {
+  active: 'ndpr-badge ndpr-badge--success',
+  inactive: 'ndpr-badge ndpr-badge--warning',
+  archived: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+};
+
+const ROPA_STATUS_BADGE_LABELS: Record<ProcessingRecord['status'], string> = {
+  active: 'Active',
+  inactive: 'Inactive',
+  archived: 'Archived',
+};
+
+const ROPA_BASIS_BADGE_LABELS: Record<LawfulBasis, string> = {
+  consent: 'Consent',
+  contract: 'Contract',
+  legal_obligation: 'Legal Obligation',
+  vital_interests: 'Vital Interests',
+  public_interest: 'Public Interest',
+  legitimate_interests: 'Legitimate Interests',
+};
+
 type ViewMode = 'list' | 'form' | 'summary';
 
 function createEmptyRecord(): ProcessingRecord {
@@ -386,41 +409,20 @@ export const ROPAManager: React.FC<ROPAManagerProps> = ({
   const handleSetViewList = useCallback(() => setViewMode('list'), []);
   const handleSetViewSummary = useCallback(() => setViewMode('summary'), []);
 
-  // Status badge rendering
+  // Status badge rendering — lookup tables are hoisted to module scope.
   const renderStatusBadge = useCallback((status: ProcessingRecord['status']) => {
-    const colorClasses: Record<ProcessingRecord['status'], string> = {
-      active: 'ndpr-badge ndpr-badge--success',
-      inactive: 'ndpr-badge ndpr-badge--warning',
-      archived: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
-    };
-
-    const labels: Record<ProcessingRecord['status'], string> = {
-      active: 'Active',
-      inactive: 'Inactive',
-      archived: 'Archived',
-    };
-
     return (
-      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`, classNames?.statusBadge, unstyled)}>
-        {labels[status]}
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${ROPA_STATUS_BADGE_CLASSES[status]}`, classNames?.statusBadge, unstyled)}>
+        {ROPA_STATUS_BADGE_LABELS[status]}
       </span>
     );
   }, [classNames?.statusBadge, unstyled]);
 
-  // Lawful basis badge rendering
+  // Lawful basis badge rendering — lookup table is hoisted to module scope.
   const renderBasisBadge = useCallback((basis: LawfulBasis) => {
-    const labels: Record<LawfulBasis, string> = {
-      consent: 'Consent',
-      contract: 'Contract',
-      legal_obligation: 'Legal Obligation',
-      vital_interests: 'Vital Interests',
-      public_interest: 'Public Interest',
-      legitimate_interests: 'Legitimate Interests',
-    };
-
     return (
       <span className='ndpr-badge ndpr-badge--info'>
-        {labels[basis]}
+        {ROPA_BASIS_BADGE_LABELS[basis]}
       </span>
     );
   }, []);

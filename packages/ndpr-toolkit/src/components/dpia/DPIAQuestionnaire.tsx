@@ -405,7 +405,7 @@ export const DPIAQuestionnaire: React.FC<DPIAQuestionnaireProps> = ({
         </div>
       )}
 
-      <h2 className={cx('ndpr-card__title', 'title')}>{currentSection.title}</h2>
+      <h2 className={cx('ndpr-card__title', 'title')} aria-live="polite">{currentSection.title}</h2>
       {currentSection.description && (
         <p className={cx('ndpr-card__subtitle', 'sectionTitle')}>{currentSection.description}</p>
       )}

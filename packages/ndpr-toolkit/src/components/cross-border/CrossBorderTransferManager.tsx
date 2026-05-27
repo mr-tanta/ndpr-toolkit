@@ -142,6 +142,28 @@ const STATUS_OPTIONS = [
   { value: 'pending_approval', label: 'Pending Approval' },
 ];
 
+// Module-scope lookup tables — previously allocated inside renderRiskBadge /
+// renderStatusBadge on every render. Hoisting cuts allocations per row.
+const RISK_BADGE_CLASSES: Record<'low' | 'medium' | 'high', string> = {
+  low: 'ndpr-badge ndpr-badge--success',
+  medium: 'ndpr-badge ndpr-badge--warning',
+  high: 'ndpr-badge ndpr-badge--destructive',
+};
+
+const CB_STATUS_BADGE_CLASSES: Record<CrossBorderTransfer['status'], string> = {
+  active: 'ndpr-badge ndpr-badge--success',
+  suspended: 'ndpr-badge ndpr-badge--warning',
+  terminated: 'ndpr-badge ndpr-badge--neutral',
+  pending_approval: 'ndpr-badge ndpr-badge--info',
+};
+
+const CB_STATUS_BADGE_LABELS: Record<CrossBorderTransfer['status'], string> = {
+  active: 'Active',
+  suspended: 'Suspended',
+  terminated: 'Terminated',
+  pending_approval: 'Pending Approval',
+};
+
 interface TransferFormData {
   destinationCountry: string;
   destinationCountryCode: string;
@@ -406,40 +428,20 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
     }
   }, [onRemoveTransfer, selectedTransferId]);
 
-  // Render risk badge
+  // Render risk badge — lookup table is hoisted to module scope.
   const renderRiskBadge = useCallback((riskLevel: 'low' | 'medium' | 'high') => {
-    const colorClasses = {
-      low: 'ndpr-badge ndpr-badge--success',
-      medium: 'ndpr-badge ndpr-badge--warning',
-      high: 'ndpr-badge ndpr-badge--destructive',
-    };
-
     return (
-      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[riskLevel]}`, classNames?.riskBadge, unstyled)}>
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${RISK_BADGE_CLASSES[riskLevel]}`, classNames?.riskBadge, unstyled)}>
         {riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)} Risk
       </span>
     );
   }, [classNames?.riskBadge, unstyled]);
 
-  // Render status badge
+  // Render status badge — lookup tables are hoisted to module scope.
   const renderStatusBadge = useCallback((status: CrossBorderTransfer['status']) => {
-    const colorClasses = {
-      active: 'ndpr-badge ndpr-badge--success',
-      suspended: 'ndpr-badge ndpr-badge--warning',
-      terminated: 'ndpr-badge ndpr-badge--neutral',
-      pending_approval: 'ndpr-badge ndpr-badge--info',
-    };
-
-    const labels = {
-      active: 'Active',
-      suspended: 'Suspended',
-      terminated: 'Terminated',
-      pending_approval: 'Pending Approval',
-    };
-
     return (
-      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`, classNames?.statusBadge, unstyled)}>
-        {labels[status]}
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${CB_STATUS_BADGE_CLASSES[status]}`, classNames?.statusBadge, unstyled)}>
+        {CB_STATUS_BADGE_LABELS[status]}
       </span>
     );
   }, [classNames?.statusBadge, unstyled]);
@@ -462,15 +464,34 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
     );
   }, []);
 
-  // Memoize expensive summary stats
+  // Memoize expensive summary stats — single reduce-style pass instead of
+  // four .filter() walks across the transfer list (O(n) vs O(4n)).
   const summaryData = useMemo(() => {
-    return summary || {
-      totalActiveTransfers: transfers.filter((t) => t.status === 'active').length,
-      pendingApproval: transfers.filter(
-        (t) => t.status === 'pending_approval' || (t.ndpcApproval?.required && !t.ndpcApproval?.approved)
-      ),
-      highRiskTransfers: transfers.filter((t) => t.riskLevel === 'high' && t.status === 'active'),
-      missingTIA: transfers.filter((t) => !t.tiaCompleted && t.status === 'active'),
+    if (summary) return summary;
+
+    let totalActiveTransfers = 0;
+    const pendingApproval: CrossBorderTransfer[] = [];
+    const highRiskTransfers: CrossBorderTransfer[] = [];
+    const missingTIA: CrossBorderTransfer[] = [];
+
+    for (const t of transfers) {
+      const isActive = t.status === 'active';
+      if (isActive) totalActiveTransfers++;
+      if (
+        t.status === 'pending_approval' ||
+        (t.ndpcApproval?.required && !t.ndpcApproval?.approved)
+      ) {
+        pendingApproval.push(t);
+      }
+      if (t.riskLevel === 'high' && isActive) highRiskTransfers.push(t);
+      if (!t.tiaCompleted && isActive) missingTIA.push(t);
+    }
+
+    return {
+      totalActiveTransfers,
+      pendingApproval,
+      highRiskTransfers,
+      missingTIA,
       byMechanism: {} as Record<TransferMechanism, number>,
       byAdequacy: {} as Record<AdequacyStatus, number>,
       dueForReview: [] as CrossBorderTransfer[],
@@ -648,8 +669,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Risk Level */}
           <div>
-            <label className='ndpr-form-field__label'>Risk Level</label>
+            <label htmlFor="cb-transfer-riskLevel" className='ndpr-form-field__label'>Risk Level</label>
             <select
+              id="cb-transfer-riskLevel"
               value={formData.riskLevel}
               onChange={(e) => handleFieldChange('riskLevel', e.target.value)}
               className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
@@ -694,8 +716,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Estimated Data Subjects */}
           <div>
-            <label className='ndpr-form-field__label'>Estimated Data Subjects</label>
+            <label htmlFor="cb-transfer-estimatedDataSubjects" className='ndpr-form-field__label'>Estimated Data Subjects</label>
             <input
+              id="cb-transfer-estimatedDataSubjects"
               type="number"
               value={formData.estimatedDataSubjects}
               onChange={(e) => handleFieldChange('estimatedDataSubjects', e.target.value)}
@@ -740,8 +763,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Recipient Contact Phone */}
           <div>
-            <label className='ndpr-form-field__label'>Recipient Contact Phone</label>
+            <label htmlFor="cb-transfer-recipientContactPhone" className='ndpr-form-field__label'>Recipient Contact Phone</label>
             <input
+              id="cb-transfer-recipientContactPhone"
               type="text"
               value={formData.recipientContactPhone}
               onChange={(e) => handleFieldChange('recipientContactPhone', e.target.value)}
@@ -752,8 +776,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Recipient Contact Address */}
           <div>
-            <label className='ndpr-form-field__label'>Recipient Contact Address</label>
+            <label htmlFor="cb-transfer-recipientContactAddress" className='ndpr-form-field__label'>Recipient Contact Address</label>
             <input
+              id="cb-transfer-recipientContactAddress"
               type="text"
               value={formData.recipientContactAddress}
               onChange={(e) => handleFieldChange('recipientContactAddress', e.target.value)}
@@ -816,8 +841,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Frequency */}
           <div>
-            <label className='ndpr-form-field__label'>Transfer Frequency</label>
+            <label htmlFor="cb-transfer-frequency" className='ndpr-form-field__label'>Transfer Frequency</label>
             <select
+              id="cb-transfer-frequency"
               value={formData.frequency}
               onChange={(e) => handleFieldChange('frequency', e.target.value)}
               className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
@@ -832,8 +858,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
 
           {/* Status */}
           <div>
-            <label className='ndpr-form-field__label'>Status</label>
+            <label htmlFor="cb-transfer-status" className='ndpr-form-field__label'>Status</label>
             <select
+              id="cb-transfer-status"
               value={formData.status}
               onChange={(e) => handleFieldChange('status', e.target.value)}
               className={resolveClass('ndpr-form-field__input', classNames?.select, unstyled)}
@@ -883,8 +910,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                 </label>
               </div>
               <div className="md:col-span-2">
-                <label className='ndpr-form-field__label'>NDPC Reference Number</label>
+                <label htmlFor="cb-transfer-ndpcApprovalReference" className='ndpr-form-field__label'>NDPC Reference Number</label>
                 <input
+                  id="cb-transfer-ndpcApprovalReference"
                   type="text"
                   value={formData.ndpcApprovalReference}
                   onChange={(e) => handleFieldChange('ndpcApprovalReference', e.target.value)}
@@ -914,8 +942,9 @@ export const CrossBorderTransferManager: React.FC<CrossBorderTransferManagerProp
                 </label>
               </div>
               <div>
-                <label className='ndpr-form-field__label'>TIA Reference</label>
+                <label htmlFor="cb-transfer-tiaReference" className='ndpr-form-field__label'>TIA Reference</label>
                 <input
+                  id="cb-transfer-tiaReference"
                   type="text"
                   value={formData.tiaReference}
                   onChange={(e) => handleFieldChange('tiaReference', e.target.value)}

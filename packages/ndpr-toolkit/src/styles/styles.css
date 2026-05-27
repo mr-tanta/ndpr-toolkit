@@ -389,6 +389,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--ndpr-space-2) var(--ndpr-space-4);
+  min-height: 44px;
   border: 1px solid transparent;
   border-radius: var(--ndpr-radius);
   font-size: var(--ndpr-font-size-sm);
@@ -1203,6 +1204,7 @@
   justify-content: center;
   gap: var(--ndpr-space-2);
   padding: var(--ndpr-space-2) var(--ndpr-space-4);
+  min-height: 44px;
   border: 1px solid transparent;
   border-radius: var(--ndpr-radius);
   font-size: var(--ndpr-font-size-sm);

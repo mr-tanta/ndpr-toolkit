@@ -957,13 +957,14 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
             <div>
               <h3 className='ndpr-section-heading'>Attachments</h3>
               <div className='ndpr-form-field'>
-                <label className='ndpr-form-field__label'>
+                <label htmlFor="breach-attachments" className='ndpr-form-field__label'>
                   Upload Supporting Files (Optional)
                 </label>
                 <p className="text-xs ndpr-text-muted mb-2">
                   Max {maxAttachments} files, {maxFileSize / (1024 * 1024)}MB each. Allowed types: {allowedFileTypes.join(', ')}
                 </p>
                 <input
+                  id="breach-attachments"
                   type="file"
                   onChange={handleFileUpload}
                   multiple
@@ -980,7 +981,7 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
                     {attachments.map((file, index) => (
                       <li key={index} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded">
                         <div className="flex items-center">
-                          <svg className="w-4 h-4 ndpr-text-muted mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                          <svg aria-hidden="true" focusable="false" className="w-4 h-4 ndpr-text-muted mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clipRule="evenodd" />
                           </svg>
                           <span className="text-sm ndpr-text-muted">{file.name}</span>
