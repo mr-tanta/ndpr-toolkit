@@ -13,6 +13,7 @@ import {
   LawfulBasisComplianceGap,
 } from '../../utils/lawful-basis';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface LawfulBasisTrackerClassNames {
   root?: string;
@@ -215,8 +216,9 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   onAddActivity,
   onUpdateActivity,
   onArchiveActivity,
-  title = 'Lawful Basis Tracker',
-  description = 'Document and track the lawful basis for each processing activity as required by NDPA 2023 Section 25.',
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = '',
   buttonClassName = '',
   showSummary = true,
@@ -224,6 +226,11 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
   classNames,
   unstyled,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.lawfulBasis.title ?? 'Lawful Basis Tracker';
+  const resolvedDescription =
+    description ?? locale.lawfulBasis.description ??
+    'Document and track the lawful basis for each processing activity as required by NDPA 2023 Section 25.';
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [formData, setFormData] = useState<FormData>(EMPTY_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -1285,8 +1292,8 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
 
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
-      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
-      <p className='ndpr-card__subtitle'>{description}</p>
+      <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+      <p className='ndpr-card__subtitle'>{resolvedDescription}</p>
 
       {/* Compliance Summary */}
       {showSummary && viewMode === 'list' && renderSummary()}

@@ -14,11 +14,28 @@ const DEFAULT_ROPA: RecordOfProcessingActivities = {
   version: '1.0',
 };
 
+/**
+ * UX copy overrides for the NDPRROPA preset. Pass any subset to
+ * replace the default text without dropping to the lower-level
+ * `<ROPAManager>` API.
+ */
+export interface NDPRROPACopy {
+  /** Manager heading. Default: "Record of Processing Activities (ROPA)" */
+  title?: string;
+  /** Body paragraph under the heading. */
+  description?: string;
+}
+
 export interface NDPRROPAProps {
   initialData?: RecordOfProcessingActivities;
   adapter?: StorageAdapter<RecordOfProcessingActivities>;
   classNames?: ROPAManagerClassNames;
   unstyled?: boolean;
+
+  /**
+   * UX copy overrides — see {@link NDPRROPACopy}.
+   */
+  copy?: NDPRROPACopy;
 }
 
 export const NDPRROPA: React.FC<NDPRROPAProps> = ({
@@ -26,6 +43,7 @@ export const NDPRROPA: React.FC<NDPRROPAProps> = ({
   adapter,
   classNames,
   unstyled,
+  copy,
 }) => {
   const [ropa, setRopa] = useState<RecordOfProcessingActivities>(initialData ?? DEFAULT_ROPA);
 
@@ -86,6 +104,8 @@ export const NDPRROPA: React.FC<NDPRROPAProps> = ({
       onArchiveRecord={handleArchiveRecord}
       classNames={classNames}
       unstyled={unstyled}
+      title={copy?.title}
+      description={copy?.description}
     />
   );
 };

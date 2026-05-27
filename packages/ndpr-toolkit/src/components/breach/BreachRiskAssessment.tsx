@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BreachReport, RiskAssessment } from '../../types/breach';
 import { calculateBreachSeverity } from '../../utils/breach';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface BreachRiskAssessmentClassNames {
   root?: string;
@@ -91,9 +92,10 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
   breachData,
   initialAssessment = {},
   onComplete,
-  title = "Breach Risk Assessment",
-  description = "Assess the risk level of this data breach to determine notification requirements under NDPA Section 40.",
-  submitButtonText = "Complete Assessment",
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
+  submitButtonText,
   className = "",
   buttonClassName = "",
   classNames: cn = {},
@@ -101,6 +103,12 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
   showBreachSummary = true,
   showNotificationRequirements = true
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.breach.riskAssessmentTitle ?? 'Breach Risk Assessment';
+  const resolvedDescription =
+    description ?? locale.breach.riskAssessmentDescription ??
+    'Assess the risk level of this data breach to determine notification requirements under NDPA Section 40.';
+  const resolvedSubmit = submitButtonText ?? locale.dpia.complete ?? 'Complete Assessment';
   // Assessment form state
   const [confidentialityImpact, setConfidentialityImpact] = useState<number>(initialAssessment.confidentialityImpact || 3);
   const [integrityImpact, setIntegrityImpact] = useState<number>(initialAssessment.integrityImpact || 3);
@@ -237,8 +245,8 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
 
   return (
     <div data-ndpr-component="breach-risk-assessment" className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
-      <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{title}</h2>
-      <p className='ndpr-card__subtitle'>{description}</p>
+      <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{resolvedTitle}</h2>
+      <p className='ndpr-card__subtitle'>{resolvedDescription}</p>
       
       {/* Breach Summary */}
       {showBreachSummary && (
@@ -589,7 +597,7 @@ export const BreachRiskAssessment: React.FC<BreachRiskAssessmentProps> = ({
                 type="submit"
                 className={resolveClass(`px-6 py-3 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] focus:ring-offset-2 ${buttonClassName}`, cn.primaryButton || cn.submitButton, unstyled)}
               >
-                {submitButtonText}
+                {resolvedSubmit}
               </button>
             </div>
           </div>

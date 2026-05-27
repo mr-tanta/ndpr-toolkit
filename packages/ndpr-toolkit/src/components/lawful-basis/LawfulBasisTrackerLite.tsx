@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { LawfulBasis, ProcessingActivity, LawfulBasisSummary } from '../../types/lawful-basis';
 import { assessComplianceGaps, generateLawfulBasisSummary, LawfulBasisComplianceGap } from '../../utils/lawful-basis';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface LawfulBasisTrackerLiteClassNames {
   root?: string;
@@ -65,8 +66,9 @@ const formatDate = (timestamp: number): string => new Date(timestamp).toLocaleDa
 
 export const LawfulBasisTrackerLite: React.FC<LawfulBasisTrackerLiteProps> = ({
   activities,
-  title = 'Lawful Basis Tracker',
-  description = 'Document and track the lawful basis for each processing activity as required by NDPA 2023 Section 25.',
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = '',
   classNames,
   unstyled,
@@ -74,6 +76,11 @@ export const LawfulBasisTrackerLite: React.FC<LawfulBasisTrackerLiteProps> = ({
   showComplianceGaps = true,
   onActivityClick,
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.lawfulBasis.title ?? 'Lawful Basis Tracker';
+  const resolvedDescription =
+    description ?? locale.lawfulBasis.description ??
+    'Document and track the lawful basis for each processing activity as required by NDPA 2023 Section 25.';
   const sortedActivities = useMemo(() => [...activities].sort((a, b) => b.updatedAt - a.updatedAt), [activities]);
   const summary: LawfulBasisSummary = useMemo(() => generateLawfulBasisSummary(activities), [activities]);
   const complianceGaps: LawfulBasisComplianceGap[] = useMemo(() => assessComplianceGaps(activities), [activities]);
@@ -174,8 +181,8 @@ export const LawfulBasisTrackerLite: React.FC<LawfulBasisTrackerLiteProps> = ({
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass('', classNames?.header, unstyled)}>
-        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{title}</h2>
-        <p className="ndpr-card__subtitle">{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+        <p className="ndpr-card__subtitle">{resolvedDescription}</p>
       </div>
 
       {showSummary && renderSummary()}

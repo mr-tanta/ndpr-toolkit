@@ -5,6 +5,26 @@ import type { DPIASection } from '../types/dpia';
 import type { StorageAdapter } from '../adapters/types';
 import type { DPIAAnswerMap, DPIAAnswerValue } from '../hooks/useDPIA';
 
+/**
+ * UX copy overrides for the NDPRDPIA preset. Strings you omit fall back
+ * to the lower-level `<DPIAQuestionnaire>` defaults. The DPIA wizard does
+ * not render a single header (each section has its own title); the `title`
+ * and `description` fields are reserved for future use and currently
+ * accepted for API parity with the other presets.
+ */
+export interface NDPRDPIACopy {
+  /** Reserved — DPIA sections render their own titles. */
+  title?: string;
+  /** Reserved — DPIA sections render their own descriptions. */
+  description?: string;
+  /** Final-step submit button label. Default: "Submit" */
+  submitButton?: string;
+  /** Next-section button label. Default: "Next" */
+  nextButton?: string;
+  /** Previous-section button label. Default: "Previous" */
+  prevButton?: string;
+}
+
 const DEFAULT_SECTIONS: DPIASection[] = [
   {
     id: 'project_overview',
@@ -148,6 +168,56 @@ export interface NDPRDPIAProps {
   classNames?: DPIAQuestionnaireClassNames;
   unstyled?: boolean;
   onComplete?: (answers: DPIAAnswerMap) => void;
+
+  /**
+   * UX copy overrides — see {@link NDPRDPIACopy}.
+   */
+  copy?: NDPRDPIACopy;
+
+  /**
+   * Public-form mode. Use when the questionnaire should submit to your
+   * existing backend workflow instead of being state-managed by an adapter.
+   *
+   * When `submitTo` is set:
+   * - the questionnaire does NOT require an `adapter`
+   * - on completion, the toolkit POSTs the JSON-serialised `DPIAAnswerMap`
+   *   to this URL (with `Content-Type: application/json`)
+   * - your `onComplete` callback still fires (after the POST resolves)
+   * - submit failures are surfaced via `onSubmitError`
+   *
+   * @example
+   *   <NDPRDPIA submitTo="/api/dpia" />
+   */
+  submitTo?: string;
+
+  /**
+   * Fetch options for the `submitTo` POST. Useful for adding `credentials`
+   * (cookies/auth), `X-CSRF-Token`, or any other header your backend
+   * requires. Ignored unless `submitTo` is set.
+   *
+   * @default { credentials: 'same-origin' }
+   */
+  submitOptions?: {
+    headers?: Record<string, string> | (() => Record<string, string>);
+    credentials?: RequestCredentials;
+  };
+
+  /**
+   * Called when a `submitTo` POST fails (network error or non-2xx
+   * response).
+   */
+  onSubmitError?: (ctx: { error?: unknown; response?: Response }) => void;
+
+  /**
+   * Called when a `submitTo` POST succeeds (2xx response). Receives the
+   * `Response` object, the submitted `DPIAAnswerMap` payload, and the
+   * parsed JSON body if the server returned valid JSON.
+   */
+  onSubmitSuccess?: (ctx: {
+    response: Response;
+    data: DPIAAnswerMap;
+    body?: unknown;
+  }) => void;
 }
 
 export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
@@ -156,6 +226,11 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
   classNames,
   unstyled,
   onComplete = () => {},
+  copy,
+  submitTo,
+  submitOptions,
+  onSubmitError,
+  onSubmitSuccess,
 }) => {
   const [answers, setAnswers] = useState<DPIAAnswerMap>({});
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
@@ -164,12 +239,44 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
     setAnswers(prev => ({ ...prev, [questionId]: value }));
   };
 
+  const finalizeSubmission = async (finalAnswers: DPIAAnswerMap) => {
+    if (submitTo) {
+      const headers = typeof submitOptions?.headers === 'function'
+        ? submitOptions.headers()
+        : submitOptions?.headers ?? {};
+      try {
+        const response = await fetch(submitTo, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...headers },
+          credentials: submitOptions?.credentials ?? 'same-origin',
+          body: JSON.stringify(finalAnswers),
+        });
+        if (!response.ok) {
+          onSubmitError?.({ response });
+        } else if (onSubmitSuccess) {
+          let body: unknown;
+          try {
+            const text = await response.clone().text();
+            if (text) body = JSON.parse(text);
+          } catch {
+            // body wasn't JSON
+          }
+          onSubmitSuccess({ response, data: finalAnswers, body });
+        }
+      } catch (error) {
+        onSubmitError?.({ error });
+      }
+    } else if (adapter) {
+      adapter.save(finalAnswers);
+    }
+    onComplete(finalAnswers);
+  };
+
   const handleNextSection = () => {
     if (currentSectionIndex < sections.length - 1) {
       setCurrentSectionIndex(prev => prev + 1);
     } else {
-      if (adapter) adapter.save(answers);
-      onComplete(answers);
+      void finalizeSubmission(answers);
     }
   };
 
@@ -192,6 +299,9 @@ export const NDPRDPIA: React.FC<NDPRDPIAProps> = ({
       progress={progress}
       classNames={classNames}
       unstyled={unstyled}
+      submitButtonText={copy?.submitButton}
+      nextButtonText={copy?.nextButton}
+      prevButtonText={copy?.prevButton}
     />
   );
 };

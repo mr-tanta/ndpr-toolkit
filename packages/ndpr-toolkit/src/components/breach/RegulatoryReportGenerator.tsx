@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BreachReport, RiskAssessment, RegulatoryNotification } from '../../types/breach';
 import { resolveClass } from '../../utils/styling';
 import { LEGAL_DISCLAIMER_LONG, LEGAL_DISCLAIMER_SHORT } from '../../utils/legal-notice';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface RegulatoryReportGeneratorClassNames {
   root?: string;
@@ -149,9 +150,10 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
   assessmentData,
   organizationInfo,
   onGenerate,
-  title = "Generate NDPC Notification Report",
-  description = "Generate a report for submission to the NDPC in compliance with NDPA Section 40 breach notification requirements.",
-  generateButtonText = "Generate Report",
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
+  generateButtonText,
   className = "",
   buttonClassName = "",
   classNames: cn = {},
@@ -161,6 +163,15 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
   allowDownload = true,
   downloadFormat = "pdf"
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.breach.regulatoryReportTitle ?? 'Generate NDPC Notification Report';
+  const resolvedDescription =
+    description ?? locale.breach.regulatoryReportDescription ??
+    'Generate a report for submission to the NDPC in compliance with NDPA Section 40 breach notification requirements.';
+  // Note: this button text is intentionally not pulled from `locale.policy.generate`
+  // because the policy module's "Generate Policy" string would mis-label this
+  // breach-report button. Consumers can override explicitly via the prop.
+  const resolvedGenerateButton = generateButtonText ?? 'Generate Report';
   // Form state
   const [reportContent, setReportContent] = useState<string>("");
   const [contactName, setContactName] = useState<string>("");
@@ -393,8 +404,8 @@ ${LEGAL_DISCLAIMER_LONG}
   return (
     <div data-ndpr-component="regulatory-report-generator" className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
       <div className={resolveClass("", cn.header, unstyled)}>
-        <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{title}</h2>
-        <p className='ndpr-card__subtitle'>{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{resolvedTitle}</h2>
+        <p className='ndpr-card__subtitle'>{resolvedDescription}</p>
       </div>
       
       {isSubmitted ? (
@@ -591,7 +602,7 @@ ${LEGAL_DISCLAIMER_LONG}
                 type="submit"
                 className={resolveClass(`px-6 py-3 bg-[rgb(var(--ndpr-primary))] text-white rounded-md hover:bg-[rgb(var(--ndpr-primary-hover))] focus:outline-none focus:ring-2 focus:ring-[rgb(var(--ndpr-ring))] focus:ring-offset-2 ${buttonClassName}`, cn.primaryButton || cn.generateButton, unstyled)}
               >
-                {generateButtonText}
+                {resolvedGenerateButton}
               </button>
             </div>
           </div>

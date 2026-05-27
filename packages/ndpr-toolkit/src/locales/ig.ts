@@ -14,6 +14,9 @@ export const igboLocale: Required<{
     deselectAll: 'Wepụ Niile',
     required: 'Achọrọ',
     cookieNotice: 'Site na ịpị "Nabata Niile", ị kwenyere na iji kuki niile. Gaa na Amụma Kuki anyị ịmụtakwu.',
+    managerTitle: 'Jikwaa Ntọala Nzuzo Gị',
+    managerDescription: 'Melite mmasị nkwenye gị mgbe ọ bụla. Enweghị ike ịgbanyụ kuki ndị achọrọ ebe ọ bụ na ha dị mkpa maka ka weebụsaịtị rụọ ọrụ. A na-enye njikwa nkwenye dịka NDPA Ngalaba 25-26 si kwuo.',
+    resetToDefaults: 'Tọgharịa na Ndabara',
   },
   dsr: {
     title: 'Tinye Arịrịọ Onye Nwe Data',
@@ -30,6 +33,10 @@ export const igboLocale: Required<{
     identifierValue: 'Uru Njirimara',
     privacyNotice: 'A ga-eji ozi ị nyere na fọọmụ a naanị maka ebumnuche nke ilekọta arịrịọ onye nwe data gị.',
     successMessage: 'Etinyela arịrịọ gị nke ọma.',
+    dashboardTitle: 'Dashboard Arịrịọ Onye Nwe Data',
+    dashboardDescription: 'Soro ma jikwaa arịrịọ ndị nwe data dịka NDPA Nkebi IV si chọọ.',
+    trackerTitle: 'Onye Na-eso Arịrịọ DSR',
+    trackerDescription: 'Soro ọkwa na ọganihu arịrịọ ndị nwe data dịka NDPA Nkebi IV si chọọ.',
   },
   breach: {
     title: 'Kọọ Mwapụ Data',
@@ -39,6 +46,12 @@ export const igboLocale: Required<{
     category: 'Udi',
     discoveredAt: 'Ụbọchị A Chọpụtara',
     detailedDescription: 'Nkọwa Zuru Oke',
+    riskAssessmentTitle: 'Nyocha Ihe Egwu Mwapụ',
+    riskAssessmentDescription: 'Nyochaa ọkwa ihe egwu nke mwapụ data a iji kpebie ihe achọrọ ọkwa n\'okpuru NDPA Ngalaba 40.',
+    notificationManagerTitle: 'Onye Njikwa Ọkwa Mwapụ',
+    notificationManagerDescription: 'Jikwaa ọkwa mwapụ data ma soro nrubeisi na NDPA Ngalaba 40.',
+    regulatoryReportTitle: 'Mepụta Akụkọ Ọkwa NDPC',
+    regulatoryReportDescription: 'Mepụta akụkọ maka ntinye nye NDPC na nrubeisi na NDPA Ngalaba 40.',
   },
   dpia: {
     title: 'Nyocha Mmetụta Nchedo Data',
@@ -46,6 +59,8 @@ export const igboLocale: Required<{
     previous: 'Azụ',
     complete: 'Mechaa Nyocha',
     progress: 'Ọganihu',
+    submit: 'Tinye',
+    reportTitle: 'Akụkọ Nyocha Mmetụta Nchedo Data',
   },
   policy: {
     title: 'Ngwa Mmepụta Amụma Nzuzo',
@@ -54,6 +69,25 @@ export const igboLocale: Required<{
     export: 'Bupụta',
     sections: 'Ngalaba',
     variables: 'Mgbanwe',
+    generatorTitle: 'Ngwa Mmepụta Amụma Nzuzo NDPA',
+    generatorDescription: 'Mepụta amụma nzuzo dakọtara na NDPA maka nzukọ gị dịka NDPA Ngalaba 24 si kwuo.',
+    previewTitle: 'Nlele Amụma Nzuzo',
+    previewDescription: 'Lelee amụma nzuzo gị dakọtara na NDPA tupu ibupụ ya.',
+    exporterTitle: 'Amụma Nzuzo',
+    exporterDescription: 'Bupụta amụma nzuzo gị dakọtara na NDPA n\'ụdị dị iche iche.',
+    wizardTitle: 'Onye Wuli Amụma Nzuzo',
+  },
+  lawfulBasis: {
+    title: 'Onye Na-eso Ihe Ndabere Iwu',
+    description: 'Dee ma soro ihe ndabere iwu maka ọrụ nhazi ọ bụla dịka NDPA 2023 Ngalaba 25 si chọọ.',
+  },
+  crossBorder: {
+    title: 'Onye Njikwa Mbufe Data Gafee Oke',
+    description: 'Jikwaa ma dee mbufe data nke onwe gafee oke na nrubeisi na NDPA 2023 Akụkụ VIII (Ngalaba 41-43).',
+  },
+  ropa: {
+    title: 'Ndekọ Ọrụ Nhazi (ROPA)',
+    description: 'Debe ndekọ zuru oke nke ọrụ nhazi data niile dịka ụkpụrụ ịza ajụjụ NDPA si chọọ.',
   },
   compliance: {
     score: 'Akara Ndabere',

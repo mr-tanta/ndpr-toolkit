@@ -2,6 +2,70 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.13.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.12.0...v3.13.0) (2026-05-27)
+
+Release 5 of 6 on the post-audit roadmap. The **deprecation-window minor** — strictly additive, but every prop alias and behavior change that 4.0 will commit to gets fired here first as a dev-mode warning. Existing 3.x consumers see no breakage; new code can adopt the canonical surface.
+
+### i18n is real now — `useNDPRLocale` wired into 17+ components
+
+**The big one.** The toolkit shipped 5 locale files (`en`, `yo`, `ig`, `ha`, `pcm`) and exposed `useNDPRLocale()`, but only 3 components consumed the hook (post-3.10.4: `ConsentBanner`, `DSRRequestForm`, `BreachReportForm`). The remaining ~17 components ignored the locale prop, making `<NDPRProvider locale={…}>` mostly cosmetic. The audit's B14 report called this out as a top-tier finding.
+
+Newly wired components (each follows the prop-override → locale → English default precedence):
+
+- **DSR**: `DSRDashboard`, `DSRTracker`
+- **Breach**: `BreachRiskAssessment`, `BreachNotificationManager`, `RegulatoryReportGenerator`
+- **DPIA**: `DPIAQuestionnaire` (next/prev/submit buttons), `DPIAReport` (report title)
+- **Policy**: `PolicyGenerator`, `PolicyPreview`, `PolicyExporter`, `AdaptivePolicyWizard`
+- **Lawful basis**: `LawfulBasisTracker` + `LawfulBasisTrackerLite`
+- **Cross-border**: `CrossBorderTransferManager` + `CrossBorderTransferManagerLite`
+- **ROPA**: `ROPAManager` + `ROPAManagerLite`
+- **Consent extras**: `ConsentManager` (title/desc/save/reset)
+- **NDPRProvider** error-boundary fallback now reads `locale.common.error`
+
+The `NDPRLocale` type at `src/types/locale.ts` was expanded with new keys (`consent.managerTitle`, `dsr.dashboardTitle`, `breach.riskAssessmentTitle`, `policy.generatorTitle`, plus top-level `lawfulBasis`, `crossBorder`, `ropa` groups). All 5 shipped locale files got the matching translations.
+
+**21 new i18n regression tests** (3 cases × 7 modules) confirm each component honors the locale prop. Pattern matches `ConsentBanner-i18n.test.tsx` from 3.10.4.
+
+### Preset API harmonization (sets up 4.0 deprecation window)
+
+- **`submitTo` / `submitOptions` / `onSubmitSuccess` / `onSubmitError`** lifted from `NDPRSubjectRights` to `NDPRBreachReport` and `NDPRDPIA`. The latter two now support the same typed POST-and-route pattern. `NDPRDPIA` posts on last-section completion; both preserve the legacy `onSubmit` / `onComplete` callbacks so existing consumers see no change.
+- **`copy?` prop added to 6 presets** (`NDPRBreachReport`, `NDPRDPIA`, `NDPRLawfulBasis`, `NDPRCrossBorder`, `NDPRROPA`, `NDPRPrivacyPolicy`). Each ships a typed `NDPR<Name>Copy` interface, exported from `src/index.ts`. `NDPRConsent` already had this pattern; the 6 presets now match.
+- **`description` prop added** alongside `formDescription` on `BreachReportForm` + `NDPRBreachReport`. When both set, `description` wins; when only `formDescription` is set, a one-shot dev warn says `[ndpr-toolkit/breach] BreachReportFormProps.formDescription is deprecated; rename to 'description'. Will be removed in 4.0.`
+- **`initialData` prop added** alongside `initialActivities` on `NDPRLawfulBasis` and `initialTransfers` on `NDPRCrossBorder`. Same alias precedence + dev warn for the legacy names.
+
+### Privacy guard on `useDSR` default storage
+
+`useDSR()` is the admin tracker hook — its state contains OTHER PEOPLE'S PII (DSR requests submitted by data subjects). The current default writes to `localStorage` on the admin's browser, which is rarely the right place.
+
+Added a fire-once dev-only `console.warn` when a consumer uses the default `localStorage` path without an explicit adapter:
+
+> `[ndpr-toolkit/dsr] useDSR() is using the default localStorageAdapter, which stores DSR requests (including data subjects' PII) in the admin's browser. For production deployments, pass an explicit adapter… In 4.0, the default will switch to in-memory; localStorage will require explicit opt-in.`
+
+### Other dev-mode deprecations (queued for removal in 4.0)
+
+Every dev warn is guarded by `process.env.NODE_ENV !== 'production'` AND a `useRef`-based fire-once flag — production builds see no overhead, dev consoles see each warning once per component instance.
+
+- `NDPRConsentProps.extraOptions` — one-off pattern not used by other presets. Warn fires when passed.
+- `formDescription` on `BreachReportForm` / `NDPRBreachReport` — see above.
+- `initialActivities` on `NDPRLawfulBasis`, `initialTransfers` on `NDPRCrossBorder` — see above.
+
+### Deferred from the original 3.13.0 plan
+
+- **`useConsent` generic over options array** — non-trivial type-level refactor that needs the existing tests to be re-checked. Higher value if shipped together with the 4.0 type-cleanup window; deferring there.
+- **`useDSR.requestType` generic** — same shape, same reasoning.
+- **`ROPAManager.updateEditingField` generic over `keyof ProcessingRecord`** — internal refactor, defer to 4.0.
+- **`onSubmitError` discriminated union** — the current `{ error?, response? }` shape works for everyone today. Discriminated-union variant is breaking-ish (TS narrows differently); defer to 4.0.
+- **`validate*Structured()` returning `{ field, code, message }[]`** — additive, but the new shape needs its own docs page and migration story. Defer to 4.0 alongside the validator-message harmonization.
+- **`[ndpr-toolkit/<module>]` prefix on every utility error** — bulk-mechanical; defer (already happening organically — every dev warn we added in 3.13.0 carries the prefix).
+- **Arabic locale + RTL CSS conversion** — defer to a focused i18n release after 4.0. The shape is now in place (`ar.ts` can be one file); the logical-property CSS conversion is its own focused chore.
+- **French locale (`fr.ts`)** — same; one data file once the type/wiring is stable.
+
+### Verification
+
+- Jest: **1258 / 1258 passing** (was 1237; +21 new i18n tests)
+- `tsc --noEmit -p tsconfig.json` clean
+- `pnpm verify:tarball --skip-ts` clean across all 22 subpaths
+
 ## [3.12.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.11.0...v3.12.0) (2026-05-27)
 
 Release 4 of 6 on the post-audit roadmap. Accessibility + performance + test coverage. No public API changes — everything is additive or behaviour-preserving internal work. Existing consumers see no breakage; users of assistive tech and consumers of large managers see real improvements.

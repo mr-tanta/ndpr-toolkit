@@ -14,6 +14,9 @@ export const pidginLocale: Required<{
     deselectAll: 'Remove Everything',
     required: 'E Dey Required',
     cookieNotice: 'If you click "Accept Everything", you don agree say we fit use all the cookies. Check our Cookie Policy to sabi more.',
+    managerTitle: 'Manage Your Privacy Settings',
+    managerDescription: 'You fit update your consent preferences any time. We no fit disable required cookies because dem dey necessary to make the website work. We dey provide consent management as NDPA Sections 25-26 talk am.',
+    resetToDefaults: 'Reset to Default',
   },
   dsr: {
     title: 'Send Data Subject Request',
@@ -30,6 +33,10 @@ export const pidginLocale: Required<{
     identifierValue: 'ID Value',
     privacyNotice: 'The information wey you give for this form, na only for processing your data subject request we go use am.',
     successMessage: 'We don receive your request successfully.',
+    dashboardTitle: 'Data Subject Request Dashboard',
+    dashboardDescription: 'Track and manage data subject requests as NDPA Part IV talk am.',
+    trackerTitle: 'DSR Request Tracker',
+    trackerDescription: 'Track the status and progress of data subject requests as NDPA Part IV talk am.',
   },
   breach: {
     title: 'Report Data Breach',
@@ -39,6 +46,12 @@ export const pidginLocale: Required<{
     category: 'Category',
     discoveredAt: 'Date Wey You Discover Am',
     detailedDescription: 'Full Gist About Wetin Happen',
+    riskAssessmentTitle: 'Breach Risk Assessment',
+    riskAssessmentDescription: 'Assess the risk level of this data breach to determine wetin you need to notify under NDPA Section 40.',
+    notificationManagerTitle: 'Breach Notification Manager',
+    notificationManagerDescription: 'Manage data breach notifications and track compliance with NDPA Section 40 requirements.',
+    regulatoryReportTitle: 'Generate NDPC Notification Report',
+    regulatoryReportDescription: 'Generate report for submission to NDPC as NDPA Section 40 breach notification requirements talk am.',
   },
   dpia: {
     title: 'Data Protection Impact Assessment',
@@ -46,6 +59,8 @@ export const pidginLocale: Required<{
     previous: 'Go Back',
     complete: 'Finish Assessment',
     progress: 'Progress',
+    submit: 'Submit',
+    reportTitle: 'Data Protection Impact Assessment Report',
   },
   policy: {
     title: 'Privacy Policy Generator',
@@ -54,6 +69,25 @@ export const pidginLocale: Required<{
     export: 'Export',
     sections: 'Sections',
     variables: 'Variables',
+    generatorTitle: 'NDPA Privacy Policy Generator',
+    generatorDescription: 'Generate NDPA-compliant privacy policy for your organization as NDPA Section 24 talk am.',
+    previewTitle: 'Privacy Policy Preview',
+    previewDescription: 'Preview your NDPA-compliant privacy policy before you export am.',
+    exporterTitle: 'Privacy Policy',
+    exporterDescription: 'Export your NDPA-compliant privacy policy for different formats.',
+    wizardTitle: 'Privacy Policy Builder',
+  },
+  lawfulBasis: {
+    title: 'Lawful Basis Tracker',
+    description: 'Document and track the lawful basis for each processing activity as NDPA 2023 Section 25 talk am.',
+  },
+  crossBorder: {
+    title: 'Cross-Border Data Transfer Manager',
+    description: 'Manage and document cross-border personal data transfers as NDPA 2023 Part VIII (Sections 41-43) talk am.',
+  },
+  ropa: {
+    title: 'Record of Processing Activities (ROPA)',
+    description: 'Keep comprehensive record of all data processing activities as the NDPA accountability principle talk am.',
   },
   compliance: {
     score: 'Compliance Score',

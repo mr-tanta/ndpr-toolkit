@@ -142,6 +142,34 @@ export function useDSR({
   onSubmit,
   onUpdate,
 }: UseDSROptions): UseDSRReturn {
+  // Privacy guard (since 3.13.0): warn (dev-only, fire-once) when no
+  // explicit adapter is configured AND the default localStorage path is
+  // active. `useDSR` is the admin-tracker hook — its state contains
+  // OTHER PEOPLE'S PII (DSR requests submitted by data subjects), and
+  // localStorage on the admin's browser is rarely the right place to
+  // hold it. Slated for behavior change in 4.0: default will switch to
+  // an in-memory adapter; localStorage will require explicit opt-in.
+  const warnedRef = useRef(false);
+  if (
+    !warnedRef.current &&
+    !adapter &&
+    useLocalStorage &&
+    typeof process !== 'undefined' &&
+    process.env?.NODE_ENV !== 'production'
+  ) {
+    warnedRef.current = true;
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[ndpr-toolkit/dsr] useDSR() is using the default localStorageAdapter, ' +
+        "which stores DSR requests (including data subjects' PII) in the admin's " +
+        'browser. For production deployments, pass an explicit adapter ' +
+        '(apiAdapter for server-side persistence, memoryAdapter for in-process, ' +
+        "or set useLocalStorage: false to disable). In 4.0, the default will " +
+        'switch to in-memory; localStorage will require explicit opt-in. See ' +
+        'https://ndprtoolkit.com.ng/docs/guides/upgrading-3-7-to-3-10#dsr-storage',
+    );
+  }
+
   const resolvedAdapter = adapter ?? resolveAdapter(storageKey, useLocalStorage);
   const adapterRef = useRef(resolvedAdapter);
   adapterRef.current = resolvedAdapter;

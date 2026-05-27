@@ -14,6 +14,9 @@ export const defaultLocale: Required<{
     deselectAll: 'Deselect All',
     required: 'Required',
     cookieNotice: 'By clicking "Accept All", you agree to the use of ALL cookies. Visit our Cookie Policy to learn more.',
+    managerTitle: 'Manage Your Privacy Settings',
+    managerDescription: 'Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function. Consent management is provided in accordance with NDPA Sections 25-26.',
+    resetToDefaults: 'Reset to Defaults',
   },
   dsr: {
     title: 'Submit a Data Subject Request',
@@ -30,6 +33,10 @@ export const defaultLocale: Required<{
     identifierValue: 'Identifier Value',
     privacyNotice: 'The information you provide in this form will be used solely for the purpose of processing your data subject request.',
     successMessage: 'Your request has been submitted successfully.',
+    dashboardTitle: 'Data Subject Request Dashboard',
+    dashboardDescription: 'Track and manage data subject requests in compliance with NDPA Part IV requirements.',
+    trackerTitle: 'DSR Request Tracker',
+    trackerDescription: 'Track the status and progress of data subject requests as required by NDPA Part IV.',
   },
   breach: {
     title: 'Report a Data Breach',
@@ -39,6 +46,12 @@ export const defaultLocale: Required<{
     category: 'Category',
     discoveredAt: 'Date Discovered',
     detailedDescription: 'Detailed Description',
+    riskAssessmentTitle: 'Breach Risk Assessment',
+    riskAssessmentDescription: 'Assess the risk level of this data breach to determine notification requirements under NDPA Section 40.',
+    notificationManagerTitle: 'Breach Notification Manager',
+    notificationManagerDescription: 'Manage data breach notifications and track compliance with NDPA Section 40 requirements.',
+    regulatoryReportTitle: 'Generate NDPC Notification Report',
+    regulatoryReportDescription: 'Generate a report for submission to the NDPC in compliance with NDPA Section 40 breach notification requirements.',
   },
   dpia: {
     title: 'Data Protection Impact Assessment',
@@ -46,6 +59,8 @@ export const defaultLocale: Required<{
     previous: 'Previous',
     complete: 'Complete Assessment',
     progress: 'Progress',
+    submit: 'Submit',
+    reportTitle: 'Data Protection Impact Assessment Report',
   },
   policy: {
     title: 'Privacy Policy Generator',
@@ -54,6 +69,25 @@ export const defaultLocale: Required<{
     export: 'Export',
     sections: 'Sections',
     variables: 'Variables',
+    generatorTitle: 'NDPA Privacy Policy Generator',
+    generatorDescription: 'Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24.',
+    previewTitle: 'Privacy Policy Preview',
+    previewDescription: 'Preview your NDPA-compliant privacy policy before exporting.',
+    exporterTitle: 'Privacy Policy',
+    exporterDescription: 'Export your NDPA-compliant privacy policy in various formats.',
+    wizardTitle: 'Privacy Policy Builder',
+  },
+  lawfulBasis: {
+    title: 'Lawful Basis Tracker',
+    description: 'Document and track the lawful basis for each processing activity as required by NDPA 2023 Section 25.',
+  },
+  crossBorder: {
+    title: 'Cross-Border Data Transfer Manager',
+    description: 'Manage and document cross-border personal data transfers in compliance with NDPA 2023 Part VIII (Sections 41-43).',
+  },
+  ropa: {
+    title: 'Record of Processing Activities (ROPA)',
+    description: 'Maintain a comprehensive record of all data processing activities as required by the NDPA accountability principle.',
   },
   compliance: {
     score: 'Compliance Score',

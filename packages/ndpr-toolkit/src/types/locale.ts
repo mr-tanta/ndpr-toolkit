@@ -14,6 +14,12 @@ export interface NDPRLocale {
     deselectAll?: string;
     required?: string;
     cookieNotice?: string;
+    /** ConsentManager component title */
+    managerTitle?: string;
+    /** ConsentManager component description */
+    managerDescription?: string;
+    /** ConsentManager reset button */
+    resetToDefaults?: string;
   };
   dsr?: {
     title?: string;
@@ -30,6 +36,14 @@ export interface NDPRLocale {
     identifierValue?: string;
     privacyNotice?: string;
     successMessage?: string;
+    /** DSRDashboard component title */
+    dashboardTitle?: string;
+    /** DSRDashboard component description */
+    dashboardDescription?: string;
+    /** DSRTracker component title */
+    trackerTitle?: string;
+    /** DSRTracker component description */
+    trackerDescription?: string;
   };
   breach?: {
     title?: string;
@@ -39,6 +53,18 @@ export interface NDPRLocale {
     category?: string;
     discoveredAt?: string;
     detailedDescription?: string;
+    /** BreachRiskAssessment component title */
+    riskAssessmentTitle?: string;
+    /** BreachRiskAssessment component description */
+    riskAssessmentDescription?: string;
+    /** BreachNotificationManager component title */
+    notificationManagerTitle?: string;
+    /** BreachNotificationManager component description */
+    notificationManagerDescription?: string;
+    /** RegulatoryReportGenerator component title */
+    regulatoryReportTitle?: string;
+    /** RegulatoryReportGenerator component description */
+    regulatoryReportDescription?: string;
   };
   dpia?: {
     title?: string;
@@ -46,6 +72,10 @@ export interface NDPRLocale {
     previous?: string;
     complete?: string;
     progress?: string;
+    /** DPIAQuestionnaire submit button (last section) */
+    submit?: string;
+    /** DPIAReport main report title */
+    reportTitle?: string;
   };
   policy?: {
     title?: string;
@@ -54,6 +84,38 @@ export interface NDPRLocale {
     export?: string;
     sections?: string;
     variables?: string;
+    /** PolicyGenerator component title */
+    generatorTitle?: string;
+    /** PolicyGenerator component description */
+    generatorDescription?: string;
+    /** PolicyPreview component title */
+    previewTitle?: string;
+    /** PolicyPreview component description */
+    previewDescription?: string;
+    /** PolicyExporter component title */
+    exporterTitle?: string;
+    /** PolicyExporter component description */
+    exporterDescription?: string;
+    /** AdaptivePolicyWizard heading */
+    wizardTitle?: string;
+  };
+  lawfulBasis?: {
+    /** LawfulBasisTracker title */
+    title?: string;
+    /** LawfulBasisTracker description */
+    description?: string;
+  };
+  crossBorder?: {
+    /** CrossBorderTransferManager title */
+    title?: string;
+    /** CrossBorderTransferManager description */
+    description?: string;
+  };
+  ropa?: {
+    /** ROPAManager title */
+    title?: string;
+    /** ROPAManager description */
+    description?: string;
   };
   compliance?: {
     score?: string;

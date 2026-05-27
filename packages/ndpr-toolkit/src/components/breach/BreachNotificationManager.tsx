@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BreachReport, RiskAssessment, RegulatoryNotification, NotificationRequirement } from '../../types/breach';
 import { calculateBreachSeverity } from '../../utils/breach';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface BreachNotificationManagerClassNames {
   root?: string;
@@ -109,8 +110,9 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   onSelectBreach,
   onRequestAssessment,
   onRequestNotification,
-  title = "Breach Notification Manager",
-  description = "Manage data breach notifications and track compliance with NDPA Section 40 requirements.",
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
   className = "",
   buttonClassName = "",
   classNames: cn = {},
@@ -119,6 +121,11 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   showNotificationTimeline = true,
   showDeadlineAlerts = true
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.breach.notificationManagerTitle ?? 'Breach Notification Manager';
+  const resolvedDescription =
+    description ?? locale.breach.notificationManagerDescription ??
+    'Manage data breach notifications and track compliance with NDPA Section 40 requirements.';
   const [selectedBreachId, setSelectedBreachId] = useState<string | null>(null);
   const [filteredBreaches, setFilteredBreaches] = useState<BreachReport[]>(breachReports);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -433,8 +440,8 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   return (
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
       <div className={resolveClass("", cn.header, unstyled)}>
-        <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{title}</h2>
-        <p className='ndpr-card__subtitle'>{description}</p>
+        <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{resolvedTitle}</h2>
+        <p className='ndpr-card__subtitle'>{resolvedDescription}</p>
       </div>
       
       {/* Filters and Search */}

@@ -1,5 +1,6 @@
 import React, { useState, useId } from 'react';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface PolicyExporterClassNames {
   /** Root container */
@@ -122,12 +123,13 @@ interface ExportRecord {
 
 export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   content,
-  title = "Privacy Policy",
+  // i18n: explicit prop > provider locale > English default.
+  title,
   organizationName,
   lastUpdated,
   onExportComplete,
   componentTitle = "Export Privacy Policy",
-  description = "Export your NDPA-compliant privacy policy in various formats.",
+  description,
   className = "",
   buttonClassName = "",
   showExportHistory = true,
@@ -138,6 +140,11 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   classNames,
   unstyled = false
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.policy.exporterTitle ?? 'Privacy Policy';
+  const resolvedDescription =
+    description ?? locale.policy.exporterDescription ??
+    'Export your NDPA-compliant privacy policy in various formats.';
   const instanceId = useId();
   const [exportHistory, setExportHistory] = useState<ExportRecord[]>([]);
   const [selectedFormat, setSelectedFormat] = useState<string>('pdf');
@@ -174,7 +181,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
   
   // Generate HTML content for export
   const generateHTMLContent = (): string => {
-    const fullTitle = organizationName ? `${organizationName} ${title}` : title;
+    const fullTitle = organizationName ? `${organizationName} ${resolvedTitle}` : resolvedTitle;
     const dateStr = lastUpdated ? lastUpdated.toLocaleDateString() : 'N/A';
     
     let html = `<!DOCTYPE html>
@@ -554,7 +561,7 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, classNames?.root, unstyled)}>
       <div className={resolveClass('mb-6', classNames?.header, unstyled)}>
         <h2 className={resolveClass('ndpr-section-heading', classNames?.title, unstyled)}>{componentTitle}</h2>
-        <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{description}</p>
+        <p className={resolveClass('ndpr-card__subtitle', classNames?.description, unstyled)}>{resolvedDescription}</p>
       </div>
       
       {/* Format Selection */}

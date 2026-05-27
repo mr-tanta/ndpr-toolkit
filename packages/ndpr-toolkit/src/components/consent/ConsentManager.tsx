@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
 import { resolveClass } from '../../utils/styling';
+import { useNDPRLocale } from '../NDPRProvider';
 
 export interface ConsentManagerClassNames {
   root?: string;
@@ -123,10 +124,11 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
   options,
   settings,
   onSave,
-  title = "Manage Your Privacy Settings",
-  description = "Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function. Consent management is provided in accordance with NDPA Sections 25-26.",
-  saveButtonText = "Save Preferences",
-  resetButtonText = "Reset to Defaults",
+  // i18n: explicit prop > provider locale > English default.
+  title,
+  description,
+  saveButtonText,
+  resetButtonText,
   version = "1.0",
   className = "",
   buttonClassName = "",
@@ -138,6 +140,13 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
   successMessage = "Your preferences have been saved.",
   successMessageDuration = 3000
 }) => {
+  const locale = useNDPRLocale();
+  const resolvedTitle = title ?? locale.consent.managerTitle ?? 'Manage Your Privacy Settings';
+  const resolvedDescription =
+    description ?? locale.consent.managerDescription ??
+    'Update your consent preferences at any time. Required cookies cannot be disabled as they are necessary for the website to function. Consent management is provided in accordance with NDPA Sections 25-26.';
+  const resolvedSave = saveButtonText ?? locale.consent.savePreferences ?? 'Save Preferences';
+  const resolvedReset = resetButtonText ?? locale.consent.resetToDefaults ?? 'Reset to Defaults';
   const [consents, setConsents] = useState<Record<string, boolean>>({});
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const successTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -234,8 +243,8 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
       data-ndpr-component="consent-manager"
       className={resolveClass(rootClass, classNames?.root, unstyled)}
     >
-      <h2 className={resolveClass('ndpr-consent-manager__title', classNames?.title, unstyled)}>{title}</h2>
-      <p className={resolveClass('ndpr-consent-manager__description', classNames?.description, unstyled)}>{description}</p>
+      <h2 className={resolveClass('ndpr-consent-manager__title', classNames?.title, unstyled)}>{resolvedTitle}</h2>
+      <p className={resolveClass('ndpr-consent-manager__description', classNames?.description, unstyled)}>{resolvedDescription}</p>
 
       <div className={resolveClass('ndpr-consent-manager__options-list', classNames?.optionsList, unstyled)}>
         {options.map(option => {
@@ -284,13 +293,13 @@ export const ConsentManager: React.FC<ConsentManagerProps> = ({
           onClick={handleSave}
           className={resolveClass(resolvedSaveButton, classNames?.saveButton, unstyled)}
         >
-          {saveButtonText}
+          {resolvedSave}
         </button>
         <button
           onClick={handleReset}
           className={resolveClass(resolvedResetButton, classNames?.resetButton, unstyled)}
         >
-          {resetButtonText}
+          {resolvedReset}
         </button>
       </div>
 

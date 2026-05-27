@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BreachReportForm } from '../components/breach/BreachReportForm';
 import type { BreachReportFormClassNames, BreachFormSubmission } from '../components/breach/BreachReportForm';
 import type { BreachCategory } from '../types/breach';
@@ -37,12 +37,88 @@ const DEFAULT_CATEGORIES: BreachCategory[] = [
   },
 ];
 
+/**
+ * UX copy overrides for the NDPRBreachReport preset. Pass any subset to
+ * replace the default text without dropping to the lower-level
+ * `<BreachReportForm>` API.
+ */
+export interface NDPRBreachReportCopy {
+  /** Form heading. Default: "Report a Data Breach" */
+  title?: string;
+  /** Body paragraph under the heading. */
+  description?: string;
+  /** Submit button label. Default: "Submit Report" */
+  submitButton?: string;
+}
+
 export interface NDPRBreachReportProps {
   categories?: BreachCategory[];
   adapter?: StorageAdapter<BreachFormSubmission>;
   classNames?: BreachReportFormClassNames;
   unstyled?: boolean;
   onSubmit?: (data: BreachFormSubmission) => void;
+
+  /**
+   * UX copy overrides — see {@link NDPRBreachReportCopy}.
+   */
+  copy?: NDPRBreachReportCopy;
+
+  /**
+   * @deprecated Renamed to `copy.description`. Will be removed in 4.0.
+   * If both are set, `copy.description` wins.
+   */
+  formDescription?: string;
+
+  /**
+   * Body paragraph under the heading. Canonical name in 3.13+. Takes
+   * precedence over `formDescription`.
+   */
+  description?: string;
+
+  /**
+   * Public-form mode. Use when the form should submit to your existing
+   * backend workflow instead of being state-managed by an adapter.
+   *
+   * When `submitTo` is set:
+   * - the form does NOT require an `adapter`
+   * - on submit, the toolkit POSTs the JSON-serialised `BreachFormSubmission`
+   *   to this URL (with `Content-Type: application/json`)
+   * - your `onSubmit` callback still fires (after the POST resolves)
+   * - submit failures are surfaced via `onSubmitError`
+   *
+   * @example
+   *   <NDPRBreachReport submitTo="/api/breach" />
+   */
+  submitTo?: string;
+
+  /**
+   * Fetch options for the `submitTo` POST. Useful for adding `credentials`
+   * (cookies/auth), `X-CSRF-Token`, or any other header your backend
+   * requires. Ignored unless `submitTo` is set.
+   *
+   * @default { credentials: 'same-origin' }
+   */
+  submitOptions?: {
+    headers?: Record<string, string> | (() => Record<string, string>);
+    credentials?: RequestCredentials;
+  };
+
+  /**
+   * Called when a `submitTo` POST fails (network error or non-2xx
+   * response). Receives the underlying error or Response.
+   */
+  onSubmitError?: (ctx: { error?: unknown; response?: Response }) => void;
+
+  /**
+   * Called when a `submitTo` POST succeeds (2xx response). Receives the
+   * `Response` object, the submitted `BreachFormSubmission` payload, and the
+   * parsed JSON body if the server returned valid JSON.
+   */
+  onSubmitSuccess?: (ctx: {
+    response: Response;
+    data: BreachFormSubmission;
+    body?: unknown;
+  }) => void;
 }
 
 export const NDPRBreachReport: React.FC<NDPRBreachReportProps> = ({
@@ -51,11 +127,66 @@ export const NDPRBreachReport: React.FC<NDPRBreachReportProps> = ({
   classNames,
   unstyled,
   onSubmit = () => {},
+  copy,
+  formDescription,
+  description,
+  submitTo,
+  submitOptions,
+  onSubmitError,
+  onSubmitSuccess,
 }) => {
-  const handleSubmit = (data: BreachFormSubmission) => {
-    if (adapter) adapter.save(data);
+  // Deprecation warning for `formDescription` — dev only, fire-once per instance.
+  const warnedFormDescriptionRef = useRef(false);
+  useEffect(() => {
+    if (
+      process.env.NODE_ENV !== 'production' &&
+      formDescription !== undefined &&
+      description === undefined &&
+      !warnedFormDescriptionRef.current
+    ) {
+      warnedFormDescriptionRef.current = true;
+      // eslint-disable-next-line no-console
+      console.warn(
+        "[ndpr-toolkit/breach] NDPRBreachReportProps.formDescription is deprecated; rename to 'description'. Will be removed in 4.0.",
+      );
+    }
+  }, [formDescription, description]);
+
+  const handleSubmit = async (data: BreachFormSubmission) => {
+    if (submitTo) {
+      const headers = typeof submitOptions?.headers === 'function'
+        ? submitOptions.headers()
+        : submitOptions?.headers ?? {};
+      try {
+        const response = await fetch(submitTo, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...headers },
+          credentials: submitOptions?.credentials ?? 'same-origin',
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          onSubmitError?.({ response });
+        } else if (onSubmitSuccess) {
+          let body: unknown;
+          try {
+            const text = await response.clone().text();
+            if (text) body = JSON.parse(text);
+          } catch {
+            // body wasn't JSON
+          }
+          onSubmitSuccess({ response, data, body });
+        }
+      } catch (error) {
+        onSubmitError?.({ error });
+      }
+    } else if (adapter) {
+      adapter.save(data);
+    }
     onSubmit(data);
   };
+
+  // description (new) wins; copy.description wins over both forms; formDescription is legacy.
+  const resolvedDescription = copy?.description ?? description ?? formDescription;
 
   return (
     <BreachReportForm
@@ -63,6 +194,9 @@ export const NDPRBreachReport: React.FC<NDPRBreachReportProps> = ({
       onSubmit={handleSubmit}
       classNames={classNames}
       unstyled={unstyled}
+      title={copy?.title}
+      formDescription={resolvedDescription}
+      submitButtonText={copy?.submitButton}
     />
   );
 };
