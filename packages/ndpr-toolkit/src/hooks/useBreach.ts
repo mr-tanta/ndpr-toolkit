@@ -48,7 +48,7 @@ function breachReducer(state: BreachCompositeState, action: BreachAction): Breac
   }
 }
 
-interface UseBreachOptions {
+export interface UseBreachOptions {
   /**
    * Available breach categories
    */
@@ -179,7 +179,19 @@ export interface UseBreachReturn {
 }
 
 /**
- * Hook for managing data breach notifications in compliance with the NDPA (Section 40)
+ * Hook for managing data breach notifications in compliance with the NDPA (Section 40).
+ *
+ * @example
+ * ```tsx
+ * import { useBreach } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function BreachConsole() {
+ *   const { reports, reportBreach } = useBreach({
+ *     categories: [{ id: 'unauthorized-access', name: 'Unauthorised access', description: '' }],
+ *   });
+ *   return <p>{reports.length} breach report(s) on record.</p>;
+ * }
+ * ```
  */
 export function useBreach({
   categories,

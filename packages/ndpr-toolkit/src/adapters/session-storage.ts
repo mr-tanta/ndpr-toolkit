@@ -1,5 +1,19 @@
 import type { StorageAdapter } from './types';
 
+/**
+ * Storage adapter backed by `window.sessionStorage`. Data is scoped to the
+ * current tab and discarded when the tab closes — useful for consent
+ * choices that should not survive a fresh session.
+ *
+ * @example
+ * ```ts
+ * import { sessionStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+ * import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * const adapter = sessionStorageAdapter('ndpr_consent');
+ * useConsent({ options, adapter });
+ * ```
+ */
 export function sessionStorageAdapter<T = unknown>(key: string): StorageAdapter<T> {
   return {
     load(): T | null {

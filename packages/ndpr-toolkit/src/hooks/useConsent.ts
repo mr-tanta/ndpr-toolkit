@@ -6,7 +6,7 @@ import { localStorageAdapter } from '../adapters/local-storage';
 import { sessionStorageAdapter } from '../adapters/session-storage';
 import { cookieAdapter } from '../adapters/cookie';
 
-interface UseConsentOptions {
+export interface UseConsentOptions {
   /**
    * Consent options to present to the user
    */
@@ -35,7 +35,7 @@ interface UseConsentOptions {
   onChange?: (settings: ConsentSettings) => void;
 }
 
-interface UseConsentReturn {
+export interface UseConsentReturn {
   /**
    * Current consent settings
    */
@@ -117,7 +117,29 @@ function applyLoaded(
 }
 
 /**
- * Hook for managing user consent in compliance with NDPA
+ * Hook for managing user consent in compliance with the NDPA.
+ *
+ * @example
+ * ```tsx
+ * import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function App() {
+ *   const { hasConsent, acceptAll, rejectAll, shouldShowBanner } = useConsent({
+ *     options: [
+ *       { id: 'necessary', label: 'Necessary', required: true },
+ *       { id: 'analytics', label: 'Analytics' },
+ *     ],
+ *   });
+ *   if (!shouldShowBanner) return null;
+ *   return (
+ *     <div role="dialog">
+ *       <button onClick={acceptAll}>Accept all</button>
+ *       <button onClick={rejectAll}>Reject non-essential</button>
+ *       {hasConsent('analytics') && <AnalyticsScripts />}
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useConsent({
   options,

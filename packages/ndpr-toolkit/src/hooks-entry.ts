@@ -17,19 +17,29 @@ export type { ProcessingRecord, RecordOfProcessingActivities, ROPASummary } from
 
 // All hooks
 export { useConsent } from './hooks/useConsent';
+export type { UseConsentOptions, UseConsentReturn } from './hooks/useConsent';
 export { useDSR } from './hooks/useDSR';
+export type { UseDSROptions, UseDSRReturn } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
-export type { DPIAAnswerMap, DPIAAnswerValue } from './hooks/useDPIA';
+export type { DPIAAnswerMap, DPIAAnswerValue, UseDPIAOptions, UseDPIAReturn } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
+export type { UseBreachOptions, UseBreachReturn } from './hooks/useBreach';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
+export type { UsePrivacyPolicyOptions, UsePrivacyPolicyReturn } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
 export { useLawfulBasis } from './hooks/useLawfulBasis';
+export type { UseLawfulBasisOptions, UseLawfulBasisReturn } from './hooks/useLawfulBasis';
 export { useCrossBorderTransfer } from './hooks/useCrossBorderTransfer';
+export type {
+  UseCrossBorderTransferOptions,
+  UseCrossBorderTransferReturn,
+} from './hooks/useCrossBorderTransfer';
 export { useROPA } from './hooks/useROPA';
 export type { UseROPAOptions, UseROPAReturn } from './hooks/useROPA';
 
 // Compliance score
 export { useComplianceScore } from './hooks/useComplianceScore';
+export type { UseComplianceScoreOptions } from './hooks/useComplianceScore';
 export type { ComplianceInput, ComplianceReport } from './utils/compliance-score';
 
 export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';

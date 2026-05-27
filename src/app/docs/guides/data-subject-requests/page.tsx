@@ -172,8 +172,8 @@ function DSRSubmissionPage() {
                 <pre className="text-foreground text-sm"><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
 
 function AssessRequest({ requestId }) {
-  const { getRequestById, updateRequest } = useDSR();
-  const request = getRequestById(requestId);
+  const { getRequest, updateRequest } = useDSR({ requestTypes });
+  const request = getRequest(requestId);
 
   const handleAssessment = (status) => {
     // Update request status
@@ -240,8 +240,8 @@ function AssessRequest({ requestId }) {
                 <pre className="text-foreground text-sm"><code>{`import { useDSR } from '@tantainnovative/ndpr-toolkit';
 
 function RespondToRequest({ requestId }) {
-  const { getRequestById, updateRequest } = useDSR();
-  const request = getRequestById(requestId);
+  const { getRequest, updateRequest } = useDSR({ requestTypes });
+  const request = getRequest(requestId);
 
   const handleComplete = async () => {
     // Mark request as completed

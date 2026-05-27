@@ -11,7 +11,7 @@ function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAd
   return localStorageAdapter<PrivacyPolicy>(storageKey);
 }
 
-interface UsePrivacyPolicyOptions {
+export interface UsePrivacyPolicyOptions {
   /**
    * Available policy templates
    */
@@ -132,7 +132,23 @@ export interface UsePrivacyPolicyReturn {
 }
 
 /**
- * Hook for generating NDPA-compliant privacy policies
+ * Hook for generating NDPA-compliant privacy policies.
+ *
+ * @example
+ * ```tsx
+ * import { usePrivacyPolicy } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function PolicyBuilder({ templates }) {
+ *   const { policy, selectTemplate, generatePolicy } = usePrivacyPolicy({ templates });
+ *   return (
+ *     <div>
+ *       <button onClick={() => selectTemplate(templates[0].id)}>Select default</button>
+ *       <button onClick={generatePolicy}>Generate</button>
+ *       {policy && <pre>{policy.title}</pre>}
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function usePrivacyPolicy({
   templates,

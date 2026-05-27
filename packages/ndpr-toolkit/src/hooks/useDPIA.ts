@@ -10,7 +10,7 @@ export type DPIAAnswerValue = string | number | boolean | string[];
 /** A map of question IDs to their answer values */
 export type DPIAAnswerMap = Record<string, DPIAAnswerValue>;
 
-interface UseDPIAOptions {
+export interface UseDPIAOptions {
   /**
    * Sections of the DPIA questionnaire
    */
@@ -131,7 +131,22 @@ export interface UseDPIAReturn {
 }
 
 /**
- * Hook for conducting Data Protection Impact Assessments in compliance with the NDPA 2023
+ * Hook for conducting Data Protection Impact Assessments in compliance with the NDPA 2023.
+ *
+ * @example
+ * ```tsx
+ * import { useDPIA } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function DPIAWizard({ sections }) {
+ *   const { currentSection, progress, updateAnswer, nextSection } = useDPIA({ sections });
+ *   return (
+ *     <div>
+ *       <h2>{currentSection?.title} ({progress}%)</h2>
+ *       <button onClick={nextSection}>Next</button>
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export function useDPIA({
   sections,

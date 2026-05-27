@@ -144,3 +144,54 @@ export {
 } from './utils/legal-notice';
 export { LegalNotice } from './components/common/LegalNotice';
 export type { LegalNoticeProps } from './components/common/LegalNotice';
+
+// ---------------------------------------------------------------------------
+// Component *Props re-exports (3.11.0) — surface the prop interfaces for each
+// public component so consumers can write typed wrappers without reaching
+// into deep import paths.
+// ---------------------------------------------------------------------------
+export type { ConsentBannerProps } from './components/consent/ConsentBanner';
+export type { ConsentManagerProps } from './components/consent/ConsentManager';
+export type { ConsentStorageProps } from './components/consent/ConsentStorage';
+export type { DSRRequestFormProps } from './components/dsr/DSRRequestForm';
+export type { DSRDashboardProps } from './components/dsr/DSRDashboard';
+export type { DSRTrackerProps } from './components/dsr/DSRTracker';
+export type { DPIAQuestionnaireProps } from './components/dpia/DPIAQuestionnaire';
+export type { DPIAReportProps } from './components/dpia/DPIAReport';
+export type { StepIndicatorProps } from './components/dpia/StepIndicator';
+export type { BreachReportFormProps } from './components/breach/BreachReportForm';
+export type { BreachRiskAssessmentProps } from './components/breach/BreachRiskAssessment';
+export type { BreachNotificationManagerProps } from './components/breach/BreachNotificationManager';
+export type { RegulatoryReportGeneratorProps } from './components/breach/RegulatoryReportGenerator';
+export type { PolicyGeneratorProps } from './components/policy/PolicyGenerator';
+export type { PolicyPreviewProps } from './components/policy/PolicyPreview';
+export type { PolicyExporterProps } from './components/policy/PolicyExporter';
+export type { LawfulBasisTrackerProps } from './components/lawful-basis/LawfulBasisTracker';
+export type { CrossBorderTransferManagerProps } from './components/cross-border/CrossBorderTransferManager';
+export type { ROPAManagerProps } from './components/ropa/ROPAManager';
+
+// ---------------------------------------------------------------------------
+// Adapter types (3.11.0) — surface from the root entry so consumers building
+// custom adapters don't need to import from /adapters.
+// ---------------------------------------------------------------------------
+export type { StorageAdapter } from './adapters/types';
+export type {
+  ApiAdapterOptions,
+  ApiAdapterErrorContext,
+  ApiAdapterSuccessContext,
+  ApiAdapterRetryConfig,
+  ApiAdapterMethod,
+} from './adapters/api';
+export type { CookieAdapterOptions } from './adapters/cookie';
+
+// ---------------------------------------------------------------------------
+// DSR server-side validation types (3.11.0) — also reachable from /server.
+// Re-exported here so the validator's types are discoverable from the default
+// entry as well.
+// ---------------------------------------------------------------------------
+export { validateDsrSubmission } from './utils/dsr';
+export type {
+  DsrSubmissionPayload,
+  DsrSubmissionValidationResult,
+  ValidateDsrSubmissionOptions,
+} from './utils/dsr';

@@ -19,7 +19,7 @@ function resolveAdapter(storageKey: string, useLocalStorage: boolean): StorageAd
   return localStorageAdapter<CrossBorderTransfer[]>(storageKey);
 }
 
-interface UseCrossBorderTransferOptions {
+export interface UseCrossBorderTransferOptions {
   /**
    * Initial transfers to load
    */
@@ -108,7 +108,18 @@ export interface UseCrossBorderTransferReturn {
 }
 
 /**
- * Hook for managing cross-border data transfers in compliance with NDPA Part VIII (Sections 41-43)
+ * Hook for managing cross-border data transfers in compliance with NDPA Part VIII (Sections 41-43).
+ *
+ * @example
+ * ```tsx
+ * import { useCrossBorderTransfer } from '@tantainnovative/ndpr-toolkit/hooks';
+ *
+ * function TransferRegister() {
+ *   const { transfers, getSummary } = useCrossBorderTransfer();
+ *   const summary = getSummary();
+ *   return <p>{summary.totalActiveTransfers} active cross-border transfers.</p>;
+ * }
+ * ```
  */
 export function useCrossBorderTransfer({
   initialTransfers = [],

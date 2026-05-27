@@ -56,6 +56,42 @@ function isNonEmptyString(value: unknown): value is string {
 }
 
 /**
+ * Raw, post-validation shape of a DSR submission payload. Mirrors
+ * {@link DsrSubmissionPayload} but with the `identifierType` /
+ * `identifierValue` fields kept optional so the same guard works whether
+ * or not identity verification is required.
+ */
+interface DsrPayloadRaw {
+  requestType: string;
+  dataSubject: {
+    fullName: string;
+    email: string;
+    phone?: string;
+    identifierType?: string;
+    identifierValue?: string;
+  };
+  additionalInfo?: Record<string, string | number | boolean | null>;
+  submittedAt: number;
+}
+
+/**
+ * Type guard asserting that a payload satisfies the post-validation
+ * {@link DsrPayloadRaw} shape. The caller is responsible for running the
+ * full validator first — this guard's job is purely to let TS narrow
+ * `payload` so the subsequent property reads don't need `as` casts.
+ */
+function isDsrPayloadRaw(payload: unknown): payload is DsrPayloadRaw {
+  if (!isPlainObject(payload)) return false;
+  if (!isNonEmptyString(payload.requestType)) return false;
+  if (!isPlainObject(payload.dataSubject)) return false;
+  const ds = payload.dataSubject;
+  if (!isNonEmptyString(ds.fullName)) return false;
+  if (!isNonEmptyString(ds.email)) return false;
+  if (typeof payload.submittedAt !== 'number' || !Number.isFinite(payload.submittedAt)) return false;
+  return true;
+}
+
+/**
  * Validate a raw DSR submission payload against the same rules
  * `<DSRRequestForm />` enforces client-side. Designed to be called from a
  * server-side handler (Next.js Route Handler, NestJS controller, Express
@@ -149,24 +185,27 @@ export function validateDsrSubmission(
     return { valid: false, errors };
   }
 
-  // Safe narrowing: every required field passed validation above.
-  const ds = dataSubject as Record<string, unknown>;
+  // Safe narrowing via type guard — every required field passed validation
+  // above, so the guard always returns true here. The early-return is for
+  // type safety (and to satisfy TS that the cast-free reads below are sound).
+  if (!isDsrPayloadRaw(payload)) {
+    return { valid: false, errors: { _root: 'Payload failed final narrowing' } };
+  }
+
   return {
     valid: true,
     errors: {},
     data: {
-      requestType: payload.requestType as string,
+      requestType: payload.requestType,
       dataSubject: {
-        fullName: ds.fullName as string,
-        email: ds.email as string,
-        phone: ds.phone as string | undefined,
-        identifierType: (ds.identifierType as string | undefined) ?? '',
-        identifierValue: (ds.identifierValue as string | undefined) ?? '',
+        fullName: payload.dataSubject.fullName,
+        email: payload.dataSubject.email,
+        phone: payload.dataSubject.phone,
+        identifierType: payload.dataSubject.identifierType ?? '',
+        identifierValue: payload.dataSubject.identifierValue ?? '',
       },
-      additionalInfo: payload.additionalInfo as
-        | Record<string, string | number | boolean | null>
-        | undefined,
-      submittedAt: payload.submittedAt as number,
+      additionalInfo: payload.additionalInfo,
+      submittedAt: payload.submittedAt,
     },
   };
 }
