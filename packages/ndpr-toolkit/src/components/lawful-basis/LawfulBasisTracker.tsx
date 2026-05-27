@@ -171,6 +171,41 @@ const SENSITIVE_DATA_OPTIONS: { value: SensitiveDataCondition; label: string }[]
   { value: 'archiving_research', label: 'Archiving / Research' },
 ];
 
+// Module-scope lookup tables — previously allocated inside renderStatusBadge /
+// renderBasisBadge on every render. Hoisting cuts a few allocations per row.
+const STATUS_BADGE_CLASSES: Record<ProcessingActivity['status'], string> = {
+  active: 'ndpr-badge ndpr-badge--success',
+  inactive: 'ndpr-badge ndpr-badge--neutral',
+  under_review: 'ndpr-badge ndpr-badge--warning',
+  archived: 'ndpr-badge ndpr-badge--destructive',
+};
+
+const STATUS_BADGE_LABELS: Record<ProcessingActivity['status'], string> = {
+  active: 'Active',
+  inactive: 'Inactive',
+  under_review: 'Under Review',
+  archived: 'Archived',
+};
+
+const BASIS_BADGE_CLASSES: Record<LawfulBasis, string> = {
+  consent: 'ndpr-badge ndpr-badge--info',
+  contract: 'ndpr-badge ndpr-badge--info',
+  legal_obligation: 'ndpr-badge ndpr-badge--info',
+  vital_interests: 'ndpr-badge ndpr-badge--destructive',
+  public_interest: 'ndpr-badge ndpr-badge--warning',
+  legitimate_interests:
+    'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
+};
+
+const BASIS_BADGE_LABELS: Record<LawfulBasis, string> = {
+  consent: 'Consent',
+  contract: 'Contract',
+  legal_obligation: 'Legal Obligation',
+  vital_interests: 'Vital Interests',
+  public_interest: 'Public Interest',
+  legitimate_interests: 'Legitimate Interests',
+};
+
 /**
  * Lawful basis tracker component. Implements NDPA Section 25 requirements for documenting
  * and tracking the lawful basis for each personal data processing activity.
@@ -348,52 +383,20 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
     [activities, selectedActivityId]
   );
 
-  // Render status badge
+  // Render status badge — lookup tables are hoisted to module scope.
   const renderStatusBadge = useCallback((status: ProcessingActivity['status']) => {
-    const colorClasses: Record<ProcessingActivity['status'], string> = {
-      active: 'ndpr-badge ndpr-badge--success',
-      inactive: 'ndpr-badge ndpr-badge--neutral',
-      under_review: 'ndpr-badge ndpr-badge--warning',
-      archived: 'ndpr-badge ndpr-badge--destructive',
-    };
-
-    const labels: Record<ProcessingActivity['status'], string> = {
-      active: 'Active',
-      inactive: 'Inactive',
-      under_review: 'Under Review',
-      archived: 'Archived',
-    };
-
     return (
-      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`, classNames?.statusBadge, unstyled)}>
-        {labels[status]}
+      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${STATUS_BADGE_CLASSES[status]}`, classNames?.statusBadge, unstyled)}>
+        {STATUS_BADGE_LABELS[status]}
       </span>
     );
   }, [classNames?.statusBadge, unstyled]);
 
-  // Render lawful basis badge
+  // Render lawful basis badge — lookup tables are hoisted to module scope.
   const renderBasisBadge = useCallback((basis: LawfulBasis) => {
-    const colorClasses: Record<LawfulBasis, string> = {
-      consent: 'ndpr-badge ndpr-badge--info',
-      contract: 'ndpr-badge ndpr-badge--info',
-      legal_obligation: 'ndpr-badge ndpr-badge--info',
-      vital_interests: 'ndpr-badge ndpr-badge--destructive',
-      public_interest: 'ndpr-badge ndpr-badge--warning',
-      legitimate_interests: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-    };
-
-    const labels: Record<LawfulBasis, string> = {
-      consent: 'Consent',
-      contract: 'Contract',
-      legal_obligation: 'Legal Obligation',
-      vital_interests: 'Vital Interests',
-      public_interest: 'Public Interest',
-      legitimate_interests: 'Legitimate Interests',
-    };
-
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${colorClasses[basis]}`}>
-        {labels[basis]}
+      <span className={`px-2 py-1 rounded text-xs font-medium ${BASIS_BADGE_CLASSES[basis]}`}>
+        {BASIS_BADGE_LABELS[basis]}
       </span>
     );
   }, []);

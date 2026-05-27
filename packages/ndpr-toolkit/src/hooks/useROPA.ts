@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import type {
   ProcessingRecord,
   RecordOfProcessingActivities,
@@ -68,19 +68,43 @@ export interface UseROPAReturn {
   getRecord: (id: string) => ProcessingRecord | undefined;
 
   /**
-   * Get a summary of the ROPA including statistics
+   * Get a summary of the ROPA including statistics.
+   * @deprecated Use the cached `summary` field instead — it is memoised on
+   * `ropa` so consumers don't pay the recompute cost on every call.
    */
   getSummary: () => ROPASummary;
 
   /**
-   * Export the ROPA as a CSV string
+   * Export the ROPA as a CSV string.
+   * @deprecated Use the cached `csv` field instead — it is memoised on
+   * `ropa` so consumers don't pay the recompute cost on every call.
    */
   exportCSV: () => string;
 
   /**
-   * Identify compliance gaps across all records
+   * Identify compliance gaps across all records.
+   * @deprecated Use the cached `complianceGaps` field instead — it is
+   * memoised on `ropa` so consumers don't pay the recompute cost on every call.
    */
   getComplianceGaps: () => ROPAComplianceGap[];
+
+  /**
+   * Memoised ROPA summary. Recomputed only when `ropa` changes.
+   * Prefer this over `getSummary()` to avoid redundant recomputation.
+   */
+  summary: ROPASummary;
+
+  /**
+   * Memoised CSV export string. Recomputed only when `ropa` changes.
+   * Prefer this over `exportCSV()` to avoid redundant recomputation.
+   */
+  csv: string;
+
+  /**
+   * Memoised compliance gap list. Recomputed only when `ropa` changes.
+   * Prefer this over `getComplianceGaps()` to avoid redundant recomputation.
+   */
+  complianceGaps: ROPAComplianceGap[];
 
   /**
    * Whether the adapter is still loading data (relevant for async adapters)
@@ -228,17 +252,22 @@ export function useROPA({
     [ropa.records]
   );
 
-  const getSummary = useCallback((): ROPASummary => {
-    return generateROPASummary(ropa);
-  }, [ropa]);
+  // Memoised derivations — single recompute per `ropa` change rather than
+  // one per call site. The callable wrappers below are kept for backward
+  // compatibility but return the same cached values.
+  const summary = useMemo<ROPASummary>(() => generateROPASummary(ropa), [ropa]);
+  const csv = useMemo<string>(() => exportROPAToCSV(ropa), [ropa]);
+  const complianceGaps = useMemo<ROPAComplianceGap[]>(
+    () => identifyComplianceGaps(ropa),
+    [ropa]
+  );
 
-  const exportCSV = useCallback((): string => {
-    return exportROPAToCSV(ropa);
-  }, [ropa]);
-
-  const getComplianceGaps = useCallback((): ROPAComplianceGap[] => {
-    return identifyComplianceGaps(ropa);
-  }, [ropa]);
+  const getSummary = useCallback((): ROPASummary => summary, [summary]);
+  const exportCSV = useCallback((): string => csv, [csv]);
+  const getComplianceGaps = useCallback(
+    (): ROPAComplianceGap[] => complianceGaps,
+    [complianceGaps]
+  );
 
   return {
     ropa,
@@ -249,6 +278,9 @@ export function useROPA({
     getSummary,
     exportCSV,
     getComplianceGaps,
+    summary,
+    csv,
+    complianceGaps,
     isLoading,
   };
 }

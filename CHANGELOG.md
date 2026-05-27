@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [3.12.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.11.0...v3.12.0) (2026-05-27)
+
+Release 4 of 6 on the post-audit roadmap. Accessibility + performance + test coverage. No public API changes — everything is additive or behaviour-preserving internal work. Existing consumers see no breakage; users of assistive tech and consumers of large managers see real improvements.
+
+### Accessibility — 6 WCAG 2.2 fixes
+
+- **`BreachNotificationManager`** (`components/breach/BreachNotificationManager.tsx`) — the breach list row was a clickable `<div>` without `role`/`tabIndex`/keyboard handler. Now `role="button"`, `tabIndex={0}`, `aria-selected`, `aria-label`, and Enter/Space activation (matching the existing DSRDashboard pattern). Keyboard users can finally drill into a breach row.
+- **`dpia/StepIndicator`** — the step wedge had `onClick` without button semantics. Now conditionally adds `role="button"` / `tabIndex` / keydown when interactive (`clickable && onStepClick`); when display-only, those attributes are `undefined` so it stays a non-interactive progress marker.
+- **`CrossBorderTransferManager`** — 8 form fields had `<label>` without `htmlFor` and the matching `<input>`/`<select>` had no `id`. Screen readers announced "edit text, blank" for all 8. Added stable `cb-transfer-<field>` id pairs: `riskLevel`, `estimatedDataSubjects`, `recipientContactPhone`, `recipientContactAddress`, `frequency`, `status`, `ndpcApprovalReference`, `tiaReference`.
+- **`BreachReportForm` file upload** — `<label>` had no `htmlFor`, `<input type="file">` had no `id`. Added `htmlFor="breach-attachments"` + matching id. Decorative paperclip SVG got `aria-hidden="true" focusable="false"`.
+- **Touch targets** — `.ndpr-consent-banner__button` and `.ndpr-button` were ~33px tall (`padding: 0.5rem 1rem`). Added `min-height: 44px` to both — matches iOS HIG and WCAG 2.2 enhanced target. Existing padding is unchanged so visual layout doesn't shift.
+- **`DPIAQuestionnaire`** — section title heading now has `aria-live="polite"` so screen readers announce the new section title when the user clicks Next.
+
+### Performance — 3 hot-path improvements
+
+- **`useROPA`** (`hooks/useROPA.ts`) — derivers `getSummary` / `exportCSV` / `getComplianceGaps` previously recomputed on every call. Hook now also returns `summary` / `csv` / `complianceGaps` as `useMemo`-cached values keyed on `ropa`. The existing callable functions still work (marked `@deprecated` in JSDoc, points at the cached fields). Pure additive — no break.
+- **`CrossBorderTransferManager`** — `summaryData` collapsed from 4× `transfers.filter(...)` calls (O(4n)) to a single `for` loop (O(n)) that accumulates `totalActiveTransfers`, `pendingApproval`, `highRiskTransfers`, `missingTIA` in one pass. Same output shape; meaningfully faster with many transfers.
+- **Hoisted lookup tables** — `STATUS_BADGE_CLASSES` / `STATUS_BADGE_LABELS` / `BASIS_BADGE_CLASSES` / `BASIS_BADGE_LABELS` (LawfulBasisTracker), `RISK_BADGE_CLASSES` / `CB_STATUS_BADGE_*` (CrossBorderTransferManager), `ROPA_STATUS_BADGE_*` / `ROPA_BASIS_BADGE_LABELS` (ROPAManager) moved from inside `useCallback` bodies to module scope. Eliminates per-row object allocation on every render.
+
+Two perf items from the audit were **inspected and intentionally skipped** with documented reasons:
+
+- `useDefaultPrivacyPolicy` was already cached via a `useRef`-gated init (not a typical `useMemo` shape, but functionally equivalent — the comment at line 167 calls out the intentional semantics).
+- `ROPAManager` inline onChange closures were already paired with `useCallback`-stable `updateEditingField` / `updateControllerField` refs, so the existing setup doesn't pay the per-keystroke closure-allocation cost we'd hoped to remove. Extracting a `<FormField>` component would touch >400 lines and risk subtle behavioural change for marginal gain.
+
+### Test coverage — +25 cases
+
+Suite jumped from 1212 to **1237 / 1237 passing**. New cases target gaps the audit's B4 report flagged as critical:
+
+- **`useFocusTrap`** (7 cases, new file) — restore-focus-on-deactivation, Tab cycling forward, Shift+Tab cycling backward, onEscape, listener cleanup, `autoFocus: false`. Previously zero dedicated tests for 128 LOC of WCAG-critical focus-trap logic.
+- **`useComplianceScore`** (2 cases, new file) — memoisation by deep equality, recompute on inner-field change.
+- **`NDPRDashboard` preset** (2 cases, new file) — `ComplianceInput` → score ring; degraded input lowers score.
+- **`NDPRThemeProvider`** (2 added cases) — `mode: 'light'` sets `data-theme="light"`; empty `theme={{}}` produces no style attribute.
+- **`assessDPIARisk`** (2 added cases) — empty-risks array → low-level; all-mitigated high-risk → `canProceed: true`.
+- **`NDPRProvider`** (3 cases, new file) — `useNDPRConfig` returns provided config; `useNDPRLocale` merges partial overrides with English defaults; nested-provider innermost-wins.
+- **`preset-callbacks`** (7 cases, new file) — submit / save / complete callbacks across `NDPRConsent`, `NDPRBreachReport` (with adapter), `NDPRDPIA`, `NDPRLawfulBasis`, `NDPRCrossBorder`, `NDPRROPA`. (One preset deferred: `NDPRPrivacyPolicy.onComplete` only fires after a multi-step wizard flow with valid data — would duplicate `useAdaptivePolicyWizard`'s own tests.)
+
+### Deferred from the original 3.12.0 plan
+
+- **`/server` split into `/server/utils`, `/server/policy`, `/server/locales`.** Inspected: the 261-line `/server` re-exports translate to ~40 chunks pulled by tsup, but consumers already have narrower subpaths (`/dsr`, `/policy`, etc.) for the same use cases. The split adds 3 entry points + 3 PROBES + 3 docs entries for marginal benefit. Slated for re-evaluation in the 4.x roadmap discussion alongside the B20 strategic items.
+
+### Verification
+
+- Jest: **1237 / 1237 passing** (was 1212; +25 new tests)
+- `tsc --noEmit -p tsconfig.json` clean
+- `pnpm verify:tarball --skip-ts` clean across all 22 subpaths
+
 ## [3.11.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v3.10.6...v3.11.0) (2026-05-27)
 
 Release 3 of 6 on the post-audit roadmap. Strictly additive — every change here adds to the public surface or fixes a docs lie. Existing consumers keep working without changes.

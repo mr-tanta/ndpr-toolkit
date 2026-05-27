@@ -547,12 +547,17 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
                 return (
                   <div
                     key={breach.id}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View breach ${breach.title}`}
+                    aria-selected={selectedBreachId === breach.id}
                     className={resolveClass(`p-3 rounded-md cursor-pointer ${
                       selectedBreachId === breach.id
                         ? 'ndpr-alert ndpr-alert--info'
                         : 'ndpr-panel'
                     }`, cn.breachItem, unstyled)}
                     onClick={() => handleSelectBreach(breach.id)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelectBreach(breach.id); } }}
                   >
                     <div className="flex justify-between items-start mb-1">
                       <h4 className="font-medium text-sm">{breach.title}</h4>

@@ -120,6 +120,84 @@ describe('assessDPIARisk (NDPA Section 28(2) - NDPC Consultation)', () => {
     expect(result.recommendations.length).toBeGreaterThan(0);
   });
 
+  it('returns canProceed: true with level low when risks array is empty', () => {
+    const dpiaResult: DPIAResult = {
+      id: 'empty-risks',
+      title: 'Empty Risks DPIA',
+      processingDescription: 'No risks identified',
+      startedAt: Date.now(),
+      assessor: { name: 'Tester', role: 'DPO', email: 'tester@example.com' },
+      answers: {},
+      risks: [],
+      overallRiskLevel: 'low',
+      canProceed: true,
+      conclusion: 'No risk',
+      version: '1.0',
+    };
+
+    const result = assessDPIARisk(dpiaResult);
+
+    expect(result.overallRiskLevel).toBe('low');
+    expect(result.canProceed).toBe(true);
+    expect(result.requiresConsultation).toBe(false);
+  });
+
+  it('returns canProceed: true when every high-risk item is mitigated, even though overall level is still high', () => {
+    const dpiaResult: DPIAResult = {
+      id: 'all-mitigated',
+      title: 'All-Mitigated High Risk DPIA',
+      processingDescription: 'High volume + sensitive but all mitigated',
+      startedAt: Date.now(),
+      assessor: { name: 'Tester', role: 'DPO', email: 'tester@example.com' },
+      answers: {},
+      risks: [
+        {
+          id: 'r1',
+          description: 'Sensitive data exposure',
+          likelihood: 5,
+          impact: 5,
+          score: 25,
+          level: 'high',
+          mitigated: true,
+          relatedQuestionIds: ['q1'],
+        },
+        {
+          id: 'r2',
+          description: 'Large-scale processing',
+          likelihood: 5,
+          impact: 5,
+          score: 25,
+          level: 'high',
+          mitigated: true,
+          relatedQuestionIds: ['q2'],
+        },
+        {
+          id: 'r3',
+          description: 'Cross-border transfer',
+          likelihood: 5,
+          impact: 5,
+          score: 25,
+          level: 'high',
+          mitigated: true,
+          relatedQuestionIds: ['q3'],
+        },
+      ],
+      overallRiskLevel: 'low',
+      canProceed: true,
+      conclusion: 'Initial',
+      version: '1.0',
+    };
+
+    const result = assessDPIARisk(dpiaResult);
+
+    // Overall level is still computed as high (3 high risks > 2 threshold)
+    expect(result.overallRiskLevel).toBe('high');
+    // ...but canProceed is true because every high-risk item is mitigated.
+    expect(result.canProceed).toBe(true);
+    // Consultation still required because the *level* is high (NDPA 28(2)).
+    expect(result.requiresConsultation).toBe(true);
+  });
+
   it('should handle low risk levels without requiring NDPC consultation', () => {
     // Create a DPIA result with no significant risks
     const dpiaResult: DPIAResult = {
