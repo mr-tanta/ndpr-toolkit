@@ -344,8 +344,22 @@ export const PolicyExporter: React.FC<PolicyExporterProps> = ({
         onExportComplete(format, url);
       }
     } catch (error) {
-      console.error('[ndpr-toolkit] Export error:', error);
-      setExportError('An error occurred during export. Please try again.');
+      console.error('[ndpr-toolkit/policy] Export failed:', error);
+      // Surface the underlying error message when present (capped) so the
+      // user can act on it. Missing peer dep (`jspdf`/`docx`) gives a clear
+      // "Cannot find module" line that links to the install instructions in
+      // packages/ndpr-toolkit/src/utils/policy-export/{pdf,docx}.ts.
+      const detail =
+        error instanceof Error && error.message
+          ? error.message.length > 200
+            ? `${error.message.slice(0, 200)}…`
+            : error.message
+          : null;
+      setExportError(
+        detail
+          ? `[ndpr-toolkit/policy] Export failed: ${detail}`
+          : '[ndpr-toolkit/policy] Export failed — see the browser console for the underlying error.',
+      );
     } finally {
       setIsExporting(false);
     }

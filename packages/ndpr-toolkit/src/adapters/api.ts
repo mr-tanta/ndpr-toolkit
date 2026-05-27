@@ -189,15 +189,49 @@ export function apiAdapter<T = unknown>(
   // Backward-compat: if no onError handler is configured, fall back to the
   // pre-3.6.0 console.warn behavior so existing telemetry-free deployments
   // still surface failures in the dev console.
+  //
+  // Since 3.10.5: also surface the response body (capped 256 chars). The
+  // previous behaviour swallowed it, so a 400 from the server saying
+  // `{"error":"Validation failed","fields":{...}}` showed up as just
+  // "Failed to save to /api/x: 400" with no clue why. Best-effort clone
+  // + text; if the body can't be read, fall back to the status-only line.
   const handleError = onError ?? ((ctx: ApiAdapterErrorContext<T>) => {
     if (ctx.method === 'load') return; // load failures already return null silently
+    const verb = ctx.method === 'save' ? 'save to' : 'delete from';
     if (ctx.response) {
+      // Always emit the status-only line synchronously so tests + dev
+      // consoles see SOMETHING even if reading the body fails (the mock
+      // Response objects in our test suite are plain `{ok, status}` and
+      // don't carry a real `.clone()`).
       console.warn(
-        `[ndpr-toolkit] Failed to ${ctx.method === 'save' ? 'save to' : 'delete from'} ${ctx.endpoint}: ${ctx.response.status}`,
+        `[ndpr-toolkit] Failed to ${verb} ${ctx.endpoint}: ${ctx.response.status}`,
       );
+      // Best-effort: also surface the response body (capped 256 chars) so
+      // the developer can see what the server actually said. Cloned first
+      // so the consumer's `await response.text()` (if any) still works.
+      try {
+        const clone = typeof ctx.response.clone === 'function' ? ctx.response.clone() : null;
+        if (clone && typeof clone.text === 'function') {
+          void clone
+            .text()
+            .then((body) => {
+              const snippet = body.length > 256 ? `${body.slice(0, 256)}…` : body;
+              if (snippet.trim()) {
+                console.warn(
+                  `[ndpr-toolkit] ${verb} ${ctx.endpoint} response body: ${snippet}`,
+                );
+              }
+            })
+            .catch(() => {
+              /* body unreadable — status-only line above already emitted */
+            });
+        }
+      } catch {
+        /* clone() unsupported — status-only line above already emitted */
+      }
     } else {
       console.warn(
-        `[ndpr-toolkit] Failed to ${ctx.method === 'save' ? 'save to' : 'delete from'} ${ctx.endpoint}`,
+        `[ndpr-toolkit] Failed to ${verb} ${ctx.endpoint}`,
       );
     }
   });

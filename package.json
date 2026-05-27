@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "3.10.4",
+  "version": "3.10.5",
   "private": false,
   "description": "Nigeria Data Protection Toolkit — enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023",
   "pnpm": {
@@ -304,7 +304,6 @@
     "clsx": "^2.1.1",
     "docx": ">=8.0.0",
     "jspdf": "^3.0.3",
-    "lucide-react": ">=0.400.0",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
     "tailwind-merge": "^2.6.0"
@@ -334,9 +333,6 @@
     "jspdf": {
       "optional": true
     },
-    "lucide-react": {
-      "optional": true
-    },
     "tailwind-merge": {
       "optional": true
     }
@@ -352,7 +348,6 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@phosphor-icons/react": "^2.1.7",
     "@tailwindcss/postcss": "^4.1.13",
-    "@tantainnovative/ndpr-toolkit": "^3.7.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -376,7 +371,7 @@
     "jspdf": "^4.2.1",
     "lint-staged": "^16.2.3",
     "lucide-react": "0.507.0",
-    "next": "^16.2.2",
+    "next": "^16.2.6",
     "postcss": "^8.5.6",
     "posthog-js": "^1.364.7",
     "posthog-node": "^5.9.2",

@@ -12,7 +12,11 @@ export function cookieAdapter<T = unknown>(
   key: string,
   options: CookieAdapterOptions = {}
 ): StorageAdapter<T> {
-  const { domain, path = '/', expires = 365, secure = true, sameSite = 'Lax' } = options;
+  // Default expiry shortened from 365 → 180 days in 3.10.5. 6 months is a
+  // more privacy-conservative consent-refresh cadence and aligns with
+  // typical regulatory guidance (NDPA + GDPR commentaries) on consent
+  // longevity. Pass `expires: 365` explicitly to keep the old behaviour.
+  const { domain, path = '/', expires = 180, secure = true, sameSite = 'Lax' } = options;
   return {
     load(): T | null {
       if (typeof document === 'undefined') return null;
