@@ -70,7 +70,7 @@ export const yorubaLocale: Required<{
     sections: 'Àwọn Abala',
     variables: 'Àwọn Oníyípadà',
     generatorTitle: 'Olùpilẹ̀ṣẹ̀ Ìlànà Àṣírí NDPA',
-    generatorDescription: 'Ṣẹ̀dá ìlànà àṣírí tí ó bá NDPA mu fún àjọ rẹ ní ìbámu pẹ̀lú Abala 24 NDPA.',
+    generatorDescription: 'Ṣẹ̀dá ìlànà àṣírí tí ó bá NDPA mu fún àjọ rẹ ní ìbámu pẹ̀lú Abala 27 NDPA.',
     previewTitle: 'Àyẹ̀wò Ìlànà Àṣírí',
     previewDescription: 'Yẹ ìlànà àṣírí rẹ tí ó bá NDPA mu wo ṣáájú gbígbé jáde.',
     exporterTitle: 'Ìlànà Àṣírí',

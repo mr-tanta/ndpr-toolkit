@@ -70,7 +70,7 @@ export const igboLocale: Required<{
     sections: 'Ngalaba',
     variables: 'Mgbanwe',
     generatorTitle: 'Ngwa Mmepụta Amụma Nzuzo NDPA',
-    generatorDescription: 'Mepụta amụma nzuzo dakọtara na NDPA maka nzukọ gị dịka NDPA Ngalaba 24 si kwuo.',
+    generatorDescription: 'Mepụta amụma nzuzo dakọtara na NDPA maka nzukọ gị dịka NDPA Ngalaba 27 si kwuo.',
     previewTitle: 'Nlele Amụma Nzuzo',
     previewDescription: 'Lelee amụma nzuzo gị dakọtara na NDPA tupu ibupụ ya.',
     exporterTitle: 'Amụma Nzuzo',

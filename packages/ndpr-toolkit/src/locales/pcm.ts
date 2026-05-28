@@ -70,7 +70,7 @@ export const pidginLocale: Required<{
     sections: 'Sections',
     variables: 'Variables',
     generatorTitle: 'NDPA Privacy Policy Generator',
-    generatorDescription: 'Generate NDPA-compliant privacy policy for your organization as NDPA Section 24 talk am.',
+    generatorDescription: 'Generate NDPA-compliant privacy policy for your organization as NDPA Section 27 talk am.',
     previewTitle: 'Privacy Policy Preview',
     previewDescription: 'Preview your NDPA-compliant privacy policy before you export am.',
     exporterTitle: 'Privacy Policy',

@@ -70,7 +70,7 @@ export const arabicLocale: Required<{
     sections: 'الأقسام',
     variables: 'المتغيرات',
     generatorTitle: 'مولد سياسة الخصوصية المتوافقة مع NDPA',
-    generatorDescription: 'أنشئ سياسة خصوصية متوافقة مع NDPA لمؤسستك وفقًا للمادة 24 من NDPA.',
+    generatorDescription: 'أنشئ سياسة خصوصية متوافقة مع NDPA لمؤسستك وفقًا للمادة 27 من NDPA.',
     previewTitle: 'معاينة سياسة الخصوصية',
     previewDescription: 'عاين سياسة الخصوصية المتوافقة مع NDPA قبل التصدير.',
     exporterTitle: 'سياسة الخصوصية',
