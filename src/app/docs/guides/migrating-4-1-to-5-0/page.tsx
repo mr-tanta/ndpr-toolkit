@@ -205,7 +205,7 @@ export async function POST(req: Request) {
         <ul className="list-disc pl-6 space-y-2 text-foreground mb-4">
           <li>Peer dependency range: still <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">react ^18 || ^19</code>.</li>
           <li>Subpath exports: all 22 still resolve in ESM + CJS + TS.</li>
-          <li>Locales: same five shipped (en, yo, ig, ha, pcm, ar, fr from 4.1).</li>
+          <li>Locales: same seven shipped (en, yo, ig, ha, pcm, ar, fr).</li>
           <li>The <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRProvider</code> / <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRThemeProvider</code> APIs.</li>
           <li>The cookie / localStorage / api / memory adapter contracts.</li>
           <li>The Lite variant set (consent, lawful-basis, cross-border, ROPA).</li>

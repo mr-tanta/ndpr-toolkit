@@ -48,10 +48,10 @@ export default function ConsentManagementDocs() {
         </div>
       </section>
 
-      <section id="v3-quick-start" className="mb-10">
-        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">v3 Quick Start</h2>
+      <section id="quick-start" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quick Start</h2>
         <p className="text-muted-foreground mb-4 leading-relaxed">
-          v3 introduces zero-config presets, compound components for custom layouts, and a StorageAdapter pattern
+          The toolkit ships zero-config presets, compound components for custom layouts, and a StorageAdapter pattern
           so you can plug in any persistence backend without touching component internals.
         </p>
 
