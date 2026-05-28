@@ -471,7 +471,7 @@ export default function DocsPage() {
           </Container>
         </section>
 
-        {/* ── What's New in v3 ──────────────────────────────── */}
+        {/* ── What's New — latest release ──────────────────── */}
         <Section
           badge={`What's New in v${siteConfig.version}`}
           title="Everything new in the latest release"
