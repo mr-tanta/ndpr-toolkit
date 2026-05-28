@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { validateDsrSubmission } from "@tantainnovative/ndpr-toolkit/server";
+import { validateDsrSubmissionStructured } from "@tantainnovative/ndpr-toolkit/server";
 import { getPrisma, type DSRRequestRow } from "@/lib/prisma";
 import { sendDsrConfirmationEmail } from "@/lib/resend";
 
@@ -9,7 +9,7 @@ import { sendDsrConfirmationEmail } from "@/lib/resend";
  * Pipeline:
  *   1. Parse JSON body (return 400 on malformed JSON)
  *   2. Validate against the toolkit's canonical schema via
- *      `validateDsrSubmission` from @tantainnovative/ndpr-toolkit/server
+ *      `validateDsrSubmissionStructured` from @tantainnovative/ndpr-toolkit/server
  *      (returns 400 with { error, fields } if invalid — the preset reads
  *      the `fields` shape if you wire it up to display per-field errors)
  *   3. Defense-in-depth: reject blocklisted email domains (illustrative)
@@ -23,7 +23,7 @@ import { sendDsrConfirmationEmail } from "@/lib/resend";
  *      consumes (per CHANGELOG 3.8.1).
  *
  * Locking the allowed request types here mirrors the recommendation in the
- * `validateDsrSubmission` docstring: keeps the server in sync with the
+ * `validateDsrSubmissionStructured` docstring: keeps the server in sync with the
  * default `RequestType[]` exported by the NDPRSubjectRights preset.
  */
 const ALLOWED_REQUEST_TYPES = [
@@ -61,16 +61,20 @@ export async function POST(request: Request) {
   }
 
   // ── 2. Validate (toolkit) ────────────────────────────────────────────
-  const { valid, errors, data } = validateDsrSubmission(raw, {
+  // v5's `validateDsrSubmissionStructured` returns `errors` as a
+  // `{ field, code, message }[]` array; collapse it into the field→message
+  // map the preset's per-field error display consumes.
+  const { valid, errors, data } = validateDsrSubmissionStructured(raw, {
     requireIdentityVerification: true,
     allowedRequestTypes: ALLOWED_REQUEST_TYPES,
   });
 
   if (!valid || !data) {
+    const fields = Object.fromEntries(errors.map((e) => [e.field, e.message]));
     return NextResponse.json(
       {
         error: "Validation failed.",
-        fields: errors,
+        fields,
       },
       { status: 400 },
     );

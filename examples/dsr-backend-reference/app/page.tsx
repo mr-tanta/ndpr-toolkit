@@ -50,7 +50,7 @@ export default function HomePage() {
           </li>
           <li>
             <strong>Validation</strong> &mdash; the route handler calls{" "}
-            <code style={codeStyle}>validateDsrSubmission</code> from{" "}
+            <code style={codeStyle}>validateDsrSubmissionStructured</code> from{" "}
             <code style={codeStyle}>/server</code> and adds a defense-in-depth
             email-domain blocklist.
           </li>

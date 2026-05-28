@@ -11,7 +11,7 @@
   "dependencies": {
     "@astrojs/node": "^10.0.5",
     "@astrojs/react": "^5.0.6",
-    "@tantainnovative/ndpr-toolkit": "^3.10.3",
+    "@tantainnovative/ndpr-toolkit": "^5.1.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "astro": "^6.1.10",
