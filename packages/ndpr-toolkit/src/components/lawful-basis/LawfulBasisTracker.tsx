@@ -783,7 +783,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
                 className="rounded border-gray-300 dark:border-gray-600 text-[rgb(var(--ndpr-primary))] focus:ring-[rgb(var(--ndpr-ring))]"
               />
               <span className='ndpr-text-sm ndpr-font-medium'>
-                Involves Sensitive Personal Data (NDPA Section 27)
+                Involves Sensitive Personal Data (NDPA Section 30)
               </span>
             </label>
           </div>
@@ -792,7 +792,7 @@ export const LawfulBasisTracker: React.FC<LawfulBasisTrackerProps> = ({
           {formData.involvesSensitiveData && (
             <div>
               <label htmlFor="sensitiveCondition" className='ndpr-form-field__label'>
-                Sensitive Data Condition (NDPA Section 27) *
+                Sensitive Data Condition (NDPA Section 30) *
               </label>
               <select
                 id="sensitiveCondition"
