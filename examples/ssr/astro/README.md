@@ -1,6 +1,6 @@
 # NDPR Toolkit — Astro SSR example
 
-Minimal Astro 5 scaffold (server output, Node adapter) that demonstrates the **cookie-bridge
+Minimal Astro 6 scaffold (server output, Node adapter) that demonstrates the **cookie-bridge
 pattern** for rendering the `@tantainnovative/ndpr-toolkit` consent banner without a hydration
 flash.
 
