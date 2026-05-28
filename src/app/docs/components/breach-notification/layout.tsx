@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Breach Notification Component Documentation',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Breach Notification Docs | NDPA Toolkit',
     description:
       'Implement NDPA 2023-compliant breach notification with severity scoring, 72-hour NDPC reporting, and incident management. View API docs and examples.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

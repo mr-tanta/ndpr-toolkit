@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Consent Management Demo',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Consent Management Demo | NDPA Toolkit',
     description:
       'Try NDPA Section 25-26 consent banners, preference management, and audit-ready storage. Build compliant consent flows for Nigeria Data Protection.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

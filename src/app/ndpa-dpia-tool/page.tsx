@@ -18,9 +18,9 @@ export const metadata: Metadata = {
     siteName: 'NDPR Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'Nigeria NDPA DPIA Tool — Section 28',
       },
     ],
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: 'Nigeria DPIA Tool — NDPA 2023 Section 28',
     description:
       'Free open-source DPIA tool for Nigeria NDPA 2023. Questionnaire, risk scoring, mitigation, NDPC consultation flag, PDF/DOCX export.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

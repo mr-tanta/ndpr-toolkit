@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'Styling & Customization Guide - NDPA Toolkit',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Styling & Customization Guide | NDPA Toolkit',
     description:
       'Learn how to customize component styles using classNames overrides, unstyled mode, and CSS framework integration. Works with Tailwind, Bootstrap, CSS Modules, and vanilla CSS.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     siteName: 'NDPR Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'Free Nigeria NDPA Compliance Audit',
       },
     ],
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title: 'Free Nigeria NDPA Audit — Score in 5 Minutes',
     description:
       'Free 8-section NDPA 2023 self-assessment. Live score, prioritised recommendations, downloadable PDF.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

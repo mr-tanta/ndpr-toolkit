@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'Lawful Basis for Processing Guide - NDPA Toolkit',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Lawful Basis Guide | NDPA Toolkit',
     description:
       'Understand and document the lawful basis for processing personal data under NDPA 2023 Section 25. Consent, contract, legal obligation, and more explained.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

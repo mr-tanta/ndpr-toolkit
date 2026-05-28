@@ -15,9 +15,9 @@ export const metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Toolkit - Nigeria Data Protection Compliance Infrastructure',
       },
     ],
@@ -29,7 +29,7 @@ export const metadata = {
     title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
     description:
       'Build NDPA 2023-compliant apps with our open-source toolkit. Adapters, presets, compliance score, consent management, DSR portal, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

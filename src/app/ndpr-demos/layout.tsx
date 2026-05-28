@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     siteName: 'NDPR Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPR Toolkit — Live Nigeria NDPA 2023 Demos',
       },
     ],
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     title: 'Live Nigeria NDPA Demos — Try in Browser',
     description:
       'Eight zero-setup demos for Nigeria NDPA 2023 compliance: consent, DSR, DPIA, breach, RoPA, privacy policy.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

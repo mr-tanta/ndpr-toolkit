@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA 2023 Compliance Checklist - NDPA Toolkit',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'NDPA Compliance Checklist | NDPA Toolkit',
     description:
       'Comprehensive NDPA 2023 compliance checklist for Nigerian organizations. Verify your data protection obligations and meet NDPC requirements step by step.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

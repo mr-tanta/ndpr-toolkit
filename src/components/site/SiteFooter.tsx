@@ -36,6 +36,7 @@ const footerColumns = [
   {
     title: 'Legal',
     links: [
+      { label: 'Privacy Policy', href: '/privacy' },
       { label: 'MIT License', href: 'https://github.com/mr-tanta/ndpr-toolkit/blob/main/LICENSE', external: true },
       { label: 'NDPA 2023 Text', href: 'https://ndpc.gov.ng', external: true },
     ],

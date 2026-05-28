@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA ROPA Component Documentation',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'ROPA Component Docs | NDPA Toolkit',
     description:
       'Maintain Records of Processing Activities per NDPA 2023 Section 29. Component API, props reference, and export functionality for NDPC audits.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

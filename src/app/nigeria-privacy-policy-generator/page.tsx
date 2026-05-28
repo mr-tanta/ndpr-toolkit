@@ -18,9 +18,9 @@ export const metadata: Metadata = {
     siteName: 'NDPR Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'Nigeria NDPA Privacy Policy Generator',
       },
     ],
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: 'Nigeria Privacy Policy Generator — Free, NDPA 2023 Compliant',
     description:
       'Free, open-source privacy policy generator for Nigerian apps. NDPA 2023 + GAID 2025. PDF / DOCX / HTML / Markdown export.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

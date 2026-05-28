@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Consent Management Component Documentation',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Consent Management Docs | NDPA Toolkit',
     description:
       'Integrate NDPA 2023-compliant consent collection, storage, and preference management into your app. Full API reference with code examples.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

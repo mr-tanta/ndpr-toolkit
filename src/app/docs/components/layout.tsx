@@ -15,9 +15,9 @@ export const metadata: Metadata = {
     siteName: 'NDPR Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPR Toolkit — Nigeria NDPA Components Reference',
       },
     ],
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: 'Nigeria NDPA Components — React API Reference',
     description:
       'Cookie consent, DSR portal, DPIA, breach notification, RoPA, and privacy-policy generator components for Nigeria NDPA 2023.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

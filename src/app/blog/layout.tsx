@@ -14,7 +14,7 @@ export const metadata: Metadata = {
       'Insights on Nigeria Data Protection compliance, NDPA 2023 updates, NDPC guidance, and developer tooling.',
     url: 'https://ndprtoolkit.com.ng/blog',
     siteName: 'NDPA Toolkit',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'NDPA Toolkit Blog' }],
+    images: [{ url: '/screenshots/hero.png', width: 1280, height: 800, alt: 'NDPA Toolkit Blog' }],
     locale: 'en_US',
     type: 'website',
   },
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     title: 'Blog | NDPA Toolkit',
     description:
       'Insights on Nigeria Data Protection compliance, NDPA 2023 updates, NDPC guidance, and developer tooling.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

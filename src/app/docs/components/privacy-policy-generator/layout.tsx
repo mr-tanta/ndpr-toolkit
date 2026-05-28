@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Privacy Policy Generator Component Documentation',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Privacy Policy Generator Docs | NDPA Toolkit',
     description:
       'Generate, preview, and export NDPA 2023-compliant privacy policies with full clause coverage. API reference and customization options included.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 
