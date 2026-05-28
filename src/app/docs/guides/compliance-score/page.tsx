@@ -276,7 +276,7 @@ console.log(report.recommendations); // array of prioritised Recommendation obje
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground">Data Subject Rights (DSR)</td>
                 <td className="border border-border px-4 py-2 text-foreground">15%</td>
-                <td className="border border-border px-4 py-2 text-foreground">Sections 34–39</td>
+                <td className="border border-border px-4 py-2 text-foreground">Sections 34–37</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 text-foreground">Breach Notification</td>
@@ -301,12 +301,12 @@ console.log(report.recommendations); // array of prioritised Recommendation obje
               <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 text-foreground">Cross-Border Transfers</td>
                 <td className="border border-border px-4 py-2 text-foreground">8%</td>
-                <td className="border border-border px-4 py-2 text-foreground">Section 43, Section 44</td>
+                <td className="border border-border px-4 py-2 text-foreground">Sections 41–43</td>
               </tr>
               <tr className="bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground">ROPA</td>
                 <td className="border border-border px-4 py-2 text-foreground">8%</td>
-                <td className="border border-border px-4 py-2 text-foreground">Section 30</td>
+                <td className="border border-border px-4 py-2 text-foreground">Section 24 (accountability)</td>
               </tr>
             </tbody>
           </table>
