@@ -179,7 +179,7 @@ function evaluateConsent(input: ComplianceInput['consent']): CheckDefinition[] {
       priority: 'high',
       effort: 'high',
       recommendation: 'Implement age-verification and parental-consent controls for processing data of minors.',
-      ndpaSection: 'Section 26',
+      ndpaSection: 'Section 31',
       pass: input.hasMinorProtection,
     },
     {
