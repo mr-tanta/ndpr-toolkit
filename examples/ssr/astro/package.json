@@ -9,12 +9,12 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.5",
-    "@astrojs/react": "^4.0.0",
+    "@astrojs/node": "^10.0.5",
+    "@astrojs/react": "^5.0.6",
     "@tantainnovative/ndpr-toolkit": "^3.10.3",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "astro": "^5.18.2",
+    "astro": "^6.1.10",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
