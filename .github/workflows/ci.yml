@@ -41,7 +41,7 @@ jobs:
         # --frozen-lockfile (3.10.6): CI must build from the locked deps so a
         # PR with a package.json change that isn't reflected in pnpm-lock.yaml
         # fails fast instead of silently drifting.
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Type check
         run: npx tsc --noEmit

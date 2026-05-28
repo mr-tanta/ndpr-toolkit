@@ -1,3 +1,8 @@
+# pnpm settings live here (not .npmrc) so they're honored consistently across
+# pnpm 10 and 11 — pnpm 11 ignores these keys in .npmrc, which previously left
+# the lockfile's autoInstallPeers out of sync with CI and broke --frozen-lockfile.
+autoInstallPeers: true
+
 overrides:
   handlebars: '>=4.7.9'
   lodash: '>=4.17.21'
