@@ -24,17 +24,17 @@ jobs:
       # `release.tag_name` is a Git refname which cannot contain shell
       # metacharacters and is only consumed by actions/checkout as a ref
       # parameter — not interpolated into any shell command.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.release.tag_name }}
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22.x
           cache: pnpm
