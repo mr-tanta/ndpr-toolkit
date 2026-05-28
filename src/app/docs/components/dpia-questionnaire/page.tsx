@@ -66,40 +66,57 @@ export default function DPIAQuestionnaireDocs() {
         </p>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
           <code className="text-sm text-foreground font-mono">{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+import { useState } from 'react';
 
-const dpiaQuestions = [
+const sections = [
   {
-    id: 'data_collection',
-    question: 'What types of personal data will be collected?',
-    options: [
-      { value: 1, label: 'Basic contact information only' },
-      { value: 2, label: 'Personal identifiers and contact information' },
-      { value: 3, label: 'Sensitive personal data (health, biometric, etc.)' }
+    id: 'data-collection',
+    title: 'Data Collection',
+    description: 'Tell us about the data being processed.',
+    order: 1,
+    questions: [
+      {
+        id: 'data-types',
+        text: 'What types of personal data will be collected?',
+        type: 'radio',
+        required: true,
+        options: [
+          { value: 'basic', label: 'Basic contact information only', riskLevel: 'low' },
+          { value: 'identifiers', label: 'Personal identifiers and contact information', riskLevel: 'medium' },
+          { value: 'sensitive', label: 'Sensitive personal data (health, biometric, etc.)', riskLevel: 'high' }
+        ]
+      },
+      {
+        id: 'data-volume',
+        text: 'What is the volume of data being processed?',
+        type: 'radio',
+        required: true,
+        options: [
+          { value: 'small', label: 'Small scale (fewer than 100 data subjects)', riskLevel: 'low' },
+          { value: 'medium', label: 'Medium scale (100-1000 data subjects)', riskLevel: 'medium' },
+          { value: 'large', label: 'Large scale (more than 1000 data subjects)', riskLevel: 'high' }
+        ]
+      }
     ]
-  },
-  {
-    id: 'data_volume',
-    question: 'What is the volume of data being processed?',
-    options: [
-      { value: 1, label: 'Small scale (fewer than 100 data subjects)' },
-      { value: 2, label: 'Medium scale (100-1000 data subjects)' },
-      { value: 3, label: 'Large scale (more than 1000 data subjects)' }
-    ]
-  },
+  }
 ];
 
 function MyDPIAForm() {
-  const handleSubmit = (answers, projectName) => {
-    console.log('Project Name:', projectName);
-    console.log('DPIA Answers:', answers);
-  };
+  const [answers, setAnswers] = useState({});
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
 
   return (
     <div>
       <h1>Data Protection Impact Assessment</h1>
       <DPIAQuestionnaire
-        questions={dpiaQuestions}
-        onSubmit={handleSubmit}
+        sections={sections}
+        answers={answers}
+        onAnswerChange={(questionId, value) =>
+          setAnswers((prev) => ({ ...prev, [questionId]: value }))
+        }
+        currentSectionIndex={currentSectionIndex}
+        onNextSection={() => setCurrentSectionIndex((i) => i + 1)}
+        onPrevSection={() => setCurrentSectionIndex((i) => i - 1)}
       />
     </div>
   );
@@ -121,51 +138,114 @@ function MyDPIAForm() {
             </thead>
             <tbody>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>questions</code></td>
-                <td className="py-3 px-4 text-sm text-muted-foreground"><code>DPIAQuestion[]</code></td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>sections</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>DPIASection[]</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Yes</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Array of DPIA questions to display in the questionnaire</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Sections of the DPIA questionnaire</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>onSubmit</code></td>
-                <td className="py-3 px-4 text-sm text-muted-foreground"><code>(answers: Record&lt;string, number&gt;, projectName: string) =&gt; void</code></td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>answers</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>Record&lt;string, string | number | boolean | string[]&gt;</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Yes</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Callback function when user submits the assessment</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Current answers to the questionnaire, keyed by question id</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>initialAnswers</code></td>
-                <td className="py-3 px-4 text-sm text-muted-foreground"><code>Record&lt;string, number&gt;</code></td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>onAnswerChange</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>(questionId: string, value: string | number | boolean | string[]) =&gt; void</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Yes</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Called when an answer is updated</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>currentSectionIndex</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>number</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Yes</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Index of the currently displayed section</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>onNextSection</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>() =&gt; void</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Initial answers for the questionnaire</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Called when the user navigates to the next section</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>initialProjectName</code></td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>onPrevSection</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>() =&gt; void</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Called when the user navigates to the previous section</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>validationErrors</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>Record&lt;string, string&gt;</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Validation errors for the current section, keyed by question id</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>readOnly</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>boolean</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether the questionnaire is in read-only mode (default <code>false</code>)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>showProgress</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>boolean</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to show a progress indicator (default <code>true</code>)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>progress</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>number</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Current progress percentage (0-100)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>nextButtonText</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground"><code>string</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Initial project name</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the next button (default <code>"Next"</code>)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>prevButtonText</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>string</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the previous button (default <code>"Previous"</code>)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>submitButtonText</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>string</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the submit button shown on the last section (default <code>"Submit"</code>)</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground"><code>className</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground"><code>string</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Additional CSS class names</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Custom CSS class for the questionnaire</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>buttonClassName</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>string</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Custom CSS class for the buttons</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>classNames</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>DPIAQuestionnaireClassNames</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Per-section class name overrides</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>unstyled</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>boolean</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">When true, strips all default classes; only <code>classNames</code> overrides apply (default <code>false</code>)</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">DPIAQuestion Type</h3>
-        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`type DPIAQuestion = {
-  id: string;
-  question: string;
-  options: {
-    value: number;
-    label: string;
-  }[];
-  helpText?: string;
-};`}</code>
-        </pre>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
+          See the <a href="#api" className="text-primary hover:underline">API Reference</a> below for the full <code>DPIAQuestion</code> and <code>DPIASection</code> shapes.
+        </p>
       </section>
 
       <section id="examples" className="mb-10">
@@ -174,35 +254,51 @@ function MyDPIAForm() {
         <h3 className="text-xl font-bold text-foreground mb-4">Basic Example</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
           <code className="text-sm text-foreground font-mono">{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+import { useState } from 'react';
 
-const basicQuestions = [
+const basicSections = [
   {
-    id: 'q1',
-    question: 'Does the project involve collecting personal data?',
-    options: [
-      { value: 1, label: 'No personal data collected' },
-      { value: 2, label: 'Limited personal data collected' },
-      { value: 3, label: 'Extensive personal data collected' }
-    ]
-  },
-  {
-    id: 'q2',
-    question: 'Will the data be shared with third parties?',
-    options: [
-      { value: 1, label: 'No sharing with third parties' },
-      { value: 2, label: 'Limited sharing with trusted partners' },
-      { value: 3, label: 'Extensive sharing with multiple third parties' }
+    id: 'overview',
+    title: 'Project Overview',
+    order: 1,
+    questions: [
+      {
+        id: 'q1',
+        text: 'Does the project involve collecting personal data?',
+        type: 'radio',
+        required: true,
+        options: [
+          { value: 'none', label: 'No personal data collected', riskLevel: 'low' },
+          { value: 'limited', label: 'Limited personal data collected', riskLevel: 'medium' },
+          { value: 'extensive', label: 'Extensive personal data collected', riskLevel: 'high' }
+        ]
+      },
+      {
+        id: 'q2',
+        text: 'Will the data be shared with third parties?',
+        type: 'radio',
+        required: true,
+        options: [
+          { value: 'none', label: 'No sharing with third parties', riskLevel: 'low' },
+          { value: 'limited', label: 'Limited sharing with trusted partners', riskLevel: 'medium' },
+          { value: 'extensive', label: 'Extensive sharing with multiple third parties', riskLevel: 'high' }
+        ]
+      }
     ]
   }
 ];
 
 function BasicDPIA() {
+  const [answers, setAnswers] = useState({});
+
   return (
     <DPIAQuestionnaire
-      questions={basicQuestions}
-      onSubmit={(answers, projectName) => {
-        console.log(answers, projectName);
-      }}
+      sections={basicSections}
+      answers={answers}
+      onAnswerChange={(questionId, value) =>
+        setAnswers((prev) => ({ ...prev, [questionId]: value }))
+      }
+      currentSectionIndex={0}
     />
   );
 }`}</code>
@@ -211,77 +307,92 @@ function BasicDPIA() {
         <h3 className="text-xl font-bold text-foreground mb-4">With Initial Values</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
           <code className="text-sm text-foreground font-mono">{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
+import { useState } from 'react';
 
 function DPIAWithInitialValues() {
-  const initialAnswers = { 'q1': 2, 'q2': 1 };
+  // The questionnaire is fully controlled — seed the answers state
+  // with whatever values you have already collected.
+  const [answers, setAnswers] = useState({ q1: 'limited', q2: 'none' });
 
   return (
     <DPIAQuestionnaire
-      questions={basicQuestions}
-      initialAnswers={initialAnswers}
-      initialProjectName="E-commerce Platform"
-      onSubmit={(answers, projectName) => {
-        console.log(answers, projectName);
-      }}
+      sections={basicSections}
+      answers={answers}
+      onAnswerChange={(questionId, value) =>
+        setAnswers((prev) => ({ ...prev, [questionId]: value }))
+      }
+      currentSectionIndex={0}
     />
   );
 }`}</code>
         </pre>
 
-        <h3 className="text-xl font-bold text-foreground mb-4">With Risk Calculation</h3>
+        <h3 className="text-xl font-bold text-foreground mb-4">Multi-Section Navigation &amp; Validation</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
           <code className="text-sm text-foreground font-mono">{`import { DPIAQuestionnaire } from '@tantainnovative/ndpr-toolkit';
 import { useState } from 'react';
 
-function DPIAWithRiskCalculation() {
-  const [riskScore, setRiskScore] = useState(0);
-  const [riskLevel, setRiskLevel] = useState('');
-  const [recommendations, setRecommendations] = useState([]);
+function MultiSectionDPIA({ sections }) {
+  const [answers, setAnswers] = useState({});
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [validationErrors, setValidationErrors] = useState({});
 
-  const handleSubmit = (answers, projectName) => {
-    const totalScore = Object.values(answers).reduce((sum, value) => sum + value, 0);
-    const maxPossibleScore = Object.keys(answers).length * 3;
-    const percentageScore = (totalScore / maxPossibleScore) * 100;
+  const validateSection = () => {
+    const section = sections[currentSectionIndex];
+    const errors = {};
+    section.questions.forEach((q) => {
+      if (q.required && !answers[q.id]) {
+        errors[q.id] = 'This question is required';
+      }
+    });
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
-    setRiskScore(percentageScore);
-
-    if (percentageScore < 40) {
-      setRiskLevel('Low Risk');
-      setRecommendations(['Regular review of data processing activities']);
-    } else if (percentageScore < 70) {
-      setRiskLevel('Medium Risk');
-      setRecommendations([
-        'Implement additional security measures',
-        'Conduct regular staff training',
-        'Review data retention policies'
-      ]);
+  const handleNext = () => {
+    if (!validateSection()) return;
+    if (currentSectionIndex < sections.length - 1) {
+      setCurrentSectionIndex((i) => i + 1);
     } else {
-      setRiskLevel('High Risk');
-      setRecommendations([
-        'Consult with the NDPC before proceeding',
-        'Implement strict access controls',
-        'Conduct comprehensive security audit',
-        'Consider data minimization strategies',
-        'Implement regular compliance monitoring'
-      ]);
+      console.log('Submitted answers:', answers);
     }
   };
 
   return (
-    <div>
-      <DPIAQuestionnaire questions={comprehensiveQuestions} onSubmit={handleSubmit} />
-      {riskScore > 0 && (
-        <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-          <h2>DPIA Results: {riskLevel}</h2>
-          <p>Risk Score: {riskScore.toFixed(1)}%</p>
-          <ul>
-            {recommendations.map((rec, index) => (
-              <li key={index}>{rec}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    <DPIAQuestionnaire
+      sections={sections}
+      answers={answers}
+      onAnswerChange={(questionId, value) =>
+        setAnswers((prev) => ({ ...prev, [questionId]: value }))
+      }
+      currentSectionIndex={currentSectionIndex}
+      onNextSection={handleNext}
+      onPrevSection={() => setCurrentSectionIndex((i) => i - 1)}
+      validationErrors={validationErrors}
+      progress={Math.round(((currentSectionIndex + 1) / sections.length) * 100)}
+    />
+  );
+}`}</code>
+        </pre>
+
+        <h3 className="text-xl font-bold text-foreground mb-4">Displaying the Report</h3>
+        <p className="text-muted-foreground mb-4 leading-relaxed">
+          Once a DPIA is complete, render the results with the <code>DPIAReport</code> component.
+          It takes a <code>result</code> (a <code>DPIAResult</code>) plus the same <code>sections</code> used in the questionnaire:
+        </p>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`import { DPIAReport } from '@tantainnovative/ndpr-toolkit';
+
+function DPIAResultView({ result, sections }) {
+  return (
+    <DPIAReport
+      result={result}
+      sections={sections}
+      showFullReport
+      allowPrint
+      allowExport
+      onExport={(format) => console.log('Exporting as', format)}
+    />
   );
 }`}</code>
         </pre>
@@ -304,12 +415,14 @@ function DPIAWithRiskCalculation() {
   }>;
   minValue?: number;
   maxValue?: number;
+  scaleLabels?: Record<number, string>;
   required: boolean;
   riskLevel?: 'low' | 'medium' | 'high';
+  hasDependentQuestions?: boolean;
   showWhen?: Array<{
     questionId: string;
     operator: 'equals' | 'contains' | 'greaterThan' | 'lessThan';
-    value: any;
+    value: string | number | boolean;
   }>;
 }`}</code>
         </pre>
@@ -336,6 +449,7 @@ function DPIAWithRiskCalculation() {
   level: 'low' | 'medium' | 'high' | 'critical';
   mitigationMeasures?: string[];
   mitigated: boolean;
+  residualScore?: number;
   relatedQuestionIds: string[];
 }`}</code>
         </pre>
@@ -353,13 +467,97 @@ function DPIAWithRiskCalculation() {
     role: string;
     email: string;
   };
-  answers: Record<string, any>;
+  answers: Record<string, string | number | boolean | string[]>;
   risks: DPIARisk[];
   overallRiskLevel: 'low' | 'medium' | 'high' | 'critical';
   canProceed: boolean;
+  conclusion: string;
   recommendations?: string[];
+  reviewDate?: number;
+  version: string;
+  ndpcConsultationRequired?: boolean;
+  ndpcConsultationDate?: number;
+  ndpcConsultationReference?: string;
+  lawfulBasis?: string;
+  involvesCrossBorderTransfer?: boolean;
 }`}</code>
         </pre>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">DPIAReport Props</h3>
+        <div className="overflow-x-auto mb-8">
+          <table className="w-full border-collapse mb-6">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Name</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Type</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Required</th>
+                <th className="text-left py-3 px-4 text-sm font-semibold text-foreground">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>result</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>DPIAResult</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Yes</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">The DPIA result to display</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>sections</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>DPIASection[]</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Yes</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">The sections of the DPIA questionnaire (used to label questions)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>showFullReport</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>boolean</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to show the full report or just a summary (default <code>true</code>)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>allowPrint</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>boolean</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to allow printing the report (default <code>true</code>)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>allowExport</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>boolean</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to allow exporting the report as PDF (default <code>true</code>)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>onExport</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>(format: 'pdf' | 'docx' | 'html') =&gt; void</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Called when the report is exported</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>className</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>string</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Custom CSS class for the report container</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>buttonClassName</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>string</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Custom CSS class for the buttons</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>classNames</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>DPIAReportClassNames</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Per-section class name overrides</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>unstyled</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>boolean</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">When true, strips all default classes; only <code>classNames</code> overrides apply (default <code>false</code>)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">useDPIA Hook</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">

@@ -75,28 +75,39 @@ export default function HooksDocs() {
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
 
 function ConsentManager() {
-  const { 
-    consents,            // Current consent settings
-    updateConsent,       // Function to update a specific consent
-    saveConsents,        // Function to save all consents
-    resetConsents,       // Function to reset consents to default
-    hasConsented,        // Function to check if user has consented to a specific option
-    isConsentRequired    // Function to check if consent is required
-  } = useConsent();
-  
+  const {
+    settings,            // Current consent settings (ConsentSettings | null)
+    hasConsent,          // (optionId) => boolean — has consent for an option
+    updateConsent,       // (consents: Record<string, boolean>) => void
+    acceptAll,           // Accept all consent options
+    rejectAll,           // Reject all non-required options
+    shouldShowBanner,    // Whether the consent banner should be shown
+    isValid,             // Whether current consent settings are valid
+    validationErrors,    // Structured validation errors
+    resetConsent,        // Clear consent settings from storage
+    isLoading,           // Whether the storage adapter is still loading
+  } = useConsent({
+    options: [
+      { id: 'necessary', label: 'Necessary', required: true },
+      { id: 'analytics', label: 'Analytics' },
+    ],
+  });
+
   // Example usage
+  if (isLoading) return null;
   return (
     <div>
       <h2>Consent Preferences</h2>
       <label>
         <input
           type="checkbox"
-          checked={hasConsented('analytics')}
-          onChange={(e) => updateConsent('analytics', e.target.checked)}
+          checked={hasConsent('analytics')}
+          onChange={(e) => updateConsent({ analytics: e.target.checked })}
         />
         Analytics Cookies
       </label>
-      <button onClick={() => saveConsents()}>Save Preferences</button>
+      <button onClick={acceptAll}>Accept All</button>
+      <button onClick={rejectAll}>Reject Non-Essential</button>
     </div>
   );
 }`}</code></pre>
@@ -154,27 +165,45 @@ function DSRManager() {
             </p>
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useDPIA } from '@tantainnovative/ndpr-toolkit';
 
-function DPIAManager() {
-  const { 
-    assessment,          // Current DPIA assessment
-    currentStep,         // Current step in the DPIA process
-    totalSteps,          // Total number of steps
-    goToStep,            // Function to navigate to a specific step
-    nextStep,            // Function to go to the next step
-    prevStep,            // Function to go to the previous step
-    updateAnswer,        // Function to update an answer
-    calculateRisk,       // Function to calculate risk score
-    generateReport       // Function to generate a DPIA report
-  } = useDPIA();
-  
+function DPIAManager({ sections }) {
+  const {
+    currentSectionIndex,    // Index of the active section
+    currentSection,         // Active DPIASection | null
+    answers,                // All answers (DPIAAnswerMap)
+    updateAnswer,           // (questionId, value) => void
+    nextSection,            // () => boolean — advance if current section valid
+    prevSection,            // () => boolean — go back a section
+    goToSection,            // (index) => boolean
+    isCurrentSectionValid,  // () => boolean
+    getCurrentSectionErrors,// () => Record<string, string>
+    isComplete,             // () => boolean
+    completeDPIA,           // (assessorInfo, title, description) => DPIAResult
+    getVisibleQuestions,    // () => DPIAQuestion[] (respects showWhen conditions)
+    resetDPIA,              // () => void
+    progress,               // number — completion percentage
+    isLoading,              // Whether the storage adapter is still loading
+  } = useDPIA({ sections });
+
   // Example usage
+  if (isLoading) return null;
   return (
     <div>
       <h2>DPIA Questionnaire</h2>
-      <p>Step {currentStep} of {totalSteps}</p>
-      <button onClick={prevStep} disabled={currentStep === 1}>Previous</button>
-      <button onClick={nextStep} disabled={currentStep === totalSteps}>Next</button>
-      <button onClick={generateReport}>Generate Report</button>
+      <p>{currentSection?.title} — {progress}% complete</p>
+      <button onClick={prevSection} disabled={currentSectionIndex === 0}>Previous</button>
+      <button onClick={nextSection} disabled={!isCurrentSectionValid()}>Next</button>
+      <button
+        onClick={() =>
+          completeDPIA(
+            { name: 'Jane Doe', role: 'DPO', email: 'dpo@acme.ng' },
+            'Customer Analytics DPIA',
+            'Assessment of customer analytics processing'
+          )
+        }
+        disabled={!isComplete()}
+      >
+        Complete DPIA
+      </button>
     </div>
   );
 }`}</code></pre>
@@ -187,24 +216,33 @@ function DPIAManager() {
             </p>
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useBreach } from '@tantainnovative/ndpr-toolkit';
 
-function BreachManager() {
-  const { 
-    breaches,            // List of breach reports
-    currentBreach,       // Currently selected breach
-    submitBreachReport,  // Function to submit a new breach report
-    updateBreachStatus,  // Function to update breach status
-    assessRisk,          // Function to assess breach risk
-    generateReport       // Function to generate regulatory reports
-  } = useBreach();
-  
+function BreachManager({ categories }) {
+  const {
+    reports,                          // All breach reports (BreachReport[])
+    assessments,                      // All risk assessments
+    notifications,                    // All regulatory notifications
+    reportBreach,                     // (reportData) => BreachReport
+    updateReport,                     // (id, updates) => BreachReport | null
+    getReport,                        // (id) => BreachReport | null
+    assessRisk,                       // (breachId, assessmentData) => RiskAssessment
+    getAssessment,                    // (breachId) => RiskAssessment | null
+    calculateNotificationRequirements,// (breachId) => NotificationRequirement | null
+    sendNotification,                 // (breachId, notificationData) => RegulatoryNotification
+    getNotification,                  // (breachId) => RegulatoryNotification | null
+    getBreachesRequiringNotification, // (hoursThreshold?) => due-breach list
+    clearBreachData,                  // () => void
+    isLoading,                        // Whether the storage adapter is still loading
+  } = useBreach({ categories });
+
   // Example usage
+  if (isLoading) return null;
   return (
     <div>
       <h2>Data Breach Management</h2>
       <ul>
-        {breaches.map(breach => (
-          <li key={breach.id}>
-            {breach.title} - {breach.status} - Risk Level: {breach.riskLevel}
+        {reports.map(report => (
+          <li key={report.id}>
+            {report.title} - {report.status}
           </li>
         ))}
       </ul>

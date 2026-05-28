@@ -128,54 +128,150 @@ function TransferManagement() {
             </thead>
             <tbody>
               <tr className="border-b border-border">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">transfer</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">TransferDetails</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">transfers</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">CrossBorderTransfer[]</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">Required</td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">Details of the proposed data transfer</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">List of cross-border transfers to display</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onComplete</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(result: TransferAssessmentResult) => void`}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">Required</td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">Called when the assessment is completed</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onAdd</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(transfer: Omit<CrossBorderTransfer, 'id' | 'createdAt' | 'updatedAt'>) => void`}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">&mdash;</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Callback when a new transfer is added</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">showRecommendations</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onUpdate</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(id: string, updates: Partial<CrossBorderTransfer>) => void`}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">&mdash;</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Callback when a transfer is updated</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onArchive</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(id: string) => void`}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">&mdash;</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Callback when a transfer is archived (NDPA prefers soft-delete over hard-delete)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">summary</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">CrossBorderSummary</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">&mdash;</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Compliance summary data (computed from transfers when omitted)</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">title</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">string</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`"Cross-Border Data Transfer Manager"`}</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Title displayed on the manager</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">description</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">string</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">NDPA Part VIII text</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Description text displayed on the manager</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">className</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">string</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`""`}</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Custom CSS class for the manager container</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">buttonClassName</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">string</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`""`}</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Custom CSS class for buttons</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">showSummary</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">boolean</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">true</td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">Whether to show safeguard recommendations</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Whether to show the compliance summary section</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">showTIA</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">boolean</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">true</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Whether to show the Transfer Impact Assessment section in the form</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">classNames</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">CrossBorderTransferManagerClassNames</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">&mdash;</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Override class names for individual sections; takes priority over className / buttonClassName</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">unstyled</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">boolean</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">false</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">When true, removes all default styling so consumers can style from scratch using classNames</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h3 className="text-xl font-bold mt-8 mb-4">Types</h3>
-        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`type TransferDetails = {
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`type TransferMechanism =
+  | 'adequacy_decision'
+  | 'standard_clauses'
+  | 'binding_corporate_rules'
+  | 'ndpc_authorization'
+  | 'explicit_consent'
+  | 'contract_performance'
+  | 'public_interest'
+  | 'legal_claims'
+  | 'vital_interests';
+
+type AdequacyStatus = 'adequate' | 'inadequate' | 'pending_review' | 'unknown';
+
+interface CrossBorderTransfer {
   id: string;
   destinationCountry: string;
+  destinationCountryCode?: string;
+  adequacyStatus: AdequacyStatus;
+  transferMechanism: TransferMechanism;
   dataCategories: string[];
+  includesSensitiveData: boolean;
+  estimatedDataSubjects?: number;
+  recipientOrganization: string;
+  recipientContact: {
+    name: string;
+    email: string;
+    phone?: string;
+    address?: string;
+  };
   purpose: string;
-  recipient: string;
-  recipientType?: 'controller' | 'processor';
-};
-
-type TransferMechanism =
-  | 'adequacy_decision'
-  | 'standard_contractual_clauses'
-  | 'binding_corporate_rules'
-  | 'code_of_conduct'
-  | 'certification'
-  | 'explicit_consent'
-  | 'contractual_necessity';
-
-type TransferAssessmentResult = {
-  transferId: string;
-  isPermitted: boolean;
-  mechanism: TransferMechanism;
   safeguards: string[];
-  risks: string[];
-  assessedAt: string;
-};`}</code></pre>
+  riskAssessment: string;
+  riskLevel: 'low' | 'medium' | 'high';
+  ndpcApproval?: {
+    required: boolean;
+    applied: boolean;
+    approved?: boolean;
+    referenceNumber?: string;
+    appliedAt?: number;
+    approvedAt?: number;
+  };
+  tiaCompleted: boolean;
+  tiaReference?: string;
+  frequency: 'one_time' | 'periodic' | 'continuous';
+  startDate: number;
+  endDate?: number;
+  status: 'active' | 'suspended' | 'terminated' | 'pending_approval';
+  createdAt: number;
+  updatedAt: number;
+  reviewDate?: number;
+}
+
+interface CrossBorderSummary {
+  totalActiveTransfers: number;
+  byMechanism: Record<TransferMechanism, number>;
+  byAdequacy: Record<AdequacyStatus, number>;
+  pendingApproval: CrossBorderTransfer[];
+  dueForReview: CrossBorderTransfer[];
+  missingTIA: CrossBorderTransfer[];
+  highRiskTransfers: CrossBorderTransfer[];
+  lastUpdated: number;
+}`}</code></pre>
       </section>
 
       <section id="lite-variant" className="mb-8">
