@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.1.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.1.1...v5.1.2) (2026-05-28)
+
+
+### Features
+
+* **site:** add real NDPA privacy policy page; fix site-wide OG image ([7c4938e](https://github.com/mr-tanta/ndpr-toolkit/commit/7c4938e9b4fb0098aa3ceb92dd9b656a5cc4e8e6))
+
+
+### Bug Fixes
+
+* align NDPA section citations with the Act's Arrangement of Sections ([69ea70c](https://github.com/mr-tanta/ndpr-toolkit/commit/69ea70c0d39ea7836ba1d54e04ae864368459c6b))
+* correct dead npm URL, stale SEO version, and broken doc links ([ceec6de](https://github.com/mr-tanta/ndpr-toolkit/commit/ceec6dee15954829876a0799ce7c87def5b0bf0b))
+* correct wrong NDPA section labels in shipped components ([bcf223c](https://github.com/mr-tanta/ndpr-toolkit/commit/bcf223ca847e71e346df53b7f31d253729711ddf))
+* **deps:** patch dev/example advisories and make overrides work under pnpm 11 ([d2e868f](https://github.com/mr-tanta/ndpr-toolkit/commit/d2e868fcb03c39beff35d48d37930f610a2d414b))
+* **docs:** correct component API-reference tables and samples to match v5.1.1 ([6d1c0d2](https://github.com/mr-tanta/ndpr-toolkit/commit/6d1c0d2b6d154508d5df0544cb5a129e5c2d4fda))
+* **docs:** correct NDPA 2023 section citations in compliance-score weights table ([c132aa0](https://github.com/mr-tanta/ndpr-toolkit/commit/c132aa05d5181ab3f9a147fee8d5323ff6cea68b))
+* **docs:** drop stale v3 framing and correct locale count ([fd2d346](https://github.com/mr-tanta/ndpr-toolkit/commit/fd2d3466dad7b6f19aa1f3d16a6382d4f371f794))
+* **docs:** sweep renamed/removed APIs out of current guides and demos ([04149e3](https://github.com/mr-tanta/ndpr-toolkit/commit/04149e3f8c52e59865abd8d042b2168fda38d1c0))
+* **examples:** astro demo requires Node 22.12+ for astro 6 ([b70baf1](https://github.com/mr-tanta/ndpr-toolkit/commit/b70baf1a6f9ff5f26d284dfeceb089731dac121d))
+* **examples:** bump SSR demos to patched astro 6 / vite 6 stack ([32a06f3](https://github.com/mr-tanta/ndpr-toolkit/commit/32a06f306fd9b7cf2d417bd3ff3c23c7820fc6c1))
+* **landing/docs:** correct broken code samples and stale references ([cc246a2](https://github.com/mr-tanta/ndpr-toolkit/commit/cc246a25bfba9cb212ee6ea517b43709e220735f))
+* **landing:** correct stale version branding and wrong stats ([a7965bc](https://github.com/mr-tanta/ndpr-toolkit/commit/a7965bc1cfc35a50a79e0445165f15e0919803a6))
+* standardize privacy-policy generator citation on NDPA Section 27 ([cc92ec5](https://github.com/mr-tanta/ndpr-toolkit/commit/cc92ec5eaabd4907ecf8b2d61133e7a39e6e8c87))
+
 ## [5.1.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.1.0...v5.1.1) (2026-05-28)
 
 Completes the jspdf security fix from 5.1.0.
