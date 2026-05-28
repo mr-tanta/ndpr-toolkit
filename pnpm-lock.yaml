@@ -61,8 +61,8 @@ importers:
         specifier: ^4.1.13
         version: 4.1.13
       '@tantainnovative/ndpr-toolkit':
-        specifier: ^3.10.0
-        version: 3.13.0(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(docx@9.7.1)(jspdf@4.2.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)
+        specifier: ^5.1.2
+        version: 5.1.2(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(docx@9.7.1)(jspdf@4.2.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)
       '@testing-library/dom':
         specifier: ^10.4.1
         version: 10.4.1
@@ -1611,8 +1611,8 @@ packages:
   '@tailwindcss/postcss@4.1.13':
     resolution: {integrity: sha512-HLgx6YSFKJT7rJqh9oJs/TkBFhxuMOfUKSBEPYwV+t78POOBsdQ7crhZLzwcH3T0UyUuOzU/GK5pk5eKr3wCiQ==}
 
-  '@tantainnovative/ndpr-toolkit@3.13.0':
-    resolution: {integrity: sha512-rSczBnhVlKKj9+xDoVI6Xi8yxeLe6RhJQydZz7+4IakduUfnsg9+EAeUh6BfgK/mjb8Z31g3zPRl7FVJhl8vZA==}
+  '@tantainnovative/ndpr-toolkit@5.1.2':
+    resolution: {integrity: sha512-xAEnKxUmtKOVSnTdIuQSqmYqH0Y0TtEZW8RRHaIMZz3B/NNkezpgjCVRJAxHtarEjkY92XCgZO2aItl9m/7zkw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@radix-ui/react-label': ^2.1.4
@@ -1622,9 +1622,9 @@ packages:
       class-variance-authority: ^0.7.1
       clsx: ^2.1.1
       docx: '>=8.0.0'
-      jspdf: ^3.0.3
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      jspdf: ^4.2.1
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
       tailwind-merge: ^2.6.0
     peerDependenciesMeta:
       '@radix-ui/react-label':
@@ -6371,7 +6371,7 @@ snapshots:
       postcss: 8.5.15
       tailwindcss: 4.1.13
 
-  '@tantainnovative/ndpr-toolkit@3.13.0(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(docx@9.7.1)(jspdf@4.2.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)':
+  '@tantainnovative/ndpr-toolkit@5.1.2(@radix-ui/react-label@2.1.8(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-slot@1.2.4(@types/react@19.1.15)(react@19.1.1))(@radix-ui/react-switch@1.2.6(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@radix-ui/react-tabs@1.1.13(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(class-variance-authority@0.7.1)(clsx@2.1.1)(docx@9.7.1)(jspdf@4.2.1)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(tailwind-merge@3.5.0)':
     dependencies:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
