@@ -396,7 +396,7 @@ function PrivacyPolicyPage() {
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">description</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">NDPA Section 24 default</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">NDPA Section 27 default</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Description text displayed on the generator</td>
               </tr>
               <tr className="border-b border-border">

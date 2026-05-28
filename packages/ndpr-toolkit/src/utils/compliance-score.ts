@@ -593,7 +593,7 @@ export function getComplianceScore(input: ComplianceInput): ComplianceReport {
 
   const regulatoryReferences: RegulatoryReference[] = [
     { section: 'Section 25', title: 'Consent and lawful basis for processing' },
-    { section: 'Section 26', title: 'Withdrawal of consent and minor protection' },
+    { section: 'Section 26', title: 'Consent' },
     { section: 'Section 27', title: 'Privacy notice requirements' },
     { section: 'Section 28', title: 'Data Protection Impact Assessment (including Section 28(2) NDPC consultation)' },
     { section: 'Section 29', title: 'Records of processing activities' },

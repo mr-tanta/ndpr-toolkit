@@ -142,9 +142,9 @@ const dsr = useDSR({ requestTypes: types, adapter: apiAdapter('/api/dsr') });`}<
 
 <DSRDashboard
   requests={dsrRequests}
-  onUpdateRequest={handleUpdateRequest}
-  onDeleteRequest={handleDeleteRequest}
-  onAssignRequest={handleAssignRequest}
+  onSelectRequest={handleSelectRequest}
+  onUpdateStatus={(id, status) => updateStatus(id, status)}
+  onAssignRequest={(id, assignee) => assign(id, assignee)}
 />`}</code>
             </pre>
           </div>
@@ -258,7 +258,7 @@ function DSRPortal() {
       {activeTab === 'admin' && (
         <DSRDashboard
           requests={requests}
-          onUpdateRequest={updateRequest}
+          onUpdateStatus={(id, status) => updateRequest(id, { status })}
         />
       )}
     </div>
