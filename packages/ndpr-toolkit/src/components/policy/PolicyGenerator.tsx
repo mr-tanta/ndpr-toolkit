@@ -56,7 +56,7 @@ export interface PolicyGeneratorProps {
 
   /**
    * Description text displayed on the generator
-   * @default "Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24."
+   * @default "Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 27."
    */
   description?: string;
 
@@ -101,8 +101,9 @@ export interface PolicyGeneratorProps {
 }
 
 /**
- * Privacy policy generator component. Implements NDPA Section 24 transparency requirements,
- * helping organizations generate compliant privacy policies that disclose required information.
+ * Privacy policy generator component. Implements NDPA Section 27 (provision of
+ * information to the data subject), helping organizations generate compliant
+ * privacy policies that disclose required information.
  */
 export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   sections: initialSections = DEFAULT_POLICY_SECTIONS,
@@ -123,7 +124,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   const resolvedTitle = title ?? locale.policy.generatorTitle ?? 'NDPA Privacy Policy Generator';
   const resolvedDescription =
     description ?? locale.policy.generatorDescription ??
-    'Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24.';
+    'Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 27.';
   const resolvedGenerateButton = generateButtonText ?? locale.policy.generate ?? 'Generate Policy';
   const instanceId = useId();
   const [sections, setSections] = useState<PolicySection[]>(initialSections);

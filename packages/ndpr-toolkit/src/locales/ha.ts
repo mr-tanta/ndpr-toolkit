@@ -70,7 +70,7 @@ export const hausaLocale: Required<{
     sections: 'Sassa',
     variables: 'Masu Canjin',
     generatorTitle: 'Mai Ƙirƙirar Manufar Sirri ta NDPA',
-    generatorDescription: 'Ƙirƙiri manufar sirri da ke bin NDPA don kungiyar ka bisa ga Sashe na 24 na NDPA.',
+    generatorDescription: 'Ƙirƙiri manufar sirri da ke bin NDPA don kungiyar ka bisa ga Sashe na 27 na NDPA.',
     previewTitle: 'Dubawar Manufar Sirri',
     previewDescription: 'Duba manufar sirrin ka da ke bin NDPA kafin fitarwa.',
     exporterTitle: 'Manufar Sirri',

@@ -70,7 +70,7 @@ export const defaultLocale: Required<{
     sections: 'Sections',
     variables: 'Variables',
     generatorTitle: 'NDPA Privacy Policy Generator',
-    generatorDescription: 'Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 24.',
+    generatorDescription: 'Generate an NDPA-compliant privacy policy for your organization in accordance with NDPA Section 27.',
     previewTitle: 'Privacy Policy Preview',
     previewDescription: 'Preview your NDPA-compliant privacy policy before exporting.',
     exporterTitle: 'Privacy Policy',

@@ -70,7 +70,7 @@ export const frenchLocale: Required<{
     sections: 'Sections',
     variables: 'Variables',
     generatorTitle: 'Générateur de politique de confidentialité NDPA',
-    generatorDescription: 'Générez une politique de confidentialité conforme à la NDPA pour votre organisation conformément à l\'article 24 de la NDPA.',
+    generatorDescription: 'Générez une politique de confidentialité conforme à la NDPA pour votre organisation conformément à l\'article 27 de la NDPA.',
     previewTitle: 'Aperçu de la politique de confidentialité',
     previewDescription: 'Prévisualisez votre politique de confidentialité conforme à la NDPA avant l\'export.',
     exporterTitle: 'Politique de confidentialité',
