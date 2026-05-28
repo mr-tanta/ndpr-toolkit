@@ -10,8 +10,8 @@
   "dependencies": {
     "@tantainnovative/ndpr-toolkit": "^3.10.3",
     "docx": "^9.0.0",
-    "jspdf": "^2.5.0",
-    "next": "^15.0.0",
+    "jspdf": "^4.2.1",
+    "next": "^15.5.18",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
