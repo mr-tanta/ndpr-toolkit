@@ -34,15 +34,15 @@ export interface CrossBorderTransferManagerLiteProps {
 }
 
 const MECHANISM_LABELS: Record<TransferMechanism, string> = {
-  adequacy_decision: 'Adequacy Decision (Section 41)',
-  standard_clauses: 'Standard Contractual Clauses (Section 42)',
-  binding_corporate_rules: 'Binding Corporate Rules (Section 43)',
-  ndpc_authorization: 'NDPC Authorization (Section 44)',
-  explicit_consent: 'Explicit Consent (Section 45(a))',
-  contract_performance: 'Contract Performance (Section 45(b))',
-  public_interest: 'Public Interest (Section 45(c))',
-  legal_claims: 'Legal Claims (Section 45(d))',
-  vital_interests: 'Vital Interests (Section 45(e))',
+  adequacy_decision: 'Adequacy Decision (Section 42)',
+  standard_clauses: 'Standard Contractual Clauses (Section 41(1)(a))',
+  binding_corporate_rules: 'Binding Corporate Rules (Section 41(1)(a))',
+  ndpc_authorization: 'NDPC Authorization (Section 42(5))',
+  explicit_consent: 'Explicit Consent (Section 43(1)(a))',
+  contract_performance: 'Contract Performance (Section 43(1)(b))',
+  public_interest: 'Public Interest (Section 43(1)(d))',
+  legal_claims: 'Legal Claims (Section 43(1)(e))',
+  vital_interests: 'Vital Interests (Section 43(1)(f))',
 };
 
 const ADEQUACY_LABELS: Record<AdequacyStatus, string> = {

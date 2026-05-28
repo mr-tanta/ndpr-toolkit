@@ -113,15 +113,15 @@ export interface CrossBorderTransferManagerProps {
  * All transfer mechanism options with section references for the dropdown
  */
 const MECHANISM_OPTIONS: { value: TransferMechanism; label: string }[] = [
-  { value: 'adequacy_decision', label: 'Adequacy Decision (Section 41)' },
-  { value: 'standard_clauses', label: 'Standard Contractual Clauses (Section 42)' },
-  { value: 'binding_corporate_rules', label: 'Binding Corporate Rules (Section 43)' },
-  { value: 'ndpc_authorization', label: 'NDPC Authorization (Section 44)' },
-  { value: 'explicit_consent', label: 'Explicit Consent (Section 45(a))' },
-  { value: 'contract_performance', label: 'Contract Performance (Section 45(b))' },
-  { value: 'public_interest', label: 'Public Interest (Section 45(c))' },
-  { value: 'legal_claims', label: 'Legal Claims (Section 45(d))' },
-  { value: 'vital_interests', label: 'Vital Interests (Section 45(e))' },
+  { value: 'adequacy_decision', label: 'Adequacy Decision (Section 42)' },
+  { value: 'standard_clauses', label: 'Standard Contractual Clauses (Section 41(1)(a))' },
+  { value: 'binding_corporate_rules', label: 'Binding Corporate Rules (Section 41(1)(a))' },
+  { value: 'ndpc_authorization', label: 'NDPC Authorization (Section 42(5))' },
+  { value: 'explicit_consent', label: 'Explicit Consent (Section 43(1)(a))' },
+  { value: 'contract_performance', label: 'Contract Performance (Section 43(1)(b))' },
+  { value: 'public_interest', label: 'Public Interest (Section 43(1)(d))' },
+  { value: 'legal_claims', label: 'Legal Claims (Section 43(1)(e))' },
+  { value: 'vital_interests', label: 'Vital Interests (Section 43(1)(f))' },
 ];
 
 const ADEQUACY_OPTIONS: { value: AdequacyStatus; label: string }[] = [

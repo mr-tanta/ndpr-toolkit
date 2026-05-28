@@ -16,7 +16,7 @@ export type LawfulBasis =
 
 /**
  * Additional conditions required for processing sensitive personal data
- * per NDPA Section 27
+ * per NDPA Section 30
  */
 export type SensitiveDataCondition =
   | 'explicit_consent'
