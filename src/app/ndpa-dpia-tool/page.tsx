@@ -124,8 +124,8 @@ import { NDPRDPIA } from '@tantainnovative/ndpr-toolkit/presets';
 export default function DPIAPage() {
   return (
     <NDPRDPIA
-      onComplete={(answers) => {
-        fetch('/api/dpia', { method: 'POST', body: JSON.stringify(answers) });
+      onResult={(result) => {
+        fetch('/api/dpia', { method: 'POST', body: JSON.stringify(result) });
       }}
     />
   );

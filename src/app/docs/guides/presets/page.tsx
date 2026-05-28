@@ -122,7 +122,7 @@ import { localStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
         <pre className="bg-card border border-border rounded-md p-4 overflow-x-auto text-sm mb-4">
           <code>{`import { NDPRDPIA } from '@tantainnovative/ndpr-toolkit/presets';
 
-<NDPRDPIA onComplete={(answers) => saveDPIA(answers)} />`}</code>
+<NDPRDPIA onResult={(result) => saveDPIA(result)} />`}</code>
         </pre>
 
         <h3 className="text-xl font-semibold text-foreground mt-8 mb-3"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">NDPRLawfulBasis</code></h3>

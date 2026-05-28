@@ -7,7 +7,7 @@ export default function ServerRenderingGuide() {
   return (
     <DocLayout
       title="Server-Side Rendering & RSC"
-      description="Use the NDPA Toolkit on the server: /server subpath, validateDsrSubmission, and React Server Components."
+      description="Use the NDPA Toolkit on the server: /server subpath, validateDsrSubmissionStructured, and React Server Components."
     >
       <section id="overview" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Overview</h2>
@@ -50,8 +50,8 @@ export default function ServerRenderingGuide() {
               <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 text-foreground font-medium">Validators</td>
                 <td className="border border-border px-4 py-2 text-foreground">
-                  <code className="bg-muted px-1 py-0.5 rounded">validateConsent</code>,{' '}
-                  <code className="bg-muted px-1 py-0.5 rounded">validateDsrSubmission</code>,{' '}
+                  <code className="bg-muted px-1 py-0.5 rounded">validateConsentStructured</code>,{' '}
+                  <code className="bg-muted px-1 py-0.5 rounded">validateDsrSubmissionStructured</code>,{' '}
                   <code className="bg-muted px-1 py-0.5 rounded">validateProcessingActivity</code>,{' '}
                   <code className="bg-muted px-1 py-0.5 rounded">validateTransfer</code>,{' '}
                   <code className="bg-muted px-1 py-0.5 rounded">validateProcessingRecord</code>
@@ -118,18 +118,18 @@ export default function ServerRenderingGuide() {
         <p className="mb-4 text-foreground">
           The most common server-side use case: receiving a payload from{' '}
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">{'<DSRRequestForm onSubmit>'}</code>{' '}
-          and validating it before persisting. <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">validateDsrSubmission</code> mirrors the rules
+          and validating it before persisting. <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">validateDsrSubmissionStructured</code> mirrors the rules
           the client form enforces, so client and server stay in sync without you hand-rolling zod or
           class-validator schemas.
         </p>
         <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">Next.js App Router</h3>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`// app/api/dsr/route.ts
-import { validateDsrSubmission } from '@tantainnovative/ndpr-toolkit/server';
+import { validateDsrSubmissionStructured } from '@tantainnovative/ndpr-toolkit/server';
 import { dsrStore } from '@/lib/dsr-store';
 
 export async function POST(req: Request) {
-  const result = validateDsrSubmission(await req.json(), {
+  const result = validateDsrSubmissionStructured(await req.json(), {
     allowedRequestTypes: ['access', 'erasure', 'rectification', 'objection'],
   });
   if (!result.valid) {
@@ -150,7 +150,7 @@ export async function POST(req: Request) {
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`// dsr.controller.ts
 import { Body, Controller, Post, HttpException, HttpStatus } from '@nestjs/common';
-import { validateDsrSubmission } from '@tantainnovative/ndpr-toolkit/server';
+import { validateDsrSubmissionStructured } from '@tantainnovative/ndpr-toolkit/server';
 
 @Controller('dsr')
 export class DsrController {
@@ -158,7 +158,7 @@ export class DsrController {
 
   @Post()
   async submit(@Body() body: unknown) {
-    const result = validateDsrSubmission(body);
+    const result = validateDsrSubmissionStructured(body);
     if (!result.valid) {
       throw new HttpException(
         { errors: result.errors },
@@ -174,12 +174,12 @@ export class DsrController {
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`// routes/dsr.ts
 import { Router } from 'express';
-import { validateDsrSubmission } from '@tantainnovative/ndpr-toolkit/server';
+import { validateDsrSubmissionStructured } from '@tantainnovative/ndpr-toolkit/server';
 
 export const dsrRouter: Router = Router();
 
 dsrRouter.post('/dsr', async (req, res) => {
-  const result = validateDsrSubmission(req.body);
+  const result = validateDsrSubmissionStructured(req.body);
   if (!result.valid) {
     return res.status(422).json({ errors: result.errors });
   }

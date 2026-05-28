@@ -34,7 +34,7 @@ export default function ProductionDsrBackendGuide() {
             <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> body</code> and navigates to a confirmation page with the reference number in the URL.
           </li>
           <li>
-            <strong>Validation</strong> — the route handler runs <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">validateDsrSubmission</code> from
+            <strong>Validation</strong> — the route handler runs <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">validateDsrSubmissionStructured</code> from
             <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> /server</code>. Bad payloads return <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">400</code> with
             <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> {`{ error, fields }`}</code>; the preset surfaces those messages to the user. Then a defense-in-depth check
             rejects e-mails on a configurable disposable-domain blocklist.

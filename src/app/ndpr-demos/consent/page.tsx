@@ -723,7 +723,7 @@ export default function ConsentDemoPage() {
               </CardHeader>
               <CardContent>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-auto">
-                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentStorage, validateConsent } from '@tantainnovative/ndpr-toolkit';
+                  <pre className="text-xs sm:text-sm font-mono text-gray-300 leading-relaxed"><code>{`import { ConsentStorage, validateConsentStructured } from '@tantainnovative/ndpr-toolkit';
 import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 
 function App() {
@@ -751,7 +751,7 @@ function App() {
 }
 
 // Validate consent meets NDPA requirements
-const { valid, errors } = validateConsent(consent);`}</code></pre>
+const { valid, errors } = validateConsentStructured(consent);`}</code></pre>
                 </div>
               </CardContent>
             </Card>
