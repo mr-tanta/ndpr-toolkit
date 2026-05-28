@@ -55,14 +55,11 @@ jobs:
         run: npm install -g npm@11
 
       - name: Install dependencies
-        # --no-frozen-lockfile: ideally a published tarball builds from the
-        # exact locked deps (--frozen-lockfile), but pnpm-lock.yaml currently
-        # carries drift (the pnpm `overrides:` block gets stripped whenever a
-        # local `pnpm install` runs), so --frozen-lockfile fails the install.
-        # Until the lockfile is regenerated clean, stay on --no-frozen-lockfile.
-        # TODO: regenerate pnpm-lock.yaml, then switch this back to
-        # --frozen-lockfile so drift can't silently reach a published build.
-        run: pnpm install --no-frozen-lockfile
+        # --frozen-lockfile: build the published tarball from the exact locked
+        # deps. pnpm settings now live in pnpm-workspace.yaml (overrides +
+        # autoInstallPeers), so the lockfile stays in sync across pnpm 10/11
+        # and a frozen install can't silently drift into a published build.
+        run: pnpm install --frozen-lockfile
 
       - name: Run tests
         run: pnpm test
