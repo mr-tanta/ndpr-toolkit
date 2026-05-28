@@ -50,9 +50,13 @@ jobs:
         run: npm install -g npm@11
 
       - name: Install dependencies
-        # --frozen-lockfile (3.10.6): a published tarball MUST be built from
-        # the exact locked deps. Pre-3.10.6 we used --no-frozen-lockfile which
-        # masked drift between package.json and pnpm-lock.yaml.
+        # --no-frozen-lockfile: ideally a published tarball builds from the
+        # exact locked deps (--frozen-lockfile), but pnpm-lock.yaml currently
+        # carries drift (the pnpm `overrides:` block gets stripped whenever a
+        # local `pnpm install` runs), so --frozen-lockfile fails the install.
+        # Until the lockfile is regenerated clean, stay on --no-frozen-lockfile.
+        # TODO: regenerate pnpm-lock.yaml, then switch this back to
+        # --frozen-lockfile so drift can't silently reach a published build.
         run: pnpm install --no-frozen-lockfile
 
       - name: Run tests
