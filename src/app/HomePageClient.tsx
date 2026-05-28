@@ -52,7 +52,8 @@ export default function RootLayout({ children }) {
 }`;
 
 const PRIVACY_PAGE_CODE = `// app/privacy/page.tsx
-import { useDefaultPrivacyPolicy, PolicyPage } from '@tantainnovative/ndpr-toolkit';
+import { useDefaultPrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
+import { PolicyPage } from '@tantainnovative/ndpr-toolkit/policy';
 
 export default function PrivacyPage() {
   const { policy } = useDefaultPrivacyPolicy({
@@ -91,10 +92,10 @@ export default function DataRequestPage() {
 }
 
 // app/api/dsr/route.ts (server-side, RSC-safe)
-import { validateDsrSubmission } from '@tantainnovative/ndpr-toolkit/server';
+import { validateDsrSubmissionStructured } from '@tantainnovative/ndpr-toolkit/server';
 
 export async function POST(req: Request) {
-  const result = validateDsrSubmission(await req.json());
+  const result = validateDsrSubmissionStructured(await req.json());
   if (!result.valid) return Response.json({ errors: result.errors }, { status: 422 });
   // result.data is the typed DsrSubmissionPayload
   return Response.json({ ok: true }, { status: 201 });
@@ -102,46 +103,44 @@ export async function POST(req: Request) {
 
 const SCORE_CODE = `import { getComplianceScore } from '@tantainnovative/ndpr-toolkit';
 
-const score = getComplianceScore({
-  hasConsentManagement: true,
-  hasDSRPortal: true,
-  hasDPIA: true,
-  hasBreachNotification: true,
-  hasPrivacyPolicy: true,
-  hasLawfulBasis: false,
-  hasCrossBorder: false,
-  hasROPA: false,
+const report = getComplianceScore({
+  consent: { hasConsentMechanism: true, hasPurposeSpecification: true,
+    hasWithdrawalMechanism: true, hasMinorProtection: false, consentRecordsRetained: true },
+  dsr: { hasRequestMechanism: true, supportsAccess: true, supportsRectification: true,
+    supportsErasure: true, supportsPortability: false, supportsObjection: true, responseTimelineDays: 30 },
+  dpia: { conductedForHighRisk: true, documentedRisks: true, mitigationMeasures: false },
+  breach: { hasNotificationProcess: true, notifiesWithin72Hours: true, hasRiskAssessment: true, hasRecordKeeping: true },
+  policy: { hasPrivacyPolicy: true, isPubliclyAccessible: true, lastUpdated: '2026-01-15', coversAllSections: true },
+  lawfulBasis: { documentedForAllProcessing: false, hasLegitimateInterestAssessment: false },
+  crossBorder: { hasTransferMechanisms: false, adequacyAssessed: false, ndpcApprovalObtained: false },
+  ropa: { maintained: false, includesAllProcessing: false, lastReviewed: '2025-11-01' },
 });
 
-// { score: 63, grade: 'C', modules: [...] }`;
+// report.score → 0–100, report.rating → 'excellent' | 'good' | 'needs-work' | 'critical'
+// report.modules → per-module breakdown with recommendations`;
 
 const PRESETS_CODE = `// One import — fully styled, NDPA-ready
-import { ConsentBanner } from '@tantainnovative/ndpr-toolkit';
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
 
 export default function App() {
   return (
-    <ConsentBanner
+    <NDPRConsent
       position="bottom"
-      theme="dark"
-      onAccept={handleAccept}
+      onSave={(settings) => console.log(settings)}
     />
   );
 }`;
 
-const COMPONENTS_CODE = `// Mix-and-match headless + styled
-import {
-  ConsentModal,
-  ConsentToggle,
-  ConsentAuditLog,
-} from '@tantainnovative/ndpr-toolkit';
+const COMPONENTS_CODE = `// Compound parts — compose your own consent UI
+import { Consent } from '@tantainnovative/ndpr-toolkit/consent';
 
 export default function CustomConsent() {
   return (
-    <ConsentModal>
-      <ConsentToggle category="analytics" />
-      <ConsentToggle category="marketing" />
-      <ConsentAuditLog limit={10} />
-    </ConsentModal>
+    <Consent.Provider options={MY_OPTIONS} onChange={persist}>
+      <Consent.OptionList />
+      <Consent.AcceptButton />
+      <Consent.SaveButton />
+    </Consent.Provider>
   );
 }`;
 
@@ -153,40 +152,44 @@ import {
 } from '@tantainnovative/ndpr-toolkit';
 
 function MyApp() {
-  const { consented, grant, revoke } = useConsent();
-  const { submitRequest } = useDSR();
-  const { score, grade } = useComplianceScore();
+  const { settings, hasConsent, updateConsent } = useConsent({ options: MY_OPTIONS });
+  const { submitRequest } = useDSR({ requestTypes: MY_REQUEST_TYPES });
+  const { score, rating } = useComplianceScore({ input: MY_COMPLIANCE_INPUT });
 
-  return <div>Score: {score}/100 ({grade})</div>;
+  return <div>Score: {score}/100 ({rating})</div>;
 }`;
 
-const CORE_CODE = `// Core utilities — framework agnostic
+const CORE_CODE = `// Core utilities — framework agnostic, server-safe
 import {
-  validateConsent,
-  generateDPIAReport,
-  formatBreachNotification,
-  computeRetentionDeadline,
+  validateConsentStructured,
+  assessDPIARisk,
+  calculateBreachSeverity,
+  sanitizeInput,
 } from '@tantainnovative/ndpr-toolkit/core';
 
-const report = generateDPIAReport({
-  processingPurpose: 'Marketing analytics',
-  dataCategories: ['email', 'behavioural'],
-  recipients: ['Segment', 'Mixpanel'],
-});`;
+const clean = sanitizeInput(untrustedString);           // escape before render
+const { valid, errors } = validateConsentStructured(settings);
+const { overallRiskLevel, requiresConsultation } = assessDPIARisk(dpiaResult);
+const { severityLevel } = calculateBreachSeverity(breachReport);`;
 
 const ADAPTERS_CODE = `// Storage adapters — plug in anything
 import {
-  LocalStorageAdapter,
-  PostgresAdapter,
-  RedisAdapter,
+  localStorageAdapter,
+  apiAdapter,
+  composeAdapters,
 } from '@tantainnovative/ndpr-toolkit/adapters';
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
+import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 
-const provider = new NDPRProvider({
-  storage: new PostgresAdapter({
-    connectionString: process.env.DATABASE_URL,
-    table: 'ndpa_consents',
-  }),
-});`;
+// Read from a fast local cache, persist through to your API
+const adapter = composeAdapters(
+  localStorageAdapter<ConsentSettings>('ndpr_consent'),
+  apiAdapter<ConsentSettings>('/api/consent'),
+);
+
+export default function App() {
+  return <NDPRConsent adapter={adapter} position="bottom" />;
+}`;
 
 // ─── Feature definitions ────────────────────────────────────────────────────────
 

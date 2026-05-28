@@ -89,7 +89,7 @@ export function ContactForm() {
         NDPA Section 25(1)(f); contract steps under Section 25(1)(b) for existing customers).
         We retain enquiries for 12 months, then delete them. You have the right to access,
         rectify, or erase your data — contact our DPO at{' '}
-        <Link href="/privacy" className="underline">acme.ng/privacy</Link>{' '}
+        <a href="https://acme.ng/privacy" className="underline">acme.ng/privacy</a>{' '}
         for full details, or lodge a complaint with the NDPC (Section 46(1)).
       </div>
 
