@@ -11,14 +11,14 @@ export default function DPIADemoPage() {
       <p style={{ color: "#475569", lineHeight: 1.6, marginBottom: "1rem" }}>
         A multi-section DPIA questionnaire scoped to NDPA 2023 Section 28
         (mandatory impact assessments for processing likely to result in high
-        risk). Walk through the default sections; final answers are logged
+        risk). Walk through the default sections; the DPIA result is logged
         when the wizard completes.
       </p>
 
       <NDPRDPIA
-        onComplete={(answers) => {
+        onResult={(result) => {
           // eslint-disable-next-line no-console
-          console.log("[dpia answers]", answers);
+          console.log("[dpia result]", result);
         }}
       />
     </div>
