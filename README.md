@@ -394,7 +394,7 @@ const stale = errors.find((e) => e.code === 'consent_stale');
 if (stale) showRefreshBanner();
 ```
 
-The full code catalogue lives in the [validator API docs](https://ndprtoolkit.com.ng/docs/server). The legacy string-returning shapes (`validateConsent`, `validateDsrSubmission`, `formatDSRRequest`, `validateConsentOptions`) were removed in 5.0 — see the [4.1 → 5.0 migration guide](https://ndprtoolkit.com.ng/docs/guides/migrating-4-1-to-5-0) if you're upgrading.
+Each validator's emitted `code` values are documented in its JSDoc (and listed in the [CHANGELOG 5.0 entry](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md#500-2026-05-27)). The legacy string-returning shapes (`validateConsent`, `validateDsrSubmission`, `formatDSRRequest`, `validateConsentOptions`) were removed in 5.0 — see the [4.1 → 5.0 migration guide](https://ndprtoolkit.com.ng/docs/guides/migrating-4-1-to-5-0) if you're upgrading.
 
 ---
 

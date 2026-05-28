@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
 
 export default function MigratingFrom41To50Guide() {
@@ -197,7 +196,7 @@ export async function POST(req: Request) {
 }`}</code>
         </pre>
         <p className="mb-4 text-foreground leading-relaxed">
-          The error <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">code</code> values are stable and locale-independent — branch on them in client code instead of regex-matching English. See the <Link href="/docs/server-side-validation" className="text-primary hover:underline">server-side validation docs</Link> for the complete list of codes per validator.
+          The error <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">code</code> values are stable and locale-independent — branch on them in client code instead of regex-matching English. Each validator&apos;s complete list of emitted codes is documented in its JSDoc.
         </p>
       </section>
 
