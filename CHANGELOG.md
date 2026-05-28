@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.1.4](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.1.3...v5.1.4) (2026-05-28)
+
+
+### Bug Fixes
+
+* **deps:** remove unused tailwind-merge peer dependency ([5aec54b](https://github.com/mr-tanta/ndpr-toolkit/commit/5aec54ba4fbdc9cdb69368f7477b87016af7755d))
+
 ## [5.1.3](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.1.2...v5.1.3) (2026-05-28)
 
 
