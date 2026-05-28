@@ -60,9 +60,9 @@ export const metadata: Metadata = {
     url: "https://ndprtoolkit.com.ng",
     images: [
       {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
+        url: "/screenshots/hero.png",
+        width: 1280,
+        height: 800,
         alt: "NDPR Toolkit — Nigeria Data Protection Act 2023 Library for React",
       },
     ],
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     title: "NDPR Toolkit — Nigeria NDPA 2023 Library for React & Next.js",
     description:
       "Open-source React/TypeScript library for Nigeria NDPA 2023 compliance: consent, DSR, DPIA, breach notification, RoPA, lawful-basis, privacy policy. MIT-licensed.",
-    images: ["/og-image.png"],
+    images: ["/screenshots/hero.png"],
     creator: "@mr_tanta",
   },
 };

@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA DPIA Assessment Demo',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'DPIA Assessment Demo | NDPA Toolkit',
     description:
       'Run a Data Protection Impact Assessment with NDPA 2023 risk scoring, templates, and NDPC guidance. Start your DPIA in minutes.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Toolkit Implementation Guides',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Implementation Guides | NDPA Toolkit',
     description:
       'Step-by-step guides for NDPA 2023 compliance: consent management, DPIA, breach notification, DSR handling, and more. Start building compliant apps today.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

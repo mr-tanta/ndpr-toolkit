@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Data Subject Rights Component Documentation',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Data Subject Rights Docs | NDPA Toolkit',
     description:
       'Build an NDPA 2023-compliant DSR portal with request forms, dashboards, and tracking. Handle access, rectification, and erasure requests programmatically.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

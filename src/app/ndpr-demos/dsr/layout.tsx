@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Data Subject Rights Demo',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Data Subject Rights Demo | NDPA Toolkit',
     description:
       'Demo all 8 NDPA data subject rights: access, rectification, erasure, and more. Manage DSR requests with NDPC-compliant workflows. Try it free.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

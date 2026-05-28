@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Toolkit React Hooks Reference',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'React Hooks Reference | NDPA Toolkit',
     description:
       'Custom React hooks for NDPA 2023 compliance: useConsent, useDSR, useBreach, and more. Simplify state management in Nigeria Data Protection apps.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

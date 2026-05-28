@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     siteName: 'NDPA Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'NDPA Cross-Border Transfer Demo',
       },
     ],
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: 'Cross-Border Transfer Demo | NDPA Toolkit',
     description:
       'Assess international data transfers with NDPA 2023 Part VIII (Sections 41-43) adequacy checks and safeguard recommendations. Ensure NDPC-compliant cross-border flows.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 

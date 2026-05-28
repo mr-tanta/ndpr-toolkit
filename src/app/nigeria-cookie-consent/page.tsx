@@ -18,9 +18,9 @@ export const metadata: Metadata = {
     siteName: 'NDPR Toolkit',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/screenshots/hero.png',
+        width: 1280,
+        height: 800,
         alt: 'Nigeria NDPA Cookie Consent Banner for React',
       },
     ],
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: 'Nigeria Cookie Consent Banner for React — NDPA 2023 Compliant',
     description:
       'Drop-in cookie consent banner for Nigerian websites. NDPA 2023 + GAID 2025 compliant.',
-    images: ['/og-image.png'],
+    images: ['/screenshots/hero.png'],
   },
 };
 
