@@ -86,7 +86,7 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdString }}
       />
-      <HomePageClient />
+      <HomePageClient version={pkgVersion} />
     </>
   );
 }
