@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.1.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.1.0...v5.1.1) (2026-05-28)
+
+Completes the jspdf security fix from 5.1.0.
+
+### Changed
+
+- **`jspdf` peer tightened: `^3.0.3 || ^4.2.1` → `^4.2.1`.** 5.1.0 widened the range but left `^3.0.3` in it — and *every* jspdf 3.x is vulnerable (the advisory is `<=4.2.0`; there is no safe 3.x). Keeping 3.x bought zero compatibility while letting a consumer satisfy the peer with a vulnerable `3.0.4`. Dropping it means the peer range now contains only patched versions, so a vulnerable jspdf can't satisfy it.
+
+  This narrows an **optional** peer range — technically breaking per semver, shipped as a patch because the removed versions are 100% vulnerable with no safe alternative and the toolkit's jspdf API usage (`new jsPDF(...)`, text/vector primitives) is identical across 3↔4. Consumers already on jspdf 4.2.1+ or not using PDF export are unaffected; consumers pinned to jspdf 3.x get a peer-range warning that correctly nudges them to the patched line.
+
+### Verification
+
+- `pnpm jest --no-coverage`, `pnpm verify:tarball`, `npx tsc --noEmit -p tsconfig.json` — all green
+- README + `exportPDF` JSDoc already specified jspdf ≥ 4.2.1 (5.1.0); no doc changes needed
+
 ## [5.1.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.0.1...v5.1.0) (2026-05-28)
 
 Security hygiene for the optional PDF-export peer. No change to the toolkit's own code — peer range + docs only.
