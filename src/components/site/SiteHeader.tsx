@@ -44,7 +44,7 @@ export function SiteHeader() {
               className="ndpr-logo-mark"
             />
             <span className="ndpr-logo-text">NDPA Toolkit</span>
-            <span className="ndpr-version-tag">v3</span>
+            <span className="ndpr-version-tag">v5</span>
           </Link>
 
           {/* Center nav — desktop only */}

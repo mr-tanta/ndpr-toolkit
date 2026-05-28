@@ -384,7 +384,9 @@ function ArchLayer({
 
 // ─── Page client component ──────────────────────────────────────────────────────
 
-export function HomePageClient() {
+export function HomePageClient({ version }: { version: string }) {
+  // Display the major.minor (e.g. "5.1") so the badge never drifts from the package.
+  const releaseLabel = `v${version.split('.').slice(0, 2).join('.')}`;
   return (
     <>
       <SiteHeader />
@@ -430,7 +432,7 @@ export function HomePageClient() {
               {/* Left: headline + CTAs */}
               <div className="animate-fade-in-up" style={{ maxWidth: '560px' }}>
                 <div style={{ marginBottom: 'var(--space-6)' }}>
-                  <SiteBadge variant="default" dot size="md">v3.0 — Now Available</SiteBadge>
+                  <SiteBadge variant="default" dot size="md">{releaseLabel} — Now Available</SiteBadge>
                 </div>
                 <h1 style={{
                   fontSize: 'clamp(2.5rem, 6vw, 4rem)',
@@ -506,9 +508,9 @@ export function HomePageClient() {
           <Container>
             <Grid cols={4} gap="md">
               <StatCard value="8" label="Compliance Modules" />
-              <StatCard value="788" label="Passing Tests" />
-              <StatCard value="0" label="Peer Dependencies" />
-              <StatCard value="16–19" label="React Versions" />
+              <StatCard value="1,249" label="Passing Tests" />
+              <StatCard value="0" label="Runtime Dependencies" />
+              <StatCard value="18–19" label="React Versions" />
             </Grid>
           </Container>
         </section>
