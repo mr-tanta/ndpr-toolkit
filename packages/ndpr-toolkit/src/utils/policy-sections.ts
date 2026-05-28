@@ -557,7 +557,7 @@ function buildDataRetention(ctx: TemplateContext, order: number): PolicySection 
  *   - `hasCrossBorderTransfer` → Cross-Border Transfers (NDPA Part VI)
  *   - `hasAutomatedDecisions` → Automated Decision-Making (NDPA §37)
  *
- * Section text uses `«TODO: fieldName»` markers (see {@link UNFILLED_PREFIX})
+ * Section text uses `«TODO: fieldName»` markers (the `UNFILLED_PREFIX` constant)
  * for any required org-info field that's empty in the context. Pair with
  * {@link findUnfilledTokens} to surface those before publishing.
  *

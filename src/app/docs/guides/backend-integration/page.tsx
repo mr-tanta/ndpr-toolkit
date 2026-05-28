@@ -65,7 +65,7 @@ export default function BackendIntegrationGuide() {
         <p className="mb-4 text-foreground">Copy the files you need from the recipes package into your project:</p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`# Clone the toolkit repo to access the recipes
-git clone https://github.com/tantainnovative/ndpr-toolkit.git
+git clone https://github.com/mr-tanta/ndpr-toolkit.git
 
 # Copy the recipes source into your project
 cp -r ndpr-toolkit/packages/ndpr-recipes/src ./ndpr`}</code></pre>

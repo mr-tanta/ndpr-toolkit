@@ -79,7 +79,7 @@ const NDPC_APPROVAL_MECHANISMS: ReadonlySet<TransferMechanism> = new Set<Transfe
 ]);
 
 /**
- * Read-only, lightweight variant of {@link CrossBorderTransferManager}. Renders the
+ * Read-only, lightweight variant of the full `CrossBorderTransferManager`. Renders the
  * list + summary view without pulling in the full adequacy dataset, and exposes
  * no add/edit/delete affordances.
  */

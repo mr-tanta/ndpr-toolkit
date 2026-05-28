@@ -474,7 +474,7 @@ Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (P
 | `src/express/` | Full NDPR router with consent, DSR, breach, ROPA routes |
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 
-Copy the files you need into your project. [Browse the recipes →](https://github.com/tantainnovative/ndpr-toolkit/tree/main/packages/ndpr-recipes)
+Copy the files you need into your project. [Browse the recipes →](https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes)
 
 ---
 
