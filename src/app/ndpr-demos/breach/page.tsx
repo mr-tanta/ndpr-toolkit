@@ -269,15 +269,12 @@ export default function BreachDemoPage() {
       title="Breach Notification"
       description="Report, assess, and notify the NDPC of personal data breaches within the statutory 72-hour window. Walk through the complete breach response lifecycle — from incident report to resolution."
       ndpaSection="Section 40"
-      code={`import { BreachForm } from '@tantainnovative/ndpr-toolkit/breach';
+      code={`import { BreachReportForm } from '@tantainnovative/ndpr-toolkit/breach';
 
-<BreachForm
-  onSubmit={(report) => {
-    // report.requiresNdpcNotification is true
-    // when risk score exceeds threshold
-    if (report.requiresNdpcNotification) {
-      notifyNDPC(report);
-    }
+<BreachReportForm
+  onSubmit={(submission) => {
+    // submission: title, category, discoveredAt, reporter, affectedSystems…
+    saveBreach(submission);
   }}
 />`}
     >
