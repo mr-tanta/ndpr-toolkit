@@ -25,6 +25,7 @@
     }
   },
   "scripts": {
+    "prepare": "husky",
     "dev": "next dev --turbopack",
     "build": "next build && node scripts/post-build.js",
     "build:lib": "tsup && cp packages/ndpr-toolkit/src/styles.d.ts dist/styles.d.ts && node scripts/rollup-dts.mjs",
