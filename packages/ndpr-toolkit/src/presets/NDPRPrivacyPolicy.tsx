@@ -33,7 +33,7 @@ export interface NDPRPrivacyPolicyProps {
   unstyled?: boolean;
 
   /**
-   * UX copy overrides — see {@link NDPRPrivacyPolicyCopy}. The wizard
+   * UX copy overrides — see the `NDPRPrivacyPolicyCopy` interface. The wizard
    * derives most of its labels from the active `NDPRProvider` locale; the
    * fields here cover the high-level header text.
    */

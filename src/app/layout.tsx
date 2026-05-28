@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PostHogProvider, PostHogPageView } from "@/providers/posthog";
 import { Suspense } from "react";
+import { version as pkgVersion } from "../../package.json";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -101,7 +102,7 @@ const softwareApplicationJsonLd = {
     "Open-source React and TypeScript library for Nigeria Data Protection Act (NDPA) 2023 compliance: cookie consent, data-subject rights portal, DPIA, 72-hour breach notification, RoPA, lawful-basis tracker, and privacy-policy generator.",
   url: "https://ndprtoolkit.com.ng",
   downloadUrl: "https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit",
-  softwareVersion: "3.5.5",
+  softwareVersion: pkgVersion,
   license: "https://opensource.org/licenses/MIT",
   offers: {
     "@type": "Offer",
