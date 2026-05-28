@@ -98,11 +98,10 @@ export default function ROPADocs() {
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { ROPAManager } from '@tantainnovative/ndpr-toolkit';
 
 <ROPAManager
-  activities={processingActivities}
-  onAdd={(activity) => console.log('Added:', activity)}
-  onEdit={(activity) => console.log('Edited:', activity)}
-  onDelete={(id) => console.log('Deleted:', id)}
-  onExport={(format) => console.log('Exporting as:', format)}
+  ropa={ropa}
+  onAdd={(record) => console.log('Added:', record)}
+  onUpdate={(id, updates) => console.log('Updated:', id, updates)}
+  onArchive={(id) => console.log('Archived:', id)}
 />`}</code></pre>
           </div>
 
@@ -114,7 +113,7 @@ export default function ROPADocs() {
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useROPA, exportROPAToCSV } from '@tantainnovative/ndpr-toolkit';
 
 function ProcessingRecords() {
-  const { ropa, addRecord, getSummary } = useROPA({
+  const { ropa, addRecord, updateRecord, archiveRecord } = useROPA({
     initialData: {
       id: 'ropa-1',
       organizationName: 'Your Company Ltd',
@@ -129,11 +128,12 @@ function ProcessingRecords() {
   return (
     <div>
       <ROPAManager
-        records={ropa.records}
+        ropa={ropa}
         onAdd={addRecord}
-        summary={getSummary()}
+        onUpdate={updateRecord}
+        onArchive={archiveRecord}
       />
-      <button onClick={() => exportROPAToCSV(ropa.records)}>
+      <button onClick={() => exportROPAToCSV(ropa)}>
         Export to CSV
       </button>
     </div>
@@ -146,36 +146,92 @@ function ProcessingRecords() {
       <section id="api" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">API Reference</h2>
 
-        <h3 className="text-xl font-bold mt-8 mb-4">ProcessingActivity Type</h3>
-        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`type ProcessingActivity = {
+        <h3 className="text-xl font-bold mt-8 mb-4">ProcessingRecord Type</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`interface ProcessingRecord {
   id: string;
   name: string;
   description: string;
-  purpose: string;
-  lawfulBasis: LawfulBasisType;
+  controllerDetails: {
+    name: string;
+    contact: string;
+    address: string;
+    registrationNumber?: string;
+    dpoContact?: string;
+  };
+  jointControllerDetails?: {
+    name: string;
+    contact: string;
+    address: string;
+    responsibilities: string;
+  };
+  processorDetails?: {
+    name: string;
+    contact: string;
+    address: string;
+    contractReference?: string;
+  };
+  lawfulBasis: LawfulBasis;
+  lawfulBasisJustification: string;
+  purposes: string[];
   dataCategories: string[];
-  dataSubjects: string[];
+  sensitiveDataCategories?: string[];
+  dataSubjectCategories: string[];
   recipients: string[];
-  crossBorderTransfers?: {
-    country: string;
+  crossBorderTransfers?: Array<{
+    destinationCountry: string;
+    countryCode?: string;
     safeguards: string;
-  }[];
+    transferMechanism: string;
+  }>;
   retentionPeriod: string;
+  retentionJustification?: string;
   securityMeasures: string[];
-  dpiaConducted: boolean;
-  status: 'active' | 'inactive' | 'under_review';
-  createdAt: string;
-  updatedAt: string;
-};
+  dataSource: 'data_subject' | 'third_party' | 'public_source' | 'other';
+  thirdPartySourceDetails?: string;
+  dpiaRequired: boolean;
+  dpiaReference?: string;
+  automatedDecisionMaking: boolean;
+  automatedDecisionMakingDetails?: string;
+  status: 'active' | 'inactive' | 'archived';
+  department?: string;
+  systemsUsed?: string[];
+  createdAt: number;
+  updatedAt: number;
+  lastReviewedAt?: number;
+  nextReviewDate?: number;
+}`}</code></pre>
 
-type ROPAManagerProps = {
-  activities: ProcessingActivity[];
-  onAdd: (activity: ProcessingActivity) => void;
-  onEdit: (activity: ProcessingActivity) => void;
-  onDelete: (id: string) => void;
-  onExport?: (format: 'csv' | 'pdf' | 'json') => void;
-  filterCategories?: string[];
-};`}</code></pre>
+        <h3 className="text-xl font-bold mt-8 mb-4">RecordOfProcessingActivities Type</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`interface RecordOfProcessingActivities {
+  id: string;
+  organizationName: string;
+  organizationContact: string;
+  organizationAddress: string;
+  dpoDetails?: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
+  ndpcRegistrationNumber?: string;
+  records: ProcessingRecord[];
+  lastUpdated: number;
+  version: string;
+  exportFormats?: ('pdf' | 'csv' | 'json' | 'xlsx')[];
+}`}</code></pre>
+
+        <h3 className="text-xl font-bold mt-8 mb-4">ROPAManagerProps</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`interface ROPAManagerProps {
+  ropa: RecordOfProcessingActivities;
+  onAdd?: (record: ProcessingRecord) => void;
+  onUpdate?: (id: string, updates: Partial<ProcessingRecord>) => void;
+  onArchive?: (id: string) => void;
+  title?: string;
+  description?: string;
+  className?: string;
+  buttonClassName?: string;
+  classNames?: ROPAManagerClassNames;
+  unstyled?: boolean;
+}`}</code></pre>
       </section>
 
       <section id="lite-variant" className="mb-8">
@@ -189,7 +245,7 @@ type ROPAManagerProps = {
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4"><code className="text-sm font-mono text-foreground">{`import { ROPAManagerLite } from '@tantainnovative/ndpr-toolkit/ropa/lite';
 
 <ROPAManagerLite
-  records={records}
+  ropa={ropa}
   onRecordClick={(record) => router.push(\`/ropa/\${record.id}\`)}
 />`}</code></pre>
         <p className="mb-0">

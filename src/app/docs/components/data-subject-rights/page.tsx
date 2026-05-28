@@ -116,17 +116,17 @@ const dsr = useDSR({ requestTypes: types, adapter: apiAdapter('/api/dsr') });`}<
               A form for data subjects to submit rights requests, with support for different request types.
             </p>
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-              <code className="text-sm text-foreground font-mono">{`import { DSRRequestForm, DSRType } from '@tantainnovative/ndpr-toolkit';
+              <code className="text-sm text-foreground font-mono">{`import { DSRRequestForm } from '@tantainnovative/ndpr-toolkit';
 
 <DSRRequestForm
   onSubmit={handleSubmitRequest}
   requestTypes={[
-    { id: 'access', label: 'Access my data' },
-    { id: 'rectification', label: 'Correct my data' },
-    { id: 'erasure', label: 'Delete my data' },
-    { id: 'restriction', label: 'Restrict processing of my data' },
-    { id: 'portability', label: 'Data portability' },
-    { id: 'objection', label: 'Object to processing' }
+    { id: 'access', name: 'Access my data', description: 'Request a copy of your personal data', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+    { id: 'rectification', name: 'Correct my data', description: 'Request correction of inaccurate data', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+    { id: 'erasure', name: 'Delete my data', description: 'Request deletion of your data', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+    { id: 'restriction', name: 'Restrict processing of my data', description: 'Request restriction of processing', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+    { id: 'portability', name: 'Data portability', description: 'Request your data in a portable format', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+    { id: 'objection', name: 'Object to processing', description: 'Object to processing of your data', estimatedCompletionTime: 30, requiresAdditionalInfo: false }
   ]}
 />`}</code>
             </pre>
@@ -158,8 +158,8 @@ const dsr = useDSR({ requestTypes: types, adapter: apiAdapter('/api/dsr') });`}<
               <code className="text-sm text-foreground font-mono">{`import { DSRTracker } from '@tantainnovative/ndpr-toolkit';
 
 <DSRTracker
-  requestId="dsr-123456"
-  onLookup={handleLookupRequest}
+  requests={dsrRequests}
+  onSelectRequest={handleSelectRequest}
 />`}</code>
             </pre>
           </div>
@@ -189,28 +189,26 @@ const dsr = useDSR({ requestTypes: types, adapter: apiAdapter('/api/dsr') });`}<
           Here&apos;s a complete example of how to implement the Data Subject Rights system in your application:
         </p>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`import { useState, useEffect } from 'react';
+          <code className="text-sm text-foreground font-mono">{`import { useState } from 'react';
 import {
   DSRRequestForm,
   DSRDashboard,
   DSRTracker,
-  useDSR,
-  DSRType,
-  DSRStatus
+  useDSR
 } from '@tantainnovative/ndpr-toolkit';
 
 const requestTypes = [
-  { id: 'access', label: 'Access my data' },
-  { id: 'rectification', label: 'Correct my data' },
-  { id: 'erasure', label: 'Delete my data' },
-  { id: 'restriction', label: 'Restrict processing of my data' },
-  { id: 'portability', label: 'Data portability' },
-  { id: 'objection', label: 'Object to processing' }
+  { id: 'access', name: 'Access my data', description: 'Request a copy of your personal data', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'rectification', name: 'Correct my data', description: 'Request correction of inaccurate data', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'erasure', name: 'Delete my data', description: 'Request deletion of your data', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'restriction', name: 'Restrict processing of my data', description: 'Request restriction of processing', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'portability', name: 'Data portability', description: 'Request your data in a portable format', estimatedCompletionTime: 30, requiresAdditionalInfo: false },
+  { id: 'objection', name: 'Object to processing', description: 'Object to processing of your data', estimatedCompletionTime: 30, requiresAdditionalInfo: false }
 ];
 
 function DSRPortal() {
   const [activeTab, setActiveTab] = useState('submit');
-  const [trackingId, setTrackingId] = useState('');
+  const [selectedId, setSelectedId] = useState('');
 
   const {
     requests,
@@ -219,28 +217,33 @@ function DSRPortal() {
     getRequest,
   } = useDSR({ requestTypes });
 
-  const handleSubmitRequest = (request) => {
+  // DSRRequestForm calls onSubmit with a DSRFormSubmission
+  const handleSubmitRequest = (submission) => {
     const newRequest = submitRequest({
-      type: request.type,
+      type: submission.requestType,
       subject: {
-        name: request.name,
-        email: request.email,
-        phone: request.phone
+        name: submission.dataSubject.fullName,
+        email: submission.dataSubject.email,
+        phone: submission.dataSubject.phone,
+        identifierType: submission.dataSubject.identifierType,
+        identifierValue: submission.dataSubject.identifierValue
       },
-      details: request.details
+      additionalInfo: submission.additionalInfo
     });
     alert(\`Your request has been submitted. Your tracking ID is: \${newRequest.id}\`);
   };
 
-  const handleLookupRequest = (id) => {
-    return getRequestById(id);
+  const handleSelectRequest = (id) => {
+    setSelectedId(id);
+    const request = getRequest(id);
+    console.log('Selected request:', request);
   };
 
   return (
     <div>
       <nav>
         <button onClick={() => setActiveTab('submit')}>Submit Request</button>
-        <button onClick={() => setActiveTab('track')}>Track Request</button>
+        <button onClick={() => setActiveTab('track')}>Track Requests</button>
         <button onClick={() => setActiveTab('admin')}>Admin Dashboard</button>
       </nav>
 
@@ -249,25 +252,13 @@ function DSRPortal() {
       )}
 
       {activeTab === 'track' && (
-        <div>
-          <h2>Track Your Request</h2>
-          <input
-            type="text"
-            value={trackingId}
-            onChange={(e) => setTrackingId(e.target.value)}
-            placeholder="Enter your tracking ID"
-          />
-          {trackingId && (
-            <DSRTracker requestId={trackingId} onLookup={handleLookupRequest} />
-          )}
-        </div>
+        <DSRTracker requests={requests} onSelectRequest={handleSelectRequest} />
       )}
 
       {activeTab === 'admin' && (
         <DSRDashboard
           requests={requests}
           onUpdateRequest={updateRequest}
-          onDeleteRequest={deleteRequest}
         />
       )}
     </div>
@@ -434,20 +425,20 @@ export async function POST(request: NextRequest) {
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">requestTypes</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`Array<{id: string, label: string}>`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`RequestType[]`}</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Array of request types to display</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Array of request types ({`{ id, name, description, estimatedCompletionTime, requiresAdditionalInfo, additionalFields? }`})</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">title</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Submit a Data Subject Rights Request&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Submit a Data Subject Request&apos;</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Form title</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">description</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Use this form to submit a request...&apos;</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">&apos;Use this form to exercise your rights under the NDPA...&apos;</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Form description</td>
               </tr>
               <tr className="border-b border-border">
@@ -464,18 +455,21 @@ export async function POST(request: NextRequest) {
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
           <code className="text-sm text-foreground font-mono">{`import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
 
+// requestTypes is required: RequestType[] ({ id, name, description, estimatedCompletionTime, requiresAdditionalInfo })
 const {
   requests,             // Array of all DSR requests
   submitRequest,        // Submit a new request
   updateRequest,        // Update an existing request
-  getRequest,           // Get a request by id (was: getRequestById)
-  getRequestsByStatus,  // Filter requests by status (was: filterRequestsByStatus)
-  getRequestsByType,    // Filter requests by type (was: filterRequestsByType)
+  getRequest,           // Get a request by id
+  getRequestsByStatus,  // Filter requests by status
+  getRequestsByType,    // Filter requests by type
+  getRequestType,       // Get a request type definition by id
+  formatRequest,        // Format a request for display/submission
   clearRequests,        // Clear all requests
   isLoading,            // Loading state for async adapters
 } = useDSR({ requestTypes });
 
-// Submit a new request
+// Submit a new request. The hook assigns id, status, createdAt, updatedAt, dueDate.
 const newRequest = submitRequest({
   type: 'access',
   subject: {
@@ -483,23 +477,32 @@ const newRequest = submitRequest({
     email: 'john@example.com',
     phone: '1234567890'
   },
-  details: 'I would like to access all my personal data.'
+  description: 'I would like to access all my personal data.'
 });
 
 // Update a request
 updateRequest('request-id', {
-  status: 'inProgress',
-  assignedTo: 'data-officer@example.com'
+  status: 'inProgress'
 });
 
-// Filter requests
-const pendingRequests = filterRequestsByStatus('pending');
-const accessRequests = filterRequestsByType('access');`}</code>
+// Look up and filter requests
+const request = getRequest('request-id');
+const pendingRequests = getRequestsByStatus('pending');
+const accessRequests = getRequestsByType('access');`}</code>
         </pre>
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">DSRType Enum</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`export type DSRType = 'access' | 'rectification' | 'erasure' | 'restriction' | 'portability' | 'objection';`}</code>
+          <code className="text-sm text-foreground font-mono">{`export type DSRType =
+  | 'information'
+  | 'access'
+  | 'rectification'
+  | 'erasure'
+  | 'restriction'
+  | 'portability'
+  | 'objection'
+  | 'automated_decision_making'
+  | 'withdraw_consent';`}</code>
         </pre>
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">DSRStatus Enum</h3>
@@ -526,7 +529,7 @@ const accessRequests = filterRequestsByType('access');`}</code>
     identifierValue?: string;
     identifierType?: string;
   };
-  additionalInfo?: Record<string, any>;
+  additionalInfo?: Record<string, string | number | boolean | null>;
   internalNotes?: Array<{
     timestamp: number;
     author: string;

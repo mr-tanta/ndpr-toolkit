@@ -98,13 +98,14 @@ import {
             <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { LawfulBasisTracker, useLawfulBasis } from '@tantainnovative/ndpr-toolkit';
 
 function LawfulBasisPage() {
-  const { activities, addActivity, getSummary } = useLawfulBasis();
+  const { activities, addActivity, updateActivity, archiveActivity } = useLawfulBasis();
 
   return (
     <LawfulBasisTracker
       activities={activities}
       onAdd={addActivity}
-      summary={getSummary()}
+      onUpdate={updateActivity}
+      onArchive={archiveActivity}
     />
   );
 }`}</code></pre>
@@ -128,59 +129,117 @@ function LawfulBasisPage() {
             </thead>
             <tbody>
               <tr className="border-b border-border">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">processingActivity</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">ProcessingActivity</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">activities</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">ProcessingActivity[]</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">Required</td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">The processing activity to assess</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">List of processing activities to display</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onComplete</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(result: LawfulBasisResult) => void`}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">Required</td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">Called when the assessment is completed</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onSave</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(draft: Partial<LawfulBasisResult>) => void`}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onAdd</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(activity: Omit<ProcessingActivity, 'id' | 'createdAt' | 'updatedAt'>) => void`}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">undefined</td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">Called when a draft is saved</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Callback when a new activity is created</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">initialBasis</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">LawfulBasisType</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onUpdate</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(id: string, updates: Partial<ProcessingActivity>) => void`}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">undefined</td>
-                <td className="px-6 py-4 text-sm text-muted-foreground">Pre-selected lawful basis for editing</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Callback when an activity is updated</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">onArchive</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`(id: string) => void`}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">undefined</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Callback when an activity is archived</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">title</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">string</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{`"Lawful Basis Tracker"`}</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Title displayed on the tracker</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">description</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">string</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">NDPA Section 25 default</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Description text displayed on the tracker</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">className</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">string</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">undefined</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Custom CSS class for the tracker container</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">buttonClassName</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">string</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">undefined</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Custom CSS class for buttons</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">showSummary</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">boolean</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">true</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Whether to show the compliance summary at the top</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">showComplianceGaps</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">boolean</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">true</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Whether to show compliance gap alerts</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">classNames</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">LawfulBasisTrackerClassNames</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">undefined</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">Override class names for individual sections; takes priority over className / buttonClassName</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">unstyled</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">boolean</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">undefined</td>
+                <td className="px-6 py-4 text-sm text-muted-foreground">When true, all default styling is removed so consumers can style from scratch using classNames</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h3 className="text-xl font-bold mt-8 mb-4">Lawful Basis Types</h3>
-        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`type LawfulBasisType =
-  | 'consent'
-  | 'contract'
-  | 'legal_obligation'
-  | 'vital_interest'
-  | 'public_interest'
-  | 'legitimate_interest';
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`// The six lawful bases for processing personal data per NDPA Section 25(1)
+type LawfulBasis =
+  | 'consent'              // Section 25(1)(a)
+  | 'contract'             // Section 25(1)(b)
+  | 'legal_obligation'     // Section 25(1)(c)
+  | 'vital_interests'      // Section 25(1)(d)
+  | 'public_interest'      // Section 25(1)(e)
+  | 'legitimate_interests'; // Section 25(1)(f)
 
-type ProcessingActivity = {
+interface ProcessingActivity {
   id: string;
   name: string;
   description: string;
+  lawfulBasis: LawfulBasis;
+  lawfulBasisJustification: string;
   dataCategories: string[];
-  dataSubjects?: string[];
-  purpose?: string;
-};
-
-type LawfulBasisResult = {
-  activityId: string;
-  basis: LawfulBasisType;
-  justification: string;
-  assessedAt: string;
-  reviewer?: string;
-  notes?: string;
-};`}</code></pre>
+  involvesSensitiveData: boolean;
+  sensitiveDataCondition?: SensitiveDataCondition;
+  dataSubjectCategories: string[];
+  purposes: string[];
+  retentionPeriod: string;
+  retentionJustification?: string;
+  recipients?: string[];
+  crossBorderTransfer: boolean;
+  createdAt: number;
+  updatedAt: number;
+  reviewDate?: number;
+  status: 'active' | 'inactive' | 'under_review' | 'archived';
+  dpoApproval?: {
+    approved: boolean;
+    approvedBy: string;
+    approvedAt: number;
+    notes?: string;
+  };
+}`}</code></pre>
       </section>
 
       <section id="lite-variant" className="mb-8">

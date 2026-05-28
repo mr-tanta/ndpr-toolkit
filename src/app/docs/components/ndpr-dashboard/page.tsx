@@ -30,14 +30,53 @@ export default function NDPRDashboardDocs() {
 import type { ComplianceInput } from '@tantainnovative/ndpr-toolkit';
 
 const input: ComplianceInput = {
-  consent: { hasBanner: true, settings: latestConsentSettings },
-  dsr: { requests: dsrRequests },
-  dpia: { results: dpiaResults },
-  breach: { reports: breachReports },
-  policy: { policy: privacyPolicy },
-  lawfulBasis: { activities },
-  crossBorder: { transfers },
-  ropa: { records },
+  consent: {
+    hasConsentMechanism: true,
+    hasPurposeSpecification: true,
+    hasWithdrawalMechanism: true,
+    hasMinorProtection: false,
+    consentRecordsRetained: true,
+  },
+  dsr: {
+    hasRequestMechanism: true,
+    supportsAccess: true,
+    supportsRectification: true,
+    supportsErasure: true,
+    supportsPortability: false,
+    supportsObjection: true,
+    responseTimelineDays: 30,
+  },
+  dpia: {
+    conductedForHighRisk: true,
+    documentedRisks: true,
+    mitigationMeasures: false,
+  },
+  breach: {
+    hasNotificationProcess: true,
+    notifiesWithin72Hours: true,
+    hasRiskAssessment: true,
+    hasRecordKeeping: false,
+  },
+  policy: {
+    hasPrivacyPolicy: true,
+    isPubliclyAccessible: true,
+    lastUpdated: '2025-01-15',
+    coversAllSections: true,
+  },
+  lawfulBasis: {
+    documentedForAllProcessing: true,
+    hasLegitimateInterestAssessment: false,
+  },
+  crossBorder: {
+    hasTransferMechanisms: true,
+    adequacyAssessed: false,
+    ndpcApprovalObtained: false,
+  },
+  ropa: {
+    maintained: true,
+    includesAllProcessing: true,
+    lastReviewed: '2025-03-01',
+  },
 };
 
 const report = getComplianceScore(input);
@@ -67,9 +106,23 @@ export default function CompliancePage() {
 
 <NDPRComplianceDashboard
   input={{
-    consent: { hasBanner: true, settings },
-    dsr: { requests },
-    // …other modules
+    consent: {
+      hasConsentMechanism: true,
+      hasPurposeSpecification: true,
+      hasWithdrawalMechanism: true,
+      hasMinorProtection: false,
+      consentRecordsRetained: true,
+    },
+    dsr: {
+      hasRequestMechanism: true,
+      supportsAccess: true,
+      supportsRectification: true,
+      supportsErasure: true,
+      supportsPortability: false,
+      supportsObjection: true,
+      responseTimelineDays: 30,
+    },
+    // …dpia, breach, policy, lawfulBasis, crossBorder, ropa
   }}
   title="Compliance overview"
 />`}</code>
@@ -140,7 +193,7 @@ export default function CompliancePage() {
   recommendation: string;          // body
   priority: 'critical' | 'high' | 'medium' | 'low';
   effort: EffortLevel;
-  ndpaSection: string;             // e.g. 'NDPA s. 25'
+  ndpaSection: string;             // e.g. 'Section 25'
 }`}</code>
         </pre>
       </section>

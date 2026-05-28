@@ -199,8 +199,9 @@ const policySections = [
   {
     id: 'introduction',
     title: 'Introduction',
-    content: '# Privacy Policy for {{companyName}}\\n\\nLast Updated: {{effectiveDate}}\\n\\n{{companyName}} ("we", "us", or "our") is committed to protecting your privacy.',
-    enabled: true,
+    template: '# Privacy Policy for {{companyName}}\\n\\nLast Updated: {{effectiveDate}}\\n\\n{{companyName}} ("we", "us", or "our") is committed to protecting your privacy.',
+    required: true,
+    included: true,
     order: 1
   }
 ];`}</code>
@@ -212,15 +213,18 @@ const policySections = [
         </p>
 
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`const result = generatePolicyText(policyTemplate, variables);
+          <code className="text-sm text-foreground font-mono">{`// Passing PolicySection[] + OrganizationInfo returns an object with
+// fullText, sectionTexts and missingVariables. (Passing a single
+// template string instead returns just the substituted string.)
+const result = generatePolicyText(policySections, orgInfo);
 
 // The full generated text
 console.log(result.fullText);
 
-// Any missing variables that weren't provided
-console.log(result.missingVariables); // e.g., ['phoneNumber']
+// Any required OrganizationInfo fields referenced but left empty
+console.log(result.missingVariables); // e.g., ['privacyPhone']
 
-// Individual section texts if using PolicySection[] input
+// Individual section texts, keyed by section id
 console.log(result.sectionTexts);`}</code>
         </pre>
 
@@ -232,22 +236,28 @@ const policySections: PolicySection[] = [
   {
     id: 'introduction',
     title: 'Introduction',
-    content: '{{organizationName}} ("we", "us", or "our") operates the {{websiteUrl}} website.'
+    template: '{{name}} ("we", "us", or "our") operates the {{website}} website.',
+    required: true,
+    included: true
   },
   {
     id: 'contact',
     title: 'Contact Us',
-    content: 'If you have any questions, please contact us at {{contactEmail}}.'
+    template: 'If you have any questions, please contact us at {{privacyEmail}}.',
+    required: true,
+    included: true
   }
 ];
 
-const variables = {
-  organizationName: 'Acme Corporation',
-  websiteUrl: 'https://acme.com',
-  contactEmail: 'privacy@acme.com'
+// With PolicySection[], the second argument is an OrganizationInfo object;
+// only its keys (name, website, privacyEmail, ...) are substituted.
+const orgInfo = {
+  name: 'Acme Corporation',
+  website: 'https://acme.com',
+  privacyEmail: 'privacy@acme.com'
 };
 
-const result = generatePolicyText(policySections, variables);
+const result = generatePolicyText(policySections, orgInfo);
 
 console.log(result.fullText);
 console.log(result.sectionTexts.introduction);
@@ -266,88 +276,76 @@ import {
   PolicyGenerator,
   PolicyPreview,
   PolicyExporter,
-  generatePolicyText,
 } from '@tantainnovative/ndpr-toolkit';
-import type { PolicySection } from '@tantainnovative/ndpr-toolkit';
+import type { PolicySection, PolicyVariable } from '@tantainnovative/ndpr-toolkit';
 
-const policyTemplates = [
+const policySections: PolicySection[] = [
   {
-    id: 'standard',
-    name: 'Standard Privacy Policy',
-    description: 'A comprehensive privacy policy suitable for most websites and applications.',
-    sections: [
-      {
-        id: 'introduction',
-        title: 'Introduction',
-        content: '{{organizationName}} ("we", "us", or "our") operates the {{websiteUrl}} website.'
-      },
-      // More sections...
-    ]
+    id: 'introduction',
+    title: 'Introduction',
+    template: '{{organizationName}} ("we", "us", or "our") operates the {{websiteUrl}} website.',
+    required: true,
+    included: true,
+    order: 1
+  },
+  // More sections...
+];
+
+const policyVariables: PolicyVariable[] = [
+  {
+    id: 'organizationName',
+    name: 'Organization Name',
+    description: 'The legal name of your organization',
+    defaultValue: 'Your Company',
+    value: '',
+    inputType: 'text',
+    required: true
+  },
+  {
+    id: 'websiteUrl',
+    name: 'Website URL',
+    description: 'Your primary website address',
+    defaultValue: 'https://example.com',
+    value: '',
+    inputType: 'url',
+    required: true
   }
 ];
 
 function PrivacyPolicyPage() {
-  const [generatedPolicy, setGeneratedPolicy] = useState(null);
-  const [selectedTemplate, setSelectedTemplate] = useState('standard');
-  const [policyData, setPolicyData] = useState({
-    organizationName: '',
-    organizationWebsite: '',
-    organizationContact: '',
-  });
-  const [variables, setVariables] = useState({
-    organizationName: '',
-    websiteUrl: '',
-    contactEmail: '',
-    lastUpdated: new Date().toLocaleDateString()
-  });
-
-  const handlePolicyGenerated = (data) => {
-    setPolicyData(data);
-    setVariables({
-      ...variables,
-      organizationName: data.organizationName,
-      websiteUrl: data.organizationWebsite,
-      contactEmail: data.organizationContact
-    });
-
-    const template = policyTemplates.find(t => t.id === selectedTemplate);
-    const result = generatePolicyText(template.sections, variables);
-
-    setGeneratedPolicy({
-      title: \`Privacy Policy for \${data.organizationName}\`,
-      content: result.fullText,
-      sections: template.sections.map(section => ({
-        ...section,
-        content: result.sectionTexts[section.id] || section.content
-      })),
-      lastUpdated: new Date()
-    });
-  };
+  const [policyContent, setPolicyContent] = useState('');
 
   return (
     <div>
-      {!generatedPolicy ? (
-        <PolicyGenerator
-          onComplete={handlePolicyGenerated}
-          templates={policyTemplates}
-          initialValues={policyData}
-          onTemplateSelect={(templateId) => setSelectedTemplate(templateId)}
-          variables={variables}
-        />
-      ) : (
-        <div>
+      <PolicyGenerator
+        sections={policySections}
+        variables={policyVariables}
+        onGenerate={(policy) => {
+          // policy.sections  - PolicySection[] with current values
+          // policy.variables - PolicyVariable[] with entered values
+          // policy.content   - generated policy content (markdown)
+          setPolicyContent(policy.content);
+        }}
+        title="Privacy Policy Generator"
+        description="Create your NDPA-compliant privacy policy"
+        showPreview={true}
+        allowEditing={true}
+      />
+
+      {policyContent && (
+        <div className="mt-6">
           <PolicyPreview
-            policy={generatedPolicy}
-            onEdit={() => setGeneratedPolicy(null)}
-            variables={variables}
+            content={policyContent}
+            title="Privacy Policy"
+            showTableOfContents={true}
+            onContentChange={setPolicyContent}
           />
-          <div className="mt-6">
-            <PolicyExporter
-              policy={generatedPolicy}
-              formats={['html', 'pdf', 'markdown']}
-              filename={\`privacy-policy-\${policyData.organizationName.toLowerCase().replace(/\\s+/g, '-')}\`}
-            />
-          </div>
+          <PolicyExporter
+            content={policyContent}
+            title="Privacy Policy"
+            filename="privacy-policy"
+            formats={{ pdf: true, markdown: true, html: true }}
+          />
         </div>
       )}
     </div>
@@ -372,34 +370,64 @@ function PrivacyPolicyPage() {
             </thead>
             <tbody>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">onComplete</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`(data: PolicyData) => void`}</td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground">onGenerate</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`(policy: { sections: PolicySection[]; variables: PolicyVariable[]; content: string }) => void`}</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Callback when policy generation is complete</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Callback fired when the policy is generated, receiving the updated sections, variables, and generated content</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">templates</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">PolicyTemplate[]</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Required</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Array of policy templates</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">initialValues</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`Partial<PolicyData>`}</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{'{}'}</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Initial values for the policy form</td>
-              </tr>
-              <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground">onTemplateSelect</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`(templateId: string) => void`}</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">undefined</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Callback when a template is selected</td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground">sections</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">PolicySection[]</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">DEFAULT_POLICY_SECTIONS</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">List of policy sections to render and edit</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground">variables</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{`Record<string, string>`}</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">{'{}'}</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Variables to replace in policy templates</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">PolicyVariable[]</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">DEFAULT_POLICY_VARIABLES</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">List of policy variables editable through the interface</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">title</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`"NDPA Privacy Policy Generator"`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Title displayed on the generator</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">description</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">NDPA Section 24 default</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Description text displayed on the generator</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">generateButtonText</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`"Generate Policy"`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Text for the generate button</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">showPreview</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">true</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to show a preview of the generated policy</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">allowEditing</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">true</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Whether to allow editing the generated policy content</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">className</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">string</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">{`""`}</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Custom CSS class for the generator container</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground">unstyled</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">boolean</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">false</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Removes all default styles; use with classNames to apply your own</td>
               </tr>
             </tbody>
           </table>
@@ -426,51 +454,74 @@ function generatePolicyText(
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">PolicyTemplate Type</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`type PolicyTemplate = {
+          <code className="text-sm text-foreground font-mono">{`interface PolicyTemplate {
   id: string;
   name: string;
   description: string;
+  organizationType: 'business' | 'nonprofit' | 'government' | 'educational';
   sections: PolicySection[];
-};`}</code>
+  variables: Record<string, {
+    name: string;
+    description: string;
+    required: boolean;
+    defaultValue?: string;
+  }>;
+  version: string;
+  lastUpdated: number;
+  ndpaCompliant: boolean;
+}`}</code>
         </pre>
 
         <h3 className="text-xl font-bold text-foreground mt-8 mb-4">PolicySection Type</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`type PolicySection = {
+          <code className="text-sm text-foreground font-mono">{`interface PolicySection {
   id: string;
   title: string;
-  content: string;
-  required?: boolean;
-};`}</code>
+  /** Template text for the section (supports {{variable}} tokens) */
+  template: string;
+  /** Whether the section is required by the NDPA */
+  required: boolean;
+  /** Whether the section is included in the generated policy */
+  included: boolean;
+  description?: string;
+  order?: number;
+  /** Variables that can be used in the section template */
+  variables?: string[];
+}`}</code>
         </pre>
 
-        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">PolicyData Type</h3>
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">PolicyVariable Type</h3>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
-          <code className="text-sm text-foreground font-mono">{`type PolicyData = {
-  organizationName: string;
-  organizationWebsite: string;
-  organizationContact: string;
+          <code className="text-sm text-foreground font-mono">{`interface PolicyVariable {
+  id: string;
+  /** Name of the variable as it appears in the template */
+  name: string;
+  description: string;
+  defaultValue?: string;
+  /** Current value of the variable */
+  value: string;
+  inputType: 'text' | 'textarea' | 'email' | 'url' | 'date' | 'select';
+  /** Options for select inputs */
+  options?: string[];
+  required: boolean;
+}`}</code>
+        </pre>
+
+        <h3 className="text-xl font-bold text-foreground mt-8 mb-4">OrganizationInfo Type</h3>
+        <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
+          <code className="text-sm text-foreground font-mono">{`interface OrganizationInfo {
+  name: string;
+  website: string;
+  /** Contact email for privacy inquiries */
+  privacyEmail: string;
+  address?: string;
+  privacyPhone?: string;
   dpoName?: string;
   dpoEmail?: string;
-  dataCollectionMethods: string[];
-  personalDataTypes: string[];
-  sensitiveDataTypes?: string[];
-  legalBasisForProcessing: string[];
-  dataUsagePurposes: string[];
-  automaticDecisionMaking: boolean;
-  thirdPartySharing: boolean;
-  thirdPartyCategories?: string[];
-  internationalTransfers: boolean;
-  transferSafeguards?: string;
-  dataSubjectRightsProcess: string;
-  securityMeasures: string[];
-  retentionPeriod: string;
-  usesCookies: boolean;
-  cookieTypes?: string[];
-  lastUpdated: Date;
-  effectiveDate: Date;
-  additionalInformation?: string;
-};`}</code>
+  industry?: string;
+  /** NDPC registration number (if registered) */
+  ndpcRegistrationNumber?: string;
+}`}</code>
         </pre>
       </section>
 

@@ -48,10 +48,10 @@ export default function BreachNotificationDocs() {
         </div>
       </section>
 
-      <section id="v3-quick-start" className="mb-10">
-        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">v3 Quick Start</h2>
+      <section id="quick-start" className="mb-10">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quick Start</h2>
         <p className="text-muted-foreground mb-4 leading-relaxed">
-          v3 introduces zero-config presets, compound components for custom layouts, and a StorageAdapter pattern
+          The toolkit ships zero-config presets, compound components for custom layouts, and a StorageAdapter pattern
           so you can plug in any persistence backend without touching component internals.
         </p>
 
@@ -119,11 +119,11 @@ const breach = useBreach({ categories, adapter: apiAdapter('/api/breaches') });`
 <BreachReportForm
   onSubmit={handleSubmitBreachReport}
   categories={[
-    { id: 'unauthorized-access', label: 'Unauthorized Access' },
-    { id: 'data-loss', label: 'Data Loss' },
-    { id: 'system-compromise', label: 'System Compromise' },
-    { id: 'phishing', label: 'Phishing Attack' },
-    { id: 'other', label: 'Other' }
+    { id: 'unauthorized-access', name: 'Unauthorized Access', description: '' },
+    { id: 'data-loss', name: 'Data Loss', description: '' },
+    { id: 'system-compromise', name: 'System Compromise', description: '' },
+    { id: 'phishing', name: 'Phishing Attack', description: '' },
+    { id: 'other', name: 'Other', description: '' }
   ]}
 />`}</code>
             </pre>
@@ -193,11 +193,11 @@ import {
 } from '@tantainnovative/ndpr-toolkit';
 
 const breachCategories = [
-  { id: 'unauthorized-access', label: 'Unauthorized Access' },
-  { id: 'data-loss', label: 'Data Loss' },
-  { id: 'system-compromise', label: 'System Compromise' },
-  { id: 'phishing', label: 'Phishing Attack' },
-  { id: 'other', label: 'Other' }
+  { id: 'unauthorized-access', name: 'Unauthorized Access', description: '' },
+  { id: 'data-loss', name: 'Data Loss', description: '' },
+  { id: 'system-compromise', name: 'System Compromise', description: '' },
+  { id: 'phishing', name: 'Phishing Attack', description: '' },
+  { id: 'other', name: 'Other', description: '' }
 ];
 
 const organizationInfo = {
@@ -282,21 +282,21 @@ function BreachManagementDashboard() {
             <tbody>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground"><code>onSubmit</code></td>
-                <td className="py-3 px-4 text-sm text-muted-foreground"><code>(data: BreachReport) =&gt; void</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>(data: BreachFormSubmission) =&gt; void</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Yes</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Callback function when user submits a breach report</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Callback function when the user submits a breach report</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-3 px-4 text-sm font-medium text-foreground"><code>categories</code></td>
-                <td className="py-3 px-4 text-sm text-muted-foreground"><code>{'{ id: string, label: string }[]'}</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>BreachCategory[]</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Yes</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Array of breach categories to display</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Array of breach categories (<code>{'{ id, name, description }'}</code>) to display</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>initialValues</code></td>
-                <td className="py-3 px-4 text-sm text-muted-foreground"><code>Partial&lt;BreachReport&gt;</code></td>
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>defaultValues</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>Partial&lt;BreachFormSubmission&gt;</code></td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
-                <td className="py-3 px-4 text-sm text-muted-foreground">Initial values for the form fields</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Default values to pre-fill the form fields</td>
               </tr>
             </tbody>
           </table>
@@ -421,6 +421,8 @@ function BreachManagementDashboard() {
   overallRiskScore: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   risksToRightsAndFreedoms: boolean;
+  highRisksToRightsAndFreedoms: boolean;
+  justification: string;
 }`}</code>
         </pre>
 
@@ -439,17 +441,28 @@ function BreachManagementDashboard() {
           <code className="text-sm text-foreground font-mono">{`import { useBreach } from '@tantainnovative/ndpr-toolkit';
 
 const {
-  breaches,
-  submitBreachReport,
-  updateBreachReport,
-  performRiskAssessment,
-  determineNotificationRequirements,
-  generateRegulatoryReport,
-  getBreachById,
-} = useBreach();
+  reports,
+  assessments,
+  notifications,
+  reportBreach,
+  updateReport,
+  getReport,
+  assessRisk,
+  getAssessment,
+  calculateNotificationRequirements,
+  sendNotification,
+  getNotification,
+  getBreachesRequiringNotification,
+  clearBreachData,
+  isLoading,
+} = useBreach({
+  categories: [
+    { id: 'unauthorized-access', name: 'Unauthorized Access', description: '' },
+  ],
+});
 
-// Submit a new breach report
-const newBreachReport = submitBreachReport({
+// Submit a new breach report (id and reportedAt are generated for you)
+const newBreachReport = reportBreach({
   title: 'Unauthorized Database Access',
   description: 'An unauthorized IP address accessed our customer database.',
   category: 'unauthorized-access',
@@ -460,14 +473,13 @@ const newBreachReport = submitBreachReport({
     department: 'IT Security'
   },
   affectedSystems: ['customer-database'],
-  dataTypes: ['personal-information', 'contact-details'],
+  dataTypes: ['financial', 'personal'],
   estimatedAffectedSubjects: 500,
   status: 'contained'
 });
 
-// Perform a risk assessment
-const riskAssessment = performRiskAssessment({
-  breachId: newBreachReport.id,
+// Conduct a risk assessment for the breach (id, breachId and assessedAt are generated)
+const riskAssessment = assessRisk(newBreachReport.id, {
   assessor: {
     name: 'Jane Smith',
     role: 'Data Protection Officer',
@@ -477,20 +489,22 @@ const riskAssessment = performRiskAssessment({
   integrityImpact: 3,
   availabilityImpact: 2,
   harmLikelihood: 3,
-  harmSeverity: 4
+  harmSeverity: 4,
+  overallRiskScore: 16,
+  riskLevel: 'high',
+  risksToRightsAndFreedoms: true,
+  highRisksToRightsAndFreedoms: true,
+  justification: 'Sensitive financial data exposed at scale.'
 });
 
-// Determine notification requirements
-const requirements = determineNotificationRequirements({
-  breachId: newBreachReport.id,
-  riskAssessmentId: riskAssessment.id
-});
+// Calculate notification requirements from the report + assessment
+const requirements = calculateNotificationRequirements(newBreachReport.id);
 
-// Generate a regulatory report for the NDPC
-if (requirements.ndpcNotificationRequired) {
-  const report = generateRegulatoryReport({
-    breachId: newBreachReport.id,
-    riskAssessmentId: riskAssessment.id
+// Send a regulatory notification to the NDPC if required
+if (requirements?.ndpcNotificationRequired) {
+  sendNotification(newBreachReport.id, {
+    method: 'email',
+    content: 'Breach notification details...'
   });
 }`}</code>
         </pre>

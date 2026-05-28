@@ -32,30 +32,50 @@ export default function ROPAManagerLiteDocs() {
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quickstart</h2>
         <pre className="bg-card border border-border rounded-md p-4 overflow-x-auto text-sm mb-4">
           <code>{`import { ROPAManagerLite } from '@tantainnovative/ndpr-toolkit/ropa/lite';
-import type { ProcessingRecord } from '@tantainnovative/ndpr-toolkit';
+import type { RecordOfProcessingActivities } from '@tantainnovative/ndpr-toolkit';
 
-const records: ProcessingRecord[] = [
-  {
-    id: 'rec_001',
-    name: 'Order fulfilment',
-    department: 'Operations',
-    lawfulBasis: 'contract',
-    dataCategories: ['Contact info', 'Order history'],
-    retentionPeriod: '7 years',
-    status: 'active',
-    involvesSensitiveData: false,
-    requiresDPIA: false,
-    involvesAutomatedDecisions: false,
-    lastReviewedAt: Date.now() - 86400_000 * 30,
-    nextReviewDate: Date.now() + 86400_000 * 60,
-    // ...remaining ProcessingRecord fields
-  },
-];
+const ropa: RecordOfProcessingActivities = {
+  id: 'ropa_001',
+  organizationName: 'Acme Ltd',
+  organizationContact: 'privacy@acme.example',
+  organizationAddress: '12 Marina Road, Lagos',
+  version: '1.0.0',
+  lastUpdated: Date.now(),
+  records: [
+    {
+      id: 'rec_001',
+      name: 'Order fulfilment',
+      description: 'Processing customer orders end to end.',
+      department: 'Operations',
+      controllerDetails: {
+        name: 'Acme Ltd',
+        contact: 'privacy@acme.example',
+        address: '12 Marina Road, Lagos',
+      },
+      lawfulBasis: 'contract',
+      lawfulBasisJustification: 'Necessary to perform the purchase contract.',
+      purposes: ['Fulfil and ship customer orders'],
+      dataCategories: ['Contact info', 'Order history'],
+      dataSubjectCategories: ['Customers'],
+      recipients: ['Logistics partner'],
+      retentionPeriod: '7 years',
+      securityMeasures: ['Encryption at rest', 'Access control'],
+      dataSource: 'data_subject',
+      dpiaRequired: false,
+      automatedDecisionMaking: false,
+      status: 'active',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      lastReviewedAt: Date.now() - 86400_000 * 30,
+      nextReviewDate: Date.now() + 86400_000 * 60,
+    },
+  ],
+};
 
 export default function ROPAOverview() {
   return (
     <ROPAManagerLite
-      records={records}
+      ropa={ropa}
       showSummary
       showComplianceGaps
       onRecordClick={(r) => router.push(\`/ropa/\${r.id}\`)}
@@ -78,9 +98,9 @@ export default function ROPAOverview() {
             </thead>
             <tbody>
               <tr className="border-b border-border">
-                <td className="py-2 pr-4"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">records</code></td>
-                <td className="py-2 pr-4"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">ProcessingRecord[]</code></td>
-                <td className="py-2"><strong>Required.</strong> Records to display.</td>
+                <td className="py-2 pr-4"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">ropa</code></td>
+                <td className="py-2 pr-4"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">RecordOfProcessingActivities</code></td>
+                <td className="py-2"><strong>Required.</strong> The full ROPA whose <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">records</code> are displayed. Matches the full <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">ROPAManager</code> API.</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="py-2 pr-4"><code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">title</code></td>
