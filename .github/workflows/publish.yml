@@ -3,6 +3,11 @@ name: Publish to npm
 on:
   release:
     types: [published]
+  # Manual smoke test of the build/verify pipeline WITHOUT publishing. The
+  # Publish and version-match steps below are gated to real release events,
+  # so a manual dispatch can never push to npm — it just validates that the
+  # pipeline (and its action versions) still works.
+  workflow_dispatch:
 
 # Block concurrent publishes — if two releases are tagged seconds apart,
 # only one runs at a time to prevent racing for the npm version.
@@ -26,7 +31,7 @@ jobs:
       # parameter — not interpolated into any shell command.
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ github.event.release.tag_name || github.ref }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -82,6 +87,7 @@ jobs:
           echo "All 22 entry points + styles.css verified"
 
       - name: Verify package version matches release tag
+        if: github.event_name == 'release'
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
         run: |
@@ -114,5 +120,6 @@ jobs:
       #
       # `--provenance` adds the sigstore attestation.
       - name: Publish to npm (Trusted Publishing + provenance attestation)
+        if: github.event_name == 'release'
         working-directory: .
         run: npm publish --access public --provenance
