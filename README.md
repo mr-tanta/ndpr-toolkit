@@ -654,7 +654,7 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/dsr` | DSR components + hook | `react` | No |
 | `/dpia` | DPIA components + hook | `react` | No |
 | `/breach` | Breach components + hook | `react` | No |
-| `/policy` | Policy components + hook | `react`, `jspdf`, `docx` (optional) | No |
+| `/policy` | Policy components + hook | `react`, `jspdf` ≥ 4.2.1, `docx` (both optional) | No |
 | `/lawful-basis` | Lawful basis component + hook | `react` | No |
 | `/lawful-basis/lite` | Read-only `LawfulBasisTrackerLite` — ~65% smaller than `/lawful-basis` | `react` | No |
 | `/cross-border` | Cross-border component + hook | `react` | No |
@@ -665,6 +665,17 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/styles` | Default CSS stylesheet — `import "@tantainnovative/ndpr-toolkit/styles"` once in your app entry | none | N/A |
 
 [^core]: `/core` re-exports the React `NDPRProvider` for backward compatibility. For strictly server-side imports use `/server` — it carries the same pure validators with no React surface.
+
+### PDF / DOCX export peers
+
+`PolicyExporter` (and `exportPDF` / `exportDOCX` from `/policy`) load `jspdf` / `docx` via dynamic `import()` only when you actually export — they're optional peers, so consumers who don't export documents never install them. If you do export to PDF:
+
+```bash
+npm install jspdf@^4.2.1 --omit=optional      # npm
+pnpm add jspdf@^4.2.1 --no-optional           # pnpm
+```
+
+Use **jspdf ≥ 4.2.1** — earlier versions (≤ 4.2.0) carry advisories `GHSA-67pg-wm7f-q7fj` and `GHSA-cjw8-79x6-5cj4`, fixed in 4.2.1. The `--omit=optional` / `--no-optional` flag drops jspdf's own optional deps (`canvg`, `core-js`, `dompurify`, `html2canvas`); the toolkit's PDF export uses only core jsPDF text/vector APIs, so it works without them and you get a leaner, dependency-flag-free install.
 
 ### Bundle size guidance
 

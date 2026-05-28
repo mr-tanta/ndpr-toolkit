@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.1.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.0.1...v5.1.0) (2026-05-28)
+
+Security hygiene for the optional PDF-export peer. No change to the toolkit's own code — peer range + docs only.
+
+### Changed
+
+- **`jspdf` peer range widened: `^3.0.3` → `^3.0.3 || ^4.2.1`.** jspdf ≤ 4.2.0 carries three advisories — `GHSA-67pg-wm7f-q7fj` (High, CVSS 8.7: `addImage` GIF out-of-memory DoS), `GHSA-cjw8-79x6-5cj4` (Medium: `addJS` shared-state cross-user data leakage in concurrent server-side use), and a Critical path-traversal/LFI item. jspdf **4.2.1** clears all of them (`npm audit`: 0 vulnerabilities). The old `^3.0.3` peer pinned consumers to vulnerable 3.x; the widened range lets them install the patched 4.2.1+.
+
+  The toolkit's `exportPDF` only uses core jsPDF text/vector primitives — it never calls `addImage`, `addJS`, or `.html()` — so the toolkit's own PDF path was never a sink for these CVEs. The bump is for consumers who install jspdf and want a clean audit. jspdf stays an **optional** peer (dynamic `import('jspdf')`); consumers who don't export PDFs never install it.
+
+### Docs
+
+- README + `exportPDF` JSDoc now note that PDF export needs **jspdf ≥ 4.2.1**, and that installing it with `--omit=optional` (npm) / `--no-optional` (pnpm) drops jspdf's optional deps (`canvg`, `core-js`, `dompurify`, `html2canvas`) for a dependency-free PDF surface — the toolkit uses none of them.
+
+### Verification
+
+- `npm audit` against `jspdf@4.2.1` — 0 vulnerabilities
+- `pnpm jest --no-coverage`, `pnpm verify:tarball`, `npx tsc --noEmit -p tsconfig.json` — all green
+
 ## [5.0.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.0.0...v5.0.1) (2026-05-28)
 
 Docs-only patch. No runtime code change.

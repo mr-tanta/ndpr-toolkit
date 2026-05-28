@@ -5,6 +5,11 @@ import { LEGAL_DISCLAIMER_LONG } from '../legal-notice';
 /**
  * Export a PrivacyPolicy to a PDF Blob using jspdf (optional peer dependency).
  *
+ * Requires jspdf >= 4.2.1 (earlier versions carry GHSA-67pg-wm7f-q7fj and
+ * GHSA-cjw8-79x6-5cj4). This function uses only core jsPDF text/vector APIs —
+ * never `addImage`, `addJS`, or `.html()` — so jspdf's optional deps
+ * (canvg, core-js, dompurify, html2canvas) can be omitted (`--omit=optional`).
+ *
  * Features:
  * - Optional cover page with title, organisation, date, version and compliance badge
  * - Optional table of contents page
