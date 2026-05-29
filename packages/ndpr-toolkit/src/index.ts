@@ -83,6 +83,7 @@ export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
 export { useComplianceScore } from './hooks/useComplianceScore';
 export { useDCPMI } from './hooks/useDCPMI';
+export { useComplianceAuditReturn } from './hooks/useComplianceAuditReturn';
 export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
 export { useFocusTrap } from './hooks/useFocusTrap';
 export type { UseFocusTrapOptions } from './hooks/useFocusTrap';
@@ -155,6 +156,10 @@ export type {
   DCPMIClassificationOptions,
   DCPMIClassification,
 } from './utils/dcpmi';
+
+// Compliance Audit Returns Utility (NDPC GAID 2025)
+export { generateComplianceAuditReturn } from './utils/car';
+export type { CARInput, CAROptions, ComplianceAuditReturn } from './utils/car';
 
 // Legal notice
 export {
