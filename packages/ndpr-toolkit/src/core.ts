@@ -92,6 +92,13 @@ export type {
   RecommendationPriority, EffortLevel,
 } from './utils/compliance-score';
 
+// DCPMI classification (NDPC GAID 2025)
+export { classifyDCPMI, DEFAULT_DCPMI_THRESHOLDS, DEFAULT_DCPMI_FEES_NGN } from './utils/dcpmi';
+export type {
+  DCPMITier, DCPMIInput, DCPMIThresholds, DCPMIFees,
+  DCPMIClassificationOptions, DCPMIClassification,
+} from './utils/dcpmi';
+
 // Legal notice (pure string constants — safe to import from any environment)
 export {
   LEGAL_DISCLAIMER_SHORT,

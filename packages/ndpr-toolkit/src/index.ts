@@ -82,6 +82,7 @@ export { useBreach } from './hooks/useBreach';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
 export { useComplianceScore } from './hooks/useComplianceScore';
+export { useDCPMI } from './hooks/useDCPMI';
 export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
 export { useFocusTrap } from './hooks/useFocusTrap';
 export type { UseFocusTrapOptions } from './hooks/useFocusTrap';
@@ -143,6 +144,17 @@ export type {
   EffortLevel,
   RegulatoryReference,
 } from './utils/compliance-score';
+
+// DCPMI Classification Utility (NDPC GAID 2025)
+export { classifyDCPMI, DEFAULT_DCPMI_THRESHOLDS, DEFAULT_DCPMI_FEES_NGN } from './utils/dcpmi';
+export type {
+  DCPMITier,
+  DCPMIInput,
+  DCPMIThresholds,
+  DCPMIFees,
+  DCPMIClassificationOptions,
+  DCPMIClassification,
+} from './utils/dcpmi';
 
 // Legal notice
 export {
