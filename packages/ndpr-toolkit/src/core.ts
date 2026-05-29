@@ -99,6 +99,10 @@ export type {
   DCPMIClassificationOptions, DCPMIClassification,
 } from './utils/dcpmi';
 
+// Compliance Audit Returns scheduling (NDPC GAID 2025)
+export { generateComplianceAuditReturn } from './utils/car';
+export type { CARInput, CAROptions, ComplianceAuditReturn } from './utils/car';
+
 // Legal notice (pure string constants — safe to import from any environment)
 export {
   LEGAL_DISCLAIMER_SHORT,
