@@ -18,6 +18,8 @@ export type { ProcessingRecord, RecordOfProcessingActivities, ROPASummary } from
 // All hooks
 export { useConsent } from './hooks/useConsent';
 export type { UseConsentOptions, UseConsentReturn } from './hooks/useConsent';
+export { useDCPMI } from './hooks/useDCPMI';
+export type { DCPMIInput, DCPMIClassification, DCPMIClassificationOptions } from './utils/dcpmi';
 export { useDSR } from './hooks/useDSR';
 export type { UseDSROptions, UseDSRReturn } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
