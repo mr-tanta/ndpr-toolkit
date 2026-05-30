@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { BreachCategory } from '../../types/breach';
+import React, { useState, useMemo } from 'react';
+import { BreachCategory, BreachReport } from '../../types/breach';
 import { resolveClass } from '../../utils/styling';
 import { sanitizeInput } from '../../utils/sanitize';
+import { assessBreachNotification } from '../../utils/breach-notification';
 import { useNDPRLocale } from '../NDPRProvider';
 
 /**
@@ -99,6 +100,8 @@ export interface BreachReportFormClassNames {
   notice?: string;
   /** Custom class applied when isSubmitting is true (e.g. a loading overlay) */
   loadingOverlay?: string;
+  /** Live NDPC-notification completeness panel */
+  completeness?: string;
 }
 
 export interface BreachReportFormProps {
@@ -210,6 +213,14 @@ export interface BreachReportFormProps {
    * change the `key` prop from the parent.
    */
   onReset?: () => void;
+
+  /**
+   * Show a live NDPC-notification readiness panel that scores the form against
+   * the NDPA S. 40 / GAID 2025 Article 33 mandated content and the 72-hour
+   * deadline as the user fills it in.
+   * @default true
+   */
+  showCompleteness?: boolean;
 }
 
 /**
@@ -238,7 +249,8 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   maxFileSize = 5 * 1024 * 1024, // 5MB
   allowedFileTypes = ['.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx', '.xls', '.xlsx', '.txt'],
   defaultValues,
-  onReset
+  onReset,
+  showCompleteness = true
 }) => {
   // i18n: explicit prop > provider locale > English default.
   // (4.0: legacy `formDescription` alias removed — use `description`.)
@@ -297,6 +309,42 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
   const [attachments, setAttachments] = useState<File[]>([]);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Live NDPC-notification readiness derived from the current field values.
+  const assessment = useMemo(() => {
+    const liveReport: BreachReport = {
+      id: '',
+      title: breachTitle,
+      description: breachDescription,
+      category,
+      discoveredAt: discoveredAt ? new Date(discoveredAt).getTime() : NaN,
+      occurredAt: occurredAt ? new Date(occurredAt).getTime() : undefined,
+      reportedAt: 0,
+      reporter: { name: reporterName, email: reporterEmail, department: reporterDepartment, phone: reporterPhone || undefined },
+      affectedSystems,
+      dataTypes,
+      estimatedAffectedSubjects: estimatedAffectedSubjects ? Number(estimatedAffectedSubjects) : undefined,
+      approximateRecordCount: approximateRecordCount ? Number(approximateRecordCount) : undefined,
+      dataSubjectCategories: dataSubjectCategoriesInput
+        ? dataSubjectCategoriesInput.split(',').map(s => s.trim()).filter(Boolean)
+        : undefined,
+      involvesSensitiveData,
+      likelyConsequences: likelyConsequences || undefined,
+      mitigationMeasures: mitigationMeasures || undefined,
+      dpoContact: (dpoName || dpoEmail) ? { name: dpoName, email: dpoEmail, phone: dpoPhone || undefined } : undefined,
+      status,
+      initialActions: initialActions || undefined,
+    };
+    return assessBreachNotification(liveReport, { highRisk: involvesSensitiveData });
+  }, [
+    breachTitle, breachDescription, category, discoveredAt, occurredAt,
+    affectedSystems, dataTypes, estimatedAffectedSubjects, approximateRecordCount,
+    dataSubjectCategoriesInput, involvesSensitiveData, likelyConsequences, mitigationMeasures,
+    dpoName, dpoEmail, status, initialActions,
+  ]);
+  const allItems = [...assessment.notificationToCommission, ...assessment.dataSubjectCommunication];
+  const totalItems = allItems.length;
+  const satisfiedItems = totalItems - assessment.missing.length;
 
   // Reset all fields to empty state
   const handleReset = () => {
@@ -553,6 +601,61 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
     <div className={resolveClass(`bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md ${className}`, cn.root, unstyled)}>
       <h2 className={resolveClass('ndpr-section-heading', cn.title, unstyled)}>{resolvedTitle}</h2>
       <p className='ndpr-card__subtitle'>{resolvedFormDescription}</p>
+
+      {showCompleteness && (
+        <div
+          data-ndpr-section="breach-completeness"
+          className={resolveClass('ndpr-alert ndpr-alert--info mb-4', cn.completeness, unstyled)}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-bold ndpr-text-info">NDPC notification readiness</h3>
+            <span className="text-sm font-semibold ndpr-text-info">{assessment.completeness}%</span>
+          </div>
+          <div
+            role="progressbar"
+            aria-valuenow={assessment.completeness}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Breach notification completeness"
+            className="h-2 w-full rounded bg-gray-200 dark:bg-gray-700 overflow-hidden mb-2"
+          >
+            <div className="h-full bg-[rgb(var(--ndpr-primary))]" style={{ width: `${assessment.completeness}%` }} />
+          </div>
+          <p className="text-sm ndpr-text-info">
+            {satisfiedItems} of {totalItems} mandated items provided (GAID 2025 Art. 33(5) / NDPA S. 40(2)).
+          </p>
+          {Number.isFinite(assessment.timing.deadline) ? (
+            assessment.timing.overdue ? (
+              <p className="text-sm ndpr-text-warning mt-1">
+                72-hour deadline passed {Math.abs(assessment.timing.hoursRemaining)}h ago — notify the NDPC now and state the reason for the delay (NDPA S. 40(2)).
+              </p>
+            ) : (
+              <p className="text-sm ndpr-text-info mt-1">
+                {Math.max(0, assessment.timing.hoursRemaining)}h remaining to notify the NDPC (72-hour window, NDPA S. 40(2)).
+              </p>
+            )
+          ) : (
+            <p className="text-sm ndpr-text-muted mt-1">Set the discovery date to start the 72-hour clock.</p>
+          )}
+          {assessment.dataSubjectCommunicationRequired && (
+            <p className="text-sm ndpr-text-warning mt-1">
+              High risk: affected data subjects must be notified in plain, clear language (NDPA S. 40(3)).
+            </p>
+          )}
+          {assessment.missing.length > 0 && (
+            <details className="mt-2">
+              <summary className="text-sm ndpr-text-info cursor-pointer">{assessment.missing.length} item(s) still needed</summary>
+              <ul className="mt-1 list-disc pl-5">
+                {allItems.filter(i => !i.satisfied).map(i => (
+                  <li key={i.id} className="text-xs ndpr-text-muted">
+                    {i.label} <span className="opacity-70">({i.section})</span>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className={resolveClass("", cn.form, unstyled)}>
         <div className='ndpr-form-section'>
