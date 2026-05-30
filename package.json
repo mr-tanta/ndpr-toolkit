@@ -367,7 +367,7 @@
     "commit-and-tag-version": "^12.7.1",
     "eslint": "^10.2.0",
     "eslint-plugin-react": "^7.30.0",
-    "eslint-plugin-react-hooks": "^4.5.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "gh-pages": "^6.3.0",
     "gray-matter": "^4.0.3",
     "husky": "^9.1.7",
