@@ -69,6 +69,10 @@ export { formatDSRRequestStructured } from './utils/dsr';
 export type { FormatDSRRequestStructuredResult } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
+export { assessBreachNotification } from './utils/breach-notification';
+export type {
+  BreachNotificationOptions, BreachNotificationItem, BreachNotificationTiming, BreachNotificationAssessment,
+} from './utils/breach-notification';
 export { generatePolicyText } from './utils/privacy';
 export { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES, createBusinessPolicyTemplate } from './utils/policy-templates';
 export { sanitizeInput } from './utils/sanitize';
@@ -79,6 +83,7 @@ export { useDSR } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
 export type { DPIAAnswerMap, DPIAAnswerValue } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
+export { useBreachNotificationAssessment } from './hooks/useBreachNotificationAssessment';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
 export { useComplianceScore } from './hooks/useComplianceScore';
