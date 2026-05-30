@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.3.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.2.0...v5.3.0) (2026-05-30)
+
+
+### Features
+
+* **breach:** add NDPA S.40 / GAID 2025 Article 33 notification completeness checker ([2a6bdf2](https://github.com/mr-tanta/ndpr-toolkit/commit/2a6bdf25af11431c6b4603c0892d3db44f0bf348))
+
+
+### Documentation
+
+* document the breach notification completeness checker ([c05ee84](https://github.com/mr-tanta/ndpr-toolkit/commit/c05ee848afd899ae916b40fa55023886380392ae))
+
 ## [5.2.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.1.4...v5.2.0) (2026-05-30)
 
 
