@@ -28,6 +28,10 @@ export { useDPIA } from './hooks/useDPIA';
 export type { DPIAAnswerMap, DPIAAnswerValue, UseDPIAOptions, UseDPIAReturn } from './hooks/useDPIA';
 export { useBreach } from './hooks/useBreach';
 export type { UseBreachOptions, UseBreachReturn } from './hooks/useBreach';
+export { useBreachNotificationAssessment } from './hooks/useBreachNotificationAssessment';
+export type {
+  BreachNotificationOptions, BreachNotificationItem, BreachNotificationTiming, BreachNotificationAssessment,
+} from './utils/breach-notification';
 export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export type { UsePrivacyPolicyOptions, UsePrivacyPolicyReturn } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';

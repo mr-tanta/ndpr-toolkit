@@ -62,6 +62,10 @@ export type {
 } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
 export { calculateBreachSeverity } from './utils/breach';
+export { assessBreachNotification } from './utils/breach-notification';
+export type {
+  BreachNotificationOptions, BreachNotificationItem, BreachNotificationTiming, BreachNotificationAssessment,
+} from './utils/breach-notification';
 export { generatePolicyText, findUnfilledTokens } from './utils/privacy';
 export { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES, createBusinessPolicyTemplate } from './utils/policy-templates';
 export { validateProcessingActivity, getLawfulBasisDescription, assessComplianceGaps, generateLawfulBasisSummary } from './utils/lawful-basis';
