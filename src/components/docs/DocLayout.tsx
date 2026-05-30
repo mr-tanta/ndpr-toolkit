@@ -92,6 +92,7 @@ const navigation: NavItem[] = [
       { title: 'Zero-config Presets', href: '/docs/guides/presets' },
       { title: 'Compliance Score', href: '/docs/guides/compliance-score' },
       { title: 'DCPMI Registration & Audit Returns', href: '/docs/guides/dcpmi-registration', isNew: true },
+      { title: 'Breach Notification Completeness', href: '/docs/guides/breach-notification-completeness', isNew: true },
       { title: 'Backend Integration', href: '/docs/guides/backend-integration' },
       { title: 'Internationalization', href: '/docs/guides/internationalization' },
       { title: 'CLI Scaffolder', href: '/docs/guides/cli-scaffolder' },

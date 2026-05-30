@@ -506,6 +506,34 @@ Both ship as memoised hooks for React UIs — `useDCPMI(input, options?)` and `u
 
 ---
 
+## Breach Notification Completeness
+
+`assessBreachNotification()` checks a `BreachReport` against the **NDPA 2023 Section 40** breach-notification duty as detailed by **NDPC GAID 2025 Article 33** — the mandated content of the notification to the Commission, the 72-hour deadline from discovery, and the data-subject communication owed when the risk is high.
+
+```ts
+import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/core';
+
+const result = assessBreachNotification(breachReport, {
+  asOf: Date.now(),
+  assessment: riskAssessment, // optional — high risk triggers the S.40(3) data-subject duty
+});
+
+result.complete;             // false until every mandated item is present
+result.completeness;         // 0–100 across applicable items
+result.missing;              // ["Steps taken to reduce the risk of harm", ...]
+result.timing.deadline;      // discoveredAt + 72h
+result.timing.hoursRemaining;// time left to notify the NDPC (negative once overdue)
+result.timing.overdue;       // true once the 72-hour window has passed
+result.dataSubjectCommunicationRequired; // true on high risk (S.40(3))
+result.recommendations;      // actionable, each citing its provision
+```
+
+The content checklist (`notificationToCommission`) maps each item to its source — **GAID 2025 Art. 33(5)(a)–(h)** for the description, timing, data involved, risk-of-harm, numbers at risk, mitigation, notification steps, and contact point; **NDPA S. 40(2)** for the data-subject categories and record count. Late filings are flagged with `requiresDelayJustification` (the NDPC permits phased reporting where full details aren't yet available). Also available as the memoised `useBreachNotificationAssessment(report, options?)` hook from `/hooks`.
+
+> A documentation-completeness aid, not legal advice — verify against current NDPC guidance.
+
+---
+
 ## Backend Integration
 
 ### CLI scaffolder

@@ -83,6 +83,12 @@ const guides = [
     category: 'Assessment',
   },
   {
+    title: 'Breach Notification Completeness',
+    description: 'Check a breach report against NDPA S.40 / GAID 2025 Article 33 — mandated content, the 72-hour deadline, and the high-risk data-subject duty.',
+    href: '/docs/guides/breach-notification-completeness',
+    category: 'Critical',
+  },
+  {
     title: 'Backend Integration',
     description: 'Express, Next.js API routes, and REST endpoint recipes.',
     href: '/docs/guides/backend-integration',
