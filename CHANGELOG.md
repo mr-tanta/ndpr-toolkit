@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.2.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.1.4...v5.2.0) (2026-05-30)
+
+
+### Features
+
+* **car:** add NDPC GAID 2025 Compliance Audit Returns scheduler ([30d399a](https://github.com/mr-tanta/ndpr-toolkit/commit/30d399a38b51632f8a3fdcb01a329f983eb7ca06))
+* **dcpmi:** add NDPC GAID 2025 DCPMI tier classifier ([179a5c1](https://github.com/mr-tanta/ndpr-toolkit/commit/179a5c1d6a7b9a3fba89947ff2d943b2159a142c))
+
+
+### Bug Fixes
+
+* address findings from the A–Z verification pass ([4ede74f](https://github.com/mr-tanta/ndpr-toolkit/commit/4ede74f9aece2c74d8377a91068522d534daa6fc))
+
+
+### Documentation
+
+* document DCPMI classifier and Compliance Audit Returns ([a7fefe1](https://github.com/mr-tanta/ndpr-toolkit/commit/a7fefe1a07b58d1b4d9e6f0a8b20b3a4c8f4fef6))
+
 ## [5.1.4](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.1.3...v5.1.4) (2026-05-28)
 
 
