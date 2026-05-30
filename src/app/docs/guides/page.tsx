@@ -77,6 +77,12 @@ const guides = [
     category: 'Assessment',
   },
   {
+    title: 'DCPMI Registration & Audit Returns',
+    description: 'Classify Data Controllers/Processors of Major Importance and schedule NDPC Compliance Audit Returns under GAID 2025.',
+    href: '/docs/guides/dcpmi-registration',
+    category: 'Assessment',
+  },
+  {
     title: 'Backend Integration',
     description: 'Express, Next.js API routes, and REST endpoint recipes.',
     href: '/docs/guides/backend-integration',

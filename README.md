@@ -449,6 +449,63 @@ import { NDPRComplianceDashboard } from '@tantainnovative/ndpr-toolkit/presets';
 
 ---
 
+## DCPMI & Compliance Audit Returns
+
+Two pure utilities for the NDPC **General Application and Implementation Directive (GAID) 2025** registration regime — no React, safe to run server-side or in CI.
+
+`classifyDCPMI()` derives an organisation's **Data Controller/Processor of Major Importance** tier from the number of data subjects processed in a six-month window, with its annual registration fee and filing obligations:
+
+```ts
+import { classifyDCPMI } from '@tantainnovative/ndpr-toolkit/core';
+
+const result = classifyDCPMI({ dataSubjectsInSixMonths: 6200 });
+
+result.tier;                              // "UHL"  (>5,000 → Ultra High Level)
+result.isDCPMI;                           // true
+result.annualFeeNGN;                      // 250000
+result.registration.renewsAnnually;       // false (UHL/EHL register once, file CAR yearly)
+result.compliance.auditReturnsAnnual;     // true
+result.compliance.initialAuditWithinMonths; // 15
+```
+
+| Tier | Data subjects / 6 months | Annual fee (₦) |
+|------|--------------------------|----------------|
+| **UHL** — Ultra High Level | more than 5,000 | 250,000 |
+| **EHL** — Extra High Level | 1,000 – 5,000 | 100,000 |
+| **OHL** — Ordinary High Level | 200 – 999 | 10,000 |
+| below 200 | — | not a DCPMI by volume |
+
+Thresholds and fees are the September 2025 GAID baseline and are configurable (`classifyDCPMI(input, { thresholds, fees })`) since the NDPC revises them. Pass `isDesignated: true` for an organisation the Commission has separately listed — it resolves to the `'listed'` tier regardless of volume.
+
+`generateComplianceAuditReturn()` schedules a DCPMI's **Compliance Audit Returns** — the initial audit due within 15 months of commencement, then the next annual filing deadline (NDPC baseline 31 March, filed via the NDPC Information Management Portal / NIMP):
+
+```ts
+import { generateComplianceAuditReturn } from '@tantainnovative/ndpr-toolkit/core';
+
+const car = generateComplianceAuditReturn({
+  commencementDate: '2025-01-15',
+  asOf: '2026-03-21',
+  tier: 'UHL',
+});
+
+car.schedule.initialAuditDueDate;     // "2026-04-15"  (commencement + 15 months)
+car.schedule.nextFilingDeadline;      // "2026-03-31"
+car.status.daysUntilNextDeadline;     // 10
+car.status.initialAuditDue;           // false
+
+// NDPC deadlines shift — the 2026 filing was extended to 30 May:
+generateComplianceAuditReturn(
+  { commencementDate: '2025-01-15', asOf: '2026-04-01', tier: 'UHL' },
+  { deadlineOverrides: { 2026: '2026-05-30' } },
+).schedule.nextFilingDeadline;        // "2026-05-30"
+```
+
+Both ship as memoised hooks for React UIs — `useDCPMI(input, options?)` and `useComplianceAuditReturn(input, options?)` from `@tantainnovative/ndpr-toolkit/hooks`.
+
+> These utilities compute registration tiers and filing dates from the GAID 2025 baseline; they are not legal advice. The NDPC revises metrics and extends deadlines — verify against current NDPC guidance before relying on them.
+
+---
+
 ## Backend Integration
 
 ### CLI scaffolder
