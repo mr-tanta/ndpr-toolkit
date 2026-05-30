@@ -298,6 +298,12 @@ function BreachManagementDashboard() {
                 <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
                 <td className="py-3 px-4 text-sm text-muted-foreground">Default values to pre-fill the form fields</td>
               </tr>
+              <tr className="border-b border-border">
+                <td className="py-3 px-4 text-sm font-medium text-foreground"><code>showCompleteness</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground"><code>boolean</code></td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">No</td>
+                <td className="py-3 px-4 text-sm text-muted-foreground">Show a live NDPC-notification readiness panel scoring the form against GAID 2025 Art. 33(5) / NDPA S. 40 content and the 72-hour deadline as it is filled in. Defaults to <code>true</code>. See <a href="/docs/guides/breach-notification-completeness" className="text-primary hover:underline">Breach Notification Completeness</a>.</td>
+              </tr>
             </tbody>
           </table>
         </div>

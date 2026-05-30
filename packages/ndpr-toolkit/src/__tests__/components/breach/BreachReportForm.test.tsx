@@ -229,3 +229,51 @@ describe('BreachReportForm accessibility', () => {
     expect(titleInput).toHaveAttribute('aria-describedby', 'breachTitle-error');
   });
 });
+
+describe('BreachReportForm live completeness panel', () => {
+  const mockOnSubmit = jest.fn();
+  beforeEach(() => mockOnSubmit.mockClear());
+
+  function getPanel(container: HTMLElement): HTMLElement | null {
+    return container.querySelector('[data-ndpr-section="breach-completeness"]');
+  }
+
+  it('renders a completeness panel by default, starting at 0%', () => {
+    const { container } = render(
+      <BreachReportForm categories={mockCategories} onSubmit={mockOnSubmit} />
+    );
+    const panel = getPanel(container);
+    expect(panel).not.toBeNull();
+    const bar = panel!.querySelector('[role="progressbar"]');
+    expect(bar).toHaveAttribute('aria-valuenow', '0');
+  });
+
+  it('increases completeness as required content is filled in', () => {
+    const { container } = render(
+      <BreachReportForm categories={mockCategories} onSubmit={mockOnSubmit} />
+    );
+    const valueNow = () =>
+      Number(getPanel(container)!.querySelector('[role="progressbar"]')!.getAttribute('aria-valuenow'));
+    expect(valueNow()).toBe(0);
+
+    fireEvent.change(screen.getByLabelText(/detailed description/i), {
+      target: { value: 'A misconfigured bucket exposed customer records.' },
+    });
+    expect(valueNow()).toBeGreaterThan(0);
+  });
+
+  it('does not render the panel when showCompleteness is false', () => {
+    const { container } = render(
+      <BreachReportForm categories={mockCategories} onSubmit={mockOnSubmit} showCompleteness={false} />
+    );
+    expect(getPanel(container)).toBeNull();
+  });
+
+  it('shows the data-subject communication duty when sensitive data is involved', () => {
+    const { container } = render(
+      <BreachReportForm categories={mockCategories} onSubmit={mockOnSubmit} />
+    );
+    fireEvent.click(screen.getByLabelText(/sensitive personal data/i));
+    expect(getPanel(container)!.textContent).toMatch(/data subject/i);
+  });
+});
