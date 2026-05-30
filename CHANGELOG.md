@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.4.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.3.0...v5.4.0) (2026-05-30)
+
+
+### Features
+
+* **breach:** show live NDPC notification readiness in BreachReportForm ([86e2394](https://github.com/mr-tanta/ndpr-toolkit/commit/86e23943756680ad64bd939e60edb896884680c2))
+
 ## [5.3.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.2.0...v5.3.0) (2026-05-30)
 
 
