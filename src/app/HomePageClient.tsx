@@ -119,6 +119,29 @@ const report = getComplianceScore({
 // report.score → 0–100, report.rating → 'excellent' | 'good' | 'needs-work' | 'critical'
 // report.modules → per-module breakdown with recommendations`;
 
+const AUDIT_CLI_CODE = `# Gate compliance in CI — exits non-zero on failure
+npx ndpr audit --init           # scaffold ndpr.audit.json
+npx ndpr audit --min-score 80
+
+# NDPA 2023 Compliance Audit
+# ✓ Overall compliance score        82/100 (good); minimum 80.
+# ✓ DCPMI registration (GAID 2025)  UHL — ₦250,000/yr; file CAR annually.
+# ! Breach notification — incident   60% complete; 18h remaining.
+# Verdict: PASS`;
+
+const GAID_CODE = `import {
+  classifyDCPMI,
+  generateComplianceAuditReturn,
+} from '@tantainnovative/ndpr-toolkit/server';
+
+// Are you a Data Controller of Major Importance? (NDPC GAID 2025)
+const { tier, annualFeeNGN } = classifyDCPMI({ dataSubjectsInSixMonths: 6200 });
+// → tier: 'UHL', annualFeeNGN: 250000
+
+// When is your next NDPC Compliance Audit Return due?
+const car = generateComplianceAuditReturn({ commencementDate: '2025-01-15' });
+// → car.schedule.nextFilingDeadline, car.status.daysUntilNextDeadline`;
+
 const PRESETS_CODE = `// One import — fully styled, NDPA-ready
 import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
 
@@ -215,7 +238,7 @@ const FEATURES = [
   },
   {
     title: 'Breach Notification',
-    description: '72-hour NDPC deadline tracking, breach severity triage, and pre-filled notification templates.',
+    description: '72-hour NDPC deadline tracking, breach severity triage, and a live notification-readiness panel scored against GAID 2025 Article 33.',
     href: '/ndpr-demos/breach',
     iconPath: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z',
     badge: 'Critical',
@@ -457,7 +480,7 @@ export function HomePageClient({ version }: { version: string }) {
                   marginBottom: 0,
                   maxWidth: '440px',
                 }}>
-                  The complete React toolkit for Nigeria Data Protection Act 2023 compliance — ship consent, DSR, DPIA, breach notifications, and more in minutes, not months.
+                  The complete React + TypeScript toolkit for Nigeria Data Protection Act 2023 and NDPC GAID 2025 compliance — ship consent, DSR, DPIA, and breach notifications in minutes, then gate it all in CI.
                 </p>
                 <div style={{
                   display: 'flex',
@@ -511,7 +534,7 @@ export function HomePageClient({ version }: { version: string }) {
           <Container>
             <Grid cols={4} gap="md">
               <StatCard value="8" label="Compliance Modules" />
-              <StatCard value="1,249" label="Passing Tests" />
+              <StatCard value="1,296" label="Passing Tests" />
               <StatCard value="0" label="Runtime Dependencies" />
               <StatCard value="18–19" label="React Versions" />
             </Grid>
@@ -745,6 +768,73 @@ export function HomePageClient({ version }: { version: string }) {
                       <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>{point}</span>
                     </div>
                   ))}
+                </div>
+              </div>
+            </div>
+          </Container>
+        </Section>
+
+        {/* ── 6b. GAID 2025 + AUDIT CLI ────────────────────────────────────── */}
+        <Section
+          badge="NDPC GAID 2025"
+          title="Register, Schedule, and Audit in CI"
+          subtitle="The GAID 2025 layer: classify your DCPMI registration tier, schedule Compliance Audit Returns, and check breach notifications — then gate it all in CI with the ndpr audit CLI."
+          gradient
+        >
+          <Container>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(360px, 100%), 1fr))',
+              gap: 'var(--space-8)',
+              alignItems: 'center',
+            }}>
+              {/* Code: CLI + library */}
+              <div>
+                <SiteTabs
+                  items={[
+                    { label: 'ndpr audit (CLI)', content: <SiteCodeBlock code={AUDIT_CLI_CODE} language="bash" title="ci.sh" /> },
+                    { label: 'GAID 2025 utilities', content: <SiteCodeBlock code={GAID_CODE} language="ts" title="gaid.ts" /> },
+                  ]}
+                />
+              </div>
+
+              {/* Highlights + CTA */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                {[
+                  { title: 'DCPMI registration classifier', body: 'Resolve your UHL / EHL / OHL tier and annual NDPC fee from data-subject volume.' },
+                  { title: 'Compliance Audit Returns scheduler', body: 'Initial-audit due date and the next annual NIMP filing deadline, with overrides.' },
+                  { title: 'Breach-notification checker', body: 'Score a breach against the Section 40 / Article 33 mandated content and the 72-hour clock.' },
+                  { title: 'ndpr audit — CI gate', body: 'One command scores everything and exits non-zero on failure. Drop it into any pipeline.' },
+                ].map(({ title, body }) => (
+                  <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <div style={{
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      borderRadius: '50%',
+                      background: 'var(--accent-light)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                    }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{title}</div>
+                      <div style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>{body}</div>
+                    </div>
+                  </div>
+                ))}
+                <div style={{ marginTop: 'var(--space-2)' }}>
+                  <SiteButton variant="secondary" size="md" href="/docs/guides/audit-cli">
+                    Read the audit CLI guide
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
+                      <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </SiteButton>
                 </div>
               </div>
             </div>

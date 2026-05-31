@@ -4,13 +4,13 @@ import { version as pkgVersion } from '../../package.json';
 export const metadata = {
   title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
   description:
-    'Build NDPA 2023-compliant apps with our open-source toolkit. Adapters, presets, compliance score, consent management, DSR portal, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
+    'Build NDPA 2023 and NDPC GAID 2025-compliant apps with our open-source toolkit. Consent management, DSR portal, DPIA, breach notification, compliance score, DCPMI registration, Compliance Audit Returns, and a CI-ready audit CLI for Nigerian developers.',
   keywords:
-    'NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, compliance toolkit, React, Next.js, open source, data protection Nigeria, adapters, presets, compliance score',
+    'NDPA, NDPA 2023, Nigeria Data Protection Act, NDPC, GAID 2025, DCPMI, Compliance Audit Returns, ndpr audit CLI, compliance toolkit, React, Next.js, open source, data protection Nigeria, adapters, presets, compliance score',
   openGraph: {
     title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
     description:
-      'Build NDPA 2023-compliant apps with our open-source toolkit. Adapters, presets, compliance score, consent management, DSR portal, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
+      'Build NDPA 2023 and NDPC GAID 2025-compliant apps with our open-source toolkit. Consent management, DSR portal, DPIA, breach notification, compliance score, DCPMI registration, Compliance Audit Returns, and a CI-ready audit CLI for Nigerian developers.',
     url: 'https://ndprtoolkit.com.ng',
     siteName: 'NDPA Toolkit',
     images: [
@@ -28,7 +28,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'NDPA 2023 Compliance Made Easy | NDPA Toolkit',
     description:
-      'Build NDPA 2023-compliant apps with our open-source toolkit. Adapters, presets, compliance score, consent management, DSR portal, DPIA, breach notification, and NDPC reporting for Nigerian developers.',
+      'Build NDPA 2023 and NDPC GAID 2025-compliant apps with our open-source toolkit. Consent management, DSR portal, DPIA, breach notification, compliance score, DCPMI registration, Compliance Audit Returns, and a CI-ready audit CLI for Nigerian developers.',
     images: ['/screenshots/hero.png'],
   },
 };
@@ -69,6 +69,10 @@ const jsonLdString = JSON.stringify({
     'ROPA management',
     'Privacy policy generator',
     'NDPC reporting',
+    'DCPMI registration classifier (GAID 2025)',
+    'Compliance Audit Returns scheduler',
+    'Breach notification completeness checker',
+    'ndpr audit CLI compliance gate',
   ],
   softwareVersion: pkgVersion,
   downloadUrl: 'https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit',
