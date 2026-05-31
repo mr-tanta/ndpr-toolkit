@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.5.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.5.0...v5.5.1) (2026-05-31)
+
+
+### Features
+
+* **site:** cross-link the ndpr audit CLI from the score and DPIA marketing pages ([ca35869](https://github.com/mr-tanta/ndpr-toolkit/commit/ca358690d0817363a5b8c65513c61a02152068e4))
+* **site:** surface the GAID 2025 layer and ndpr audit CLI on the landing page ([e84ea43](https://github.com/mr-tanta/ndpr-toolkit/commit/e84ea43232f23c5baba4bddeba224f9f9ab8ebaf))
+
+
+### Bug Fixes
+
+* **dcpmi:** only UHL and EHL file CAR; OHL renews registration annually ([07a7bc6](https://github.com/mr-tanta/ndpr-toolkit/commit/07a7bc6e7f4d13d960a9fc5f008429834a583359))
+
+
+### Documentation
+
+* **blog:** add four NDPC GAID 2025 articles ([0b25725](https://github.com/mr-tanta/ndpr-toolkit/commit/0b25725c871b1e72baada1113ca919fcdaae47f9))
+* correct DCPMI registration fees and the OHL CAR rule ([b1f8ed4](https://github.com/mr-tanta/ndpr-toolkit/commit/b1f8ed4a03feef086730bf1f26902addb069951e))
+* link the audit CLI guide from the backend integration guide ([4dfaab7](https://github.com/mr-tanta/ndpr-toolkit/commit/4dfaab7b908b44b756c8411dd8d809bf598e0390))
+
 ## [5.5.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.4.0...v5.5.0) (2026-05-31)
 
 
