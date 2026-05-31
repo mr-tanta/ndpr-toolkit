@@ -689,6 +689,23 @@ app.post(
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`npx create-ndpr@latest --add dsr --add breach --framework nextjs`}</code></pre>
         </div>
+
+        <h3 className="text-xl font-bold text-foreground mb-3">Gate compliance in CI with <code>ndpr audit</code></h3>
+        <p className="mb-4 text-foreground">
+          The toolkit also ships an <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">ndpr</code> binary.
+          Once your backend is wired up, add <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">ndpr audit</code> to
+          CI: it scores a compliance config against the toolkit engine (compliance score + GAID 2025 DCPMI, CAR, and breach checks)
+          and exits non-zero when the audit fails, so a regression blocks the build.
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`npx ndpr audit --init        # scaffold ndpr.audit.json
+npx ndpr audit --min-score 80  # run in CI (exit 1 on failure)`}</code></pre>
+        </div>
+        <p className="mb-4 text-foreground">
+          See the{' '}
+          <Link href="/docs/guides/audit-cli" className="text-primary hover:underline">Compliance Audit CLI guide</Link>{' '}
+          for the config shape, all flags, and a GitHub Actions workflow.
+        </p>
       </section>
 
       <section id="environment-variables" className="mb-8">
@@ -721,6 +738,9 @@ NDPC_API_KEY=""`}</code></pre>
           </Link>
           <Link href="/docs/guides/breach-notification-process" className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
             Breach Notification Process &rarr;
+          </Link>
+          <Link href="/docs/guides/audit-cli" className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
+            Compliance Audit CLI &rarr;
           </Link>
         </div>
       </div>
