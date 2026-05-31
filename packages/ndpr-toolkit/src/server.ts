@@ -235,6 +235,18 @@ export {
 
 export { getComplianceScore } from './utils/compliance-score';
 
+// Aggregate NDPA compliance audit + GAID 2025 utilities (pure, server-safe)
+export { classifyDCPMI } from './utils/dcpmi';
+export type { DCPMITier, DCPMIInput, DCPMIClassificationOptions, DCPMIClassification } from './utils/dcpmi';
+export { generateComplianceAuditReturn } from './utils/car';
+export type { CARInput, CAROptions, ComplianceAuditReturn } from './utils/car';
+export { assessBreachNotification } from './utils/breach-notification';
+export type { BreachNotificationOptions, BreachNotificationAssessment } from './utils/breach-notification';
+export { runNdprAudit, formatNdprAuditReport } from './utils/audit';
+export type {
+  NdprAuditInput, NdprAuditOptions, NdprAuditResult, AuditCheck, AuditCheckStatus, FormatAuditReportOptions,
+} from './utils/audit';
+
 // ---------------------------------------------------------------------------
 // Legal notice (pure string constants — safe everywhere, including PDFs/DOCX)
 // ---------------------------------------------------------------------------
