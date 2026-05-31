@@ -1,0 +1,96 @@
+---
+title: "GAID 2025 Cookie Consent: What Your Nigerian Website Must Now Do"
+description: "The NDPC's GAID 2025 set concrete rules for cookie consent on Nigerian websites — active opt-in, a prominent notice, and an easy decline. Here is the compliance checklist and a drop-in React banner that satisfies it."
+date: "2026-05-31"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpa", "gaid-2025", "consent", "cookies", "guide", "react"]
+---
+
+# GAID 2025 Cookie Consent: What Your Nigerian Website Must Now Do
+
+For years, "NDPA cookie compliance" in Nigeria meant a vague banner copied from a European site. That era is over. The NDPC's General Application and Implementation Directive (GAID) 2025 — effective 19 September 2025 — set concrete, testable expectations for how Nigerian websites collect cookie consent. If your banner still loads analytics before the visitor clicks anything, you are no longer compliant.
+
+This is a practical guide: the rules in plain English, a checklist you can audit your site against today, and a drop-in React component that satisfies each requirement.
+
+## What GAID 2025 changed for cookies
+
+GAID 2025 operationalises the Nigeria Data Protection Act 2023 and, for the first time, is specific about web consent. The headline shifts:
+
+- **Active consent for non-essential cookies.** Analytics, advertising, and tracking cookies require the data subject's affirmative action. Pre-ticked boxes and "by continuing to browse you accept" do not count.
+- **A prominent notice.** The privacy and cookie notice must appear on the homepage and be displayed prominently — not buried in a footer link or a 4px-tall strip.
+- **A real choice to decline.** The notice must give the visitor a genuine opportunity to **decline** as easily as to accept. A lone "Accept" button is non-compliant.
+- **Withdrawal as easy as consent.** Under the NDPA (Section 36), withdrawing consent must be as easy as giving it — so your banner needs a path back to change a decision.
+
+In short: **opt-in, not opt-out; decline must be as easy as accept; and nothing non-essential fires before consent.**
+
+## The compliance checklist
+
+Audit your current banner against this list:
+
+1. **No non-essential cookies set on first load.** Open DevTools → Application → Cookies on a fresh visit. If you see analytics or ad cookies before any click, you fail.
+2. **Affirmative action required.** Consent is captured only after the visitor clicks Accept (or selects categories) — never inferred from scrolling or navigating.
+3. **Equal-prominence Accept and Decline.** Both choices are visible without expanding anything, with similar visual weight.
+4. **Granular categories.** Visitors can accept necessary cookies while declining analytics/marketing.
+5. **A persistent way to change the decision.** A "Cookie settings" entry point that reopens the banner.
+6. **A record of consent.** You can show *when* and *to what* a visitor consented — the NDPC expects evidence.
+7. **A linked cookie/privacy notice** that explains each category and its purpose.
+
+Most banners fail on points 1, 3, and 6.
+
+## A banner that satisfies it — in one import
+
+The open-source [NDPA Toolkit](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit) ships a consent preset built for these rules — affirmative opt-in, equal-weight accept/decline, granular categories, and a built-in consent record:
+
+```tsx
+// app/layout.tsx
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
+import '@tantainnovative/ndpr-toolkit/styles';
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <NDPRConsent position="bottom" />
+      </body>
+    </html>
+  );
+}
+```
+
+The key is that **you gate your scripts on the stored decision** rather than firing them on load. With the headless hook you control exactly when analytics initialise:
+
+```tsx
+'use client';
+import { useEffect } from 'react';
+import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
+
+export function Analytics() {
+  const { hasConsent } = useConsent({ /* categories */ });
+
+  useEffect(() => {
+    // Only initialise the tracker after the visitor opts in to analytics.
+    if (hasConsent('analytics')) {
+      initAnalytics(); // your provider's init — runs only post-consent
+    }
+  }, [hasConsent]);
+
+  return null;
+}
+```
+
+Because consent is stored through a pluggable adapter, you also get the record GAID expects — and a cookie-bridged adapter lets you gate scripts server-side so nothing non-essential renders before the visitor chooses.
+
+## Don't forget withdrawal
+
+A compliant site lets visitors change their minds. Expose a "Cookie settings" link in your footer that reopens the banner; the toolkit's manager handles re-prompting and updates the stored record so your evidence stays accurate.
+
+## Where to start
+
+1. Run the [free NDPA audit](https://ndprtoolkit.com.ng/score) — the consent section will flag exactly which of the seven checks you fail.
+2. Drop in [the Nigeria-aware consent banner](https://ndprtoolkit.com.ng/nigeria-cookie-consent) and gate your scripts on the stored decision.
+3. Add a footer "Cookie settings" link for withdrawal.
+
+Cookie compliance under GAID 2025 is no longer a copy-paste banner — but it is a solved problem. Opt-in, equal choice, a record, and a way back. Ship it once and move on.
+
+*General information, not legal advice. Confirm current requirements with the NDPC or your DPO.*

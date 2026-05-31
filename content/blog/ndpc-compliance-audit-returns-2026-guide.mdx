@@ -1,0 +1,98 @@
+---
+title: "NDPC Compliance Audit Returns (CAR): The 2026 Filing Guide"
+description: "Who must file a Compliance Audit Return, the registration and audit filing fees, the deadlines, and the penalties for getting it wrong — plus how to compute your own filing schedule in code."
+date: "2026-05-31"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpc", "gaid-2025", "compliance", "car", "business", "guide"]
+---
+
+# NDPC Compliance Audit Returns (CAR): The 2026 Filing Guide
+
+The Compliance Audit Return (CAR) is now the centre of gravity for data-protection compliance in Nigeria. Under the NDPC's General Application and Implementation Directive (GAID) 2025, every Data Controller or Data Processor of Major Importance must demonstrate — on a fixed annual schedule — that its data processing actually meets the Nigeria Data Protection Act 2023. Miss the filing and the penalties are not theoretical: a late return costs an extra 50% of the filing fee, and a missed one can reach 2% of your annual gross revenue.
+
+This guide covers who must file, the fees (registration *and* audit filing — they are different, and the difference trips up most businesses), the deadlines, the penalties, and how to compute your own schedule so you never get caught out.
+
+## What a Compliance Audit Return actually is
+
+A CAR is the formal, evidenced output of a data-protection audit submitted to the NDPC. It is not a tick-box form — it is filed through a licensed Data Protection Compliance Organisation (DPCO) on the NDPC's compliance portal, and it attests that an independent audit of your processing activities has been carried out against the NDPA 2023 and GAID 2025.
+
+There are two distinct clocks every Major Importance organisation has to track:
+
+- **The initial audit** — due within 15 months of commencing data processing.
+- **The annual return** — filed every year thereafter, by the deadline below.
+
+## Who must file (and who only has to register)
+
+GAID 2025 designates an organisation a **Data Controller/Processor of Major Importance (DCPMI)** based on the scale, sensitivity, and significance of its processing — starting from processing the personal data of more than 200 data subjects within a six-month window, and weighing factors like sector, sensitive data, and cross-border flows. DCPMIs fall into three tiers:
+
+| Tier | Roughly | Annual registration fee |
+|------|---------|-------------------------|
+| **UHL** — Ultra High Level | Banks, telcos, insurers, fintech, oil & gas, payment gateways | ₦250,000 |
+| **EHL** — Extra High Level | Hospitals, universities, mid-size tech, government bodies | ₦100,000 |
+| **OHL** — Ordinary High Level | SMEs and other organisations over the 200-subject threshold | ₦10,000 |
+
+Here is the part that catches people out: **only UHL and EHL DCPMIs file a CAR.** They register once with the NDPC and then file the audit return annually. **OHL organisations do not file a CAR at all** — instead they renew their registration with the Commission each year. If you are OHL, your obligation is annual renewal, not an annual audit return.
+
+## Registration fees vs audit filing fees
+
+These are two separate payments, and conflating them is the most common error in the guidance circulating online.
+
+**Registration fees** (above) are paid to register or renew: ₦250,000 / ₦100,000 / ₦10,000 for UHL / EHL / OHL.
+
+**Audit filing fees** are paid when a UHL or EHL organisation files its CAR, and from the 2026 audit cycle they scale with the number of data subjects you process:
+
+- **UHL:** ₦1,000,000 (50,000+ data subjects), ₦750,000 (25,000–49,999), ₦500,000 (below 25,000).
+- **EHL:** ₦250,000 (10,000+ data subjects), ₦200,000 (5,000–9,999), ₦100,000 (below 2,500).
+
+## The deadline
+
+GAID 2025 moved the annual CAR deadline from 15 March to **31 March** each year. For the 2025 audit cycle, the NDPC extended the filing deadline to **30 May 2026**. If you are reading this after that date and have not filed, you are now in late-filing territory — file immediately through your DPCO.
+
+## The penalties for getting it wrong
+
+- **Late filing:** an additional administrative fee of up to **50% of the applicable filing fee**.
+- **Failure to file:** a fine of up to **2% of your annual gross revenue in the preceding financial year, or ₦10,000,000 — whichever is greater.**
+
+For a UHL organisation, 2% of gross revenue dwarfs the filing fee. The economics make the return one of the cheapest insurance policies your business can buy.
+
+## Compute your own filing schedule
+
+You do not need to guess your dates. The open-source [NDPA Toolkit](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit) ships a pure function that derives your initial-audit due date and your next filing deadline:
+
+```ts
+import {
+  classifyDCPMI,
+  generateComplianceAuditReturn,
+} from '@tantainnovative/ndpr-toolkit/server';
+
+// 1. Which tier are you?
+const { tier, annualFeeNGN } = classifyDCPMI({ dataSubjectsInSixMonths: 6200 });
+// → tier: 'UHL', annualFeeNGN: 250000
+
+// 2. When are your audit dates?
+const car = generateComplianceAuditReturn({
+  commencementDate: '2025-01-15',
+  tier,
+});
+
+car.schedule.initialAuditDueDate;     // '2026-04-15'  (commencement + 15 months)
+car.schedule.nextFilingDeadline;      // next 31 March (overridable for extensions)
+car.status.daysUntilNextDeadline;     // countdown for your dashboard
+```
+
+Deadlines shift — the 2026 extension is proof — so the scheduler accepts per-year overrides:
+
+```ts
+generateComplianceAuditReturn(
+  { commencementDate: '2025-01-15', tier: 'UHL', asOf: '2026-04-01' },
+  { deadlineOverrides: { 2026: '2026-05-30' } },
+).schedule.nextFilingDeadline; // '2026-05-30'
+```
+
+Want to check your whole posture before you brief your DPCO? Run the [free 5-minute NDPA audit](https://ndprtoolkit.com.ng/score), or wire the same engine into CI with the [`ndpr audit` CLI](https://ndprtoolkit.com.ng/docs/guides/audit-cli) so a compliance regression fails your build.
+
+## The bottom line
+
+If you are UHL or EHL, the CAR is an annual, non-negotiable obligation with real financial teeth. Know your tier, separate the registration fee from the audit filing fee, mark 31 March in your calendar (watch for NDPC extensions), and file through a DPCO. If you are OHL, renew your registration on time. Either way, automate the date maths so a missed deadline is never the reason you face a 2%-of-revenue fine.
+
+*This guide is general information, not legal advice. The NDPC revises fees and deadlines — verify the current figures with the NDPC or your DPCO before filing.*

@@ -1,0 +1,108 @@
+---
+title: "Compliance as Code: Gate NDPA Compliance in Your CI Pipeline"
+description: "Treat Nigeria Data Protection Act compliance like tests and linting — a check that runs on every push and fails the build when you regress. Here is how, with a single CLI command."
+date: "2026-05-31"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpa", "ci-cd", "devops", "cli", "compliance", "react"]
+---
+
+# Compliance as Code: Gate NDPA Compliance in Your CI Pipeline
+
+We gate our codebases on tests, types, and linting. A red build means broken code does not ship. Yet compliance — the thing that carries a 2%-of-revenue fine under the Nigeria Data Protection Act 2023 — is usually a PDF someone updates once a year, hopelessly out of sync with the code that actually processes personal data.
+
+It does not have to be. Compliance has a measurable surface: do you have a consent mechanism, an erasure flow, a breach process, a privacy policy, a lawful basis on file? Those are booleans. And booleans can be checked in CI.
+
+This post shows how to turn NDPA compliance into a build gate — a check that runs on every push and fails when you regress — using the open-source [NDPA Toolkit](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit) and its `ndpr audit` CLI.
+
+## The idea: a compliance config you version-control
+
+Start by describing your compliance posture as a file in your repo. This lives next to your code, gets reviewed in PRs, and changes through git history like everything else:
+
+```bash
+npx ndpr audit --init   # scaffolds ndpr.audit.json
+```
+
+```jsonc
+// ndpr.audit.json
+{
+  "minScore": 80,
+  "compliance": {
+    "consent": { "hasConsentMechanism": true, "hasPurposeSpecification": true, "hasWithdrawalMechanism": true, "hasMinorProtection": false, "consentRecordsRetained": true },
+    "dsr": { "hasRequestMechanism": true, "supportsAccess": true, "supportsErasure": false, "responseTimelineDays": 30 },
+    "breach": { "hasNotificationProcess": true, "notifiesWithin72Hours": true, "hasRiskAssessment": true, "hasRecordKeeping": true },
+    "policy": { "hasPrivacyPolicy": true, "isPubliclyAccessible": true, "lastUpdated": "2026-01-01", "coversAllSections": true }
+    // ...lawfulBasis, crossBorder, ropa
+  },
+  "dcpmi": { "dataSubjectsInSixMonths": 6200 }
+}
+```
+
+## The gate: one command, a real exit code
+
+`ndpr audit` scores that config against the same engine that powers the toolkit's dashboard and our [free web audit](https://ndprtoolkit.com.ng/score) — plus the GAID 2025 DCPMI, Compliance Audit Returns, and breach-notification checks — and **exits non-zero when the audit fails**:
+
+```bash
+npx ndpr audit --min-score 80
+```
+
+```text
+NDPA 2023 Compliance Audit
+
+Compliance score: 82/100 (good) — minimum 80
+
+✓ Overall compliance score        82/100 (good); minimum 80.
+✓ DCPMI registration (GAID 2025)  UHL — ₦250,000/yr; file CAR annually.
+! Right to erasure supported       Implement deletion on valid erasure requests.
+Verdict: PASS
+```
+
+Critical gaps and overdue breach notifications hard-fail; high-priority gaps and approaching audit deadlines warn. A non-zero exit is all CI needs.
+
+## Wire it into GitHub Actions
+
+```yaml
+# .github/workflows/compliance.yml
+name: NDPA compliance
+on: [push, pull_request]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npx ndpr audit --min-score 80
+```
+
+That is the whole thing. Now a PR that removes your erasure flow, lets your privacy policy go stale, or drops your consent record-keeping turns the build red — with a message naming the exact NDPA section at fault. Compliance stops being an annual surprise and becomes a continuous signal.
+
+## Why this matters more in Nigeria right now
+
+GAID 2025 made the obligations concrete and the stakes explicit: annual Compliance Audit Returns for Major Importance organisations, breach notification within 72 hours, and fines reaching 2% of annual gross revenue. The organisations that stay compliant will not be the ones with the thickest policy binder — they will be the ones whose compliance is checked as often as their code.
+
+## Beyond the gate
+
+The same logic is available programmatically if you want to build it into a dashboard, a Slack alert, or a scheduled job:
+
+```ts
+import { runNdprAudit, formatNdprAuditReport } from '@tantainnovative/ndpr-toolkit/server';
+
+const result = runNdprAudit({ compliance, dcpmi, car, breaches }, { minScore: 80 });
+if (!result.passed) {
+  console.error(formatNdprAuditReport(result));
+  process.exit(1);
+}
+```
+
+It is pure and React-free, so it runs anywhere Node does — a Server Action, an edge function, or a nightly cron that emails your DPO.
+
+## Try it
+
+```bash
+npx ndpr audit --init
+npx ndpr audit --min-score 80
+```
+
+Full flags and the config shape are in the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli). Treat compliance like you treat tests — write it down, check it on every push, and never let it silently rot again.

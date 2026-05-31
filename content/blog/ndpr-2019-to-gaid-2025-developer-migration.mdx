@@ -1,0 +1,90 @@
+---
+title: "NDPR Is Dead, GAID 2025 Is Here: A Developer's Migration Guide"
+description: "GAID 2025 replaced the NDPR 2019 as Nigeria's operative data-protection rulebook. Here is what changed and exactly what to change in your code — cookies, breach notifications, registration, audits, and DPOs."
+date: "2026-05-31"
+author: "Abraham Esandayinze Tanta"
+tags: ["ndpa", "gaid-2025", "ndpr", "compliance", "guide", "migration"]
+---
+
+# NDPR Is Dead, GAID 2025 Is Here: A Developer's Migration Guide
+
+If your understanding of Nigerian data-protection compliance still rests on the NDPR 2019, it is out of date. On 19 September 2025 the NDPC's **General Application and Implementation Directive (GAID) 2025** took effect and replaced the NDPR 2019 as the operative administrative instrument under the Nigeria Data Protection Act 2023. The Act sets the principles; GAID is the rulebook that tells you — and the regulator — what compliance actually looks like in practice.
+
+This is a developer-first map: what changed, and what to change in your code for each shift.
+
+## Why GAID matters more than the Act
+
+The NDPA 2023 is principles. GAID 2025 is procedures, templates, fees, and deadlines. It translates statutory obligations into operational measures: registration criteria, Compliance Audit Returns, DPO credentialing, DPIA expectations, breach-notification procedures, and cross-border transfer templates. When the NDPC assesses you, it assesses you against GAID. So if you ship software that processes Nigerians' data, GAID is the document that turns into tickets on your board.
+
+## What changed → what to change
+
+### 1. Cookie consent is now specific
+
+**What changed:** GAID requires active opt-in for non-essential cookies, a prominent homepage notice, and a genuine option to decline as easily as to accept. The old "by continuing you accept" pattern is dead.
+
+**What to change:** stop firing analytics on load. Gate non-essential scripts on a stored, affirmative decision, offer equal-weight Accept/Decline, and keep a consent record. A drop-in banner handles it:
+
+```tsx
+import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
+<NDPRConsent position="bottom" />
+```
+
+Full breakdown: [GAID 2025 cookie consent](https://ndprtoolkit.com.ng/blog/gaid-2025-cookie-consent-nigeria-website).
+
+### 2. Registration is tiered — and you may have to file audits
+
+**What changed:** organisations of "Major Importance" register in three tiers — UHL (₦250,000), EHL (₦100,000), and OHL (₦10,000) annual registration fees. UHL and EHL file a Compliance Audit Return every year; OHL renews its registration annually instead.
+
+**What to change:** figure out your tier and your dates in code rather than guessing:
+
+```ts
+import { classifyDCPMI, generateComplianceAuditReturn } from '@tantainnovative/ndpr-toolkit/server';
+
+const { tier, annualFeeNGN } = classifyDCPMI({ dataSubjectsInSixMonths: 6200 });
+const car = generateComplianceAuditReturn({ commencementDate: '2025-01-15', tier });
+```
+
+Details: [DCPMI registration](https://ndprtoolkit.com.ng/docs/guides/dcpmi-registration) and the [Compliance Audit Returns guide](https://ndprtoolkit.com.ng/blog/ndpc-compliance-audit-returns-2026-guide).
+
+### 3. Breach notification has a defined content set
+
+**What changed:** GAID Article 33 (implementing NDPA Section 40) spells out what a breach notification to the NDPC must contain — the circumstances, the data and number of subjects involved, the risk of harm, the mitigation steps, and a contact point — and reaffirms the 72-hour clock and the high-risk duty to tell affected data subjects.
+
+**What to change:** make your breach report capture the mandated fields and check completeness before you file:
+
+```ts
+import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/server';
+
+const result = assessBreachNotification(breachReport);
+result.complete;       // every Article 33(5) item present?
+result.timing.overdue; // past the 72-hour deadline?
+```
+
+The [breach completeness checker](https://ndprtoolkit.com.ng/docs/guides/breach-notification-completeness) maps each requirement to its provision.
+
+### 4. DPOs need real autonomy — and credentials
+
+**What changed:** GAID expands DPO requirements for Major Importance organisations — autonomy, resources, access to processing activities — and introduces an Annual Credential Assessment and a certified-DPO database administered by the NDPC.
+
+**What to change:** this is mostly organisational, but your tooling should name a DPO contact in privacy notices and breach reports. The toolkit threads `dpoEmail` / `dpoContact` through its provider, policy generator, and breach forms so the contact point is consistent everywhere.
+
+### 5. Compliance is now continuously measurable
+
+**What changed:** with fixed audit cycles and explicit fines (up to 2% of annual gross revenue), compliance is no longer a once-a-year scramble.
+
+**What to change:** check it on every push. The `ndpr audit` CLI scores your posture and fails CI on a regression — see [Compliance as Code](https://ndprtoolkit.com.ng/blog/compliance-as-code-ndpa-ci-cli).
+
+## A migration checklist
+
+- [ ] Replace any "implied consent" cookie banner with affirmative opt-in + decline + a consent record.
+- [ ] Determine your DCPMI tier and registration/audit obligations.
+- [ ] Diarise your CAR deadline (31 March; watch for NDPC extensions) if you are UHL/EHL, or your renewal date if OHL.
+- [ ] Ensure breach reports capture the Article 33 content set and the 72-hour clock.
+- [ ] Name a DPO contact consistently across notices and forms.
+- [ ] Add a compliance check to CI so you never silently regress.
+
+## Start here
+
+Run the [free 5-minute NDPA audit](https://ndprtoolkit.com.ng/score) to see where you stand against the current rulebook, then work the checklist. The NDPR served its purpose; GAID 2025 is what you build against now.
+
+*General information, not legal advice. Verify specifics with the NDPC or your DPO.*
