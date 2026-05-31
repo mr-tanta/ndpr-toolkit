@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     'Free, open-source Data Privacy Impact Assessment (DPIA) tool for Nigeria NDPA 2023 Section 28. Stepped questionnaire, risk scoring, mitigation tracking, NDPC consultation flag, PDF/DOCX export. Drop-in React component with a typed hook for custom UIs.',
   keywords:
-    'Nigeria DPIA tool, NDPA Section 28 DPIA, NDPR DPIA, NDPC DPIA consultation, Nigeria DPIA template, Data Privacy Impact Assessment Nigeria, Nigeria high-risk processing assessment',
+    'Nigeria DPIA tool, NDPA Section 28 DPIA, NDPR DPIA, NDPC DPIA consultation, Nigeria DPIA template, Data Privacy Impact Assessment Nigeria, Nigeria high-risk processing assessment, NDPC GAID 2025, DCPMI',
   alternates: { canonical: '/ndpa-dpia-tool' },
   openGraph: {
     title: 'Nigeria DPIA Tool — NDPA 2023 Section 28 Compliant',
@@ -88,8 +88,11 @@ export default function NDPADPIAToolLanding() {
           <p>
             NDPA 2023 Section 28(1) requires a Data Privacy Impact Assessment <em>before</em> any
             processing that is likely to result in a high risk to the rights and freedoms of data
-            subjects. The NDPC has emphasised DPIAs as a precondition for licensed Data Controllers
-            and Processors of Major Importance (DCPMI) under Section 32. In practice, that covers:
+            subjects. The NDPC&apos;s General Application and Implementation Directive (GAID) 2025
+            reinforces DPIAs as an expectation for Data Controllers and Processors of Major Importance
+            (DCPMI) — not sure if that&apos;s you? Check your tier with the{' '}
+            <Link href="/docs/guides/dcpmi-registration" className="text-primary hover:underline">DCPMI registration classifier</Link>.
+            In practice, a DPIA covers:
           </p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Large-scale processing of <strong>sensitive personal data</strong> (Section 30) &mdash; health, biometric, financial, religious, political, ethnic, children.</li>

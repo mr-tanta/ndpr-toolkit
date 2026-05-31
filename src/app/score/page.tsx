@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description:
     'Free self-assessment for Nigeria Data Protection Act (NDPA) 2023 compliance. 8-section audit covering consent, DSR, DPIA, breach notification, RoPA, lawful basis, cross-border, privacy policy. Live score, prioritised recommendations with NDPA section references, downloadable PDF. No signup required to see your score.',
   keywords:
-    'Nigeria NDPA audit, free NDPA compliance check, NDPR audit Nigeria, NDPC audit tool, Nigeria data protection self-assessment, Nigeria compliance score, NDPA 2023 audit',
+    'Nigeria NDPA audit, free NDPA compliance check, NDPR audit Nigeria, NDPC audit tool, Nigeria data protection self-assessment, Nigeria compliance score, NDPA 2023 audit, NDPC GAID 2025, ndpr audit CLI, CI compliance gate',
   alternates: { canonical: '/score' },
   openGraph: {
     title: 'Free Nigeria NDPA Audit — Score Your Compliance in 5 Minutes',
@@ -82,7 +82,11 @@ export default function ScorePage() {
             <Link href="/docs/guides/compliance-score" className="text-primary hover:underline">
               <code>getComplianceScore</code>
             </Link>{' '}
-            function powers this audit, your CI pipeline, and the bundled{' '}
+            function powers this audit, the{' '}
+            <Link href="/docs/guides/audit-cli" className="text-primary hover:underline">
+              <code>ndpr audit</code> CLI
+            </Link>{' '}
+            in your CI pipeline, and the bundled{' '}
             <Link href="/docs/components/hooks" className="text-primary hover:underline">
               <code>NDPRComplianceDashboard</code>
             </Link>{' '}
@@ -94,7 +98,7 @@ export default function ScorePage() {
 
         <section className="mt-16 border-t border-border pt-10">
           <h2 className="text-2xl font-bold text-foreground mb-4">After the audit</h2>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Link
               href="/nigeria-privacy-policy-generator"
               className="rounded-lg border border-border p-5 hover:bg-card transition"
@@ -120,6 +124,15 @@ export default function ScorePage() {
               <h3 className="text-base font-semibold mb-2">Fix Section 28 gaps →</h3>
               <p className="text-sm text-muted-foreground">
                 Run a DPIA through the questionnaire tool. NDPC consultation flag included.
+              </p>
+            </Link>
+            <Link
+              href="/docs/guides/audit-cli"
+              className="rounded-lg border border-border p-5 hover:bg-card transition"
+            >
+              <h3 className="text-base font-semibold mb-2">Automate in CI →</h3>
+              <p className="text-sm text-muted-foreground">
+                Run this same audit on every push with the <code>ndpr audit</code> CLI — it exits non-zero when compliance regresses.
               </p>
             </Link>
           </div>
