@@ -57,6 +57,12 @@ describe('classifyDCPMI (NDPC GAID 2025 — Data Controller/Processor of Major I
 
     const ohl = classifyDCPMI({ dataSubjectsInSixMonths: 500 });
     expect(ohl.registration.renewsAnnually).toBe(true); // OHL renews registration annually
+    // GAID 2025: OHL renews registration annually and does NOT file CAR (only UHL/EHL file).
+    expect(ohl.compliance.auditReturnsAnnual).toBe(false);
+    expect(ohl.notes.some((n) => /renew/i.test(n) && /not|without/i.test(n))).toBe(true);
+
+    const ehl = classifyDCPMI({ dataSubjectsInSixMonths: 2000 });
+    expect(ehl.compliance.auditReturnsAnnual).toBe(true);
   });
 
   it('honours custom (versioned) thresholds and fees so callers can track GAID changes', () => {

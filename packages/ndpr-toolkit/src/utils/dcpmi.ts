@@ -117,8 +117,10 @@ export function classifyDCPMI(
   if (isDCPMI) {
     notes.push(
       tier === 'OHL'
-        ? 'OHL organisations renew their NDPC registration annually and file Compliance Audit Returns (CAR) each year.'
-        : 'Register once with the NDPC, then file Compliance Audit Returns (CAR) annually.',
+        ? 'OHL organisations renew their NDPC registration annually and are not required to file Compliance Audit Returns (CAR).'
+        : tier === 'listed'
+          ? 'Confirm with the NDPC whether your designation falls under UHL/EHL (register once, file CAR annually) or OHL (renew registration annually).'
+          : 'Register once with the NDPC, then file Compliance Audit Returns (CAR) annually.',
     );
   }
   notes.push(
@@ -130,7 +132,7 @@ export function classifyDCPMI(
     isDCPMI,
     annualFeeNGN,
     registration: { required: isDCPMI, renewsAnnually: tier === 'OHL' },
-    compliance: { auditReturnsAnnual: isDCPMI, initialAuditWithinMonths: 15 },
+    compliance: { auditReturnsAnnual: tier === 'UHL' || tier === 'EHL', initialAuditWithinMonths: 15 },
     notes,
     dataSubjectsConsidered: count,
   };

@@ -97,7 +97,11 @@ export function generateComplianceAuditReturn(
   const deadlineDay = options.annualDeadline?.day ?? 31;
   const overrides = options.deadlineOverrides ?? {};
 
-  const applicable = input.tier === undefined ? true : input.tier !== 'none';
+  // CAR is filed by UHL and EHL DCPMIs only. OHL organisations renew their
+  // registration annually instead, and non-DCPMIs have no CAR obligation
+  // (NDPC GAID 2025). Omitting the tier assumes the org is in scope.
+  const applicable =
+    input.tier === undefined ? true : input.tier === 'UHL' || input.tier === 'EHL';
 
   const initialAuditDueDate = addMonthsISO(input.commencementDate, initialAuditWithinMonths);
 
@@ -119,7 +123,13 @@ export function generateComplianceAuditReturn(
 
   const notes: string[] = [];
   if (!applicable) {
-    notes.push('Compliance Audit Returns apply only to Data Controllers/Processors of Major Importance.');
+    if (input.tier === 'OHL') {
+      notes.push('OHL organisations renew their NDPC registration annually and are not required to file Compliance Audit Returns (CAR).');
+    } else if (input.tier === 'listed') {
+      notes.push('Confirm with the NDPC whether your designation requires filing CAR (UHL/EHL) or annual registration renewal (OHL).');
+    } else {
+      notes.push('Compliance Audit Returns apply to Data Controllers/Processors of Major Importance in the UHL and EHL categories.');
+    }
   } else {
     notes.push(
       'File the Compliance Audit Return with the NDPC via the NDPC Information Management Portal (NIMP).',

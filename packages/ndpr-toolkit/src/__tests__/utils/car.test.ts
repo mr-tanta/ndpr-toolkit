@@ -45,12 +45,18 @@ describe('generateComplianceAuditReturn (NDPC GAID 2025 — Compliance Audit Ret
     expect(r.applicable).toBe(false);
   });
 
-  it('is applicable to every DCPMI tier including listed', () => {
-    for (const tier of ['UHL', 'EHL', 'OHL', 'listed'] as const) {
+  it('applies to UHL and EHL, which file CAR annually', () => {
+    for (const tier of ['UHL', 'EHL'] as const) {
       expect(
         generateComplianceAuditReturn({ commencementDate: '2024-01-01', asOf: '2026-01-01', tier }).applicable,
       ).toBe(true);
     }
+  });
+
+  it('does not apply to OHL (GAID 2025: OHL renews registration annually, no CAR)', () => {
+    const r = generateComplianceAuditReturn({ commencementDate: '2024-01-01', asOf: '2026-01-01', tier: 'OHL' });
+    expect(r.applicable).toBe(false);
+    expect(r.notes.some((n) => /renew/i.test(n))).toBe(true);
   });
 
   it('surfaces a GAID/NIMP caveat note', () => {
