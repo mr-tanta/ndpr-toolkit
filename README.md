@@ -9,16 +9,18 @@
 [![CI](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
-v5 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA.
+v5 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA. **5.2–5.5 add an NDPC GAID 2025 layer**: a DCPMI registration classifier, a Compliance Audit Returns scheduler, a Section 40 / Article 33 breach-notification checker (wired live into `BreachReportForm`), and an **`ndpr audit` CLI** that gates compliance in CI.
 
-**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[v5.0.0 Release](https://github.com/mr-tanta/ndpr-toolkit/releases/tag/v5.0.0)**
+**[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[Latest Release](https://github.com/mr-tanta/ndpr-toolkit/releases/latest)**
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app)
 [![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/nextjs-app)
 
-> **What's new in 5.0:** Structured-result validators are now the only shape — `validateConsentStructured`, `validateDsrSubmissionStructured`, `formatDSRRequestStructured`, etc. return `{ field, code, message }[]` so consumers can switch on stable, locale-independent codes (`email_invalid_format`, `consent_stale`, …) instead of regex-matching English strings. Uniform `onAdd` / `onUpdate` / `onArchive` callbacks across `LawfulBasisTracker`, `CrossBorderTransferManager`, `ROPAManager`, and `useROPA`. `NDPRDPIA.onResult(result)` replaces `onComplete(answers)` — the callback now receives the full computed `DPIAResult` (risk level, can-proceed verdict, recommendations). Upgrading from 4.1? See the [4.1 → 5.0 migration guide](https://ndprtoolkit.com.ng/docs/guides/migrating-4-1-to-5-0).
+> **What's new in 5.5:** The **`ndpr audit` CLI** scores a compliance config against the toolkit engine (compliance score + GAID 2025 DCPMI / CAR / breach checks) and exits non-zero on failure — a drop-in CI gate. The same logic is exported as `runNdprAudit` / `formatNdprAuditReport` from `/server`. See the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
 >
-> **Recent highlights:** Arabic + French locales with RTL-correct CSS (4.1.0). React 17 dropped from peers; `^18 || ^19` is the honest range (4.0.0). 17 components wired through `useNDPRLocale()` for full Yoruba / Igbo / Hausa / Pidgin coverage (3.13.0). Typed theming via `<NDPRThemeProvider>`, `verify:tarball` CI gate that catches broken exports at PR time (3.10.x). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
+> **NDPC GAID 2025 utilities (5.2–5.4):** `classifyDCPMI` (DCPMI registration tier + fee), `generateComplianceAuditReturn` (CAR initial-audit + 72-hour annual filing schedule), and `assessBreachNotification` (Section 40 / Article 33 notification completeness) — each pure, React-free, and exposed as a hook. `BreachReportForm` now renders a live NDPC-notification readiness panel as it's filled in.
+>
+> **Earlier highlights:** Structured-result validators are the only shape — `{ field, code, message }[]` with stable codes; uniform `onAdd` / `onUpdate` / `onArchive` callbacks; `NDPRDPIA.onResult(result)` (5.0). Arabic + French locales with RTL-correct CSS (4.1.0). React 17 dropped; `^18 || ^19` (4.0.0). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
@@ -274,7 +276,7 @@ const { hasConsent, acceptAll, rejectAll, shouldShowBanner } = useConsent({ opti
 
 ### Server — strictly RSC-safe, zero React
 
-The recommended entry for backend and serverless contexts. Pure validators, generators, scoring, locales, and adapters — no React in the import graph. Safe to call from a Next.js Server Component, Edge Function, NestJS controller, or Cloudflare Worker.
+The recommended entry for backend and serverless contexts. Pure validators, generators, scoring, locales, adapters, the aggregate compliance audit (`runNdprAudit`), and the GAID 2025 utilities (`classifyDCPMI`, `generateComplianceAuditReturn`, `assessBreachNotification`) — no React in the import graph. Safe to call from a Next.js Server Component, Edge Function, NestJS controller, or Cloudflare Worker.
 
 ```ts
 import {
@@ -689,7 +691,7 @@ Override individual strings via `mergeLocale(base, partial)`. Component prop ove
 | Consent Management | `/consent` | Sections 25–26 | `ConsentBanner`, `ConsentManager`, `Consent.*`, `useConsent` |
 | Data Subject Rights | `/dsr` | Part VI §34–38 | `DSRRequestForm`, `DSRDashboard`, `useDSR` |
 | DPIA | `/dpia` | Section 28 | `DPIAQuestionnaire`, `DPIAReport`, `useDPIA` |
-| Breach Notification | `/breach` | Section 40 | `BreachReportForm`, `BreachRiskAssessment`, `useBreach` |
+| Breach Notification | `/breach` | Section 40 | `BreachReportForm` (live readiness panel), `BreachRiskAssessment`, `useBreach`, `useBreachNotificationAssessment` |
 | Privacy Policy | `/policy` | Section 27 | `PolicyGenerator`, `PolicyPreview`, `PolicyExporter` |
 | Lawful Basis | `/lawful-basis` | Section 25 | `LawfulBasisTracker`, `useLawfulBasis` |
 | Cross-Border Transfers | `/cross-border` | Part VIII §41–43 | `CrossBorderTransferManager`, `useCrossBorderTransfer` |
@@ -768,7 +770,7 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | Path | What you get | Dependencies | RSC-safe |
 |------|-------------|--------------|:--------:|
 | `.` (default) | Everything | `react`, optional Radix peers for `/presets` | No |
-| `/server` | **Pure validators, generators, scoring, locales, adapters, types — zero React** | `tslib` | **Yes** |
+| `/server` | **Pure validators, generators, scoring, the `ndpr audit` engine + GAID 2025 utilities, locales, adapters, types — zero React** | `tslib` | **Yes** |
 | `/core` | Types, utility functions, NDPRProvider | `react`[^core] | Partial |
 | `/hooks` | React hooks for all 8 modules | `react` | No |
 | `/headless` | **Alias of `/hooks`** — identical exports under a more discoverable name (3.10.0) | `react` | No |
