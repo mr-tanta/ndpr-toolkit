@@ -98,6 +98,9 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "ndpr": "./bin/ndpr.mjs"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -291,6 +294,7 @@
     "dist/**/*.d.ts",
     "dist/**/*.d.mts",
     "dist/**/*.css",
+    "bin/ndpr.mjs",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"

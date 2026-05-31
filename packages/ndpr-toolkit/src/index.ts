@@ -73,6 +73,12 @@ export { assessBreachNotification } from './utils/breach-notification';
 export type {
   BreachNotificationOptions, BreachNotificationItem, BreachNotificationTiming, BreachNotificationAssessment,
 } from './utils/breach-notification';
+
+// Aggregate NDPA compliance audit
+export { runNdprAudit, formatNdprAuditReport } from './utils/audit';
+export type {
+  NdprAuditInput, NdprAuditOptions, NdprAuditResult, AuditCheck, AuditCheckStatus, FormatAuditReportOptions,
+} from './utils/audit';
 export { generatePolicyText } from './utils/privacy';
 export { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES, createBusinessPolicyTemplate } from './utils/policy-templates';
 export { sanitizeInput } from './utils/sanitize';

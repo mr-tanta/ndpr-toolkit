@@ -89,6 +89,12 @@ const guides = [
     category: 'Critical',
   },
   {
+    title: 'Compliance Audit CLI',
+    description: 'Run an NDPA compliance audit from the command line or CI with the ndpr binary — exits non-zero on failure.',
+    href: '/docs/guides/audit-cli',
+    category: 'Assessment',
+  },
+  {
     title: 'Backend Integration',
     description: 'Express, Next.js API routes, and REST endpoint recipes.',
     href: '/docs/guides/backend-integration',

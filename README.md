@@ -534,6 +534,48 @@ The content checklist (`notificationToCommission`) maps each item to its source 
 
 ---
 
+## Compliance Audit CLI
+
+The package ships an `ndpr` binary. `ndpr audit` scores a compliance config against the toolkit's engine — the compliance score plus the GAID 2025 DCPMI, CAR, and breach-notification checks — and **exits non-zero when the audit fails**, so you can drop it into CI as a compliance gate.
+
+```bash
+# with the toolkit installed in your project, the `ndpr` bin is on your PATH:
+npx ndpr audit --init        # writes ndpr.audit.json
+npx ndpr audit               # run the audit (exit 1 on failure)
+npx ndpr audit --min-score 80
+npx ndpr audit --json        # machine-readable result
+
+# standalone (no install), use the scoped package name:
+npx @tantainnovative/ndpr-toolkit audit --init
+```
+
+```text
+NDPA 2023 Compliance Audit
+Generated 2026-05-31
+
+Compliance score: 82/100 (good) — minimum 70
+
+✓ Overall compliance score
+    82/100 (good); minimum 70.
+! Minor (child) data protection controls (Section 31)
+    Implement age-verification and parental-consent controls for processing data of minors.
+✓ DCPMI registration (GAID 2025)
+    Not a Data Controller/Processor of Major Importance by volume.
+
+2 passed, 3 warning(s), 0 failed
+Verdict: PASS
+```
+
+The config is `{ minScore?, compliance, dcpmi?, car?, breaches? }`. Critical NDPA gaps and overdue breach notifications hard-fail the audit; high-priority gaps and approaching CAR deadlines warn. In a GitHub Action:
+
+```yaml
+- run: npx ndpr audit --min-score 80
+```
+
+The same logic is exposed programmatically — `runNdprAudit(input, options?)` and `formatNdprAuditReport(result)` from `@tantainnovative/ndpr-toolkit/server` (pure, React-free). See [the audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
+
+---
+
 ## Backend Integration
 
 ### CLI scaffolder
