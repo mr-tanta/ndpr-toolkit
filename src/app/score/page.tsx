@@ -72,10 +72,10 @@ export default function ScorePage() {
             Nigeria NDPA 2023 Compliance Audit
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-            Answer the 30-odd questions below to see how your organisation stacks up against the
-            gazetted Nigeria Data Protection Act 2023. Your score updates live as you fill in the
-            form. Prioritised recommendations include NDPA section references your DPO can verify
-            independently.
+            Walk through a short, step-by-step questionnaire to see how your organisation stacks up
+            against the gazetted Nigeria Data Protection Act 2023 and the NDPC&apos;s GAID 2025 directive.
+            Your score updates as you go, and the results include your DCPMI registration tier plus
+            prioritised recommendations with NDPA section references your DPO can verify independently.
           </p>
           <p className="text-sm text-muted-foreground mt-3 max-w-3xl">
             The scoring engine is open source — the same{' '}

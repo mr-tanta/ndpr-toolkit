@@ -1,23 +1,22 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import {
   getComplianceScore,
+  classifyDCPMI,
+  generateComplianceAuditReturn,
   type ComplianceInput,
   type ComplianceReport,
   type RecommendationPriority,
 } from '@tantainnovative/ndpr-toolkit/server';
 
 /* ──────────────────────────────────────────────────────────────────────────
- * Default state — every flag starts at false ("haven't done it") so the
- * initial score is honestly bad. Users adjust each section as they walk
- * through the questionnaire. Dates default to today (treats existing
- * policy/RoPA as fresh; if user hasn't reviewed at all they should leave
- * the date far in the past — we surface a hint to that effect).
+ * Default state — every flag starts at false ("haven't done it") and the
+ * policy/RoPA dates start EMPTY so an untouched audit is honestly scored as
+ * stale (an empty date is treated as "never reviewed" by the engine). Users
+ * adjust each section as they walk through the questionnaire.
  * ────────────────────────────────────────────────────────────────────────── */
-
-const today = new Date().toISOString().slice(0, 10);
 
 const DEFAULT_INPUT: ComplianceInput = {
   consent: {
@@ -36,56 +35,41 @@ const DEFAULT_INPUT: ComplianceInput = {
     supportsObjection: false,
     responseTimelineDays: 30,
   },
-  dpia: {
-    conductedForHighRisk: false,
-    documentedRisks: false,
-    mitigationMeasures: false,
-  },
+  dpia: { conductedForHighRisk: false, documentedRisks: false, mitigationMeasures: false },
   breach: {
     hasNotificationProcess: false,
     notifiesWithin72Hours: false,
     hasRiskAssessment: false,
     hasRecordKeeping: false,
   },
-  policy: {
-    hasPrivacyPolicy: false,
-    isPubliclyAccessible: false,
-    lastUpdated: today,
-    coversAllSections: false,
-  },
-  lawfulBasis: {
-    documentedForAllProcessing: false,
-    hasLegitimateInterestAssessment: false,
-  },
-  crossBorder: {
-    hasTransferMechanisms: false,
-    adequacyAssessed: false,
-    ndpcApprovalObtained: false,
-  },
-  ropa: {
-    maintained: false,
-    includesAllProcessing: false,
-    lastReviewed: today,
-  },
+  policy: { hasPrivacyPolicy: false, isPubliclyAccessible: false, lastUpdated: '', coversAllSections: false },
+  lawfulBasis: { documentedForAllProcessing: false, hasLegitimateInterestAssessment: false },
+  crossBorder: { hasTransferMechanisms: false, adequacyAssessed: false, ndpcApprovalObtained: false },
+  ropa: { maintained: false, includesAllProcessing: false, lastReviewed: '' },
 };
+
+interface ProfileState {
+  dataSubjectsInSixMonths: number;
+  commencementDate: string;
+}
+
+const DEFAULT_PROFILE: ProfileState = { dataSubjectsInSixMonths: 0, commencementDate: '' };
+
+const STORAGE_KEY = 'ndpr-audit-state-v2';
 
 /* Per-flag prompt labels — what the user actually reads. */
 type SectionConfig = {
   id: keyof ComplianceInput;
   title: string;
   ndpa: string;
-  questions: ReadonlyArray<{
-    key: string;
-    label: string;
-    hint?: string;
-  }>;
+  questions: ReadonlyArray<{ key: string; label: string }>;
 };
 
 const SECTIONS: SectionConfig[] = [
   {
     id: 'consent',
     title: 'Consent',
-    ndpa: 'NDPA Section 26',
+    ndpa: 'NDPA Sections 25–26',
     questions: [
       { key: 'hasConsentMechanism', label: 'We have a cookie / consent banner on every public-facing page.' },
       { key: 'hasPurposeSpecification', label: 'Each consent option lists a specific, named purpose.' },
@@ -168,11 +152,31 @@ const SECTIONS: SectionConfig[] = [
   },
 ];
 
+const MODULE_LABELS: Record<string, string> = {
+  consent: 'Consent',
+  dsr: 'Data Subject Rights',
+  dpia: 'DPIA',
+  breach: 'Breach Notification',
+  policy: 'Privacy Policy',
+  lawfulBasis: 'Lawful Basis',
+  crossBorder: 'Cross-Border',
+  ropa: 'RoPA',
+};
+
 /* ──────────────────────────────────────────────────────────────────────────
- * Score UI
+ * Rating helpers
  * ────────────────────────────────────────────────────────────────────────── */
 
-function ratingColor(rating: ComplianceReport['rating']): string {
+type Rating = ComplianceReport['rating'];
+
+const RATING_HEX: Record<Rating, string> = {
+  excellent: '#10b981',
+  good: '#3b82f6',
+  'needs-work': '#f97316',
+  critical: '#ef4444',
+};
+
+function ratingColor(rating: Rating): string {
   switch (rating) {
     case 'excellent': return 'text-emerald-500';
     case 'good': return 'text-blue-500';
@@ -182,16 +186,14 @@ function ratingColor(rating: ComplianceReport['rating']): string {
   }
 }
 
-/** Compute a rating bucket for an individual module score. The library only
- * exposes an overall rating, but per-module we want the same colour scale. */
-function moduleRating(score: number): ComplianceReport['rating'] {
+function moduleRating(score: number): Rating {
   if (score >= 90) return 'excellent';
   if (score >= 70) return 'good';
   if (score >= 50) return 'needs-work';
   return 'critical';
 }
 
-function ratingSummary(rating: ComplianceReport['rating'], score: number): string {
+function ratingSummary(rating: Rating, score: number): string {
   switch (rating) {
     case 'excellent':
       return `Strong NDPA posture at ${score}/100. Verify with your DPO and keep RoPA + policy reviews current.`;
@@ -216,112 +218,218 @@ function priorityColor(p: RecommendationPriority): string {
   }
 }
 
+const ngn = (n: number) => `₦${n.toLocaleString('en-NG')}`;
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * Circular score gauge
+ * ────────────────────────────────────────────────────────────────────────── */
+
+function ScoreGauge({ score, rating }: { score: number; rating: Rating }) {
+  const r = 52;
+  const c = 2 * Math.PI * r;
+  const pct = Math.max(0, Math.min(100, score));
+  const dash = (pct / 100) * c;
+  const color = RATING_HEX[rating] ?? '#3b82f6';
+  return (
+    <div className="relative inline-flex items-center justify-center" style={{ width: 140, height: 140 }}>
+      <svg viewBox="0 0 120 120" width="140" height="140" aria-hidden="true">
+        <circle cx="60" cy="60" r={r} fill="none" stroke="currentColor" strokeWidth="10" className="text-border" opacity={0.3} />
+        <circle
+          cx="60" cy="60" r={r} fill="none" stroke={color} strokeWidth="10" strokeLinecap="round"
+          strokeDasharray={`${dash} ${c}`} transform="rotate(-90 60 60)"
+          style={{ transition: 'stroke-dasharray 0.4s ease' }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className={`text-4xl font-bold ${ratingColor(rating)}`}>{score}</span>
+        <span className="text-xs text-muted-foreground">/ 100</span>
+      </div>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * GAID 2025 registration card
+ * ────────────────────────────────────────────────────────────────────────── */
+
+function GaidCard({ profile }: { profile: ProfileState }) {
+  const dcpmi = useMemo(
+    () => classifyDCPMI({ dataSubjectsInSixMonths: profile.dataSubjectsInSixMonths }),
+    [profile.dataSubjectsInSixMonths],
+  );
+  const filesCAR = dcpmi.tier === 'UHL' || dcpmi.tier === 'EHL';
+  const car = useMemo(
+    () =>
+      profile.commencementDate && filesCAR
+        ? generateComplianceAuditReturn({ commencementDate: profile.commencementDate, tier: dcpmi.tier })
+        : null,
+    [profile.commencementDate, filesCAR, dcpmi.tier],
+  );
+
+  return (
+    <div className="rounded-lg border border-border p-4 bg-card">
+      <h3 className="text-sm font-semibold text-foreground mb-1">GAID 2025 registration</h3>
+      {!dcpmi.isDCPMI ? (
+        <p className="text-xs text-muted-foreground">
+          Below the threshold for a Data Controller/Processor of Major Importance by volume. Enter your six-month
+          data-subject count to check.
+        </p>
+      ) : (
+        <div className="space-y-1.5 text-xs">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Tier</span>
+            <span className="font-semibold text-foreground">{dcpmi.tier}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Annual registration fee</span>
+            <span className="font-semibold text-foreground">{ngn(dcpmi.annualFeeNGN)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Obligation</span>
+            <span className="font-medium text-foreground text-right">
+              {filesCAR ? 'Register once + file CAR annually' : 'Renew registration annually (no CAR)'}
+            </span>
+          </div>
+          {car && (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Next CAR deadline</span>
+              <span className="font-medium text-foreground">
+                {car.schedule.nextFilingDeadline} ({car.status.daysUntilNextDeadline}d)
+              </span>
+            </div>
+          )}
+          {filesCAR && !profile.commencementDate && (
+            <p className="text-muted-foreground pt-1">Add your commencement date to compute CAR dates.</p>
+          )}
+        </div>
+      )}
+      <Link href="/docs/guides/dcpmi-registration" className="mt-2 inline-block text-xs text-primary hover:underline">
+        DCPMI guide →
+      </Link>
+    </div>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * Main component
+ * ────────────────────────────────────────────────────────────────────────── */
+
 export function AuditScore() {
   const [input, setInput] = useState<ComplianceInput>(DEFAULT_INPUT);
+  const [profile, setProfile] = useState<ProfileState>(DEFAULT_PROFILE);
+  const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Restore a previous session (client-only, after hydration to avoid mismatch).
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        if (saved.input) setInput(saved.input);
+        if (saved.profile) setProfile(saved.profile);
+        if (typeof saved.step === 'number') setStep(saved.step);
+      }
+    } catch {
+      /* ignore corrupt storage */
+    }
+    setHydrated(true);
+  }, []);
+
+  // Persist on change.
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ input, profile, step }));
+    } catch {
+      /* ignore quota / privacy-mode errors */
+    }
+  }, [input, profile, step, hydrated]);
 
   const report = useMemo(() => getComplianceScore(input), [input]);
 
-  const toggleFlag = useCallback(
-    (sectionId: keyof ComplianceInput, key: string, checked: boolean) => {
-      setInput((prev) => ({
-        ...prev,
-        [sectionId]: {
-          ...(prev[sectionId] as Record<string, unknown>),
-          [key]: checked,
-        },
-      }));
-    },
-    [],
-  );
+  const toggleFlag = useCallback((sectionId: keyof ComplianceInput, key: string, checked: boolean) => {
+    setInput((prev) => ({
+      ...prev,
+      [sectionId]: { ...(prev[sectionId] as Record<string, unknown>), [key]: checked },
+    }));
+  }, []);
 
   const setPolicyDate = useCallback((iso: string) => {
     setInput((prev) => ({ ...prev, policy: { ...prev.policy, lastUpdated: iso } }));
   }, []);
-
   const setRopaDate = useCallback((iso: string) => {
     setInput((prev) => ({ ...prev, ropa: { ...prev.ropa, lastReviewed: iso } }));
   }, []);
-
   const setResponseDays = useCallback((days: number) => {
-    setInput((prev) => ({
-      ...prev,
-      dsr: { ...prev.dsr, responseTimelineDays: Math.max(0, Math.min(365, days)) },
-    }));
+    setInput((prev) => ({ ...prev, dsr: { ...prev.dsr, responseTimelineDays: Math.max(0, Math.min(365, days)) } }));
   }, []);
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
-      {/* ── Left column: questionnaire ───────────────────────────────────── */}
-      <div className="space-y-6">
-        {SECTIONS.map((section) => {
-          const sectionValues = input[section.id] as Record<string, unknown>;
-          return (
-            <section key={section.id} className="rounded-lg border border-border p-6 bg-card">
-              <header className="mb-4">
-                <h2 className="text-xl font-semibold text-foreground">{section.title}</h2>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">{section.ndpa}</p>
-              </header>
-              <div className="space-y-3">
-                {section.questions.map((q) => (
-                  <label key={q.key} className="flex items-start gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(sectionValues[q.key])}
-                      onChange={(e) => toggleFlag(section.id, q.key, e.target.checked)}
-                      className="mt-1 h-4 w-4 rounded border-gray-400 text-primary focus:ring-primary"
-                    />
-                    <span className="text-sm text-foreground">{q.label}</span>
-                  </label>
-                ))}
+  const reset = useCallback(() => {
+    setInput(DEFAULT_INPUT);
+    setProfile(DEFAULT_PROFILE);
+    setSubmitted(false);
+    setStep(0);
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+  }, []);
 
-                {/* Section-specific extras */}
-                {section.id === 'dsr' && (
-                  <label className="flex items-center gap-3 mt-3">
-                    <span className="text-sm text-foreground">Typical response time</span>
-                    <input
-                      type="number"
-                      min={1}
-                      max={120}
-                      value={input.dsr.responseTimelineDays}
-                      onChange={(e) => setResponseDays(Number(e.target.value))}
-                      className="w-20 rounded border border-border bg-background px-2 py-1 text-sm"
-                    />
-                    <span className="text-sm text-muted-foreground">days (NDPC guidance: 30)</span>
-                  </label>
-                )}
-                {section.id === 'policy' && (
-                  <label className="flex items-center gap-3 mt-3">
-                    <span className="text-sm text-foreground">Privacy policy last updated</span>
-                    <input
-                      type="date"
-                      value={input.policy.lastUpdated}
-                      onChange={(e) => setPolicyDate(e.target.value)}
-                      className="rounded border border-border bg-background px-2 py-1 text-sm"
-                    />
-                  </label>
-                )}
-                {section.id === 'ropa' && (
-                  <label className="flex items-center gap-3 mt-3">
-                    <span className="text-sm text-foreground">RoPA last reviewed</span>
-                    <input
-                      type="date"
-                      value={input.ropa.lastReviewed}
-                      onChange={(e) => setRopaDate(e.target.value)}
-                      className="rounded border border-border bg-background px-2 py-1 text-sm"
-                    />
-                  </label>
-                )}
-              </div>
-            </section>
-          );
-        })}
+  const gaidSummary = useMemo(() => buildGaidSummary(profile), [profile]);
 
-        {/* ── Recommendations ──────────────────────────────────────────── */}
-        <section className="rounded-lg border border-border p-6 bg-card">
-          <h2 className="text-xl font-semibold text-foreground mb-1">
-            Your prioritised recommendations
-          </h2>
+  // Wizard model: step 0 = profile, steps 1..N = the 8 module sections,
+  // final step (= TOTAL) = results.
+  const TOTAL = SECTIONS.length + 1; // profile + sections
+  const isResults = step >= TOTAL;
+  const goNext = useCallback(() => setStep((s) => Math.min(TOTAL, s + 1)), [TOTAL]);
+  const goBack = useCallback(() => setStep((s) => Math.max(0, s - 1)), []);
+
+  /* ── Results view ─────────────────────────────────────────────────────── */
+  if (isResults) {
+    return (
+      <div className="max-w-3xl mx-auto">
+        <div className="rounded-xl border border-border p-6 bg-card flex flex-col items-center text-center mb-6">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Your NDPA compliance score</p>
+          <ScoreGauge score={report.score} rating={report.rating} />
+          <p className={`mt-2 text-sm font-semibold uppercase tracking-wider ${ratingColor(report.rating)}`}>{report.rating}</p>
+          <p aria-live="polite" className="text-sm text-muted-foreground mt-2 max-w-md">{ratingSummary(report.rating, report.score)}</p>
+          <div className="flex flex-wrap justify-center gap-2 mt-4">
+            <button type="button" onClick={() => setStep(0)} className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-background transition">
+              Edit answers
+            </button>
+            <button type="button" onClick={() => window.print()} className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-background transition">
+              Print / save as PDF
+            </button>
+            <button type="button" onClick={reset} className="rounded-lg px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition">
+              Start over
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div className="rounded-lg border border-border p-4 bg-card">
+            <h3 className="text-sm font-semibold text-foreground mb-3">By module</h3>
+            <ul className="space-y-2.5 text-xs">
+              {Object.entries(report.modules).map(([key, mod]) => {
+                const r = moduleRating(mod.score);
+                return (
+                  <li key={key}>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-muted-foreground">{MODULE_LABELS[key] ?? key}</span>
+                      <span className={`font-medium ${ratingColor(r)}`}>{Math.round(mod.score)}</span>
+                    </div>
+                    <div className="h-1.5 w-full rounded bg-border/40 overflow-hidden">
+                      <div className="h-full rounded" style={{ width: `${Math.round(mod.score)}%`, background: RATING_HEX[r] }} />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <GaidCard profile={profile} />
+        </div>
+
+        <section className="rounded-lg border border-border p-6 bg-card mb-6">
+          <h2 className="text-xl font-semibold text-foreground mb-1">Your prioritised recommendations</h2>
           <p className="text-sm text-muted-foreground mb-4">
             {report.recommendations.length === 0
               ? 'No gaps detected — your audit is clean. Verify with your DPO before relying on this result.'
@@ -329,14 +437,11 @@ export function AuditScore() {
           </p>
           <ul className="space-y-3">
             {report.recommendations.map((r, i) => (
-              <li
-                key={i}
-                className={`rounded-md border p-3 ${priorityColor(r.priority)}`}
-              >
+              <li key={i} className={`rounded-md border p-3 ${priorityColor(r.priority)}`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs font-semibold uppercase tracking-wider">{r.priority}</span>
                   <span className="text-xs text-muted-foreground">·</span>
-                  <span className="text-xs text-muted-foreground">{r.module}</span>
+                  <span className="text-xs text-muted-foreground">{MODULE_LABELS[r.module] ?? r.module}</span>
                   <span className="text-xs text-muted-foreground">·</span>
                   <span className="text-xs text-muted-foreground">{r.ndpaSection}</span>
                 </div>
@@ -346,59 +451,184 @@ export function AuditScore() {
             ))}
           </ul>
         </section>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <EmailCaptureForm report={report} gaidSummary={gaidSummary} submitted={submitted} onSubmitted={() => setSubmitted(true)} />
+          <div className="space-y-3">
+            <Link href="/docs/guides/audit-cli" className="block w-full text-center rounded-lg border border-border px-4 py-3 text-sm hover:bg-background transition">
+              Automate this in CI with <code>ndpr audit</code> →
+            </Link>
+            <Link href="/docs" className="block w-full text-center rounded-lg border border-border px-4 py-3 text-sm hover:bg-background transition">
+              See full toolkit docs →
+            </Link>
+            <p className="text-xs text-muted-foreground italic px-1">
+              For guidance only. Not legal advice — verify with your DPO or counsel. Your answers are saved only in this browser.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Wizard view (one step at a time) ─────────────────────────────────── */
+  const section = step >= 1 ? SECTIONS[step - 1] : null;
+  const isLastQuestionStep = step === TOTAL - 1;
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      {/* Progress header */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-2 text-sm">
+          <span className="text-muted-foreground">Step {step + 1} of {TOTAL}</span>
+          <span className="inline-flex items-center gap-2">
+            <span className="text-muted-foreground">Live score</span>
+            <span className={`font-semibold ${ratingColor(report.rating)}`}>{report.score}/100</span>
+          </span>
+        </div>
+        <div
+          className="h-2 w-full rounded bg-border/40 overflow-hidden"
+          role="progressbar" aria-valuenow={step + 1} aria-valuemin={1} aria-valuemax={TOTAL}
+          aria-label="Audit progress"
+        >
+          <div className="h-full rounded bg-primary transition-all" style={{ width: `${((step + 1) / TOTAL) * 100}%` }} />
+        </div>
       </div>
 
-      {/* ── Right column: live score (sticky on desktop) ─────────────────── */}
-      <aside className="lg:sticky lg:top-24 self-start space-y-4">
-        <div className="rounded-lg border border-border p-6 bg-card">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Compliance score</p>
-          <div className="flex items-baseline gap-2 mb-3">
-            <span className={`text-5xl font-bold ${ratingColor(report.rating)}`}>{report.score}</span>
-            <span className="text-2xl text-muted-foreground">/ 100</span>
-          </div>
-          <p className={`text-sm font-semibold uppercase tracking-wider ${ratingColor(report.rating)}`}>
-            {report.rating}
-          </p>
-          <p className="text-xs text-muted-foreground mt-2">{ratingSummary(report.rating, report.score)}</p>
-        </div>
+      <section className="rounded-xl border border-border p-6 bg-card min-h-[20rem]">
+        {step === 0 ? (
+          <>
+            <header className="mb-5">
+              <h2 className="text-xl font-semibold text-foreground">About your organisation</h2>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">NDPC GAID 2025 — registration &amp; audit returns</p>
+              <p className="text-sm text-muted-foreground mt-2">Two quick questions set your DCPMI tier and audit deadlines. Both are optional — skip if unsure.</p>
+            </header>
+            <div className="space-y-5">
+              <label className="block">
+                <span className="text-sm font-medium text-foreground">Distinct data subjects processed in the last 6 months</span>
+                <input
+                  type="number" min={0}
+                  value={profile.dataSubjectsInSixMonths || ''}
+                  onChange={(e) => setProfile((p) => ({ ...p, dataSubjectsInSixMonths: Math.max(0, Number(e.target.value) || 0) }))}
+                  placeholder="e.g. 6200"
+                  className="mt-1.5 w-44 rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                />
+                <span className="block text-xs text-muted-foreground mt-1.5">Over 200 may make you a DCPMI; over 5,000 is UHL.</span>
+              </label>
+              <label className="block">
+                <span className="text-sm font-medium text-foreground">Date you commenced processing personal data</span>
+                <input
+                  type="date"
+                  value={profile.commencementDate}
+                  onChange={(e) => setProfile((p) => ({ ...p, commencementDate: e.target.value }))}
+                  className="mt-1.5 block rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                />
+                <span className="block text-xs text-muted-foreground mt-1.5">Used to compute your initial audit (+15 months) and next CAR deadline.</span>
+              </label>
+            </div>
+          </>
+        ) : section ? (
+          <>
+            <header className="mb-5">
+              <h2 className="text-xl font-semibold text-foreground">{section.title}</h2>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">{section.ndpa}</p>
+              <p className="text-sm text-muted-foreground mt-2">Tick everything your organisation already does.</p>
+            </header>
+            <div className="space-y-2">
+              {section.questions.map((q) => {
+                const checked = Boolean((input[section.id] as Record<string, unknown>)[q.key]);
+                return (
+                  <label
+                    key={q.key}
+                    className={`flex items-start gap-3 cursor-pointer rounded-lg border p-3 transition ${checked ? 'border-primary/50 bg-primary/5' : 'border-border hover:bg-background'}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={(e) => toggleFlag(section.id, q.key, e.target.checked)}
+                      className="mt-0.5 h-5 w-5 rounded border-gray-400 text-primary focus:ring-primary"
+                    />
+                    <span className="text-sm text-foreground">{q.label}</span>
+                  </label>
+                );
+              })}
 
-        <div className="rounded-lg border border-border p-4 bg-card">
-          <h3 className="text-sm font-semibold text-foreground mb-3">By module</h3>
-          <ul className="space-y-2 text-xs">
-            {Object.entries(report.modules).map(([key, mod]) => (
-              <li key={key} className="flex justify-between items-center">
-                <span className="text-muted-foreground">{key}</span>
-                <span className={`font-medium ${ratingColor(moduleRating(mod.score))}`}>
-                  {Math.round(mod.score)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+              {section.id === 'dsr' && (
+                <label className="flex items-center gap-3 mt-3 px-1">
+                  <span className="text-sm text-foreground">Typical response time</span>
+                  <input
+                    type="number" min={1} max={120}
+                    value={input.dsr.responseTimelineDays}
+                    onChange={(e) => setResponseDays(Number(e.target.value))}
+                    className="w-20 rounded border border-border bg-background px-2 py-1 text-sm"
+                  />
+                  <span className="text-sm text-muted-foreground">days (guidance: 30)</span>
+                </label>
+              )}
+              {section.id === 'policy' && (
+                <label className="flex items-center gap-3 mt-3 px-1">
+                  <span className="text-sm text-foreground">Privacy policy last updated</span>
+                  <input type="date" value={input.policy.lastUpdated} onChange={(e) => setPolicyDate(e.target.value)} className="rounded border border-border bg-background px-2 py-1 text-sm" />
+                </label>
+              )}
+              {section.id === 'ropa' && (
+                <label className="flex items-center gap-3 mt-3 px-1">
+                  <span className="text-sm text-foreground">RoPA last reviewed</span>
+                  <input type="date" value={input.ropa.lastReviewed} onChange={(e) => setRopaDate(e.target.value)} className="rounded border border-border bg-background px-2 py-1 text-sm" />
+                </label>
+              )}
+            </div>
+          </>
+        ) : null}
+      </section>
 
-        <EmailCaptureForm report={report} submitted={submitted} onSubmitted={() => setSubmitted(true)} />
-
+      {/* Nav footer */}
+      <div className="flex items-center justify-between mt-5">
         <button
           type="button"
-          onClick={() => window.print()}
-          className="block w-full text-center rounded-lg border border-border px-4 py-2 text-sm hover:bg-card transition"
+          onClick={goBack}
+          disabled={step === 0}
+          className="rounded-lg border border-border px-5 py-2.5 text-sm hover:bg-card transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Print / save as PDF
+          ← Back
         </button>
-
-        <Link
-          href="/docs"
-          className="block w-full text-center rounded-lg border border-border px-4 py-2 text-sm hover:bg-card transition"
+        <button
+          type="button"
+          onClick={goNext}
+          className="rounded-lg bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium hover:opacity-90 transition"
         >
-          See full toolkit docs →
-        </Link>
+          {isLastQuestionStep ? 'See my results →' : 'Next →'}
+        </button>
+      </div>
 
-        <p className="text-xs text-muted-foreground italic px-1">
-          Score generated for guidance only. Not legal advice — verify with your DPO or counsel.
-        </p>
-      </aside>
+      <button
+        type="button"
+        onClick={() => setStep(TOTAL)}
+        className="block mx-auto mt-4 text-xs text-muted-foreground hover:text-foreground transition"
+      >
+        Skip to results →
+      </button>
     </div>
   );
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * GAID summary (for the emailed digest)
+ * ────────────────────────────────────────────────────────────────────────── */
+
+function buildGaidSummary(profile: ProfileState): string {
+  if (!profile.dataSubjectsInSixMonths) return 'Not provided.';
+  const dcpmi = classifyDCPMI({ dataSubjectsInSixMonths: profile.dataSubjectsInSixMonths });
+  if (!dcpmi.isDCPMI) return `Below DCPMI threshold (${profile.dataSubjectsInSixMonths} data subjects / 6 months).`;
+  const filesCAR = dcpmi.tier === 'UHL' || dcpmi.tier === 'EHL';
+  const lines = [
+    `Tier: ${dcpmi.tier} (registration fee ${ngn(dcpmi.annualFeeNGN)}/yr)`,
+    filesCAR ? 'Files Compliance Audit Returns annually.' : 'Renews registration annually (no CAR).',
+  ];
+  if (filesCAR && profile.commencementDate) {
+    const car = generateComplianceAuditReturn({ commencementDate: profile.commencementDate, tier: dcpmi.tier });
+    lines.push(`Initial audit due ${car.schedule.initialAuditDueDate}; next CAR deadline ${car.schedule.nextFilingDeadline}.`);
+  }
+  return lines.join(' ');
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -407,35 +637,26 @@ export function AuditScore() {
 
 interface EmailCaptureProps {
   report: ComplianceReport;
+  gaidSummary: string;
   submitted: boolean;
   onSubmitted: () => void;
 }
 
-/**
- * Build a `mailto:` href that pre-fills the maintainer's inbox with the
- * audit-taker's details and a Markdown digest of the top recommendations.
- * The docs site is statically exported, so we can't run an API route in
- * production — `mailto:` is the universal MVP path. A future patch can
- * swap this for a real backend (Formspree, Resend, etc.) without
- * touching the surrounding UI.
- */
 function buildMailto(input: {
   name: string;
   email: string;
   orgName: string;
   report: ComplianceReport;
+  gaidSummary: string;
 }): string {
-  const { name, email, orgName, report } = input;
+  const { name, email, orgName, report, gaidSummary } = input;
   const subject = `NDPA audit score: ${report.score}/100 (${report.rating}) — ${orgName || name || 'audit request'}`;
   const moduleLines = Object.entries(report.modules)
-    .map(([k, m]) => `- ${k}: ${Math.round(m.score)}/100 (${moduleRating(m.score)})`)
+    .map(([k, m]) => `- ${MODULE_LABELS[k] ?? k}: ${Math.round(m.score)}/100 (${moduleRating(m.score)})`)
     .join('\n');
   const topRecs = report.recommendations
     .slice(0, 10)
-    .map(
-      (r, i) =>
-        `${i + 1}. [${r.priority.toUpperCase()}] ${r.label} — ${r.ndpaSection}\n   ${r.recommendation}`,
-    )
+    .map((r, i) => `${i + 1}. [${r.priority.toUpperCase()}] ${r.label} — ${r.ndpaSection}\n   ${r.recommendation}`)
     .join('\n\n');
   const body = `Hi NDPR Toolkit team,
 
@@ -447,6 +668,8 @@ Organisation: ${orgName || 'n/a'}
 
 ──────── Audit summary ────────
 Overall: ${report.score}/100 (${report.rating})
+
+GAID 2025: ${gaidSummary}
 
 Per-module:
 ${moduleLines}
@@ -460,28 +683,21 @@ Thanks!`;
   return `mailto:hello@ndprtoolkit.com.ng?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-/**
- * Build the JSON payload sent to Web3Forms. Same shape as the mailto body
- * so the maintainer's inbox sees a consistent digest whichever path the
- * user takes.
- */
 function buildWeb3FormsPayload(input: {
   accessKey: string;
   name: string;
   email: string;
   orgName: string;
   report: ComplianceReport;
+  gaidSummary: string;
 }): Record<string, string> {
-  const { accessKey, name, email, orgName, report } = input;
+  const { accessKey, name, email, orgName, report, gaidSummary } = input;
   const moduleLines = Object.entries(report.modules)
-    .map(([k, m]) => `- ${k}: ${Math.round(m.score)}/100 (${moduleRating(m.score)})`)
+    .map(([k, m]) => `- ${MODULE_LABELS[k] ?? k}: ${Math.round(m.score)}/100 (${moduleRating(m.score)})`)
     .join('\n');
   const topRecs = report.recommendations
     .slice(0, 10)
-    .map(
-      (r, i) =>
-        `${i + 1}. [${r.priority.toUpperCase()}] ${r.label} — ${r.ndpaSection}\n   ${r.recommendation}`,
-    )
+    .map((r, i) => `${i + 1}. [${r.priority.toUpperCase()}] ${r.label} — ${r.ndpaSection}\n   ${r.recommendation}`)
     .join('\n\n');
 
   return {
@@ -492,13 +708,14 @@ function buildWeb3FormsPayload(input: {
     organisation: orgName || 'n/a',
     score: String(report.score),
     rating: report.rating,
+    gaid_2025: gaidSummary,
     generated_at: report.generatedAt,
     per_module: moduleLines,
     top_recommendations: topRecs || 'No gaps detected.',
   };
 }
 
-function EmailCaptureForm({ report, submitted, onSubmitted }: EmailCaptureProps) {
+function EmailCaptureForm({ report, gaidSummary, submitted, onSubmitted }: EmailCaptureProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [orgName, setOrgName] = useState('');
@@ -506,27 +723,19 @@ function EmailCaptureForm({ report, submitted, onSubmitted }: EmailCaptureProps)
   const [submitMethod, setSubmitMethod] = useState<'web3forms' | 'mailto' | null>(null);
 
   const canSubmit = name.trim().length > 0 && /.+@.+\..+/.test(email);
-
-  // Web3Forms access key (free, no signup-by-the-end-user; one-time setup
-  // by the toolkit maintainer at web3forms.com — paste the key into the
-  // NEXT_PUBLIC_WEB3FORMS_KEY env var). When unset, falls back to mailto:.
   const web3FormsKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSubmit) return;
 
-    // Path 1: Web3Forms backend if configured. POSTs the payload; their
-    // service emails the maintainer with the structured fields.
     if (web3FormsKey) {
       setBusy(true);
       try {
         const res = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(
-            buildWeb3FormsPayload({ accessKey: web3FormsKey, name, email, orgName, report }),
-          ),
+          body: JSON.stringify(buildWeb3FormsPayload({ accessKey: web3FormsKey, name, email, orgName, report, gaidSummary })),
         });
         if (res.ok) {
           setSubmitMethod('web3forms');
@@ -534,19 +743,15 @@ function EmailCaptureForm({ report, submitted, onSubmitted }: EmailCaptureProps)
           onSubmitted();
           return;
         }
-        // Fall through to mailto on non-2xx (network unavailable, key
-        // revoked, etc.) — better UX than failing silently.
       } catch {
-        // Fall through to mailto
+        /* fall through to mailto */
       } finally {
         setBusy(false);
       }
     }
 
-    // Path 2: mailto: fallback. Works without any backend.
     setSubmitMethod('mailto');
-    const href = buildMailto({ name, email, orgName, report });
-    window.location.href = href;
+    window.location.href = buildMailto({ name, email, orgName, report, gaidSummary });
     onSubmitted();
   }
 
@@ -570,31 +775,22 @@ function EmailCaptureForm({ report, submitted, onSubmitted }: EmailCaptureProps)
         Detailed PDF with prioritised recommendations + NDPA section references. Free.
       </p>
       <input
-        type="text"
-        required
-        placeholder="Your name"
-        value={name}
+        type="text" required placeholder="Your name" value={name}
         onChange={(e) => setName(e.target.value)}
         className="w-full rounded border border-border bg-background px-3 py-2 text-sm"
       />
       <input
-        type="email"
-        required
-        placeholder="Work email"
-        value={email}
+        type="email" required placeholder="Work email" value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="w-full rounded border border-border bg-background px-3 py-2 text-sm"
       />
       <input
-        type="text"
-        placeholder="Organisation (optional)"
-        value={orgName}
+        type="text" placeholder="Organisation (optional)" value={orgName}
         onChange={(e) => setOrgName(e.target.value)}
         className="w-full rounded border border-border bg-background px-3 py-2 text-sm"
       />
       <button
-        type="submit"
-        disabled={!canSubmit || busy}
+        type="submit" disabled={!canSubmit || busy}
         className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50"
       >
         {busy ? 'Sending…' : 'Email me my report'}
