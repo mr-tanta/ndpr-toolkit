@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.5.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.4.0...v5.5.0) (2026-05-31)
+
+
+### Features
+
+* **cli:** add ndpr audit CLI compliance gate ([8a8bdc5](https://github.com/mr-tanta/ndpr-toolkit/commit/8a8bdc53ddc322a8d92a90fd86353a4a22df9cdc))
+
 ## [5.4.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.3.0...v5.4.0) (2026-05-30)
 
 
