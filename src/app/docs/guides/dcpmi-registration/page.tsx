@@ -14,8 +14,9 @@ export default function DCPMIRegistrationGuide() {
         <p className="mb-4 text-foreground">
           The NDPC <strong>General Application and Implementation Directive (GAID) 2025</strong> requires organisations
           that qualify as a <strong>Data Controller/Processor of Major Importance (DCPMI)</strong> to register with the
-          Commission, pay an annual fee tied to their tier, and file <strong>Compliance Audit Returns (CAR)</strong> — an
-          initial audit within 15 months of commencing processing, and an annual return thereafter.
+          Commission and pay an annual fee tied to their tier. <strong>UHL and EHL</strong> organisations register once
+          and file <strong>Compliance Audit Returns (CAR)</strong> — an initial audit within 15 months of commencing
+          processing, then an annual return; <strong>OHL</strong> organisations renew their registration annually instead.
         </p>
         <p className="mb-4 text-foreground">
           The toolkit ships two pure utilities for this regime —{' '}
