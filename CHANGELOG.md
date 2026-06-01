@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.6.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.5.1...v5.6.0) (2026-06-01)
+
+
+### Features
+
+* **consent:** add cookie scanner (declared vs present audit) ([d74366f](https://github.com/mr-tanta/ndpr-toolkit/commit/d74366f8356857621a94729eb79225cdfbef2024))
+* **packages:** refresh create-ndpr and ndpr-recipes for GAID 2025 ([bf709cf](https://github.com/mr-tanta/ndpr-toolkit/commit/bf709cf4f40176e65f21f2db61a946542fac7479))
+* **site:** make the /score audit a full-screen cinematic experience ([52cc0e8](https://github.com/mr-tanta/ndpr-toolkit/commit/52cc0e8b6b889df0ca6c1842a71d25029f4e4aaa))
+* **site:** turn the /score audit into a guided step-by-step wizard ([18f26ad](https://github.com/mr-tanta/ndpr-toolkit/commit/18f26ad36726f4b3ef9228e032e3d60eb4de1786))
+
+
+### Bug Fixes
+
+* **packages:** use canonical bin path (no ./ prefix) in create-ndpr manifests ([600d989](https://github.com/mr-tanta/ndpr-toolkit/commit/600d989f1f73fe5174f4d3fc035980bfa6c8fa27))
+
+
+### Documentation
+
+* **marketing:** refresh the X thread + LinkedIn post for current state ([58c6fca](https://github.com/mr-tanta/ndpr-toolkit/commit/58c6fca46899765bf3a09eee5cc0fca387f6cd99))
+* **site:** add Cookie Scanner guide page ([5813686](https://github.com/mr-tanta/ndpr-toolkit/commit/58136865de16e9f1f8b74c7918294fdcd0c5b78f))
+
 ## [5.5.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.5.0...v5.5.1) (2026-05-31)
 
 
