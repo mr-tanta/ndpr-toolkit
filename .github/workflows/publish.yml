@@ -179,13 +179,6 @@ jobs:
       - name: Publish create-ndpr unscoped alias (if version is new)
         if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish_companions)
         working-directory: packages/create-ndpr-unscoped
-        # continue-on-error: until the unscoped `create-ndpr` is bootstrapped
-        # (one manual publish) and given its own trusted publisher, this OIDC
-        # publish has nothing to authenticate against and will fail. That must
-        # not red-X the whole run after the scoped packages above succeeded.
-        # Once it's at 1.0.0 on npm this step simply skips. Remove this line
-        # after the trusted publisher is configured if you want hard failures.
-        continue-on-error: true
         run: |
           VERSION=$(node -e "console.log(require('./package.json').version)")
           if npm view "create-ndpr@$VERSION" version >/dev/null 2>&1; then
