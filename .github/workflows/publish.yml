@@ -3,11 +3,21 @@ name: Publish to npm
 on:
   release:
     types: [published]
-  # Manual smoke test of the build/verify pipeline WITHOUT publishing. The
-  # Publish and version-match steps below are gated to real release events,
-  # so a manual dispatch can never push to npm — it just validates that the
-  # pipeline (and its action versions) still works.
+  # Manual trigger. By default this is a no-publish smoke test of the
+  # build/verify pipeline — the MAIN-library publish is always gated to real
+  # release events, so a dispatch can never push the flagship package.
+  #
+  # Set `publish_companions: true` to publish the companion packages
+  # (create-ndpr, ndpr-recipes, unscoped alias) at their current versions via
+  # the same Trusted Publishing path — useful for shipping a companion bump
+  # without cutting a main-library release. Still idempotent: versions already
+  # on npm are skipped.
   workflow_dispatch:
+    inputs:
+      publish_companions:
+        description: 'Publish companion packages at their current versions'
+        type: boolean
+        default: false
 
 # Block concurrent publishes — if two releases are tagged seconds apart,
 # only one runs at a time to prevent racing for the npm version.
@@ -125,8 +135,10 @@ jobs:
       # each step is idempotent: it publishes only when the package.json version
       # is not already on npm, and skips otherwise. That lets every main-library
       # release run this workflow without failing when a companion is unchanged.
-      # These run on `release` only (a manual workflow_dispatch never publishes),
-      # so a companion bump ships on the next main-library release.
+      # These run on a `release`, or on a manual workflow_dispatch with
+      # `publish_companions: true` — so you can ship a companion bump without
+      # cutting a main-library release. The main-library publish above never
+      # runs on dispatch.
       #
       # Each companion needs its OWN registered trusted publisher on npm, all
       # pointing at this workflow (.github/workflows/publish.yml in this repo):
@@ -141,7 +153,7 @@ jobs:
       # -----------------------------------------------------------------------
 
       - name: Publish @tantainnovative/create-ndpr (if version is new)
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish_companions)
         working-directory: packages/create-ndpr
         run: |
           VERSION=$(node -e "console.log(require('./package.json').version)")
@@ -153,7 +165,7 @@ jobs:
           fi
 
       - name: Publish @tantainnovative/ndpr-recipes (if version is new)
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish_companions)
         working-directory: packages/ndpr-recipes
         run: |
           VERSION=$(node -e "console.log(require('./package.json').version)")
@@ -165,8 +177,15 @@ jobs:
           fi
 
       - name: Publish create-ndpr unscoped alias (if version is new)
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.publish_companions)
         working-directory: packages/create-ndpr-unscoped
+        # continue-on-error: until the unscoped `create-ndpr` is bootstrapped
+        # (one manual publish) and given its own trusted publisher, this OIDC
+        # publish has nothing to authenticate against and will fail. That must
+        # not red-X the whole run after the scoped packages above succeeded.
+        # Once it's at 1.0.0 on npm this step simply skips. Remove this line
+        # after the trusted publisher is configured if you want hard failures.
+        continue-on-error: true
         run: |
           VERSION=$(node -e "console.log(require('./package.json').version)")
           if npm view "create-ndpr@$VERSION" version >/dev/null 2>&1; then
