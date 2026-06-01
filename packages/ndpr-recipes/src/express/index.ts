@@ -14,6 +14,7 @@
  *   /breach     — Breach notification workflow (NDPA Section 40)
  *   /compliance — Compliance score dashboard
  *   /ropa       — Record of Processing Activities (NDPA accountability principle)
+ *   /registration — DCPMI tier + Compliance Audit Return schedule (GAID 2025)
  *
  * How to use
  * ----------
@@ -50,6 +51,7 @@ import { dsrRouter } from './routes/dsr';
 import { breachRouter } from './routes/breach';
 import { complianceRouter } from './routes/compliance';
 import { ropaRouter } from './routes/ropa';
+import { registrationRouter } from './routes/registration';
 
 /**
  * Create and return a fully configured NDPR compliance Express Router.
@@ -69,6 +71,7 @@ export function createNDPRRouter(): Router {
   router.use('/breach', breachRouter);
   router.use('/compliance', complianceRouter);
   router.use('/ropa', ropaRouter);
+  router.use('/registration', registrationRouter);
 
   return router;
 }
@@ -79,4 +82,5 @@ export { dsrRouter } from './routes/dsr';
 export { breachRouter } from './routes/breach';
 export { complianceRouter } from './routes/compliance';
 export { ropaRouter } from './routes/ropa';
+export { registrationRouter } from './routes/registration';
 export { requireConsent, requireAllConsents } from './middleware/consent-check';

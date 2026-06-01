@@ -1,6 +1,6 @@
 # create-ndpr
 
-CLI scaffolder for [NDPA](https://ndpr.gov.ng/) compliance using [`@tantainnovative/ndpr-toolkit`](https://github.com/tantainnovative/ndpr-toolkit).
+CLI scaffolder for Nigeria [NDPA 2023](https://ndpc.gov.ng/) / NDPC GAID 2025 compliance using [`@tantainnovative/ndpr-toolkit`](https://github.com/mr-tanta/ndpr-toolkit).
 
 ## Usage
 
@@ -43,10 +43,17 @@ Run this from the root of an existing project. The CLI detects your stack and ge
 | `pages/api/consent.ts` | Next.js Pages Router + consent |
 | `pages/api/dsr.ts` | Next.js Pages Router + dsr |
 | `pages/api/breach.ts` | Next.js Pages Router + breach |
-| `src/ndpr/index.ts` | Express |
+| `src/ndpr/index.ts` | Express (Prisma only) |
 | `src/ndpr/routes/consent.ts` | Express + consent module |
+| `ndpr.audit.json` | Always — config for the `ndpr audit` compliance gate |
+| `.github/workflows/ndpr-audit.yml` | Always — CI workflow that fails on a compliance regression |
 
 All generated files use `{{ORG_NAME}}` and `{{DPO_EMAIL}}` substituted with your answers.
+
+The generated breach route (`app/api/breach/route.ts`) returns an `ndpcReadiness`
+summary on every report — which GAID 2025 Article 33(5) notification fields are
+still missing, and how many hours remain on the 72-hour clock — so you know what
+to collect before filing with the NDPC.
 
 ## Modules
 
@@ -118,6 +125,22 @@ app.use(express.json());
 app.use('/api/ndpr', createNDPRRouter());
 ```
 
+### Compliance as code (GAID 2025)
+
+Every scaffold ships an `ndpr.audit.json` config and a GitHub Actions workflow
+that runs the toolkit's `ndpr audit` CLI. The audit scores your compliance
+posture (consent, DSR, DPIA, breach, policy, lawful basis, cross-border, RoPA)
+plus your GAID 2025 DCPMI registration tier, and **exits non-zero when the score
+drops below the threshold** — so a regression fails CI like a broken test.
+
+```bash
+# Run it locally any time:
+npx ndpr audit --min-score 70
+```
+
+Edit `ndpr.audit.json` to reflect your real posture, then raise `--min-score` as
+you close gaps. See the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
+
 ## Requirements
 
 - Node.js 18+
@@ -126,5 +149,5 @@ app.use('/api/ndpr', createNDPRRouter());
 ## Links
 
 - Toolkit docs: https://ndprtoolkit.com.ng
-- GitHub: https://github.com/tantainnovative/ndpr-toolkit
-- NDPC: https://ndpr.gov.ng
+- GitHub: https://github.com/mr-tanta/ndpr-toolkit
+- NDPC: https://ndpc.gov.ng

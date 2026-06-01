@@ -1,6 +1,6 @@
 # @tantainnovative/ndpr-recipes
 
-Backend recipes for NDPA compliance with [@tantainnovative/ndpr-toolkit](https://github.com/tantainnovative/ndpr-toolkit).
+Backend recipes for Nigeria NDPA 2023 / NDPC GAID 2025 compliance with [@tantainnovative/ndpr-toolkit](https://github.com/mr-tanta/ndpr-toolkit).
 
 ## What is this?
 
@@ -23,9 +23,11 @@ This package is a **reference implementation** — not a library to install. Cop
 | DSR request persistence | Prisma adapter, Drizzle adapter |
 | Breach report persistence | Prisma adapter |
 | ROPA persistence | Prisma adapter |
-| Next.js App Router | Consent, DSR, Breach, ROPA, Compliance route handlers |
-| Express | Full NDPR router with consent, DSR, breach, ROPA, compliance routes |
+| Next.js App Router | Consent, DSR, Breach, ROPA, Compliance, Registration route handlers |
+| Express | Full NDPR router with consent, DSR, breach, ROPA, compliance, registration routes |
 | Consent middleware | Next.js edge middleware + Express middleware |
+| GAID 2025 (DCPMI + CAR) | `/registration` route — tier classification + Compliance Audit Return schedule |
+| Breach Article-33 readiness | Breach detail routes return which NDPC notification fields are still missing |
 
 ---
 
@@ -41,19 +43,27 @@ This package is a **reference implementation** — not a library to install. Cop
 | `src/adapters/prisma-ropa.ts` | Prisma `StorageAdapter<RecordOfProcessingActivities>` |
 | `src/adapters/drizzle-consent.ts` | Drizzle `StorageAdapter<ConsentSettings>` |
 | `src/adapters/drizzle-dsr.ts` | Drizzle `StorageAdapter<DSRRequest[]>` |
+| `src/adapters/drizzle-breach.ts` | Drizzle `StorageAdapter<BreachState>` |
+| `src/adapters/drizzle-ropa.ts` | Drizzle `StorageAdapter<RecordOfProcessingActivities>` |
+| `src/adapters/drizzle-dpia.ts` | Drizzle `StorageAdapter<DPIAResult[]>` |
+| `src/adapters/drizzle-lawful-basis.ts` | Drizzle `StorageAdapter<ProcessingActivity[]>` |
+| `src/adapters/drizzle-cross-border.ts` | Drizzle `StorageAdapter<CrossBorderTransfer[]>` |
 | `src/nextjs/app-router/api/consent/route.ts` | Next.js consent API route |
 | `src/nextjs/app-router/api/dsr/route.ts` | Next.js DSR API route |
 | `src/nextjs/app-router/api/breach/route.ts` | Next.js breach API route |
+| `src/nextjs/app-router/api/breach/[id]/route.ts` | Next.js breach detail route — returns GAID 2025 Art. 33 readiness |
 | `src/nextjs/app-router/api/ropa/route.ts` | Next.js ROPA API route |
 | `src/nextjs/app-router/api/compliance/route.ts` | Next.js compliance score API route |
+| `src/nextjs/app-router/api/registration/route.ts` | Next.js DCPMI tier + CAR schedule route (GAID 2025) |
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 | `src/nextjs/app-router/layout-example.tsx` | Full wiring example for App Router |
 | `src/express/index.ts` | Express router factory — mounts all routes |
 | `src/express/routes/consent.ts` | Express consent router |
 | `src/express/routes/dsr.ts` | Express DSR router |
-| `src/express/routes/breach.ts` | Express breach router |
+| `src/express/routes/breach.ts` | Express breach router — `GET /:id` returns GAID 2025 Art. 33 readiness |
 | `src/express/routes/ropa.ts` | Express ROPA router |
 | `src/express/routes/compliance.ts` | Express compliance score router |
+| `src/express/routes/registration.ts` | Express DCPMI tier + CAR schedule router (GAID 2025) |
 | `src/express/middleware/consent-check.ts` | Express consent gate middleware |
 
 ---
@@ -307,6 +317,7 @@ This mounts:
 | `GET/POST/PATCH  /api/ndpr/breach` | Breach notification |
 | `GET/POST/PATCH  /api/ndpr/ropa` | Record of Processing Activities |
 | `GET             /api/ndpr/compliance` | Compliance score |
+| `GET             /api/ndpr/registration` | DCPMI tier + CAR schedule (GAID 2025) |
 
 ### Consent middleware (route protection)
 
@@ -370,6 +381,46 @@ export default function NDPRLayout({
 ```
 
 The `apiAdapter` hits your `/api/consent` route handler (from `src/nextjs/app-router/api/consent/route.ts`), which persists consent to PostgreSQL via Prisma or Drizzle.
+
+---
+
+## GAID 2025 — DCPMI registration & breach readiness
+
+The NDPC's General Application and Implementation Directive (GAID) 2025 added
+obligations the original recipes predate. Two recipes cover them, both built on
+the toolkit's React-free `/server` utilities (no extra database tables needed).
+
+### DCPMI tier + Compliance Audit Return (`/registration`)
+
+`classifyDCPMI` derives your registration tier and annual fee from the number of
+data subjects you process in a six-month window; `generateComplianceAuditReturn`
+derives the filing schedule for those that must file:
+
+- **UHL** (> 5,000 subjects) — ₦250,000/yr, files a **CAR annually**
+- **EHL** (1,000–5,000) — ₦100,000/yr, files a **CAR annually**
+- **OHL** (200–999) — ₦10,000/yr, **renews registration** (no CAR)
+
+```ts
+// GET /api/registration?dataSubjects=6200&commencementDate=2025-01-15
+import { classifyDCPMI, generateComplianceAuditReturn } from '@tantainnovative/ndpr-toolkit/server';
+
+const classification = classifyDCPMI({ dataSubjectsInSixMonths: 6200 });
+const auditReturn = generateComplianceAuditReturn({
+  commencementDate: '2025-01-15',
+  tier: classification.tier, // CAR applies to UHL/EHL only
+});
+```
+
+> Thresholds, fees, and deadlines follow the NDPC GAID 2025 baseline and can
+> change — verify against current NDPC guidance before relying on them.
+
+### Breach Article-33 readiness
+
+The breach detail routes (`GET /api/breach/[id]` in Next.js, `GET /breach/:id`
+in Express) now return an `ndpcReadiness` object via `assessBreachNotification` —
+which GAID 2025 Article 33(5) notification fields are still missing and how many
+hours remain on the 72-hour clock — so you know what to collect before filing.
+Set `NDPR_DPO_NAME` / `NDPR_DPO_EMAIL` to record the contact point.
 
 ---
 

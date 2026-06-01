@@ -522,12 +522,15 @@ async function main() {
         generateRoute('pages/api/cross-border.ts', 'nextjs-cross-border-route.ts');
       }
     } else if (framework === 'express') {
-      if (orm !== 'none') {
+      // express-setup.ts wires up a PrismaClient directly and is not yet
+      // ORM-aware, so it only produces working code for Prisma. Skip it (with
+      // a pointer) for Drizzle and None rather than emit a broken import.
+      if (orm === 'prisma') {
         generate('src/ndpr/index.ts', 'express-setup.ts', vars);
       } else {
         skip(
           'src/ndpr/index.ts',
-          'Express setup template currently assumes Prisma; skipping for ORM=none. ' +
+          `Express setup template currently assumes Prisma; skipping for ORM=${orm}. ` +
             'See https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/create-ndpr/templates/express-setup.ts',
         );
       }
@@ -543,6 +546,22 @@ async function main() {
       if (selectedModules.includes('cross-border')) {
         generateRoute('src/ndpr/routes/cross-border.ts', 'express-cross-border-route.ts');
       }
+    }
+
+    // -------------------------------------------------------------------------
+    // Compliance-as-code: ndpr audit config + CI gate (GAID 2025)
+    // -------------------------------------------------------------------------
+    // Always scaffolded, regardless of framework/ORM — the audit runs against a
+    // declarative config, not your database, so it works for every project.
+    if (existsSync(join(CWD, 'ndpr.audit.json'))) {
+      skip('ndpr.audit.json', 'already exists — keep your edits');
+    } else {
+      generateRaw('ndpr.audit.json', readFileSync(join(TEMPLATES_DIR, 'ndpr-audit.json'), 'utf8'));
+    }
+    if (existsSync(join(CWD, '.github', 'workflows', 'ndpr-audit.yml'))) {
+      skip('.github/workflows/ndpr-audit.yml', 'already exists');
+    } else {
+      generate('.github/workflows/ndpr-audit.yml', 'github-ndpr-audit.yml', vars);
     }
 
     // -------------------------------------------------------------------------
@@ -581,7 +600,7 @@ async function main() {
     }
 
     console.log(`  ${cyan(`${orm === 'none' ? '1' : '3'}`.padStart(1))}. Install the ndpr-toolkit:`);
-    console.log(dim('     pnpm add @tantainnovative/ndpr-toolkit'));
+    console.log(dim('     pnpm add @tantainnovative/ndpr-toolkit@^5.5.1'));
     console.log();
 
     if (framework === 'nextjs-app' || framework === 'nextjs-pages') {
@@ -598,8 +617,14 @@ async function main() {
       console.log();
     }
 
-    console.log(dim('  Documentation: https://ndpr-toolkit.tantainnovative.com'));
-    console.log(dim('  Repository:    https://github.com/tantainnovative/ndpr-toolkit'));
+    const auditStep = framework === 'none' ? (orm === 'none' ? 3 : 5) : orm === 'none' ? 3 : 5;
+    console.log(`  ${cyan(`${auditStep}`)}. Keep compliance from regressing — edit ${bold('ndpr.audit.json')} to match`);
+    console.log(dim('     your real posture, then run the audit (also wired into CI for you):'));
+    console.log(dim('     npx ndpr audit --min-score 70'));
+    console.log();
+
+    console.log(dim('  Documentation: https://ndprtoolkit.com.ng'));
+    console.log(dim('  Repository:    https://github.com/mr-tanta/ndpr-toolkit'));
     console.log();
 
   } finally {

@@ -1,0 +1,14 @@
+{
+  "minScore": 70,
+  "compliance": {
+    "consent": { "hasConsentMechanism": true, "hasPurposeSpecification": true, "hasWithdrawalMechanism": true, "hasMinorProtection": false, "consentRecordsRetained": true },
+    "dsr": { "hasRequestMechanism": true, "supportsAccess": true, "supportsRectification": true, "supportsErasure": false, "supportsPortability": false, "supportsObjection": false, "responseTimelineDays": 30 },
+    "dpia": { "conductedForHighRisk": true, "documentedRisks": true, "mitigationMeasures": true },
+    "breach": { "hasNotificationProcess": true, "notifiesWithin72Hours": true, "hasRiskAssessment": true, "hasRecordKeeping": true },
+    "policy": { "hasPrivacyPolicy": true, "isPubliclyAccessible": true, "lastUpdated": "2026-01-01", "coversAllSections": true },
+    "lawfulBasis": { "documentedForAllProcessing": true, "hasLegitimateInterestAssessment": false },
+    "crossBorder": { "hasTransferMechanisms": true, "adequacyAssessed": true, "ndpcApprovalObtained": false },
+    "ropa": { "maintained": true, "includesAllProcessing": true, "lastReviewed": "2026-01-01" }
+  },
+  "dcpmi": { "dataSubjectsInSixMonths": 0 }
+}

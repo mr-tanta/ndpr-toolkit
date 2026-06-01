@@ -19,12 +19,56 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/server';
 
 const prisma = new PrismaClient();
 
 /** Next.js App Router route context — contains dynamic segment params */
 interface RouteContext {
   params: { id: string };
+}
+
+/**
+ * Assess a stored breach row against the NDPA S.40 / GAID 2025 Article 33(5)
+ * notification content requirements, returning which mandated items are still
+ * missing and how long is left on the 72-hour clock.
+ *
+ * Note: this recipe's `BreachReport` table is intentionally simplified, so
+ * fields like likely consequences, mitigation measures, data-subject categories
+ * and record count aren't persisted — they'll show as "missing" until you
+ * extend the schema. Set NDPR_DPO_NAME / NDPR_DPO_EMAIL to record the contact
+ * point (Art. 33(5)(h)).
+ */
+function assessReadiness(report: any) {
+  const a = assessBreachNotification({
+    id: report.id,
+    title: report.title,
+    description: report.description,
+    category: report.category,
+    discoveredAt: new Date(report.discoveredAt).getTime(),
+    occurredAt: report.occurredAt ? new Date(report.occurredAt).getTime() : undefined,
+    reportedAt: new Date(report.reportedAt ?? report.discoveredAt).getTime(),
+    reporter: {
+      name: report.reporterName,
+      email: report.reporterEmail,
+      department: report.reporterDepartment ?? '',
+    },
+    affectedSystems: report.affectedSystems ?? [],
+    dataTypes: report.dataTypes ?? [],
+    estimatedAffectedSubjects: report.estimatedAffected ?? undefined,
+    initialActions: report.initialActions ?? undefined,
+    dpoContact: process.env.NDPR_DPO_EMAIL
+      ? { name: process.env.NDPR_DPO_NAME ?? 'DPO', email: process.env.NDPR_DPO_EMAIL }
+      : undefined,
+    status: report.status,
+  });
+  return {
+    complete: a.complete,
+    completeness: a.completeness,
+    missing: a.missing,
+    hoursRemaining: a.timing.hoursRemaining,
+    overdue: a.timing.overdue,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -52,7 +96,9 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: 'Breach report not found' }, { status: 404 });
   }
 
-  return NextResponse.json(report);
+  // Surface NDPC notification readiness alongside the report so the incident
+  // detail view can show what's still needed before filing (GAID 2025 Art. 33).
+  return NextResponse.json({ ...report, ndpcReadiness: assessReadiness(report) });
 }
 
 // ---------------------------------------------------------------------------

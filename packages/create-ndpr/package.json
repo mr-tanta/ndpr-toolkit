@@ -1,22 +1,32 @@
 {
   "name": "@tantainnovative/create-ndpr",
-  "version": "0.3.0",
-  "description": "CLI scaffolder for NDPA compliance with @tantainnovative/ndpr-toolkit",
+  "version": "0.4.0",
+  "description": "CLI scaffolder for Nigeria NDPA 2023 / NDPC GAID 2025 compliance with @tantainnovative/ndpr-toolkit",
   "license": "MIT",
   "author": {
     "name": "Abraham Esandayinze Tanta",
     "url": "https://linkedin.com/in/mr-tanta"
+  },
+  "homepage": "https://ndprtoolkit.com.ng",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mr-tanta/ndpr-toolkit.git",
+    "directory": "packages/create-ndpr"
   },
   "bin": {
     "create-ndpr": "./bin/index.mjs"
   },
   "files": [
     "bin/",
-    "templates/"
+    "templates/",
+    "README.md"
   ],
   "keywords": [
     "ndpa",
     "ndpr",
+    "gaid-2025",
+    "dcpmi",
+    "compliance-audit-return",
     "cli",
     "scaffold",
     "nigeria",

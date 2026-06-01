@@ -11,6 +11,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/server';
 // {{#if ORM=prisma}}
 import { PrismaClient } from '@prisma/client';
 
@@ -200,5 +201,39 @@ export async function POST(req: NextRequest) {
   auditLog.push({ id: newId(), module: 'breach', action: 'reported', entityId: report.id, at: new Date() });
   // {{/if}}
 
-  return NextResponse.json(report, { status: 201 });
+  // NDPC readiness — NDPA S.40 / GAID 2025 Art. 33(5). Advisory and
+  // non-blocking: you must record every incident, but this surfaces which
+  // mandated notification fields are still missing (and how long is left on
+  // the 72-hour clock) before you file with the Commission. Collect the
+  // missing fields — likely consequences, mitigation measures, data-subject
+  // categories, record count — as your investigation progresses.
+  const ndpcReadiness = assessBreachNotification({
+    id: report.id,
+    title,
+    description,
+    category,
+    discoveredAt: new Date(discoveredAt).getTime(),
+    occurredAt: occurredAt ? new Date(occurredAt).getTime() : undefined,
+    reportedAt: Date.now(),
+    reporter: { name: reporterName, email: reporterEmail, department: reporterDepartment ?? '' },
+    affectedSystems,
+    dataTypes,
+    estimatedAffectedSubjects: estimatedAffected ?? undefined,
+    initialActions: initialActions ?? undefined,
+    dpoContact: { name: '{{ORG_NAME}} DPO', email: '{{DPO_EMAIL}}' },
+    status: 'ongoing',
+  });
+
+  return NextResponse.json(
+    {
+      ...report,
+      ndpcReadiness: {
+        complete: ndpcReadiness.complete,
+        completeness: ndpcReadiness.completeness,
+        missing: ndpcReadiness.missing,
+        hoursRemaining: ndpcReadiness.timing.hoursRemaining,
+      },
+    },
+    { status: 201 },
+  );
 }
