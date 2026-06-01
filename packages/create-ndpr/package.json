@@ -14,7 +14,7 @@
     "directory": "packages/create-ndpr"
   },
   "bin": {
-    "create-ndpr": "./bin/index.mjs"
+    "create-ndpr": "bin/index.mjs"
   },
   "files": [
     "bin/",
