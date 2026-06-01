@@ -82,6 +82,7 @@ const navigation: NavItem[] = [
       { title: 'NDPA Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
       { title: 'Conducting a DPIA', href: '/docs/guides/conducting-dpia' },
       { title: 'Managing Consent', href: '/docs/guides/managing-consent' },
+      { title: 'Cookie Scanner', href: '/docs/guides/cookie-scanner', isNew: true },
       { title: 'Handling Data Subject Requests', href: '/docs/guides/data-subject-requests' },
       { title: 'Breach Notification Process', href: '/docs/guides/breach-notification-process' },
       { title: 'Lawful Basis for Processing', href: '/docs/guides/lawful-basis' },
