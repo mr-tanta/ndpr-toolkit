@@ -54,6 +54,14 @@ export { validateConsentStructured, validateConsentOptionsStructured } from './u
 export type { StructuredValidationError, StructuredValidationResult } from './utils/consent';
 export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
 export type { ConsentAuditEntry } from './utils/consent-audit';
+export { scanCookies, KNOWN_COOKIES } from './utils/cookie-scanner';
+export type {
+  DeclaredCookie,
+  CookieScanOptions,
+  CookieScanResult,
+  ScannedCookie,
+  CookieMatchSource,
+} from './utils/cookie-scanner';
 export { formatDSRRequestStructured, validateDsrSubmissionStructured } from './utils/dsr';
 export type {
   DsrSubmissionPayload,

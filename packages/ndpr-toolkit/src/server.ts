@@ -125,6 +125,17 @@ export type {
 
 export type { ConsentAuditEntry } from './utils/consent-audit';
 
+// Cookie scanner — React-free and DOM-optional (pass a Cookie header string
+// server-side), so it lives in the server-safe entry too.
+export { scanCookies, KNOWN_COOKIES } from './utils/cookie-scanner';
+export type {
+  DeclaredCookie,
+  CookieScanOptions,
+  CookieScanResult,
+  ScannedCookie,
+  CookieMatchSource,
+} from './utils/cookie-scanner';
+
 export type {
   ComplianceInput,
   ComplianceReport,

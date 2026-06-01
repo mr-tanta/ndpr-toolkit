@@ -536,6 +536,31 @@ The content checklist (`notificationToCommission`) maps each item to its source 
 
 ---
 
+## Cookie Scanner
+
+`scanCookies()` audits the cookies **actually present** against the cookies you've **declared**, surfacing undeclared cookies that put you out of step with your cookie notice (**NDPA 2023 S.25–26** / **NDPC GAID 2025** — consent must be specific and informed). It's pure and DOM-optional: pass a `cookieString` (a `Cookie:` header server-side, or a fixture) or let it read `document.cookie` in the browser.
+
+```ts
+import { scanCookies } from '@tantainnovative/ndpr-toolkit/core'; // or /server
+
+const scan = scanCookies(
+  [{ name: 'sid', category: 'necessary', provider: 'App', purpose: 'Login session' }],
+  { cookieString: document.cookie }, // omit in the browser to read it automatically
+);
+
+scan.complete;     // false while any undeclared cookie is present
+scan.undeclared;   // cookies on the page you didn't declare — the compliance gap
+scan.identified;   // undeclared, but the built-in registry knows them (_ga → Google Analytics, …)
+scan.unknown;      // undeclared and unidentifiable
+scan.byCategory;   // present cookies grouped by resolved category
+```
+
+A built-in `KNOWN_COOKIES` registry recognises common third-party cookies (Google Analytics/Ads, Meta, Hotjar, Microsoft Clarity, LinkedIn, Stripe, HubSpot, TikTok, Intercom, …) so even undeclared cookies are usually identified with a provider and likely category; extend it via `knownCookies` or disable it with `useKnownRegistry: false`. Your own declarations always take precedence. Also available as the client-side `useCookieScan(declared?, options?)` hook from `/hooks`, which scans on mount and returns a stable `rescan()`.
+
+> A compliance-discovery aid, not legal advice — verify against current NDPC guidance.
+
+---
+
 ## Compliance Audit CLI
 
 The package ships an `ndpr` binary. `ndpr audit` scores a compliance config against the toolkit's engine — the compliance score plus the GAID 2025 DCPMI, CAR, and breach-notification checks — and **exits non-zero when the audit fails**, so you can drop it into CI as a compliance gate.

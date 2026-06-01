@@ -20,6 +20,15 @@ export { useConsent } from './hooks/useConsent';
 export type { UseConsentOptions, UseConsentReturn } from './hooks/useConsent';
 export { useDCPMI } from './hooks/useDCPMI';
 export type { DCPMIInput, DCPMIClassification, DCPMIClassificationOptions } from './utils/dcpmi';
+export { useCookieScan } from './hooks/useCookieScan';
+export type { UseCookieScanReturn } from './hooks/useCookieScan';
+export type {
+  DeclaredCookie,
+  CookieScanOptions,
+  CookieScanResult,
+  ScannedCookie,
+  CookieMatchSource,
+} from './utils/cookie-scanner';
 export { useComplianceAuditReturn } from './hooks/useComplianceAuditReturn';
 export type { CARInput, CAROptions, ComplianceAuditReturn } from './utils/car';
 export { useDSR } from './hooks/useDSR';

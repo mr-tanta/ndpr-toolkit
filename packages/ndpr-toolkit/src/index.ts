@@ -65,6 +65,14 @@ export type {
 } from './utils/consent';
 export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
 export type { ConsentAuditEntry } from './utils/consent-audit';
+export { scanCookies, KNOWN_COOKIES } from './utils/cookie-scanner';
+export type {
+  DeclaredCookie,
+  CookieScanOptions,
+  CookieScanResult,
+  ScannedCookie,
+  CookieMatchSource,
+} from './utils/cookie-scanner';
 export { formatDSRRequestStructured } from './utils/dsr';
 export type { FormatDSRRequestStructuredResult } from './utils/dsr';
 export { assessDPIARisk } from './utils/dpia';
@@ -94,6 +102,8 @@ export { usePrivacyPolicy } from './hooks/usePrivacyPolicy';
 export { useDefaultPrivacyPolicy } from './hooks/useDefaultPrivacyPolicy';
 export { useComplianceScore } from './hooks/useComplianceScore';
 export { useDCPMI } from './hooks/useDCPMI';
+export { useCookieScan } from './hooks/useCookieScan';
+export type { UseCookieScanReturn } from './hooks/useCookieScan';
 export { useComplianceAuditReturn } from './hooks/useComplianceAuditReturn';
 export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
 export { useFocusTrap } from './hooks/useFocusTrap';
