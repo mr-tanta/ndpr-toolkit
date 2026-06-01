@@ -118,3 +118,60 @@ jobs:
         if: github.event_name == 'release'
         working-directory: .
         run: npm publish --access public --provenance
+
+      # -----------------------------------------------------------------------
+      # Companion packages — same Trusted Publishing (OIDC) mechanism, each from
+      # its own subdirectory. They version INDEPENDENTLY of the main library, so
+      # each step is idempotent: it publishes only when the package.json version
+      # is not already on npm, and skips otherwise. That lets every main-library
+      # release run this workflow without failing when a companion is unchanged.
+      # These run on `release` only (a manual workflow_dispatch never publishes),
+      # so a companion bump ships on the next main-library release.
+      #
+      # Each companion needs its OWN registered trusted publisher on npm, all
+      # pointing at this workflow (.github/workflows/publish.yml in this repo):
+      #   https://www.npmjs.com/package/@tantainnovative/create-ndpr/access
+      #   https://www.npmjs.com/package/@tantainnovative/ndpr-recipes/access
+      #   https://www.npmjs.com/package/create-ndpr/access
+      #
+      # The unscoped `create-ndpr` does not exist on npm yet — npm can only
+      # configure a trusted publisher for a package that exists, so publish it
+      # ONCE manually (npm login && npm publish from packages/create-ndpr-unscoped),
+      # then add its trusted publisher so future bumps flow through here.
+      # -----------------------------------------------------------------------
+
+      - name: Publish @tantainnovative/create-ndpr (if version is new)
+        if: github.event_name == 'release'
+        working-directory: packages/create-ndpr
+        run: |
+          VERSION=$(node -e "console.log(require('./package.json').version)")
+          if npm view "@tantainnovative/create-ndpr@$VERSION" version >/dev/null 2>&1; then
+            echo "@tantainnovative/create-ndpr@$VERSION already on npm — skipping"
+          else
+            echo "Publishing @tantainnovative/create-ndpr@$VERSION"
+            npm publish --access public --provenance
+          fi
+
+      - name: Publish @tantainnovative/ndpr-recipes (if version is new)
+        if: github.event_name == 'release'
+        working-directory: packages/ndpr-recipes
+        run: |
+          VERSION=$(node -e "console.log(require('./package.json').version)")
+          if npm view "@tantainnovative/ndpr-recipes@$VERSION" version >/dev/null 2>&1; then
+            echo "@tantainnovative/ndpr-recipes@$VERSION already on npm — skipping"
+          else
+            echo "Publishing @tantainnovative/ndpr-recipes@$VERSION"
+            npm publish --access public --provenance
+          fi
+
+      - name: Publish create-ndpr unscoped alias (if version is new)
+        if: github.event_name == 'release'
+        working-directory: packages/create-ndpr-unscoped
+        run: |
+          VERSION=$(node -e "console.log(require('./package.json').version)")
+          if npm view "create-ndpr@$VERSION" version >/dev/null 2>&1; then
+            echo "create-ndpr@$VERSION already on npm — skipping"
+          else
+            echo "Publishing create-ndpr@$VERSION"
+            npm publish --access public --provenance
+          fi
