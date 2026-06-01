@@ -557,6 +557,17 @@ scan.byCategory;   // present cookies grouped by resolved category
 
 A built-in `KNOWN_COOKIES` registry recognises common third-party cookies (Google Analytics/Ads, Meta, Hotjar, Microsoft Clarity, LinkedIn, Stripe, HubSpot, TikTok, Intercom, …) so even undeclared cookies are usually identified with a provider and likely category; extend it via `knownCookies` or disable it with `useKnownRegistry: false`. Your own declarations always take precedence. Also available as the client-side `useCookieScan(declared?, options?)` hook from `/hooks`, which scans on mount and returns a stable `rescan()`.
 
+`ConsentBanner` can surface this directly: pass `showCookieScan` (plus `declaredCookies`) and the customize view renders a "Cookies on this page" panel that flags undeclared cookies live — a transparency/self-audit aid for your visitors and DPO.
+
+```tsx
+<ConsentBanner
+  options={options}
+  onSave={save}
+  showCookieScan
+  declaredCookies={[{ name: 'sid', category: 'necessary', provider: 'App' }]}
+/>
+```
+
 > A compliance-discovery aid, not legal advice — verify against current NDPC guidance.
 
 ---

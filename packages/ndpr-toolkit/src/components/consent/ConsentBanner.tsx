@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { ConsentOption, ConsentSettings } from '../../types/consent';
 import { resolveClass } from '../../utils/styling';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { useCookieScan } from '../../hooks/useCookieScan';
+import type { DeclaredCookie, CookieScanOptions } from '../../utils/cookie-scanner';
 import { useNDPRLocale } from '../NDPRProvider';
 
 export interface ConsentAnalyticsEvent {
@@ -29,6 +31,8 @@ export interface ConsentBannerClassNames {
   saveButton?: string;
   customizePanel?: string;
   selectAllButton?: string;
+  /** The optional on-page cookie scan panel (shown in the customize view) */
+  cookieScanPanel?: string;
   /** Alias for acceptButton */
   primaryButton?: string;
   /** Alias for rejectButton */
@@ -173,6 +177,34 @@ export interface ConsentBannerProps {
    * Called when the banner is shown, accepted, rejected, customized, or dismissed.
    */
   onAnalytics?: (event: ConsentAnalyticsEvent) => void;
+
+  /**
+   * Show a "cookies on this page" scan panel inside the customize view. It
+   * audits the cookies actually present against `declaredCookies` and flags
+   * undeclared ones — a transparency / self-audit aid (NDPA S.25-26 specific,
+   * informed consent). Off by default.
+   * @default false
+   */
+  showCookieScan?: boolean;
+
+  /**
+   * The cookies you declare, matched against what's present when
+   * `showCookieScan` is on. Without it, every present cookie is treated as
+   * undeclared (though the built-in registry may still identify it).
+   */
+  declaredCookies?: DeclaredCookie[];
+
+  /**
+   * Options forwarded to the scan (e.g. `knownCookies`, `useKnownRegistry`,
+   * or a `cookieString` to scan instead of `document.cookie`).
+   */
+  cookieScanOptions?: CookieScanOptions;
+
+  /**
+   * Heading for the cookie scan panel.
+   * @default "Cookies on this page"
+   */
+  cookieScanTitle?: string;
 }
 
 /**
@@ -208,7 +240,11 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   secondaryButtonClassName = "",
   classNames,
   unstyled,
-  onAnalytics
+  onAnalytics,
+  showCookieScan = false,
+  declaredCookies,
+  cookieScanOptions,
+  cookieScanTitle
 }) => {
   // Resolve the i18n strings once per render. `useNDPRLocale` returns the
   // merged English+override locale with all keys present, so each lookup is
@@ -224,8 +260,17 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
   const resolvedSave = saveButtonText ?? locale.consent.savePreferences ?? "Save Preferences";
   const resolvedSelectAll = locale.consent.selectAll ?? "Select All";
   const resolvedDeselectAll = locale.consent.deselectAll ?? "Deselect All";
+  const resolvedCookieScanTitle = cookieScanTitle ?? "Cookies on this page";
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [showCustomize, setShowCustomize] = useState<boolean>(false);
+
+  // Optional on-page cookie audit. The hook scans on mount (client-only, so
+  // `cookieScan` is null during SSR); re-scan when the customize panel opens so
+  // the list reflects whatever cookies are set by then.
+  const { result: cookieScan, rescan: rescanCookies } = useCookieScan(declaredCookies, cookieScanOptions);
+  useEffect(() => {
+    if (showCookieScan && showCustomize) rescanCookies();
+  }, [showCookieScan, showCustomize, rescanCookies]);
   const [consents, setConsents] = useState<Record<string, boolean>>({});
   const [isMounted, setIsMounted] = useState(false);
   // Shared trap hook handles focus capture + Tab cycling + focus restoration
@@ -530,6 +575,37 @@ export const ConsentBanner: React.FC<ConsentBannerProps> = ({
                 </div>
               ))}
             </div>
+
+            {showCookieScan && cookieScan && (
+              <div
+                data-ndpr-section="cookie-scan"
+                className={resolveClass('ndpr-alert ndpr-alert--info mb-2', classNames?.cookieScanPanel, unstyled)}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <h3 className="text-sm font-bold ndpr-text-info">{resolvedCookieScanTitle}</h3>
+                  <span className="text-sm font-semibold ndpr-text-info">{cookieScan.total}</span>
+                </div>
+                {cookieScan.undeclared.length === 0 ? (
+                  <p className="text-sm ndpr-text-info">All cookies on this page are declared.</p>
+                ) : (
+                  <>
+                    <p className="text-sm ndpr-text-warning">
+                      {cookieScan.undeclared.length} undeclared cookie(s) detected — review your cookie notice (NDPA S.25-26).
+                    </p>
+                    <ul className="mt-1 list-disc pl-5">
+                      {cookieScan.undeclared.map((c) => (
+                        <li key={c.name} className="text-xs ndpr-text-muted">
+                          <code>{c.name}</code>{' '}
+                          <span className="opacity-70">
+                            {c.provider ? `— ${c.provider} (${c.category})` : '— unrecognized'}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            )}
 
             <div className={resolveClass('ndpr-consent-banner__buttons', classNames?.buttonGroup, unstyled)}>
               <button
