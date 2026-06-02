@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.7.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.6.0...v5.7.0) (2026-06-02)
+
+
+### Features
+
+* **consent:** surface the cookie scanner in ConsentBanner ([cdafcd8](https://github.com/mr-tanta/ndpr-toolkit/commit/cdafcd89179302d8c7c95dd0e2797df7faf1a6ea))
+
 ## [5.6.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.5.1...v5.6.0) (2026-06-01)
 
 
