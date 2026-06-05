@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.7.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.0...v5.7.1) (2026-06-05)
+
+
+### Features
+
+* **site:** complete sitemap, add missing canonicals, standardise locale to en_NG ([7340b28](https://github.com/mr-tanta/ndpr-toolkit/commit/7340b28cbe20bb167ba0357b7a6010a29edad296))
+
+
+### Bug Fixes
+
+* correct NDPA citations and harden CLI/adapter edge cases ([86f0698](https://github.com/mr-tanta/ndpr-toolkit/commit/86f06987346fd5d7bb7ea920245fc5a28fb3cf1a))
+
+
+### Code Refactoring
+
+* remove dead code and avoidable any casts ([2cd0053](https://github.com/mr-tanta/ndpr-toolkit/commit/2cd0053406ed90e735f3a709e01db8c53fda6ce4))
+
 ## [5.7.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.6.0...v5.7.0) (2026-06-02)
 
 

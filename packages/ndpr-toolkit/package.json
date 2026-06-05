@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "5.7.0",
+  "version": "5.7.1",
   "private": true,
   "description": "React and TypeScript compliance components for the Nigeria Data Protection Act (NDPA) 2023. NOTE: This inner package.json is NOT published — `npm publish` runs from the repo root. Marked `private: true` since 3.10.5 to make that explicit and prevent the drift class that caused the 3.8.0–3.10.2 missing-exports incident. Slated for removal in 4.0 (see plan: clear-the-audit-backlog).",
   "main": "./dist/index.js",
