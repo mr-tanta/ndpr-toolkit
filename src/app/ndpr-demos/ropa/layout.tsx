@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     'Maintain a Record of Processing Activities per NDPA 2023 Section 29. Categorize, filter, and export your ROPA for NDPC audits.',
   keywords:
     'ROPA Nigeria, Record of Processing Activities, NDPA Section 29, NDPC audit, data processing register Nigeria',
+  alternates: { canonical: '/ndpr-demos/ropa' },
   openGraph: {
     title: 'ROPA Manager Demo | NDPA Toolkit',
     description:
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
         alt: 'NDPA ROPA Manager Demo',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

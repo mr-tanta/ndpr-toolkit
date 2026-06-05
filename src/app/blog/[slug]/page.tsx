@@ -16,6 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: post.description,
     keywords: `NDPA, Nigeria Data Protection, NDPC, ${post.title}`,
     authors: [{ name: post.author }],
+    alternates: { canonical: `/blog/${slug}` },
     openGraph: {
       title: `${post.title} | NDPA Toolkit Blog`,
       description: post.description,
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       publishedTime: post.date,
       authors: [post.author],
       siteName: 'NDPA Toolkit',
-      locale: 'en_US',
+      locale: 'en_NG',
       images: [{ url: '/screenshots/hero.png', width: 1280, height: 800, alt: `${post.title}` }],
     },
     twitter: {

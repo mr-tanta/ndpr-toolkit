@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Cross-Border Transfers Component Documentation',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

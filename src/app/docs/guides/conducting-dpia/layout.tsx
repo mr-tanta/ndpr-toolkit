@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         alt: 'Conducting a DPIA Guide - NDPA Toolkit',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

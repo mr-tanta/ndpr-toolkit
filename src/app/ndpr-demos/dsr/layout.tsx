@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     'Demo all 8 NDPA data subject rights: access, rectification, erasure, and more. Manage DSR requests with NDPC-compliant workflows. Try it free.',
   keywords:
     'NDPA data subject rights, DSR Nigeria, NDPC rights requests, right to erasure Nigeria, data access request NDPA',
+  alternates: { canonical: '/ndpr-demos/dsr' },
   openGraph: {
     title: 'Data Subject Rights Demo | NDPA Toolkit',
     description:
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Data Subject Rights Demo',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

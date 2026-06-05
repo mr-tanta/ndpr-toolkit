@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     'Try NDPA Section 25-26 consent banners, preference management, and audit-ready storage. Build compliant consent flows for Nigeria Data Protection.',
   keywords:
     'NDPA consent management, Nigeria Data Protection consent, NDPC Section 25, consent banner, cookie consent Nigeria',
+  alternates: { canonical: '/ndpr-demos/consent' },
   openGraph: {
     title: 'Consent Management Demo | NDPA Toolkit',
     description:
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Consent Management Demo',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

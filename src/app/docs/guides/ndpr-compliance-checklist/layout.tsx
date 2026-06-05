@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         alt: 'NDPA 2023 Compliance Checklist - NDPA Toolkit',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

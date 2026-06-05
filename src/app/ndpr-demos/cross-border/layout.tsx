@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     'Assess international data transfers with NDPA 2023 Part VIII (Sections 41-43) adequacy checks and safeguard recommendations. Ensure NDPC-compliant cross-border flows.',
   keywords:
     'NDPA cross-border transfer, Nigeria data transfer, NDPC Section 41, international data flow, data adequacy Nigeria',
+  alternates: { canonical: '/ndpr-demos/cross-border' },
   openGraph: {
     title: 'Cross-Border Transfer Demo | NDPA Toolkit',
     description:
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Cross-Border Transfer Demo',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

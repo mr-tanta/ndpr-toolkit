@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     url: 'https://ndprtoolkit.com.ng/blog',
     siteName: 'NDPA Toolkit',
     images: [{ url: '/screenshots/hero.png', width: 1280, height: 800, alt: 'NDPA Toolkit Blog' }],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     'Track and document the lawful basis for every processing activity under NDPA 2023 Section 25. Maintain full audit trails for NDPC compliance.',
   keywords:
     'NDPA lawful basis, Nigeria data processing legal basis, NDPC Section 25, consent tracking, legitimate interest Nigeria',
+  alternates: { canonical: '/ndpr-demos/lawful-basis' },
   openGraph: {
     title: 'Lawful Basis Tracker Demo | NDPA Toolkit',
     description:
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Lawful Basis Tracker Demo',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

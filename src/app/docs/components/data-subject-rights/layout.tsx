@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Data Subject Rights Component Documentation',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

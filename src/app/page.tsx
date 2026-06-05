@@ -21,7 +21,7 @@ export const metadata = {
         alt: 'NDPA Toolkit - Nigeria Data Protection Compliance Infrastructure',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

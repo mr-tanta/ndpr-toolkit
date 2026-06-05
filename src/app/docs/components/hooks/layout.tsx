@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Toolkit React Hooks Reference',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     'Generate NDPA 2023-compliant privacy policies for Nigerian websites and apps. Preview, customize, and export policies that meet NDPC requirements.',
   keywords:
     'NDPA privacy policy, Nigeria privacy policy generator, NDPC compliant policy, NDPA Section 24, data protection policy Nigeria',
+  alternates: { canonical: '/ndpr-demos/policy' },
   openGraph: {
     title: 'Privacy Policy Generator Demo | NDPA Toolkit',
     description:
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Privacy Policy Generator Demo',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

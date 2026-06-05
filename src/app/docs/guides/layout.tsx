@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Toolkit Implementation Guides',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

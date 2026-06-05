@@ -6,6 +6,7 @@ export const metadata: Metadata = {
     'Simulate 72-hour NDPC breach notifications with severity assessment and compliance workflows. Meet NDPA 2023 breach reporting deadlines.',
   keywords:
     'NDPA breach notification, 72-hour NDPC reporting, data breach Nigeria, NDPA Section 40, breach management toolkit',
+  alternates: { canonical: '/ndpr-demos/breach' },
   openGraph: {
     title: 'Breach Notification Demo | NDPA Toolkit',
     description:
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
         alt: 'NDPA Breach Notification Demo',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {

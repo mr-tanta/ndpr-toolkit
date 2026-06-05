@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         alt: 'Lawful Basis for Processing Guide - NDPA Toolkit',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_NG',
     type: 'website',
   },
   twitter: {
