@@ -465,4 +465,4 @@ import type {
 
 ## Support
 
-For issues and feature requests, please visit our [GitHub repository](https://github.com/tantainnovative/ndpr-toolkit).
+For issues and feature requests, please visit our [GitHub repository](https://github.com/mr-tanta/ndpr-toolkit).

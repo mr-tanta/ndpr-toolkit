@@ -373,13 +373,13 @@ anywhere.
 Module          Weight    NDPA Sections
 -----------     ------    ------------------------------------------------
 consent         20%       Section 25, Section 26
-dsr             15%       Sections 34, 35, 36, 37, 38, 39
+dsr             15%       Sections 34, 35, 36, 37, 38
 breach          15%       Section 40
-policy          12%       Section 29
+policy          12%       Section 27
 dpia            12%       Section 28
 lawfulBasis     10%       Section 25(1)
-crossBorder      8%       Section 43, Section 44
-ropa             8%       Section 30
+crossBorder      8%       Section 41, Section 42, Section 43
+ropa             8%       Section 29
                 -----
 Total           100%
 ```

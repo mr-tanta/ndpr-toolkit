@@ -211,7 +211,7 @@ const REQUIREMENTS: Requirement[] = [
   {
     id: 'right-to-withdraw-consent',
     name: 'Right to Withdraw Consent',
-    ndpaSection: 'NDPA Section 25(2)',
+    ndpaSection: 'NDPA Section 35',
     severity: 'important',
     points: 7,
     check: (policy) => {
@@ -230,7 +230,7 @@ const REQUIREMENTS: Requirement[] = [
   {
     id: 'right-to-lodge-complaint',
     name: 'Right to Lodge Complaint with NDPC',
-    ndpaSection: 'NDPA Section 40',
+    ndpaSection: 'NDPA Section 46',
     severity: 'important',
     points: 7,
     check: (policy) => {

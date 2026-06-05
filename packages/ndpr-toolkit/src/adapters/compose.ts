@@ -37,7 +37,12 @@ export function composeAdapters<T = unknown>(
       const primaryResult = primary.save(data);
       const runSecondaries = () => {
         for (const adapter of secondaries) {
-          try { adapter.save(data); }
+          try {
+            const result = adapter.save(data);
+            if (result instanceof Promise) {
+              result.catch((err) => console.warn('[ndpr-toolkit] Secondary adapter save failed:', err));
+            }
+          }
           catch (err) { console.warn('[ndpr-toolkit] Secondary adapter save failed:', err); }
         }
       };
@@ -50,7 +55,12 @@ export function composeAdapters<T = unknown>(
       const primaryResult = primary.remove();
       const runSecondaries = () => {
         for (const adapter of secondaries) {
-          try { adapter.remove(); }
+          try {
+            const result = adapter.remove();
+            if (result instanceof Promise) {
+              result.catch((err) => console.warn('[ndpr-toolkit] Secondary adapter remove failed:', err));
+            }
+          }
           catch (err) { console.warn('[ndpr-toolkit] Secondary adapter remove failed:', err); }
         }
       };

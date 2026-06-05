@@ -109,16 +109,24 @@ async function main() {
     process.stderr.write(`Failed to parse ${configPath}: ${err.message}\n`);
     return 2;
   }
-  if (!config || typeof config.compliance !== 'object') {
+  if (!config || typeof config.compliance !== 'object' || config.compliance === null) {
     process.stderr.write(`Config ${configPath} must contain a "compliance" object.\n`);
     return 2;
   }
 
   const { runNdprAudit, formatNdprAuditReport } = await import('@tantainnovative/ndpr-toolkit/server');
 
-  const minScore = args.flags['min-score'] !== undefined ? Number(args.flags['min-score']) : config.minScore;
   const options = { ...(config.options ?? {}) };
-  if (minScore !== undefined && !Number.isNaN(minScore)) options.minScore = minScore;
+  if (args.flags['min-score'] !== undefined) {
+    const minScore = Number(args.flags['min-score']);
+    if (typeof args.flags['min-score'] !== 'string' || Number.isNaN(minScore)) {
+      process.stderr.write('--min-score requires a numeric value.\n');
+      return 2;
+    }
+    options.minScore = minScore;
+  } else if (config.minScore !== undefined) {
+    options.minScore = config.minScore;
+  }
 
   const result = runNdprAudit(
     { compliance: config.compliance, dcpmi: config.dcpmi, car: config.car, breaches: config.breaches },
