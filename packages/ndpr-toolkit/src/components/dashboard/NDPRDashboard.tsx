@@ -191,7 +191,6 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ moduleKey, module, classNames, 
       : 'critical';
 
   const color = RATING_COLORS[rating];
-  const passedCount = Math.round((module.score / 100) * (module.gaps.length + Math.round((module.score / 100) * 5)));
   const gapCount = module.gaps.length;
   const displayName = MODULE_DISPLAY_NAMES[moduleKey] ?? moduleKey;
 

@@ -7,7 +7,7 @@ export function useAnalytics() {
 
   return {
     // Track custom events
-    trackEvent: (eventName: string, properties?: Record<string, any>) => {
+    trackEvent: (eventName: string, properties?: Record<string, unknown>) => {
       posthog?.capture(eventName, properties)
     },
 
