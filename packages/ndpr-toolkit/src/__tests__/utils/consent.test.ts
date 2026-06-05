@@ -40,6 +40,56 @@ describe('validateConsentStructured', () => {
     });
   });
 
+  it('emits timestamp_invalid for a truthy-but-non-number timestamp', () => {
+    const settings = {
+      consents: { necessary: true },
+      timestamp: 'not-a-number',
+      version: '1.0',
+      method: 'banner',
+      hasInteracted: true,
+    } as unknown as ConsentSettings;
+
+    const result = validateConsentStructured(settings);
+    expect(result.valid).toBe(false);
+    const invalid = result.errors.find((e) => e.code === 'timestamp_invalid');
+    expect(invalid).toBeDefined();
+    expect(invalid?.field).toBe('timestamp');
+    expect(result.errors.some((e) => e.code === 'timestamp_required')).toBe(false);
+  });
+
+  it('emits consent_stale when the timestamp is older than 13 months (NDPA refresh)', () => {
+    const fourteenMonthsAgo = new Date();
+    fourteenMonthsAgo.setMonth(fourteenMonthsAgo.getMonth() - 14);
+    const settings: ConsentSettings = {
+      consents: { necessary: true },
+      timestamp: fourteenMonthsAgo.getTime(),
+      version: '1.0',
+      method: 'banner',
+      hasInteracted: true,
+    };
+
+    const result = validateConsentStructured(settings);
+    expect(result.valid).toBe(false);
+    expect(result.errors.map((e) => e.code)).toContain('consent_stale');
+    expect(result.data).toBeUndefined();
+  });
+
+  it('does not emit consent_stale for consent given within the last 13 months', () => {
+    const tenMonthsAgo = new Date();
+    tenMonthsAgo.setMonth(tenMonthsAgo.getMonth() - 10);
+    const settings: ConsentSettings = {
+      consents: { necessary: true },
+      timestamp: tenMonthsAgo.getTime(),
+      version: '1.0',
+      method: 'banner',
+      hasInteracted: true,
+    };
+
+    const result = validateConsentStructured(settings);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
   it('returns multiple entries when multiple fields fail', () => {
     const settings = {
       consents: {},
