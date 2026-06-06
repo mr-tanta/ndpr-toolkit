@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [5.7.2](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.1...v5.7.2) (2026-06-06)
+
 ## [5.7.1](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.0...v5.7.1) (2026-06-05)
 
 
