@@ -170,7 +170,6 @@ describe('cookieAdapter', () => {
     const docDescriptor = Object.getOwnPropertyDescriptor(global, 'document')!;
 
     beforeEach(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (global as any).document;
     });
 

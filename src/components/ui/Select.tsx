@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 
 // This interface extends the standard HTML select attributes
 // and allows for additional props to be added in the future
-/* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
 export interface SelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   // Custom props can be added here

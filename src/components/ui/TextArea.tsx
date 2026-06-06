@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 
 // This interface extends the standard HTML textarea attributes
 // and allows for additional props to be added in the future
-/* eslint-disable-next-line @typescript-eslint/no-empty-object-type */
 export interface TextAreaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   // Custom props can be added here

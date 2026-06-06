@@ -6,7 +6,6 @@ import CheckboxGroup from '../shared/CheckboxGroup';
 import FormField from '../shared/FormField';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { TextArea } from '@/components/ui/TextArea';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { cn } from '@/lib/utils';
 
 interface DataSharingStepProps {

@@ -5,7 +5,6 @@ import CheckboxGroup from '../shared/CheckboxGroup';
 import FormField from '../shared/FormField';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Select } from '@/components/ui/Select';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { cn } from '@/lib/utils';
 
 interface DataCollectionStepProps {

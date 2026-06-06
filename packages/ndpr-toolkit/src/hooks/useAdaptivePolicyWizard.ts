@@ -230,7 +230,6 @@ export function useAdaptivePolicyWizard(
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Assemble sections (generated + custom + overrides + order) ────────────
@@ -281,7 +280,6 @@ export function useAdaptivePolicyWizard(
 
   const emptyPolicy = useMemo<PrivacyPolicy>(
     () => buildPrivacyPolicy(createDefaultContext(), [], draftIdRef.current),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 

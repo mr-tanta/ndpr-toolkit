@@ -6,7 +6,8 @@ autoInstallPeers: true
 overrides:
   handlebars: '>=4.7.9'
   lodash: '>=4.17.21'
-  glob: '>=7.2.3'
+  # ^ not >= — test-exclude (jest coverage) does promisify(glob), which breaks on glob 9+
+  glob: '^7.2.3'
   tar: '>=7.5.10'
   js-yaml: '~3.14.2'
   yaml: '>=2.8.3'

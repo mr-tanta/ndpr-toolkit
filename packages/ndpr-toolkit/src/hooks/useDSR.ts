@@ -190,7 +190,7 @@ export function useDSR({
     }
 
     return () => { cancelled = true; };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);  
 
   // Persist requests whenever they change (fire-and-forget)
   const persistRequests = useCallback((updated: DSRRequest[]) => {

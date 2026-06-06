@@ -164,7 +164,7 @@ export function useCrossBorderTransfer({
     }
 
     return () => { cancelled = true; };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);  
 
   // Persist transfers to adapter (fire-and-forget)
   const persistTransfers = useCallback((updated: CrossBorderTransfer[]) => {

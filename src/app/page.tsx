@@ -85,7 +85,7 @@ const jsonLdString = JSON.stringify({
 export default function HomePage() {
   return (
     <>
-      {/* eslint-disable-next-line react/no-danger -- JSON-LD is static, no user input */}
+      { }
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdString }}

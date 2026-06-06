@@ -88,7 +88,6 @@ export interface PolicyPageProps {
  * HTML is generated internally by `exportHTML` from a typed `PrivacyPolicy`
  * and never contains untrusted user input.
  */
-// eslint-disable-next-line react/no-danger
 export const PolicyPage: React.FC<PolicyPageProps> = ({
   policy,
   className,

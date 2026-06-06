@@ -155,7 +155,7 @@ export function useLawfulBasis({
     }
 
     return () => { cancelled = true; };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);  
 
   // Persist activities to adapter (fire-and-forget)
   const persistActivities = useCallback((updated: ProcessingActivity[]) => {

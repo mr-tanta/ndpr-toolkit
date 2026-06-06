@@ -4,7 +4,6 @@
  */
 
 describe('Entry point: index', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/index');
 
   it.each([
@@ -43,7 +42,6 @@ describe('Entry point: index', () => {
 });
 
 describe('Entry point: core', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/core');
 
   it.each([
@@ -87,7 +85,6 @@ describe('Entry point: core', () => {
 });
 
 describe('Entry point: server', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/server');
 
   it.each([
@@ -168,7 +165,6 @@ describe('Entry point: server', () => {
 });
 
 describe('Entry point: hooks', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/hooks-entry');
 
   it.each([
@@ -189,9 +185,7 @@ describe('Entry point: hooks', () => {
 });
 
 describe('Entry point: headless', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/headless');
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const hooksMod = require('../../src/hooks-entry');
 
   it.each([
@@ -221,7 +215,6 @@ describe('Entry point: headless', () => {
 });
 
 describe('Entry point: consent', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/consent');
 
   it.each([
@@ -248,7 +241,6 @@ describe('Entry point: consent', () => {
 });
 
 describe('Entry point: dsr', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/dsr');
 
   it.each([
@@ -267,7 +259,6 @@ describe('Entry point: dsr', () => {
 });
 
 describe('Entry point: dpia', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/dpia');
 
   it.each([
@@ -285,7 +276,6 @@ describe('Entry point: dpia', () => {
 });
 
 describe('Entry point: breach', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/breach');
 
   it.each([
@@ -304,7 +294,6 @@ describe('Entry point: breach', () => {
 });
 
 describe('Entry point: policy', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/policy');
 
   it.each([
@@ -337,7 +326,6 @@ describe('Entry point: policy', () => {
 });
 
 describe('Entry point: lawful-basis', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/lawful-basis-entry');
 
   it.each([
@@ -356,7 +344,6 @@ describe('Entry point: lawful-basis', () => {
 });
 
 describe('Entry point: cross-border', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/cross-border-entry');
 
   it.each([
@@ -375,7 +362,6 @@ describe('Entry point: cross-border', () => {
 });
 
 describe('Entry point: ropa', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/ropa-entry');
 
   it.each([
@@ -394,7 +380,6 @@ describe('Entry point: ropa', () => {
 });
 
 describe('Entry point: adapters', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/adapters-entry');
 
   it.each([
@@ -410,7 +395,6 @@ describe('Entry point: adapters', () => {
 });
 
 describe('Entry point: presets', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/presets-entry');
 
   it.each([
@@ -429,7 +413,6 @@ describe('Entry point: presets', () => {
 });
 
 describe('Entry point: unstyled', () => {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require('../../src/unstyled');
 
   it.each([

@@ -179,7 +179,7 @@ export function useROPA({
     }
 
     return () => { cancelled = true; };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);  
 
   // Persist ROPA to adapter (fire-and-forget)
   const persistROPA = useCallback((updated: RecordOfProcessingActivities) => {

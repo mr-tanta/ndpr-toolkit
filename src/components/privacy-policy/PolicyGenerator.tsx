@@ -407,7 +407,6 @@ export default function PolicyGenerator({
   };
 
   // Validate each step of the form with enhanced validation
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const validateStep = (_step: number) => {
     // Clear any existing errors
     setErrors({});
@@ -431,7 +430,6 @@ export default function PolicyGenerator({
   // These handler functions have been moved to the final policy page
   // but are kept here for reference and to avoid TypeScript errors
   // The underscore prefix indicates they're unused
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _handleCopyPolicy = () => {
     if (previewRef.current) {
       const policyText = previewRef.current.innerText;
@@ -448,7 +446,6 @@ export default function PolicyGenerator({
   };
 
   // Share policy via email
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _handleSharePolicy = () => {
     if (previewRef.current) {
       const subject = `${formData.organizationName} - Privacy Policy`;
@@ -459,7 +456,6 @@ export default function PolicyGenerator({
   };
 
   // Download policy in different formats
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _handleDownloadPolicy = async (
     format: "txt" | "html" | "md" | "pdf" | "rtf",
   ) => {
