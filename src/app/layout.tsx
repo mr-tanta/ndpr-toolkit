@@ -29,6 +29,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  // Set NEXT_PUBLIC_GSC_VERIFICATION (Search Console → "HTML tag" token) to emit
+  // the google-site-verification meta tag; omitted entirely when unset.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GSC_VERIFICATION,
+  },
   applicationName: "NDPA Toolkit",
   manifest: "/favicon/site.webmanifest",
   icons: {
