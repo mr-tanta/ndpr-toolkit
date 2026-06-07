@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { SiteFooter } from '@/components/site/SiteFooter';
+import { FaqSection } from '@/components/site/FaqSection';
 
 export const metadata: Metadata = {
   title: 'Nigeria Cookie Consent Banner for React — NDPA 2023 Compliant',
@@ -53,6 +54,39 @@ const jsonLd = {
   keywords:
     'Nigeria cookie consent, Nigeria cookie banner, NDPA cookie consent, Section 26 consent',
 };
+
+const faqs = [
+  {
+    question: 'Does the Nigeria Data Protection Act require a cookie consent banner?',
+    answer:
+      'In practice, yes. NDPA 2023 Section 26 requires consent to be specific, informed, freely given and affirmative, and the NDPC’s 2025 General Application and Implementation Directive (GAID) requires opt-in before any non-essential cookies or trackers (analytics, marketing, advertising) are set. Only strictly necessary cookies are exempt, so most Nigerian websites that run analytics or ad pixels need a compliant banner.',
+  },
+  {
+    question: 'Is a generic GDPR cookie banner enough for NDPA compliance?',
+    answer:
+      'Not reliably. Most GDPR banners are not built against NDPA Section 26, frequently omit the “withdrawal as easy as consent” requirement, do not keep the audit log the NDPC asks for during reviews, and have no Nigerian-language support. The NDPR Toolkit banner is built against the gazetted Act and GAID 2025, with the section references baked into the API.',
+  },
+  {
+    question: 'What cookie categories should a Nigerian consent banner support?',
+    answer:
+      'Necessary cookies (always on, no consent required), plus separately toggleable analytics, marketing, advertising and functional categories. Each category should carry a plain-language purpose description so consent is genuinely informed, which is what Section 26 and the GAID require.',
+  },
+  {
+    question: 'How do users withdraw cookie consent under the NDPA?',
+    answer:
+      'Section 26 requires that withdrawing consent be as easy as giving it. The toolkit exposes a site-wide preferences dialog so a visitor can revoke any category at any time without losing necessary cookies, and every change is recorded with a timestamp and consent version for your records.',
+  },
+  {
+    question: 'Is the NDPR Toolkit cookie consent banner free?',
+    answer:
+      'Yes. It is MIT-licensed and fully open source — there are no per-seat, per-domain or per-pageview fees, unlike most commercial consent management platforms.',
+  },
+  {
+    question: 'Does it work with Next.js App Router and server-side rendering?',
+    answer:
+      'Yes. The banner ships the correct “use client” boundaries so it drops into the Next.js App Router without manual wrappers, and it supports reading consent server-side so the banner hydrates already-resolved with no flash of an un-consented UI.',
+  },
+];
 
 export default function NigeriaCookieConsentLanding() {
   return (
@@ -166,7 +200,9 @@ export default function RootLayout({ children }) {
           </div>
         </section>
 
-        <section className="border-t border-border pt-12">
+        <FaqSection faqs={faqs} />
+
+        <section className="border-t border-border pt-12 mt-12">
           <h2 className="text-2xl font-bold mb-6">Related</h2>
           <ul className="space-y-3">
             <li><Link href="/docs/components/consent-management" className="text-primary hover:underline">Consent Management — full component API reference</Link></li>

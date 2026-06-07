@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { SiteFooter } from '@/components/site/SiteFooter';
+import { FaqSection } from '@/components/site/FaqSection';
 
 export const metadata: Metadata = {
   title: 'Nigeria DPIA Tool — Section 28 Data Privacy Impact Assessment',
@@ -52,6 +53,34 @@ const jsonLd = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   keywords: 'Nigeria DPIA tool, NDPA Section 28, Nigeria DPIA template',
 };
+
+const faqs = [
+  {
+    question: 'When is a DPIA required under the Nigeria Data Protection Act?',
+    answer:
+      'NDPA 2023 Section 28(1) requires a Data Privacy Impact Assessment before any processing likely to result in a high risk to the rights and freedoms of data subjects — for example large-scale processing of sensitive data (Section 30), systematic monitoring of public areas, automated decisions with significant effects (Section 37), or combining datasets in unexpected ways. The NDPC’s GAID 2025 also expects DPIAs from Data Controllers and Processors of Major Importance (DCPMI).',
+  },
+  {
+    question: 'What is a DPIA under NDPA 2023?',
+    answer:
+      'A Data Privacy Impact Assessment is a documented analysis of a processing activity that identifies the data flows and data subjects involved, scores the privacy risks by likelihood and severity, records mitigations, and determines the residual risk. It is how a controller demonstrates it considered privacy risk before processing, as required by Section 28.',
+  },
+  {
+    question: 'When must I consult the NDPC about a DPIA?',
+    answer:
+      'Under Section 28(2), if the residual risk remains high after you apply mitigations, you must consult the Nigeria Data Protection Commission before proceeding. The tool surfaces this automatically: the result returns requiresConsultation: true when the residual risk is high or critical.',
+  },
+  {
+    question: 'Is the DPIA tool free and open source?',
+    answer:
+      'Yes — it is MIT-licensed and free. You can use the drop-in NDPRDPIA preset component, or the headless useDPIA hook with the DPIAProvider compound API to build your own interface on top of the same scoring engine.',
+  },
+  {
+    question: 'Can I export the completed DPIA?',
+    answer:
+      'Yes. The tool produces deterministic PDF and DOCX exports, each carrying the “not legal advice” notice the toolkit ships everywhere, so the assessment is ready to file in your compliance records or hand to your DPO.',
+  },
+];
 
 export default function NDPADPIAToolLanding() {
   return (
@@ -160,7 +189,9 @@ export default function DPIAPage() {
           </div>
         </section>
 
-        <section className="border-t border-border pt-12">
+        <FaqSection faqs={faqs} />
+
+        <section className="border-t border-border pt-12 mt-12">
           <h2 className="text-2xl font-bold mb-6">Related</h2>
           <ul className="space-y-3">
             <li><Link href="/docs/components/dpia-questionnaire" className="text-primary hover:underline">DPIA Questionnaire — full API reference</Link></li>

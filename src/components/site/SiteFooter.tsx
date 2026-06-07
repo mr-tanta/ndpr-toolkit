@@ -16,6 +16,15 @@ const footerColumns = [
     ],
   },
   {
+    title: 'Solutions',
+    links: [
+      { label: 'Nigeria Cookie Consent', href: '/nigeria-cookie-consent' },
+      { label: 'Privacy Policy Generator', href: '/nigeria-privacy-policy-generator' },
+      { label: 'DPIA Tool (Section 28)', href: '/ndpa-dpia-tool' },
+      { label: 'Free NDPA Audit', href: '/score' },
+    ],
+  },
+  {
     title: 'Resources',
     links: [
       { label: 'Getting Started', href: '/docs' },
@@ -226,7 +235,7 @@ export function SiteFooter() {
 
       <style>{`
         .footer-grid {
-          grid-template-columns: 1.5fr repeat(4, 1fr);
+          grid-template-columns: 1.5fr repeat(5, 1fr);
         }
         @media (max-width: 900px) {
           .footer-grid {

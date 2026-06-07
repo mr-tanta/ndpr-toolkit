@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { SiteFooter } from '@/components/site/SiteFooter';
+import { FaqSection } from '@/components/site/FaqSection';
 
 export const metadata: Metadata = {
   title: 'Nigeria Privacy Policy Generator — NDPA 2023 Free & Open Source',
@@ -53,6 +54,39 @@ const jsonLd = {
   keywords:
     'Nigeria privacy policy generator, NDPA privacy policy, Section 27 privacy notice',
 };
+
+const faqs = [
+  {
+    question: 'Does the Nigeria Data Protection Act require a privacy policy?',
+    answer:
+      'Effectively, yes. NDPA 2023 Section 27 requires a data controller to provide data subjects with specified information before (or at the point of) collecting their personal data. A published privacy policy is the standard way to meet that “provision of information” duty, so any Nigerian website or app that collects personal data needs one.',
+  },
+  {
+    question: 'What must a Nigerian privacy policy include under the NDPA?',
+    answer:
+      'Section 27(1) requires the controller’s identity and contact details (and the DPO under Section 32), the specific lawful basis (Section 25(1), or Section 30 for sensitive data), recipients including any cross-border transfers (Section 41), the retention period, the data-subject rights under Part VI (Sections 34–38), the right to complain to the NDPC (Section 46), and any automated decision-making (Section 37). The generator produces all of these.',
+  },
+  {
+    question: 'Is the privacy policy generator free, and do I need to give an email?',
+    answer:
+      'It is free and MIT-licensed, with no email signup and no SaaS lock-in. You run it inside your own app or DPO portal, so the generated policy and any data you enter never leave your environment.',
+  },
+  {
+    question: 'What formats can I export the privacy policy to?',
+    answer:
+      'HTML, Markdown, PDF and DOCX, via the exportHTML, exportMarkdown, exportPDF and exportDOCX helpers. The underlying output is a typed PrivacyPolicy object, so you can also render it however you like.',
+  },
+  {
+    question: 'Does it handle sensitive personal data and children’s data?',
+    answer:
+      'Yes. The generator includes a conditional sensitive-personal-data section citing Section 30, and a children’s-data section citing Section 31 and the Child’s Right Act parental-consent requirement — each included only when your configuration says they apply.',
+  },
+  {
+    question: 'Is the generated policy legal advice?',
+    answer:
+      'No. Every artifact ships with a clear “not legal advice” notice. The generator covers the Section 27 disclosure list mechanically, but your DPO or qualified Nigerian privacy counsel should review the final wording before publication.',
+  },
+];
 
 export default function NigeriaPrivacyPolicyGeneratorLanding() {
   return (
@@ -161,7 +195,9 @@ export default function NigeriaPrivacyPolicyGeneratorLanding() {
           </div>
         </section>
 
-        <section className="border-t border-border pt-12">
+        <FaqSection faqs={faqs} />
+
+        <section className="border-t border-border pt-12 mt-12">
           <h2 className="text-2xl font-bold mb-6">Related</h2>
           <ul className="space-y-3">
             <li><Link href="/docs/components/privacy-policy-generator" className="text-primary hover:underline">Privacy Policy Generator — full API reference</Link></li>
