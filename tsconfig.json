@@ -16,6 +16,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
+    // TS 6 no longer auto-includes node_modules/@types — globals must be listed
+    "types": ["jest", "node", "react", "react-dom"],
+    // tsup's dts worker injects baseUrl (deprecated in TS 6, removed in 7);
+    // drop this once tsup stops setting it
+    "ignoreDeprecations": "6.0",
     "plugins": [
       {
         "name": "next"

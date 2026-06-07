@@ -360,7 +360,7 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
-    "@types/jest": "^29.5.14",
+    "@types/jest": "^30.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.60.1",
@@ -375,11 +375,11 @@
     "gh-pages": "^6.3.0",
     "gray-matter": "^4.0.3",
     "husky": "^9.1.7",
-    "jest": "^29.7.0",
+    "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "jspdf": "^4.2.1",
-    "lint-staged": "^16.4.0",
-    "lucide-react": "0.507.0",
+    "lint-staged": "^17.0.7",
+    "lucide-react": "1.17.0",
     "next": "^16.2.7",
     "postcss": "^8.5.15",
     "posthog-js": "^1.381.0",
@@ -392,6 +392,6 @@
     "ts-jest": "^29.4.11",
     "tsup": "^8.5.1",
     "tw-animate-css": "^1.4.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   }
 }
