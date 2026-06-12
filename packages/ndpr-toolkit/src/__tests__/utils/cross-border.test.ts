@@ -3,6 +3,7 @@ import {
   getTransferMechanismDescription,
   assessTransferRisk,
   isNDPCApprovalRequired,
+  toAdequacyStatus,
 } from '../../utils/cross-border';
 import { CrossBorderTransfer, TransferMechanism } from '../../types/cross-border';
 
@@ -39,8 +40,8 @@ const createValidTransfer = (overrides: Partial<CrossBorderTransfer> = {}): Cros
 });
 
 describe('isNDPCApprovalRequired', () => {
-  it('should require approval for standard_clauses', () => {
-    expect(isNDPCApprovalRequired('standard_clauses')).toBe(true);
+  it('should not require approval for standard_clauses (Section 41(1)(a) — no pre-approval condition)', () => {
+    expect(isNDPCApprovalRequired('standard_clauses')).toBe(false);
   });
 
   it('should require approval for binding_corporate_rules', () => {
@@ -174,7 +175,7 @@ describe('validateTransfer', () => {
     expect(result.errors).toContain('At least one safeguard must be documented for the transfer.');
   });
 
-  it('should require NDPC approval documentation for standard_clauses', () => {
+  it('should validate cleanly with a warning for standard_clauses without NDPC approval', () => {
     const transfer = createValidTransfer({
       transferMechanism: 'standard_clauses',
       ndpcApproval: undefined,
@@ -182,13 +183,14 @@ describe('validateTransfer', () => {
 
     const result = validateTransfer(transfer);
 
-    expect(result.isValid).toBe(false);
-    expect(result.errors).toContain(
-      'NDPC approval documentation is required for transfers using Standard Contractual Clauses.'
+    expect(result.isValid).toBe(true);
+    expect(result.errors).toEqual([]);
+    expect(result.warnings).toContain(
+      'Standard Contractual Clauses have not been approved by the NDPC. Approval is not a precondition under Section 41(1)(a), but unapproved instruments are not presumed adequate (Section 42(6)) — record the basis and adequacy of protection per Section 41(2).'
     );
   });
 
-  it('should require NDPC approval documentation for binding_corporate_rules', () => {
+  it('should validate cleanly with a warning for binding_corporate_rules without NDPC approval', () => {
     const transfer = createValidTransfer({
       transferMechanism: 'binding_corporate_rules',
       ndpcApproval: undefined,
@@ -196,15 +198,30 @@ describe('validateTransfer', () => {
 
     const result = validateTransfer(transfer);
 
+    expect(result.isValid).toBe(true);
+    expect(result.errors).toEqual([]);
+    expect(result.warnings).toContain(
+      'Binding Corporate Rules have not been approved by the NDPC. Approval is not a precondition under Section 41(1)(a), but unapproved instruments are not presumed adequate (Section 42(6)) — record the basis and adequacy of protection per Section 41(2).'
+    );
+  });
+
+  it('should require NDPC approval documentation for ndpc_authorization', () => {
+    const transfer = createValidTransfer({
+      transferMechanism: 'ndpc_authorization',
+      ndpcApproval: undefined,
+    });
+
+    const result = validateTransfer(transfer);
+
     expect(result.isValid).toBe(false);
     expect(result.errors).toContain(
-      'NDPC approval documentation is required for transfers using Binding Corporate Rules.'
+      'NDPC approval documentation is required for transfers using NDPC Authorization.'
     );
   });
 
   it('should error when NDPC approval is required but not applied', () => {
     const transfer = createValidTransfer({
-      transferMechanism: 'standard_clauses',
+      transferMechanism: 'ndpc_authorization',
       ndpcApproval: {
         required: true,
         applied: false,
@@ -420,7 +437,7 @@ describe('assessTransferRisk', () => {
 
   it('should increase risk when NDPC approval is required but not granted', () => {
     const transfer = createValidTransfer({
-      transferMechanism: 'standard_clauses',
+      transferMechanism: 'ndpc_authorization',
       ndpcApproval: {
         required: true,
         applied: true,
@@ -432,6 +449,49 @@ describe('assessTransferRisk', () => {
 
     expect(result.factors).toContain('NDPC approval is required but has not been granted.');
     expect(result.recommendations).toContain('Obtain NDPC approval before activating the transfer.');
+  });
+
+  it('should flag unapproved standard_clauses as a risk factor, not an approval requirement', () => {
+    const transfer = createValidTransfer({
+      transferMechanism: 'standard_clauses',
+      ndpcApproval: undefined,
+    });
+
+    const result = assessTransferRisk(transfer);
+
+    expect(result.factors).toContain(
+      'Transfer instrument has not been approved by the NDPC; absence of a Commission determination does not imply adequacy (Section 42(6)).'
+    );
+    expect(result.recommendations).toContain(
+      'Self-assess the instrument against Section 42(1)–(2), record the basis and adequacy per Section 41(2), and consider seeking NDPC approval under Section 42(4)–(5).'
+    );
+  });
+
+  it('should flag unapproved binding_corporate_rules as a risk factor', () => {
+    const transfer = createValidTransfer({
+      transferMechanism: 'binding_corporate_rules',
+      ndpcApproval: undefined,
+    });
+
+    const result = assessTransferRisk(transfer);
+
+    expect(result.factors).toContain(
+      'Transfer instrument has not been approved by the NDPC; absence of a Commission determination does not imply adequacy (Section 42(6)).'
+    );
+  });
+
+  it('should not flag NDPC approval risk for approved standard_clauses', () => {
+    const transfer = createValidTransfer({
+      transferMechanism: 'standard_clauses',
+      ndpcApproval: { required: true, applied: true, approved: true },
+    });
+
+    const result = assessTransferRisk(transfer);
+
+    expect(result.factors).not.toContain(
+      'Transfer instrument has not been approved by the NDPC; absence of a Commission determination does not imply adequacy (Section 42(6)).'
+    );
+    expect(result.factors).not.toContain('NDPC approval is required but has not been granted.');
   });
 
   it('should increase risk for limited safeguards', () => {
@@ -471,6 +531,11 @@ describe('assessTransferRisk', () => {
     const result = assessTransferRisk(transfer);
 
     expect(result.factors.some((f) => f.includes('derogation mechanism'))).toBe(true);
+  });
+
+  it('re-exports toAdequacyStatus from country-adequacy', () => {
+    expect(toAdequacyStatus('adequate')).toBe('adequate');
+    expect(toAdequacyStatus(undefined)).toBe('unknown');
   });
 
   it('should recommend unknown adequacy countries be assessed', () => {

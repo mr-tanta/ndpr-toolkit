@@ -13,6 +13,8 @@
  * counsel before relying on any entry here for a transfer impact assessment.
  */
 
+import type { AdequacyStatus } from '../types/cross-border';
+
 /**
  * Adequacy status of a country for cross-border data transfers.
  */
@@ -599,6 +601,34 @@ export function getAdequateCountries(): CountryAdequacy[] {
   return Object.values(COUNTRY_ADEQUACY_MAP).filter(
     (entry) => entry.adequacyStatus === 'adequate'
   );
+}
+
+/**
+ * Converts a CountryAdequacyStatus into the AdequacyStatus used on
+ * CrossBorderTransfer records.
+ *
+ * Under NDPA Section 42(1), protection either is adequate or it is not, so
+ * 'partially_adequate' conservatively maps to 'inadequate' — it cannot support
+ * an adequacy_decision mechanism. The optional parameter composes directly with
+ * lookup misses: `toAdequacyStatus(getCountryAdequacy(code)?.adequacyStatus)`
+ * yields 'unknown' for countries not in COUNTRY_ADEQUACY_MAP.
+ *
+ * @param status The country adequacy status, or undefined for an unknown country
+ * @returns The corresponding transfer-level adequacy status
+ */
+export function toAdequacyStatus(status?: CountryAdequacyStatus): AdequacyStatus {
+  switch (status) {
+    case 'adequate':
+      return 'adequate';
+    case 'not_adequate':
+      return 'inadequate';
+    case 'partially_adequate':
+      return 'inadequate';
+    case 'pending':
+      return 'pending_review';
+    default:
+      return 'unknown';
+  }
 }
 
 /**

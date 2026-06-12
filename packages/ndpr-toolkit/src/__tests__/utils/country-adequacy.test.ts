@@ -3,6 +3,7 @@ import {
   getCountryAdequacy,
   getAdequateCountries,
   requiresNDPCApproval,
+  toAdequacyStatus,
 } from '../../utils/country-adequacy';
 
 describe('country-adequacy', () => {
@@ -140,6 +141,40 @@ describe('country-adequacy', () => {
     it('works with ISO codes', () => {
       expect(requiresNDPCApproval('GB')).toBe(false);
       expect(requiresNDPCApproval('US')).toBe(true);
+    });
+  });
+
+  // ---- toAdequacyStatus ----
+
+  describe('toAdequacyStatus', () => {
+    it('maps adequate to adequate', () => {
+      expect(toAdequacyStatus('adequate')).toBe('adequate');
+    });
+
+    it('maps not_adequate to inadequate', () => {
+      expect(toAdequacyStatus('not_adequate')).toBe('inadequate');
+    });
+
+    it('maps partially_adequate conservatively to inadequate', () => {
+      expect(toAdequacyStatus('partially_adequate')).toBe('inadequate');
+    });
+
+    it('maps pending to pending_review', () => {
+      expect(toAdequacyStatus('pending')).toBe('pending_review');
+    });
+
+    it('maps undefined to unknown', () => {
+      expect(toAdequacyStatus(undefined)).toBe('unknown');
+    });
+
+    it('composes with getCountryAdequacy for lookup misses', () => {
+      expect(toAdequacyStatus(getCountryAdequacy('Narnia')?.adequacyStatus)).toBe('unknown');
+    });
+
+    it('composes with getCountryAdequacy for known countries', () => {
+      expect(toAdequacyStatus(getCountryAdequacy('GB')?.adequacyStatus)).toBe('adequate');
+      expect(toAdequacyStatus(getCountryAdequacy('US')?.adequacyStatus)).toBe('inadequate');
+      expect(toAdequacyStatus(getCountryAdequacy('CN')?.adequacyStatus)).toBe('inadequate');
     });
   });
 

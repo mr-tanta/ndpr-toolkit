@@ -25,20 +25,26 @@ export interface TransferRiskResult {
 
 /**
  * Returns whether NDPC approval is required for a given transfer mechanism.
- * Under NDPA Section 42(5), the Commission may approve binding corporate rules,
- * codes of conduct, certification mechanisms, or similar instruments. Standard
- * contractual clauses are one of the appropriate safeguards under Section 41(1)(a)
- * and the Commission may approve them per Section 42(4).
+ *
+ * Standard contractual clauses do NOT require NDPC pre-approval. NDPA Section
+ * 41(1)(a) permits transfer where the recipient is subject to contractual clauses
+ * affording an adequate level of protection, with only a duty to record the basis
+ * and adequacy of protection (Section 41(2)). The Commission "may" determine the
+ * adequacy of standard contractual clauses (Section 42(4)) and "may" approve
+ * instruments proposed to it (Section 42(5)) — permissive avenues, not
+ * preconditions. Per Section 42(6), the absence of a Commission determination
+ * does not imply adequacy, so unapproved clauses must be self-assessed against
+ * Section 42(1)–(2); validateTransfer surfaces this as a warning.
+ *
+ * Binding corporate rules are group instruments typically submitted for approval
+ * under Section 42(5), and an 'ndpc_authorization' is by definition a Section
+ * 42(5)-approved instrument.
  *
  * @param mechanism The transfer mechanism
  * @returns Whether NDPC approval is typically required
  */
 export function isNDPCApprovalRequired(mechanism: TransferMechanism): boolean {
-  return (
-    mechanism === 'standard_clauses' ||
-    mechanism === 'binding_corporate_rules' ||
-    mechanism === 'ndpc_authorization'
-  );
+  return mechanism === 'binding_corporate_rules' || mechanism === 'ndpc_authorization';
 }
 
 /**
@@ -126,8 +132,13 @@ export function validateTransfer(transfer: CrossBorderTransfer): TransferValidat
     errors.push('At least one safeguard must be documented for the transfer.');
   }
 
-  // Validate NDPC approval when required
-  if (isNDPCApprovalRequired(transfer.transferMechanism)) {
+  // Validate NDPC approval. Only an 'ndpc_authorization' (a Section 42(5)
+  // approved instrument by definition) requires approval documentation as a hard
+  // error. SCCs and BCRs may be relied on without Commission approval under
+  // Section 41(1)(a), subject to the Section 41(2) recording duty — but per
+  // Section 42(6) unapproved instruments are not presumed adequate, so missing
+  // approval is surfaced as a warning.
+  if (transfer.transferMechanism === 'ndpc_authorization') {
     if (!transfer.ndpcApproval) {
       errors.push(
         `NDPC approval documentation is required for transfers using ${getTransferMechanismLabel(transfer.transferMechanism)}.`
@@ -146,6 +157,15 @@ export function validateTransfer(transfer: CrossBorderTransfer): TransferValidat
           'Transfer is marked as active but NDPC approval has not been granted. Status should be "pending_approval".'
         );
       }
+    }
+  } else if (
+    transfer.transferMechanism === 'standard_clauses' ||
+    transfer.transferMechanism === 'binding_corporate_rules'
+  ) {
+    if (!transfer.ndpcApproval?.approved) {
+      warnings.push(
+        `${getTransferMechanismLabel(transfer.transferMechanism)} have not been approved by the NDPC. Approval is not a precondition under Section 41(1)(a), but unapproved instruments are not presumed adequate (Section 42(6)) — record the basis and adequacy of protection per Section 41(2).`
+      );
     }
   }
 
@@ -266,12 +286,25 @@ export function assessTransferRisk(transfer: CrossBorderTransfer): TransferRiskR
     recommendations.push('Complete a Transfer Impact Assessment before proceeding with the transfer.');
   }
 
-  // Factor 6: NDPC approval pending
-  if (isNDPCApprovalRequired(transfer.transferMechanism)) {
-    if (!transfer.ndpcApproval?.approved) {
+  // Factor 6: NDPC approval status. A missing approval is a hard requirement
+  // only for ndpc_authorization; for SCCs and BCRs it remains a risk factor
+  // because unapproved instruments are not presumed adequate (Section 42(6)).
+  if (!transfer.ndpcApproval?.approved) {
+    if (transfer.transferMechanism === 'ndpc_authorization') {
       riskScore += 2;
       factors.push('NDPC approval is required but has not been granted.');
       recommendations.push('Obtain NDPC approval before activating the transfer.');
+    } else if (
+      transfer.transferMechanism === 'standard_clauses' ||
+      transfer.transferMechanism === 'binding_corporate_rules'
+    ) {
+      riskScore += 2;
+      factors.push(
+        'Transfer instrument has not been approved by the NDPC; absence of a Commission determination does not imply adequacy (Section 42(6)).'
+      );
+      recommendations.push(
+        'Self-assess the instrument against Section 42(1)–(2), record the basis and adequacy per Section 41(2), and consider seeking NDPC approval under Section 42(4)–(5).'
+      );
     }
   }
 
@@ -334,6 +367,7 @@ export {
   getCountryAdequacy,
   getAdequateCountries,
   requiresNDPCApproval,
+  toAdequacyStatus,
   COUNTRY_ADEQUACY_MAP,
 } from './country-adequacy';
 export type { CountryAdequacy, CountryAdequacyStatus } from './country-adequacy';
