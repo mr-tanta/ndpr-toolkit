@@ -49,6 +49,7 @@ const baseConfig = JSON.parse(readFileSync('api-extractor.base.json', 'utf8'));
 
 let processed = 0;
 let skipped = 0;
+const failed = [];
 
 for (const entry of ENTRIES) {
   const entryDts = path.join(DIST, `${entry}.d.ts`);
@@ -71,17 +72,25 @@ for (const entry of ENTRIES) {
 
   writeFileSync(TMP_CONFIG, JSON.stringify(config, null, 2));
 
-  const prepared = ExtractorConfig.loadFileAndPrepare(TMP_CONFIG);
-  const result = Extractor.invoke(prepared, {
-    localBuild: true,
-    showVerboseMessages: false,
-  });
+  let result;
+  try {
+    const prepared = ExtractorConfig.loadFileAndPrepare(TMP_CONFIG);
+    result = Extractor.invoke(prepared, {
+      localBuild: true,
+      showVerboseMessages: false,
+    });
+  } catch (err) {
+    console.error(`  ✗ ${entry} — api-extractor threw: ${err.message}`);
+    failed.push(entry);
+    if (existsSync(rolledUpDts)) unlinkSync(rolledUpDts);
+    continue;
+  }
 
   if (!result.succeeded) {
     console.error(
       `  ✗ ${entry} — ${result.errorCount} error(s), ${result.warningCount} warning(s)`,
     );
-    // Don't throw — best-effort. Keep the original .d.ts in place.
+    failed.push(entry);
     if (existsSync(rolledUpDts)) unlinkSync(rolledUpDts);
     continue;
   }
@@ -134,3 +143,10 @@ for (const f of allDts) {
 console.log(
   `\n  rolled up ${processed} entries, skipped ${skipped}, swept ${swept} chunk/hash dts files`,
 );
+
+if (failed.length > 0) {
+  console.error(
+    `\n  ✗ ${failed.length} entr${failed.length === 1 ? 'y' : 'ies'} failed to roll up: ${failed.join(', ')}`,
+  );
+  process.exit(1);
+}
