@@ -600,7 +600,7 @@ async function main() {
     }
 
     console.log(`  ${cyan(`${orm === 'none' ? '1' : '3'}`.padStart(1))}. Install the ndpr-toolkit:`);
-    console.log(dim('     pnpm add @tantainnovative/ndpr-toolkit@^5.5.1'));
+    console.log(dim('     pnpm add @tantainnovative/ndpr-toolkit@^5.7.2'));
     console.log();
 
     if (framework === 'nextjs-app' || framework === 'nextjs-pages') {

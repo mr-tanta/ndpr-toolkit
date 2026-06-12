@@ -21,7 +21,7 @@
     "README.md"
   ],
   "peerDependencies": {
-    "@tantainnovative/ndpr-toolkit": "^5.5.1"
+    "@tantainnovative/ndpr-toolkit": "^5.7.2"
   },
   "peerDependenciesMeta": {
     "@tantainnovative/ndpr-toolkit": {

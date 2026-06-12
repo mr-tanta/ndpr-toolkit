@@ -26,6 +26,6 @@ jobs:
       # The `ndpr` CLI ships with the toolkit. --no-save keeps it out of your
       # package.json if you don't already depend on it directly.
       - name: Install the NDPR toolkit (provides the `ndpr` CLI)
-        run: npm install --no-save @tantainnovative/ndpr-toolkit@^5.5.1
+        run: npm install --no-save @tantainnovative/ndpr-toolkit@^5.7.2
       - name: Run the NDPA compliance audit
         run: npx ndpr audit --min-score 70
