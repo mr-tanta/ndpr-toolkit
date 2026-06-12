@@ -37,8 +37,8 @@ describe('DSRTracker (NDPA Request Tracking)', () => {
     expect(screen.getByLabelText(/timeframe/i)).toBeInTheDocument();
   });
 
-  // Note: The DSRTracker component doesn&apos;t have a form for tracking requests directly visible on initial render
-  // These tests are removed as they don&apos;t match the actual component implementation
+  // Note: The DSRTracker component doesn't have a form for tracking requests directly visible on initial render
+  // These tests are removed as they don't match the actual component implementation
 
   it('displays request count when provided', () => {
     // Render the component with a request
@@ -60,8 +60,8 @@ describe('DSRTracker (NDPA Request Tracking)', () => {
     expect(statsContainer).toBeInTheDocument();
   });
 
-  // Note: The DSRTracker component doesn&apos;t display a "Request not found" message directly on initial render
-  // This test is removed as it doesn&apos;t match the actual component implementation
+  // Note: The DSRTracker component doesn't display a "Request not found" message directly on initial render
+  // This test is removed as it doesn't match the actual component implementation
 
   it('handles custom title', () => {
     const customTitle = 'Custom DSR Tracker Title';

@@ -118,7 +118,7 @@ describe('ConsentManager (NDPA Privacy Settings)', () => {
     // Find the necessary checkbox (required)
     const necessaryCheckbox = checkboxes.find(checkbox => checkbox.hasAttribute('disabled'));
     
-    // Check thatit&apos;s disabled
+    // Check that it's disabled
     expect(necessaryCheckbox).toBeDisabled();
   });
 
