@@ -8,12 +8,12 @@ priority — please report responsibly.
 
 | Version  | Supported          |
 |----------|--------------------|
-| 3.10.x   | ✅ Active           |
-| 3.9.x    | ⚠️ Critical fixes only |
-| < 3.9    | ❌ End of life      |
+| 5.x (latest minor) | ✅ Active           |
+| < 5.0    | ❌ End of life      |
 
-A 4.0 release is planned; once it ships, only 4.x and the immediately prior
-3.x minor will receive security fixes.
+Security fixes land on the latest 5.x minor only — upgrade to the newest
+release to stay covered. Older majors (4.x and earlier) no longer receive
+fixes.
 
 ## Reporting a vulnerability
 
