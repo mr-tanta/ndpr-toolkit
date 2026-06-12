@@ -176,14 +176,101 @@ describe('ConsentStorage (NDPA Consent Persistence)', () => {
   });
 
   it('saves and loads consent settings from cookies', () => {
-    const onLoad = jest.fn();
     const onSave = jest.fn();
 
-    // Skip this test since we can't properly mock document.cookie
-    // in the test environment without causing errors
-    
-    // Just make a simple assertion to pass the test
-    expect(true).toBe(true);
+    render(
+      <ConsentStorage
+        settings={testConsents}
+        storageOptions={{
+          storageKey: "test-consent",
+          storageType: "cookie"
+        }}
+        onLoad={jest.fn()}
+        onSave={onSave}
+      >
+        {null}
+      </ConsentStorage>
+    );
+
+    expect(onSave).toHaveBeenCalledWith(testConsents);
+    expect(document.cookie).toContain(
+      `test-consent=${encodeURIComponent(JSON.stringify(testConsents))}`
+    );
+
+    // Loading: seed the cookie and render a fresh instance
+    const onLoad = jest.fn();
+    document.cookie = `test-consent=${encodeURIComponent(JSON.stringify(testConsents))}`;
+
+    render(
+      <ConsentStorage
+        settings={{
+          consents: {},
+          timestamp: Date.now(),
+          version: '1.0',
+          method: 'test',
+          hasInteracted: false
+        }}
+        storageOptions={{
+          storageKey: "test-consent",
+          storageType: "cookie"
+        }}
+        onLoad={onLoad}
+        onSave={jest.fn()}
+        autoSave={false}
+      >
+        {null}
+      </ConsentStorage>
+    );
+
+    expect(onLoad).toHaveBeenCalledWith(testConsents);
+  });
+
+  it('percent-encodes the cookie key consistently on save and load', () => {
+    const onSave = jest.fn();
+
+    render(
+      <ConsentStorage
+        settings={testConsents}
+        storageOptions={{
+          storageKey: "test consent",
+          storageType: "cookie"
+        }}
+        onLoad={jest.fn()}
+        onSave={onSave}
+      >
+        {null}
+      </ConsentStorage>
+    );
+
+    expect(document.cookie).toContain(
+      `test%20consent=${encodeURIComponent(JSON.stringify(testConsents))}`
+    );
+
+    const onLoad = jest.fn();
+    document.cookie = `test%20consent=${encodeURIComponent(JSON.stringify(testConsents))}`;
+
+    render(
+      <ConsentStorage
+        settings={{
+          consents: {},
+          timestamp: Date.now(),
+          version: '1.0',
+          method: 'test',
+          hasInteracted: false
+        }}
+        storageOptions={{
+          storageKey: "test consent",
+          storageType: "cookie"
+        }}
+        onLoad={onLoad}
+        onSave={jest.fn()}
+        autoSave={false}
+      >
+        {null}
+      </ConsentStorage>
+    );
+
+    expect(onLoad).toHaveBeenCalledWith(testConsents);
   });
 
   it('handles invalid stored data gracefully', () => {
@@ -194,7 +281,7 @@ describe('ConsentStorage (NDPA Consent Persistence)', () => {
     // Set invalid JSON in localStorage
     mockLocalStorage.getItem.mockReturnValueOnce('invalid-json');
 
-    // We're just testing that the component doesn&apos;t crash with invalid data
+    // We're just testing that the component doesn't crash with invalid data
     // The component will log an error but should continue to function
     render(
       <ConsentStorage
@@ -266,5 +353,28 @@ describe('ConsentStorage (NDPA Consent Persistence)', () => {
     expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
     expect(mockLocalStorage.getItem).not.toHaveBeenCalled();
     expect(onLoad).not.toHaveBeenCalled();
+  });
+
+  it('auto-saves settings when autoLoad is false', () => {
+    render(
+      <ConsentStorage
+        settings={testConsents}
+        storageOptions={{
+          storageKey: "test-consent",
+          storageType: "localStorage"
+        }}
+        onLoad={jest.fn()}
+        onSave={jest.fn()}
+        autoLoad={false}
+      >
+        {null}
+      </ConsentStorage>
+    );
+
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+      'test-consent',
+      JSON.stringify(testConsents)
+    );
+    expect(mockLocalStorage.getItem).not.toHaveBeenCalled();
   });
 });

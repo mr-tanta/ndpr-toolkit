@@ -97,10 +97,13 @@ export const ConsentStorage = ({
           loadedSettings = JSON.parse(savedData);
         }
       } else if (storageType === 'cookie' && typeof document !== 'undefined') {
+        // Keys are percent-encoded on write (matching adapters/cookie.ts),
+        // so match against the encoded form here too.
+        const encodedKey = encodeURIComponent(storageKey);
         const cookies = document.cookie.split(';');
-        const consentCookie = cookies.find(cookie => cookie.trim().startsWith(`${storageKey}=`));
+        const consentCookie = cookies.find(cookie => cookie.trim().startsWith(`${encodedKey}=`));
         if (consentCookie) {
-          const cookieValue = consentCookie.split('=')[1];
+          const cookieValue = consentCookie.slice(consentCookie.indexOf('=') + 1);
           loadedSettings = JSON.parse(decodeURIComponent(cookieValue));
         }
       }
@@ -143,7 +146,7 @@ export const ConsentStorage = ({
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + expires);
 
-        let cookieString = `${storageKey}=${encodeURIComponent(settingsString)}; path=${path}; expires=${expiryDate.toUTCString()}`;
+        let cookieString = `${encodeURIComponent(storageKey)}=${encodeURIComponent(settingsString)}; path=${path}; expires=${expiryDate.toUTCString()}`;
 
         if (domain) {
           cookieString += `; domain=${domain}`;
@@ -179,7 +182,7 @@ export const ConsentStorage = ({
       } else if (storageType === 'cookie' && typeof document !== 'undefined') {
         const { domain, path = '/' } = cookieOptions;
 
-        let cookieString = `${storageKey}=; path=${path}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        let cookieString = `${encodeURIComponent(storageKey)}=; path=${path}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
 
         if (domain) {
           cookieString += `; domain=${domain}`;
@@ -202,12 +205,15 @@ export const ConsentStorage = ({
     }
   }, [autoLoad, loaded, loadSettings]);
 
-  // Save consent settings to storage when they change
+  // Save consent settings to storage when they change. The `loaded` gate only
+  // matters while an autoLoad is pending — without it the initial settings
+  // prop would clobber stored data before the load runs. When autoLoad is
+  // off, there is nothing to wait for and saves apply immediately.
   useEffect(() => {
-    if (autoSave && loaded) {
+    if (autoSave && (loaded || !autoLoad)) {
       saveSettings(settings);
     }
-  }, [settings, autoSave, loaded, saveSettings]);
+  }, [settings, autoSave, autoLoad, loaded, saveSettings]);
   
   const rootClass = resolveClass('', classNames?.root, unstyled);
 
