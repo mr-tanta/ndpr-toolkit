@@ -1,38 +1,30 @@
 import type { NextConfig } from "next";
 
-// Check if we're in development mode
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-// Repository name for GitHub Pages
+// Repository name, used as basePath for GitHub Pages project-page deploys.
+// The live site uses the custom domain ndprtoolkit.com.ng, so no basePath by
+// default; set USE_CUSTOM_DOMAIN=false to build for <user>.github.io/ndpr-toolkit.
 const REPO_NAME = 'ndpr-toolkit';
-
-// Check if using custom domain (no basePath needed)
-const USE_CUSTOM_DOMAIN = process.env.USE_CUSTOM_DOMAIN === 'true';
+const USE_CUSTOM_DOMAIN = process.env.USE_CUSTOM_DOMAIN !== 'false';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  
   // Skip type checking during build - let CI handle it
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Use custom build directory to bypass some type checking
   distDir: '.next',
-  // These settings apply to all environments
   poweredByHeader: false,
-  
+
   // Only use static export, basePath and assetPrefix in production
-  ...(isDevelopment 
-    ? {
-        // Development config - no basePath or static export
-      } 
+  ...(isDevelopment
+    ? {}
     : {
-        // Production config for GitHub Pages
-        output: 'export',  // Enable static HTML export
+        output: 'export',
         images: {
-          unoptimized: true,  // Required for static export
+          unoptimized: true,
         },
-        // Only use basePath if not using custom domain
         ...(USE_CUSTOM_DOMAIN ? {} : {
           basePath: `/${REPO_NAME}`,
           assetPrefix: `/${REPO_NAME}`,
@@ -40,17 +32,5 @@ const nextConfig: NextConfig = {
       }
   ),
 };
-
-// Add a custom export script to generate a .nojekyll file
-// This prevents GitHub Pages from ignoring files that begin with an underscore
-if (process.env.NODE_ENV === 'production') {
-  const { execSync } = require('child_process');
-  try {
-    execSync('touch out/.nojekyll');
-    console.log('Created .nojekyll file');
-  } catch (error) {
-    console.error('Error creating .nojekyll file:', error);
-  }
-}
 
 export default nextConfig;
