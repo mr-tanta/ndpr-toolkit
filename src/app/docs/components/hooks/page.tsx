@@ -259,7 +259,8 @@ function BreachManager({ categories }) {
               <code className="bg-muted px-1 py-0.5 rounded">policy</code> on the first useful render with{' '}
               <code className="bg-muted px-1 py-0.5 rounded">autoGenerate: true</code> (the default, added in v3.4.0).
             </p>
-            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useDefaultPrivacyPolicy, PolicyPage } from '@tantainnovative/ndpr-toolkit';
+            <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">{`import { useDefaultPrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
+import { PolicyPage } from '@tantainnovative/ndpr-toolkit/policy';
 
 function PrivacyPage() {
   const { policy } = useDefaultPrivacyPolicy({

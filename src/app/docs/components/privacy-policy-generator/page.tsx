@@ -536,7 +536,8 @@ function generatePolicyText(
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
           <code className="text-sm text-foreground font-mono">{`// app/privacy/page.tsx
 'use client';
-import { useDefaultPrivacyPolicy, PolicyPage } from '@tantainnovative/ndpr-toolkit';
+import { useDefaultPrivacyPolicy } from '@tantainnovative/ndpr-toolkit';
+import { PolicyPage } from '@tantainnovative/ndpr-toolkit/policy';
 
 export default function PrivacyPage() {
   const { policy } = useDefaultPrivacyPolicy({

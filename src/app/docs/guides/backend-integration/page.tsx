@@ -508,10 +508,10 @@ export async function DELETE(req: NextRequest) {
           Wire the front-end to these endpoints using the <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">apiAdapter</code> from the main toolkit:
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`import { apiAdapter } from '@tantainnovative/ndpr-toolkit';
+          <pre className="text-foreground"><code>{`import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 
-const consentAdapter = apiAdapter({ baseUrl: '/api/consent' });
-const dsrAdapter     = apiAdapter({ baseUrl: '/api/dsr' });`}</code></pre>
+const consentAdapter = apiAdapter('/api/consent');
+const dsrAdapter     = apiAdapter('/api/dsr');`}</code></pre>
         </div>
       </section>
 

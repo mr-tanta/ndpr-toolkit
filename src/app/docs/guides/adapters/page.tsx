@@ -64,7 +64,7 @@ export default function AdaptersGuide() {
       <section id="built-in" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Built-in Adapters</h2>
         <p className="mb-4 text-foreground">
-          The toolkit ships six ready-to-use adapters. Import them directly from the package:
+          The toolkit ships six ready-to-use adapters. Import them from the dedicated adapters entry:
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
           <pre className="text-foreground"><code>{`import {
@@ -74,7 +74,7 @@ export default function AdaptersGuide() {
   apiAdapter,
   memoryAdapter,
   composeAdapters,
-} from '@tantainnovative/ndpr-toolkit';`}</code></pre>
+} from '@tantainnovative/ndpr-toolkit/adapters';`}</code></pre>
         </div>
 
         <div className="overflow-x-auto mb-6">
@@ -136,7 +136,8 @@ export default function AdaptersGuide() {
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useConsent</code>:
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`import { useConsent, localStorageAdapter } from '@tantainnovative/ndpr-toolkit';
+          <pre className="text-foreground"><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
+import { localStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 
 export function ConsentBanner() {
   const { hasConsent, updateConsent } = useConsent({
@@ -159,7 +160,8 @@ export function ConsentBanner() {
           Swap to a production API adapter by changing a single line — your component stays the same:
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`import { useConsent, apiAdapter } from '@tantainnovative/ndpr-toolkit';
+          <pre className="text-foreground"><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
+import { apiAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 
 export function ConsentBanner() {
   const { hasConsent, updateConsent } = useConsent({
@@ -229,12 +231,12 @@ export function supabaseConsentAdapter(userId: string): StorageAdapter {
           and sync writes to your API (durable, auditable).
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`import {
-  useConsent,
+          <pre className="text-foreground"><code>{`import { useConsent } from '@tantainnovative/ndpr-toolkit';
+import {
   composeAdapters,
   localStorageAdapter,
   apiAdapter,
-} from '@tantainnovative/ndpr-toolkit';
+} from '@tantainnovative/ndpr-toolkit/adapters';
 
 // Reads: localStorage first (returns immediately if found, skips API)
 // Writes: propagated to BOTH localStorage AND the API
@@ -293,7 +295,8 @@ const adapter = composeAdapters(
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`import { renderHook, act } from '@testing-library/react';
-import { useConsent, memoryAdapter } from '@tantainnovative/ndpr-toolkit';
+import { useConsent } from '@tantainnovative/ndpr-toolkit';
+import { memoryAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
 
 test('consent is persisted via adapter', async () => {
   const { result } = renderHook(() =>

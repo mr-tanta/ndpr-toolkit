@@ -124,7 +124,7 @@ export default function RootLayout({ children }) {
   {
     step: '03',
     title: 'Add Preset',
-    code: `import { NDPRConsent } from '@tantainnovative/ndpr-toolkit';
+    code: `import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
 
 export default function Page() {
   return (
