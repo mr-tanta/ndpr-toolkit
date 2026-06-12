@@ -164,6 +164,34 @@ describe('DSRRequestForm (NDPA Part VI - Data Subject Rights)', () => {
     expect(mockSubmit).toHaveBeenCalled();
   });
 
+  it('includes the Additional Information textarea content in the submitted data', () => {
+    renderComponent();
+
+    fireEvent.change(screen.getByLabelText(/full name/i), {
+      target: { value: 'John Doe' }
+    });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'john@example.com' }
+    });
+    fireEvent.change(screen.getByLabelText(/request type/i), {
+      target: { value: 'access' }
+    });
+    fireEvent.change(screen.getByLabelText(/identifier value/i), {
+      target: { value: 'john@example.com' }
+    });
+    fireEvent.change(screen.getByLabelText(/additional information/i), {
+      target: { value: 'Please include my order history from 2024' }
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /submit request/i }));
+
+    expect(mockOnSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description: 'Please include my order history from 2024'
+      })
+    );
+  });
+
   it('shows success message after submission', async () => {
     // Mock the onSubmit function to trigger the success message
     const mockSubmit = jest.fn().mockImplementation(() => {

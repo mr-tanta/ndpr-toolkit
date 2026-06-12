@@ -20,6 +20,8 @@ export interface DSRFormSubmission {
   };
   /** Additional information provided for the selected request type */
   additionalInfo?: Record<string, string | number | boolean | null>;
+  /** Free-text details entered in the "Additional Information" textarea */
+  description?: string;
   /** Timestamp (ms) when the form was submitted */
   submittedAt: number;
 }
@@ -220,6 +222,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
   const [identifierType, setIdentifierType] = useState<string>(defaultValues?.dataSubject?.identifierType || identifierTypes[0]?.id || "");
   const [identifierValue, setIdentifierValue] = useState<string>(defaultValues?.dataSubject?.identifierValue || "");
   const [additionalInfo, setAdditionalInfo] = useState<Record<string, string | number | boolean | null>>(defaultValues?.additionalInfo || {});
+  const [requestDescription, setRequestDescription] = useState<string>(defaultValues?.description || "");
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -231,6 +234,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
     setIdentifierType(identifierTypes[0]?.id || "");
     setIdentifierValue("");
     setAdditionalInfo({});
+    setRequestDescription("");
     setIsSubmitted(false);
     setErrors({});
     onReset?.();
@@ -313,6 +317,7 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
         identifierValue: sanitizeInput(identifierValue)
       },
       additionalInfo: sanitizedAdditionalInfo,
+      description: requestDescription.trim() ? sanitizeInput(requestDescription) : undefined,
       submittedAt: Date.now()
     };
 
@@ -463,6 +468,8 @@ export const DSRRequestForm: React.FC<DSRRequestFormProps> = ({
               </label>
               <textarea
                 id="requestDescription"
+                value={requestDescription}
+                onChange={e => setRequestDescription(e.target.value)}
                 className={resolveClass('ndpr-form-field__textarea', classNames?.textarea, unstyled)}
                 rows={4}
                 placeholder="Please provide any additional details that might help us process your request"
