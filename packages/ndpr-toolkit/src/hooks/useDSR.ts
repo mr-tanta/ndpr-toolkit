@@ -163,6 +163,16 @@ export function useDSR({
   const [requests, setRequests] = useState<DSRRequest[]>(initialRequests);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Mirror of the latest requests so mutators can compute their result
+  // synchronously. Reading a value assigned inside a setState updater right
+  // after calling setState is unreliable: when two mutations land in the
+  // same React batch the second updater is deferred, so the value is stale.
+  const requestsRef = useRef<DSRRequest[]>(initialRequests);
+  const commitRequests = useCallback((next: DSRRequest[]) => {
+    requestsRef.current = next;
+    setRequests(next);
+  }, []);
+
   // Load requests from storage on mount
   useEffect(() => {
     let cancelled = false;
@@ -174,7 +184,7 @@ export function useDSR({
         result.then(
           (loaded) => {
             if (cancelled) return;
-            if (loaded) setRequests(loaded);
+            if (loaded) commitRequests(loaded);
             setIsLoading(false);
           },
           () => {
@@ -182,7 +192,7 @@ export function useDSR({
           }
         );
       } else {
-        if (result) setRequests(result);
+        if (result) commitRequests(result);
         setIsLoading(false);
       }
     } catch {
@@ -222,49 +232,43 @@ export function useDSR({
       ...requestData,
     };
 
-    setRequests(prevRequests => {
-      const updated = [...prevRequests, newRequest];
-      persistRequests(updated);
-      return updated;
-    });
+    const updated = [...requestsRef.current, newRequest];
+    commitRequests(updated);
+    persistRequests(updated);
 
     if (onSubmit) {
       onSubmit(newRequest);
     }
 
     return newRequest;
-  }, [requestTypes, persistRequests, onSubmit]);
+  }, [requestTypes, commitRequests, persistRequests, onSubmit]);
 
   // Update an existing request
   const updateRequest = useCallback((id: string, updates: Partial<DSRRequest>): DSRRequest | null => {
-    let updatedRequest: DSRRequest | null = null;
+    const prevRequests = requestsRef.current;
+    const index = prevRequests.findIndex(request => request.id === id);
 
-    setRequests(prevRequests => {
-      const index = prevRequests.findIndex(request => request.id === id);
+    if (index === -1) {
+      return null;
+    }
 
-      if (index === -1) {
-        return prevRequests;
-      }
+    const updatedRequest: DSRRequest = {
+      ...prevRequests[index],
+      ...updates,
+      updatedAt: Date.now(),
+    };
 
-      const request = prevRequests[index];
-      updatedRequest = {
-        ...request,
-        ...updates,
-        updatedAt: Date.now(),
-      };
+    const newRequests = [...prevRequests];
+    newRequests[index] = updatedRequest;
+    commitRequests(newRequests);
+    persistRequests(newRequests);
 
-      const newRequests = [...prevRequests];
-      newRequests[index] = updatedRequest as DSRRequest;
-      persistRequests(newRequests);
-      return newRequests;
-    });
-
-    if (updatedRequest && onUpdate) {
+    if (onUpdate) {
       onUpdate(updatedRequest);
     }
 
     return updatedRequest;
-  }, [persistRequests, onUpdate]);
+  }, [commitRequests, persistRequests, onUpdate]);
 
   // Get a request by ID
   const getRequest = useCallback((id: string): DSRRequest | null => {
@@ -294,11 +298,11 @@ export function useDSR({
 
   // Clear all requests
   const clearRequests = useCallback(() => {
-    setRequests([]);
+    commitRequests([]);
     Promise.resolve(adapterRef.current.remove()).catch((err) => {
       console.warn('[ndpr-toolkit] Failed to remove DSR requests:', err);
     });
-  }, [adapterRef]);
+  }, [commitRequests]);
 
   return {
     requests,

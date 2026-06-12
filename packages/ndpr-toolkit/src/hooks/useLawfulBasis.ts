@@ -128,6 +128,16 @@ export function useLawfulBasis({
   const [activities, setActivities] = useState<ProcessingActivity[]>(initialActivities);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Mirror of the latest activities so mutators can compute their result
+  // synchronously. Reading a value assigned inside a setState updater right
+  // after calling setState is unreliable: when two mutations land in the
+  // same React batch the second updater is deferred, so the value is stale.
+  const activitiesRef = useRef<ProcessingActivity[]>(initialActivities);
+  const commitActivities = useCallback((next: ProcessingActivity[]) => {
+    activitiesRef.current = next;
+    setActivities(next);
+  }, []);
+
   // Load activities from storage on mount
   useEffect(() => {
     let cancelled = false;
@@ -139,7 +149,7 @@ export function useLawfulBasis({
         result.then(
           (loaded) => {
             if (cancelled) return;
-            if (loaded) setActivities(loaded);
+            if (loaded) commitActivities(loaded);
             setIsLoading(false);
           },
           () => {
@@ -147,7 +157,7 @@ export function useLawfulBasis({
           }
         );
       } else {
-        if (result) setActivities(result);
+        if (result) commitActivities(result);
         setIsLoading(false);
       }
     } catch {
@@ -180,11 +190,9 @@ export function useLawfulBasis({
         updatedAt: now,
       };
 
-      setActivities(prev => {
-        const updated = [...prev, newActivity];
-        persistActivities(updated);
-        return updated;
-      });
+      const updated = [...activitiesRef.current, newActivity];
+      commitActivities(updated);
+      persistActivities(updated);
 
       if (onAdd) {
         onAdd(newActivity);
@@ -192,56 +200,51 @@ export function useLawfulBasis({
 
       return newActivity;
     },
-    [onAdd, persistActivities]
+    [onAdd, commitActivities, persistActivities]
   );
 
   // Update an existing processing activity
   const updateActivity = useCallback(
     (id: string, updates: Partial<ProcessingActivity>): ProcessingActivity | null => {
-      let updatedActivity: ProcessingActivity | null = null;
+      const prev = activitiesRef.current;
+      const index = prev.findIndex(a => a.id === id);
+      if (index === -1) {
+        return null;
+      }
 
-      setActivities(prev => {
-        const index = prev.findIndex(a => a.id === id);
-        if (index === -1) {
-          return prev;
-        }
+      const updatedActivity: ProcessingActivity = {
+        ...prev[index],
+        ...updates,
+        id: prev[index].id, // preserve original ID
+        updatedAt: Date.now(),
+      };
 
-        updatedActivity = {
-          ...prev[index],
-          ...updates,
-          id: prev[index].id, // preserve original ID
-          updatedAt: Date.now(),
-        };
+      const next = [...prev];
+      next[index] = updatedActivity;
+      commitActivities(next);
+      persistActivities(next);
 
-        const next = [...prev];
-        next[index] = updatedActivity as ProcessingActivity;
-        persistActivities(next);
-        return next;
-      });
-
-      if (updatedActivity && onUpdate) {
+      if (onUpdate) {
         onUpdate(updatedActivity);
       }
 
       return updatedActivity;
     },
-    [onUpdate, persistActivities]
+    [onUpdate, commitActivities, persistActivities]
   );
 
   // Remove a processing activity
   const removeActivity = useCallback(
     (id: string): void => {
-      setActivities(prev => {
-        const updated = prev.filter(a => a.id !== id);
-        persistActivities(updated);
-        return updated;
-      });
+      const updated = activitiesRef.current.filter(a => a.id !== id);
+      commitActivities(updated);
+      persistActivities(updated);
 
       if (onRemove) {
         onRemove(id);
       }
     },
-    [onRemove, persistActivities]
+    [onRemove, commitActivities, persistActivities]
   );
 
   // Get a specific processing activity by ID

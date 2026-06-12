@@ -137,6 +137,16 @@ export function useCrossBorderTransfer({
   const [transfers, setTransfers] = useState<CrossBorderTransfer[]>(initialTransfers);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Mirror of the latest transfers so mutators can compute their result
+  // synchronously. Reading a value assigned inside a setState updater right
+  // after calling setState is unreliable: when two mutations land in the
+  // same React batch the second updater is deferred, so the value is stale.
+  const transfersRef = useRef<CrossBorderTransfer[]>(initialTransfers);
+  const commitTransfers = useCallback((next: CrossBorderTransfer[]) => {
+    transfersRef.current = next;
+    setTransfers(next);
+  }, []);
+
   // Load transfers from storage on mount
   useEffect(() => {
     let cancelled = false;
@@ -148,7 +158,7 @@ export function useCrossBorderTransfer({
         result.then(
           (loaded) => {
             if (cancelled) return;
-            if (loaded) setTransfers(loaded);
+            if (loaded) commitTransfers(loaded);
             setIsLoading(false);
           },
           () => {
@@ -156,7 +166,7 @@ export function useCrossBorderTransfer({
           }
         );
       } else {
-        if (result) setTransfers(result);
+        if (result) commitTransfers(result);
         setIsLoading(false);
       }
     } catch {
@@ -191,11 +201,9 @@ export function useCrossBorderTransfer({
         updatedAt: now,
       };
 
-      setTransfers((prev) => {
-        const updated = [...prev, newTransfer];
-        persistTransfers(updated);
-        return updated;
-      });
+      const updated = [...transfersRef.current, newTransfer];
+      commitTransfers(updated);
+      persistTransfers(updated);
 
       if (onAdd) {
         onAdd(newTransfer);
@@ -209,56 +217,50 @@ export function useCrossBorderTransfer({
   // Update an existing transfer
   const updateTransfer = useCallback(
     (id: string, updates: Partial<CrossBorderTransfer>): CrossBorderTransfer | null => {
-      let updatedTransfer: CrossBorderTransfer | null = null;
+      const prev = transfersRef.current;
+      const index = prev.findIndex((t) => t.id === id);
+      if (index === -1) {
+        return null;
+      }
 
-      setTransfers((prev) => {
-        const index = prev.findIndex((t) => t.id === id);
-        if (index === -1) {
-          return prev;
-        }
+      const updatedTransfer: CrossBorderTransfer = {
+        ...prev[index],
+        ...updates,
+        updatedAt: Date.now(),
+      };
 
-        updatedTransfer = {
-          ...prev[index],
-          ...updates,
-          updatedAt: Date.now(),
-        };
+      const newTransfers = [...prev];
+      newTransfers[index] = updatedTransfer;
+      commitTransfers(newTransfers);
+      persistTransfers(newTransfers);
 
-        const newTransfers = [...prev];
-        newTransfers[index] = updatedTransfer as CrossBorderTransfer;
-        persistTransfers(newTransfers);
-        return newTransfers;
-      });
-
-      if (updatedTransfer && onUpdate) {
+      if (onUpdate) {
         onUpdate(updatedTransfer);
       }
 
       return updatedTransfer;
     },
-    [onUpdate, persistTransfers]
+    [onUpdate, commitTransfers, persistTransfers]
   );
 
   // Remove a transfer
   const removeTransfer = useCallback(
     (id: string): void => {
-      let found = false;
+      const prev = transfersRef.current;
+      const index = prev.findIndex((t) => t.id === id);
+      if (index === -1) {
+        return;
+      }
 
-      setTransfers((prev) => {
-        const index = prev.findIndex((t) => t.id === id);
-        if (index === -1) {
-          return prev;
-        }
-        found = true;
-        const updated = prev.filter((t) => t.id !== id);
-        persistTransfers(updated);
-        return updated;
-      });
+      const updated = prev.filter((t) => t.id !== id);
+      commitTransfers(updated);
+      persistTransfers(updated);
 
-      if (found && onRemove) {
+      if (onRemove) {
         onRemove(id);
       }
     },
-    [onRemove, persistTransfers]
+    [onRemove, commitTransfers, persistTransfers]
   );
 
   // Get a transfer by ID
