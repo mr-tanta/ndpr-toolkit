@@ -199,6 +199,53 @@ describe('exportHTML', () => {
       expect(result).toContain('href="https://acme.example.com"');
     });
 
+    it('rejects URLs containing whitespace (space / tab / newline)', () => {
+      for (const website of [
+        'https://example.com/a b',
+        'https://example.com/a\tb',
+        'https://example.com/a\nb',
+        'java\tscript:alert(1)',
+      ]) {
+        const result = exportHTML(
+          makePolicy({
+            organizationInfo: {
+              name: 'Acme',
+              website,
+              privacyEmail: 'privacy@acme.example.com',
+            },
+          }),
+        );
+        expect(result).not.toContain('href="https://example.com/a');
+        expect(result).not.toMatch(/href="java/i);
+      }
+    });
+
+    it('accepts uppercase-scheme URLs (HTTPS://)', () => {
+      const result = exportHTML(
+        makePolicy({
+          organizationInfo: {
+            name: 'Acme',
+            website: 'HTTPS://acme.example.com/privacy',
+            privacyEmail: 'privacy@acme.example.com',
+          },
+        }),
+      );
+      expect(result).toContain('href="HTTPS://acme.example.com/privacy"');
+    });
+
+    it('accepts URLs containing hyphens', () => {
+      const result = exportHTML(
+        makePolicy({
+          organizationInfo: {
+            name: 'Acme',
+            website: 'https://my-site.example.com/privacy-policy',
+            privacyEmail: 'privacy@acme.example.com',
+          },
+        }),
+      );
+      expect(result).toContain('href="https://my-site.example.com/privacy-policy"');
+    });
+
     it('rejects javascript: smuggled into the email local-part', () => {
       const result = exportHTML(
         makePolicy({
