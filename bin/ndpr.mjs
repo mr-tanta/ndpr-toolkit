@@ -118,9 +118,10 @@ async function main() {
 
   const options = { ...(config.options ?? {}) };
   if (args.flags['min-score'] !== undefined) {
-    const minScore = Number(args.flags['min-score']);
-    if (typeof args.flags['min-score'] !== 'string' || Number.isNaN(minScore)) {
-      process.stderr.write('--min-score requires a numeric value.\n');
+    const raw = args.flags['min-score'];
+    const minScore = typeof raw === 'string' && raw.trim() !== '' ? Number(raw) : NaN;
+    if (!Number.isFinite(minScore) || minScore < 0 || minScore > 100) {
+      process.stderr.write('--min-score requires a numeric value between 0 and 100.\n');
       return 2;
     }
     options.minScore = minScore;
