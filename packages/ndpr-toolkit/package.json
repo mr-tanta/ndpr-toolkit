@@ -157,11 +157,20 @@
       "lawful-basis": [
         "./dist/lawful-basis.d.ts"
       ],
+      "lawful-basis/lite": [
+        "./dist/lawful-basis-lite.d.ts"
+      ],
       "cross-border": [
         "./dist/cross-border.d.ts"
       ],
+      "cross-border/lite": [
+        "./dist/cross-border-lite.d.ts"
+      ],
       "ropa": [
         "./dist/ropa.d.ts"
+      ],
+      "ropa/lite": [
+        "./dist/ropa-lite.d.ts"
       ],
       "adapters": [
         "./dist/adapters.d.ts"

@@ -28,6 +28,14 @@ const customJestConfig = {
     '!packages/ndpr-toolkit/src/**/__tests__/**',
     '!packages/ndpr-toolkit/src/**/index.{ts,tsx}',
   ],
+  coverageThreshold: {
+    global: {
+      statements: 66,
+      branches: 54,
+      functions: 53,
+      lines: 69,
+    },
+  },
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

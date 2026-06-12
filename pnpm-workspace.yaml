@@ -3,6 +3,14 @@
 # the lockfile's autoInstallPeers out of sync with CI and broke --frozen-lockfile.
 autoInstallPeers: true
 
+# These security overrides are INTENTIONALLY duplicated in package.json
+# pnpm.overrides — keep both blocks identical when adding/changing an entry:
+# - pnpm 10 has an open lockfile bug (pnpm/pnpm#10614) that strips overrides
+#   defined only here from pnpm-lock.yaml on install; the package.json copy is
+#   what keeps them pinned. Don't delete it until that bug is fixed for the
+#   pnpm version pinned in package.json#packageManager.
+# - pnpm 11 silently ignores package.json pnpm.overrides (pnpm/pnpm#11536),
+#   so this block is what pnpm 11 actually reads.
 overrides:
   handlebars: '>=4.7.9'
   lodash: '>=4.17.21'
