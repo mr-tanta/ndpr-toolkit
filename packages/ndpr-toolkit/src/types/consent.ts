@@ -105,7 +105,7 @@ export interface ConsentStorageOptions {
 
     /**
      * Expiration days for the cookie
-     * @default 365
+     * @default 180
      */
     expires?: number;
 

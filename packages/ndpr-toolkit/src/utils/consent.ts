@@ -99,8 +99,14 @@ export function validateConsentStructured(
   }
 
   if (settings.timestamp) {
-    const cutoff = new Date();
+    // Subtract 13 months without the setMonth() month-end rollover quirk
+    // (e.g. 31 Mar − 13 months must clamp to 28 Feb, not roll into March).
+    const cutoff = new Date(Date.now());
+    const dayOfMonth = cutoff.getDate();
+    cutoff.setDate(1);
     cutoff.setMonth(cutoff.getMonth() - 13);
+    const daysInTargetMonth = new Date(cutoff.getFullYear(), cutoff.getMonth() + 1, 0).getDate();
+    cutoff.setDate(Math.min(dayOfMonth, daysInTargetMonth));
     const thirteenMonthsAgo = cutoff.getTime();
     if (settings.timestamp < thirteenMonthsAgo) {
       errors.push({

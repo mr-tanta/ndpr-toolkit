@@ -90,6 +90,57 @@ describe('validateConsentStructured', () => {
     expect(result.errors).toEqual([]);
   });
 
+  describe('13-month staleness cutoff around month-end rollover', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('does not roll the cutoff forward when "now" is the 31st (Feb boundary)', () => {
+      // 31 Mar 2026 minus 13 months must clamp to 28 Feb 2025, not roll
+      // through "31 Feb" into early March.
+      jest.spyOn(Date, 'now').mockReturnValue(new Date(2026, 2, 31, 12).getTime());
+
+      const justUnderThirteenMonths: ConsentSettings = {
+        consents: { necessary: true },
+        timestamp: new Date(2025, 2, 2, 12).getTime(),
+        version: '1.0',
+        method: 'banner',
+        hasInteracted: true,
+      };
+      expect(validateConsentStructured(justUnderThirteenMonths).valid).toBe(true);
+
+      const justOverThirteenMonths: ConsentSettings = {
+        ...justUnderThirteenMonths,
+        timestamp: new Date(2025, 1, 27, 12).getTime(),
+      };
+      const result = validateConsentStructured(justOverThirteenMonths);
+      expect(result.valid).toBe(false);
+      expect(result.errors.map((e) => e.code)).toContain('consent_stale');
+    });
+
+    it('clamps to the last day of a 30-day target month', () => {
+      // 31 May 2026 minus 13 months must clamp to 30 Apr 2025, not 1 May.
+      jest.spyOn(Date, 'now').mockReturnValue(new Date(2026, 4, 31, 12).getTime());
+
+      const justUnderThirteenMonths: ConsentSettings = {
+        consents: { necessary: true },
+        timestamp: new Date(2025, 3, 30, 18).getTime(),
+        version: '1.0',
+        method: 'banner',
+        hasInteracted: true,
+      };
+      expect(validateConsentStructured(justUnderThirteenMonths).valid).toBe(true);
+
+      const justOverThirteenMonths: ConsentSettings = {
+        ...justUnderThirteenMonths,
+        timestamp: new Date(2025, 3, 29, 12).getTime(),
+      };
+      const result = validateConsentStructured(justOverThirteenMonths);
+      expect(result.valid).toBe(false);
+      expect(result.errors.map((e) => e.code)).toContain('consent_stale');
+    });
+  });
+
   it('returns multiple entries when multiple fields fail', () => {
     const settings = {
       consents: {},
