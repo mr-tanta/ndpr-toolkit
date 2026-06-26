@@ -91,13 +91,16 @@ The full SSR pattern (cookie read server-side → banner hydrates already-resolv
 The toolkit is used by Nigerian software, operations, education, laboratory, and compliance teams, including:
 
 - [Perkflow Inc](https://perkflow.io)
-- [Finlab Nigeria](https://finlabnigeria.com)
+- [Finlab Nigeria](https://ndprtoolkit.com.ng/case-studies#finlab-nigeria-privacy-readiness)
 - [Burtech Products](https://burtechproducts.com)
 - [Chibek Instruments](https://chibek.com)
 - NGtaxkit
-- [Tanta Innovative](https://tantainnovatives.com)
+- [Tanta Innovative](https://ndprtoolkit.com.ng/case-studies#tanta-innovative-internal-compliance)
 
-Only teams approved for public listing are included here and on the docs site.
+Only teams approved for public listing are included here and on the docs site. See the
+[case studies and implementation stories](https://ndprtoolkit.com.ng/case-studies) for
+approved proof assets; they describe implementation paths and modules used without claiming
+legal certification, regulator approval, or unapproved business metrics.
 
 ---
 

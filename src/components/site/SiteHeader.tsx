@@ -9,6 +9,7 @@ const navLinks = [
   { label: 'Audit', href: '/score' },
   { label: 'Docs', href: '/docs' },
   { label: 'Demos', href: '/ndpr-demos' },
+  { label: 'Proof', href: '/case-studies' },
   { label: 'Blog', href: '/blog' },
 ];
 

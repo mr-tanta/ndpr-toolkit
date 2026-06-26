@@ -2,6 +2,7 @@ export interface UsedByEntry {
   name: string;
   sector: string;
   approvedForPublicUse: true;
+  caseStudySlug?: string;
   logo?: {
     src: string;
     width: number;
@@ -23,7 +24,8 @@ export const USED_BY: UsedByEntry[] = [
     sector: 'Scientific & educational equipment',
     approvedForPublicUse: true,
     logo: { src: '/logos/finlab.webp', width: 180, height: 48 },
-    href: 'https://finlabnigeria.com',
+    caseStudySlug: 'finlab-nigeria-privacy-readiness',
+    href: '/case-studies#finlab-nigeria-privacy-readiness',
   },
   {
     name: 'Burtech Products',
@@ -49,6 +51,7 @@ export const USED_BY: UsedByEntry[] = [
     sector: 'Software & technology consulting; maintainer of the toolkit',
     approvedForPublicUse: true,
     logo: { src: '/logos/tanta.png', width: 180, height: 48 },
-    href: 'https://tantainnovatives.com',
+    caseStudySlug: 'tanta-innovative-internal-compliance',
+    href: '/case-studies#tanta-innovative-internal-compliance',
   },
 ];

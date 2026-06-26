@@ -23,6 +23,10 @@ describe('UsedBySection', () => {
         ).toBe(entry.href);
       }
 
+      if (entry.caseStudySlug) {
+        expect(screen.getAllByText('View implementation story').length).toBeGreaterThan(0);
+      }
+
       if (entry.logo) {
         const logo = screen.getByAltText(`${entry.name} logo`);
         expect(logo).toBeTruthy();
@@ -37,5 +41,11 @@ describe('UsedBySection', () => {
     const logoPlate = ngtaxkitWordmark.closest('div');
     expect(logoPlate).not.toBeNull();
     expect(within(logoPlate as HTMLElement).getByText('NGtaxkit')).toBeTruthy();
+  });
+
+  it('links to the proof assets index', () => {
+    render(<UsedBySection />);
+
+    expect(screen.getByRole('link', { name: /browse proof assets/i }).getAttribute('href')).toBe('/case-studies');
   });
 });

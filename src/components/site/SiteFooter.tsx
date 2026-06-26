@@ -10,6 +10,7 @@ const footerColumns = [
     links: [
       { label: 'Documentation', href: '/docs' },
       { label: 'Interactive Demos', href: '/ndpr-demos' },
+      { label: 'Case Studies', href: '/case-studies' },
       { label: 'Components', href: '/docs/components' },
       { label: 'Guides', href: '/docs/guides' },
       { label: 'npm Package', href: 'https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit', external: true },

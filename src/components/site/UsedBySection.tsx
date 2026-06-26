@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Section, Container, Grid, SiteCard } from '@/components/site/ui';
+import { Section, Container, Grid, SiteButton, SiteCard } from '@/components/site/ui';
 import { USED_BY } from './used-by-data';
 
 export { USED_BY } from './used-by-data';
@@ -47,6 +47,17 @@ const styles = {
     color: 'var(--text-secondary)',
     lineHeight: 'var(--leading-relaxed)',
   },
+  proofLink: {
+    fontSize: 'var(--text-xs)',
+    color: '#60a5fa',
+    fontWeight: 600,
+    marginTop: 'var(--space-2)',
+  },
+  footer: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: 'var(--space-8)',
+  },
 } satisfies Record<string, React.CSSProperties>;
 
 export function UsedBySection() {
@@ -85,11 +96,21 @@ export function UsedBySection() {
                   <span style={styles.sector}>
                     {entry.sector}
                   </span>
+                  {entry.caseStudySlug && (
+                    <span style={styles.proofLink}>
+                      View implementation story
+                    </span>
+                  )}
                 </div>
               </div>
             </SiteCard>
           ))}
         </Grid>
+        <div style={styles.footer}>
+          <SiteButton variant="secondary" href="/case-studies">
+            Browse proof assets
+          </SiteButton>
+        </div>
       </Container>
     </Section>
   );
