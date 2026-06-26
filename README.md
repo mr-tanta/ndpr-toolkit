@@ -9,7 +9,7 @@
 [![CI](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
-v5 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA. **5.2–5.5 add an NDPC GAID 2025 layer**: a DCPMI registration classifier, a Compliance Audit Returns scheduler, a Section 40 / Article 33 breach-notification checker (wired live into `BreachReportForm`), and an **`ndpr audit` CLI** that gates compliance in CI.
+v5 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA. **5.2–5.5 add an NDPC GAID 2025 layer**: a DCPMI designation classifier, a Compliance Audit Returns scheduler, a Section 40 / Article 33 breach-notification checker (wired live into `BreachReportForm`), and an **`ndpr audit` CLI** that gates compliance in CI.
 
 **[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[Latest Release](https://github.com/mr-tanta/ndpr-toolkit/releases/latest)**
 
@@ -20,11 +20,11 @@ v5 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 >
 > **What's new in 5.5:** The **`ndpr audit` CLI** scores a compliance config against the toolkit engine (compliance score + GAID 2025 DCPMI / CAR / breach checks) and exits non-zero on failure — a drop-in CI gate. The same logic is exported as `runNdprAudit` / `formatNdprAuditReport` from `/server`. See the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
 >
-> **NDPC GAID 2025 utilities (5.2–5.4):** `classifyDCPMI` (DCPMI registration tier + fee), `generateComplianceAuditReturn` (CAR initial-audit + 72-hour annual filing schedule), and `assessBreachNotification` (Section 40 / Article 33 notification completeness) — each pure, React-free, and exposed as a hook. `BreachReportForm` now renders a live NDPC-notification readiness panel as it's filled in.
+> **NDPC GAID 2025 utilities (5.2–5.4):** `classifyDCPMI` (DCPMI designation tier + fee estimate), `generateComplianceAuditReturn` (CAR initial-audit + annual filing schedule), and `assessBreachNotification` (Section 40 / Article 33 notification completeness) — each pure, React-free, and exposed as a hook. `BreachReportForm` now renders a live NDPC-notification readiness panel as it's filled in.
 >
 > **Earlier highlights:** Structured-result validators are the only shape — `{ field, code, message }[]` with stable codes; uniform `onAdd` / `onUpdate` / `onArchive` callbacks; `NDPRDPIA.onResult(result)` (5.0). Arabic + French locales with RTL-correct CSS (4.1.0). React 17 dropped; `^18 || ^19` (4.0.0). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
 
-> **Legal source transparency:** See [Legal Basis & Citations](https://ndprtoolkit.com.ng/docs/guides/legal-basis-and-citations) for module-level NDPA 2023, NDPC GAID 2025, DCPMI, CAR, and audit CLI references, plus the linked governance policy for regulatory changes.
+> **Legal source transparency:** See [Legal Basis & Citations](https://ndprtoolkit.com.ng/docs/guides/legal-basis-and-citations) for NDPA 2023 module references, NDPC GAID 2025 DCPMI/CAR utility references, and audit CLI boundaries, plus the linked governance policy for regulatory changes.
 >
 > **Compliance updates:** Watch [GitHub Releases](https://github.com/mr-tanta/ndpr-toolkit/releases) or npm version updates for compliance-impacting changes. Release notes call out NDPA/NDPC/GAID rule changes separately from features, bug fixes, and docs. The toolkit is implementation support, not legal advice; verify current NDPC guidance before relying on outputs for regulated filings or audit evidence.
 
@@ -475,11 +475,11 @@ import { NDPRComplianceDashboard } from '@tantainnovative/ndpr-toolkit/presets';
 
 ---
 
-## DCPMI & Compliance Audit Returns
+## DCPMI Designation & Compliance Audit Returns
 
-Two pure utilities for the NDPC **General Application and Implementation Directive (GAID) 2025** registration regime — no React, safe to run server-side or in CI.
+Two pure utilities for the NDPC **General Application and Implementation Directive (GAID) 2025** registration regime — no React, safe to run server-side or in CI. DCPMI here is a designation/classification utility, not a ninth NDPA module or a substitute for DPCO-led registration.
 
-`classifyDCPMI()` derives an organisation's **Data Controller/Processor of Major Importance** tier from the number of data subjects processed in a six-month window, with its annual registration fee and filing obligations:
+`classifyDCPMI()` derives an organisation's **Data Controller/Processor of Major Importance** designation tier from the number of data subjects processed in a six-month window, with its annual registration fee estimate and filing obligations:
 
 ```ts
 import { classifyDCPMI } from '@tantainnovative/ndpr-toolkit/core';
@@ -621,7 +621,7 @@ Compliance score: 82/100 (good) — minimum 70
     82/100 (good); minimum 70.
 ! Minor (child) data protection controls (Section 31)
     Implement age-verification and parental-consent controls for processing data of minors.
-✓ DCPMI registration (GAID 2025)
+✓ DCPMI designation (GAID 2025)
     Not a Data Controller/Processor of Major Importance by volume.
 
 2 passed, 3 warning(s), 0 failed

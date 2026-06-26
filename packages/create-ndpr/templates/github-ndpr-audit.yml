@@ -2,7 +2,7 @@
 #
 # Runs `ndpr audit` on every push and pull request. The audit scores your
 # compliance config (consent, DSR, DPIA, breach, policy, lawful basis,
-# cross-border, RoPA) plus your GAID 2025 DCPMI registration tier, and exits
+# cross-border, RoPA) plus your GAID 2025 DCPMI designation inputs, and exits
 # non-zero when the overall score drops below the threshold — so a regression
 # fails CI the same way a broken test would.
 #

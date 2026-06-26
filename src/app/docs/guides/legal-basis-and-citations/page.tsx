@@ -60,14 +60,14 @@ export default function LegalBasisAndCitationsGuide() {
   return (
     <DocLayout
       title="Legal Basis & Citations"
-      description="Module-level NDPA, GAID, DCPMI, CAR, and audit CLI citation index for NDPR Toolkit."
+      description="Citation index for NDPA modules, GAID DCPMI/CAR utilities, and audit CLI boundaries in NDPR Toolkit."
     >
       <section id="purpose" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Purpose</h2>
         <p className="mb-4 text-foreground">
-          This page is the citation index for NDPR Toolkit modules. Each linked module page includes a legal source map
-          showing the primary reference, what the toolkit automates, and what still requires controller, DPO, DPCO, or
-          legal review.
+          This page is the citation index for NDPR Toolkit modules and GAID 2025 utilities. Each linked page includes a
+          legal source map showing the primary reference, what the toolkit automates, and what still requires controller,
+          DPO, DPCO, or legal review.
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-xl">
           <h3 className="text-blue-800 dark:text-blue-200 font-medium mb-2">Not legal advice</h3>

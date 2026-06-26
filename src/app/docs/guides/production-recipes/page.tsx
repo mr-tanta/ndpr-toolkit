@@ -19,7 +19,7 @@ const moduleRows = [
   ['DPIA', 'Assessment metadata, risk score, approval status', 'Store Section 28 assessment evidence.'],
   ['ROPA', 'Processing records and completeness checks', 'Maintain records of processing activities.'],
   ['Compliance', 'Compliance score API route', 'Expose server-calculated posture to dashboards.'],
-  ['DCPMI / CAR', 'Registration tier and audit return schedule', 'Operationalise GAID 2025 obligations.'],
+  ['DCPMI / CAR utilities', 'Designation tier and audit return schedule', 'Support GAID 2025 classification and filing planning.'],
 ];
 
 export default function ProductionRecipesGuide() {

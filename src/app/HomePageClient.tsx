@@ -126,7 +126,7 @@ npx ndpr audit --min-score 80
 
 # NDPA 2023 Compliance Audit
 # ✓ Overall compliance score        82/100 (good); minimum 80.
-# ✓ DCPMI registration (GAID 2025)  UHL — ₦250,000/yr; file CAR annually.
+# ✓ DCPMI designation (GAID 2025)   UHL — ₦250,000/yr; file CAR annually.
 # ! Breach notification — incident   60% complete; 18h remaining.
 # Verdict: PASS`;
 
@@ -779,7 +779,7 @@ export function HomePageClient({ version }: { version: string }) {
         <Section
           badge="NDPC GAID 2025"
           title="Register, Schedule, and Audit in CI"
-          subtitle="The GAID 2025 layer: classify your DCPMI registration tier, schedule Compliance Audit Returns, and check breach notifications — then gate it all in CI with the ndpr audit CLI."
+          subtitle="The GAID 2025 layer: classify your DCPMI designation tier, schedule Compliance Audit Returns, and check breach notifications — then gate it all in CI with the ndpr audit CLI."
           gradient
         >
           <Container>
@@ -802,7 +802,7 @@ export function HomePageClient({ version }: { version: string }) {
               {/* Highlights + CTA */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                 {[
-                  { title: 'DCPMI registration classifier', body: 'Resolve your UHL / EHL / OHL tier and annual NDPC fee from data-subject volume.' },
+                  { title: 'DCPMI designation classifier', body: 'Resolve likely UHL / EHL / OHL designation and annual NDPC fee estimate from data-subject volume.' },
                   { title: 'Compliance Audit Returns scheduler', body: 'Initial-audit due date and the next annual NIMP filing deadline, with overrides.' },
                   { title: 'Breach-notification checker', body: 'Score a breach against the Section 40 / Article 33 mandated content and the 72-hour clock.' },
                   { title: 'ndpr audit — CI gate', body: 'One command scores everything and exits non-zero on failure. Drop it into any pipeline.' },

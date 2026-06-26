@@ -74,7 +74,7 @@ export default function ScorePage() {
           <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
             Walk through a short, step-by-step questionnaire to see how your organisation stacks up
             against the gazetted Nigeria Data Protection Act 2023 and the NDPC&apos;s GAID 2025 directive.
-            Your score updates as you go, and the results include your DCPMI registration tier plus
+            Your score updates as you go, and the results include your DCPMI designation tier plus
             prioritised recommendations with NDPA section references your DPO can verify independently.
           </p>
           <p className="text-sm text-muted-foreground mt-3 max-w-3xl">

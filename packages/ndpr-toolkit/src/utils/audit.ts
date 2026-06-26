@@ -90,13 +90,13 @@ export function runNdprAudit(input: NdprAuditInput, options: NdprAuditOptions = 
     });
   }
 
-  // DCPMI registration.
+  // DCPMI designation classification.
   let dcpmi: DCPMIClassification | undefined;
   if (input.dcpmi) {
     dcpmi = classifyDCPMI(input.dcpmi, options.dcpmiOptions);
     checks.push({
       id: 'dcpmi',
-      label: 'DCPMI registration (GAID 2025)',
+      label: 'DCPMI designation (GAID 2025)',
       status: dcpmi.tier === 'listed' ? 'warn' : 'pass',
       detail: dcpmi.isDCPMI
         ? `${dcpmi.tier} — ${ngn(dcpmi.annualFeeNGN)}/yr; ${dcpmi.registration.renewsAnnually ? 'renew registration annually' : 'register once + file CAR annually'}.`

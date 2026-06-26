@@ -32,7 +32,7 @@ const ndpa2023: LegalReference = {
 const gaid2025: LegalReference = {
   label: 'NDP Act General Application and Implementation Directive, 2025',
   href: 'https://ndpc.gov.ng/wp-content/uploads/2025/07/NDP-ACT-GAID-2025-MARCH-20TH.pdf',
-  detail: 'NDPC implementation guidance used for DCPMI, CAR, breach-notification content, and operational compliance checks.',
+  detail: 'NDPC implementation guidance used for DCPMI designation checks, CAR scheduling, breach-notification content, and operational compliance checks.',
 };
 
 const registrationGuidance: LegalReference = {
@@ -109,13 +109,13 @@ export const legalCitationBlocks: Record<CitationModuleId, LegalCitationBlock> =
   'audit-cli': {
     title: 'Audit CLI citations',
     references: [ndpa2023, gaid2025, registrationGuidance],
-    automates: ['Developer-facing completeness checks across compliance score, DCPMI, CAR, and breach-notification inputs.'],
+    automates: ['Developer-facing completeness checks across compliance score, DCPMI designation inputs, CAR scheduling inputs, and breach-notification inputs.'],
     doesNotReplace: ['A statutory audit, DPCO engagement, NDPC filing, or legal sign-off on compliance posture.'],
   },
   'dcpmi-car': {
-    title: 'DCPMI and CAR citations',
+    title: 'DCPMI designation and CAR citations',
     references: [gaid2025, registrationGuidance],
-    automates: ['DCPMI tier classification, configurable fee baselines, initial audit timing, and annual CAR schedule support.'],
-    doesNotReplace: ['NDPC designation review, current fee confirmation, NIMP filing, or advice on sector-specific registration duties.'],
+    automates: ['DCPMI designation classification, configurable fee baselines, initial audit timing, and annual CAR schedule support.'],
+    doesNotReplace: ['NDPC designation review, DPCO-led registration workflow, current fee confirmation, NIMP filing, or advice on sector-specific registration duties.'],
   },
 };

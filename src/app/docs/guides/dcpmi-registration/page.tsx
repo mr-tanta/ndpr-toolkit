@@ -29,6 +29,11 @@ export default function DCPMIRegistrationGuide() {
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useComplianceAuditReturn</code> hooks.
           They carry no React dependency, so they run equally well in a Server Action, a route handler, or a scheduled job.
         </p>
+        <p className="mb-4 text-foreground">
+          This is not a standalone DCPMI module, portfolio dashboard, DPCO registration workflow, or NDPC filing system.
+          Treat it as classification and scheduling support that you can pair with your DPCO process, evidence review,
+          and current NDPC guidance.
+        </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4 rounded-xl mb-4">
           <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">Not legal advice</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm">
@@ -43,8 +48,8 @@ export default function DCPMIRegistrationGuide() {
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Classifying a DCPMI</h2>
         <p className="mb-4 text-foreground">
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">classifyDCPMI()</code> takes the
-          number of distinct data subjects processed in the relevant six-month window and returns the tier, the annual
-          registration fee, and the filing obligations:
+          number of distinct data subjects processed in the relevant six-month window and returns the likely designation
+          tier, the annual registration fee estimate, and the filing obligations:
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`import { classifyDCPMI } from '@tantainnovative/ndpr-toolkit/core';

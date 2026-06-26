@@ -130,8 +130,8 @@ app.use('/api/ndpr', createNDPRRouter());
 Every scaffold ships an `ndpr.audit.json` config and a GitHub Actions workflow
 that runs the toolkit's `ndpr audit` CLI. The audit scores your compliance
 posture (consent, DSR, DPIA, breach, policy, lawful basis, cross-border, RoPA)
-plus your GAID 2025 DCPMI registration tier, and **exits non-zero when the score
-drops below the threshold** — so a regression fails CI like a broken test.
+plus your GAID 2025 DCPMI designation inputs, and **exits non-zero when the
+score drops below the threshold** — so a regression fails CI like a broken test.
 
 ```bash
 # Run it locally any time:

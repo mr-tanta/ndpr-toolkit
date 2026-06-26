@@ -119,8 +119,8 @@ export default function NDPADPIAToolLanding() {
             processing that is likely to result in a high risk to the rights and freedoms of data
             subjects. The NDPC&apos;s General Application and Implementation Directive (GAID) 2025
             reinforces DPIAs as an expectation for Data Controllers and Processors of Major Importance
-            (DCPMI) — not sure if that&apos;s you? Check your tier with the{' '}
-            <Link href="/docs/guides/dcpmi-registration" className="text-primary hover:underline">DCPMI registration classifier</Link>.
+            (DCPMI) — not sure if that&apos;s you? Check your likely designation with the{' '}
+            <Link href="/docs/guides/dcpmi-registration" className="text-primary hover:underline">DCPMI designation classifier</Link>.
             In practice, a DPIA covers:
           </p>
           <ul className="list-disc pl-6 space-y-1">

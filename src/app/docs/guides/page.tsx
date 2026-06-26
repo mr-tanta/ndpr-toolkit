@@ -6,7 +6,7 @@ import { DocLayout } from '@/components/docs/DocLayout';
 export const guides = [
   {
     title: 'Legal Basis & Citations',
-    description: 'Module-level citation index for NDPA, GAID, DCPMI, CAR, and audit CLI coverage.',
+    description: 'Citation index for NDPA modules, GAID DCPMI/CAR utilities, and audit CLI coverage.',
     href: '/docs/guides/legal-basis-and-citations',
     category: 'Trust',
   },

@@ -27,7 +27,7 @@ This package is a **versioned reference implementation**. Install it when you wa
 | Next.js App Router | Consent, DSR, DPIA, Breach, ROPA, Compliance, Registration route handlers |
 | Express | Full NDPR router with consent, DSR, DPIA, breach, ROPA, compliance, registration routes |
 | Consent middleware | Next.js edge middleware + Express middleware |
-| GAID 2025 (DCPMI + CAR) | `/registration` route — tier classification + Compliance Audit Return schedule |
+| GAID 2025 (DCPMI + CAR) | `/registration` route — designation classification + Compliance Audit Return schedule |
 | Breach Article-33 readiness | Breach detail routes return which NDPC notification fields are still missing |
 
 ---
@@ -56,7 +56,7 @@ This package is a **versioned reference implementation**. Install it when you wa
 | `src/nextjs/app-router/api/breach/[id]/route.ts` | Next.js breach detail/update route with lifecycle validation + readiness |
 | `src/nextjs/app-router/api/ropa/route.ts` | Next.js ROPA API route with toolkit server validation |
 | `src/nextjs/app-router/api/compliance/route.ts` | Next.js compliance score API route |
-| `src/nextjs/app-router/api/registration/route.ts` | Next.js DCPMI tier + CAR schedule route (GAID 2025) |
+| `src/nextjs/app-router/api/registration/route.ts` | Next.js DCPMI designation + CAR schedule route (GAID 2025) |
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 | `src/nextjs/app-router/layout-example.tsx` | Full wiring example for App Router |
 | `src/express/index.ts` | Express router factory — mounts all routes |
@@ -66,7 +66,7 @@ This package is a **versioned reference implementation**. Install it when you wa
 | `src/express/routes/breach.ts` | Express breach router with intake/update validation + GAID 2025 Art. 33 readiness |
 | `src/express/routes/ropa.ts` | Express ROPA router with toolkit server validation |
 | `src/express/routes/compliance.ts` | Express compliance score router |
-| `src/express/routes/registration.ts` | Express DCPMI tier + CAR schedule router (GAID 2025) |
+| `src/express/routes/registration.ts` | Express DCPMI designation + CAR schedule router (GAID 2025) |
 | `src/express/middleware/consent-check.ts` | Express consent gate middleware |
 
 ---
@@ -329,7 +329,7 @@ This mounts:
 | `GET/POST/PATCH  /api/ndpr/breach` | Breach notification |
 | `GET/POST/PATCH  /api/ndpr/ropa` | Record of Processing Activities |
 | `GET             /api/ndpr/compliance` | Compliance score |
-| `GET             /api/ndpr/registration` | DCPMI tier + CAR schedule (GAID 2025) |
+| `GET             /api/ndpr/registration` | DCPMI designation + CAR schedule (GAID 2025) |
 
 ### Consent middleware (route protection)
 
@@ -396,17 +396,19 @@ The `apiAdapter` hits your `/api/consent` route handler (from `src/nextjs/app-ro
 
 ---
 
-## GAID 2025 — DCPMI registration & breach readiness
+## GAID 2025 — DCPMI designation & breach readiness
 
 The NDPC's General Application and Implementation Directive (GAID) 2025 added
 obligations the original recipes predate. Two recipes cover them, both built on
 the toolkit's React-free `/server` utilities (no extra database tables needed).
 
-### DCPMI tier + Compliance Audit Return (`/registration`)
+### DCPMI designation + Compliance Audit Return (`/registration`)
 
-`classifyDCPMI` derives your registration tier and annual fee from the number of
-data subjects you process in a six-month window; `generateComplianceAuditReturn`
-derives the filing schedule for those that must file:
+`classifyDCPMI` derives a likely designation tier and annual fee estimate from
+the number of data subjects you process in a six-month window;
+`generateComplianceAuditReturn` derives the filing schedule for those that must
+file. It is classification and scheduling support, not a DPCO registration
+workflow or NDPC filing portal:
 
 - **UHL** (> 5,000 subjects) — ₦250,000/yr, files a **CAR annually**
 - **EHL** (1,000–5,000) — ₦100,000/yr, files a **CAR annually**
