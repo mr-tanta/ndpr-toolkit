@@ -6,7 +6,7 @@ For interpersonal conduct, see [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md). For
 
 ## Tooling
 
-- **Node**: `>=20` (set via `package.json#engines`). The CI matrix tests 20.x and 22.x.
+- **Node**: `>=18` per `package.json#engines`; use Node 20 or 22 for parity with CI.
 - **Package manager**: `pnpm 10`. `corepack enable && corepack prepare pnpm@10 --activate` if you don't have it.
 - **Editor**: anything that speaks TypeScript. The repo's strict mode catches most issues at edit time.
 
@@ -53,7 +53,7 @@ pnpm install
 ### Run a single test file
 
 ```bash
-pnpm test -- packages/ndpr-toolkit/src/__tests__/components/consent/ConsentBanner.test.tsx
+pnpm exec jest packages/ndpr-toolkit/src/__tests__/components/consent/ConsentBanner.test.tsx
 ```
 
 ### Run the full Jest suite
@@ -61,6 +61,22 @@ pnpm test -- packages/ndpr-toolkit/src/__tests__/components/consent/ConsentBanne
 ```bash
 pnpm test
 ```
+
+### Run the full Jest suite serially
+
+```bash
+pnpm test:serial
+```
+
+Use this when local parallelism makes output noisy or memory usage spikes.
+
+### Run the same local gate CI expects
+
+```bash
+pnpm verify:ci
+```
+
+This runs lint, TypeScript, the serial Jest suite, `build:lib`, and tarball verification against the built `dist/`.
 
 ### Build the library
 
@@ -135,7 +151,7 @@ If you're not sure, mark the PR and we'll calibrate together.
 
 ## i18n contributions
 
-The toolkit ships 5 locale files (`en`, `yo`, `ig`, `ha`, `pcm`) under `packages/ndpr-toolkit/src/locales/`. To add a locale:
+The toolkit ships 7 locale files (`en`, `yo`, `ig`, `ha`, `pcm`, `ar`, `fr`) under `packages/ndpr-toolkit/src/locales/`. To add a locale:
 
 1. Copy `en.ts` to `<ISO 639-1 code>.ts`.
 2. Translate the strings in place.

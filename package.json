@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-toolkit",
-  "version": "5.7.2",
+  "version": "5.7.3",
   "private": false,
   "packageManager": "pnpm@10.34.1",
   "description": "Nigeria Data Protection Toolkit — enterprise-grade compliance components for the Nigeria Data Protection Act (NDPA) 2023",
@@ -35,6 +35,9 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "jest",
+    "test:serial": "jest --runInBand",
+    "test:coverage": "jest --coverage --coverageReporters=text-summary --coverageReporters=lcov --collectCoverageFrom='packages/ndpr-toolkit/src/**/*.ts' --collectCoverageFrom='packages/ndpr-toolkit/src/**/*.tsx' --collectCoverageFrom='!packages/ndpr-toolkit/src/**/*.d.ts' --collectCoverageFrom='!packages/ndpr-toolkit/src/__tests__/**'",
+    "verify:ci": "pnpm lint && pnpm exec tsc --noEmit && pnpm test:serial && pnpm build:lib && pnpm verify:tarball --skip-build",
     "export": "next export",
     "build:static": "next build",
     "deploy": "next build && touch out/.nojekyll && gh-pages -d out",

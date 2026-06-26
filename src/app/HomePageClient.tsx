@@ -3,6 +3,7 @@
 import React from 'react';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { SiteFooter } from '@/components/site/SiteFooter';
+import { UsedBySection } from '@/components/site/UsedBySection';
 import {
   Container,
   SiteButton,
@@ -840,6 +841,9 @@ export function HomePageClient({ version }: { version: string }) {
             </div>
           </Container>
         </Section>
+
+        {/* ── 6c. USED BY ──────────────────────────────────────────────────── */}
+        <UsedBySection />
 
         {/* ── 7. CTA ───────────────────────────────────────────────────────── */}
         <CTASection

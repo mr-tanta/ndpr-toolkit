@@ -45,15 +45,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run tests with coverage
-        run: |
-          pnpm test -- \
-            --coverage \
-            --coverageReporters=text-summary \
-            --coverageReporters=lcov \
-            --collectCoverageFrom='packages/ndpr-toolkit/src/**/*.ts' \
-            --collectCoverageFrom='packages/ndpr-toolkit/src/**/*.tsx' \
-            --collectCoverageFrom='!packages/ndpr-toolkit/src/**/*.d.ts' \
-            --collectCoverageFrom='!packages/ndpr-toolkit/src/__tests__/**'
+        run: pnpm test:coverage
 
       - name: Upload coverage report
         if: matrix.node-version == '22.x'

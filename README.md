@@ -16,6 +16,8 @@ v5 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app)
 [![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/nextjs-app)
 
+> **What's new in 5.7.3:** The docs site now includes an approved **Used by** section for teams shipping NDPA compliance with the toolkit, the release workflow uses explicit serial/coverage test scripts, and the maintainer docs now clearly separate the Next.js site source from the published package source.
+>
 > **What's new in 5.5:** The **`ndpr audit` CLI** scores a compliance config against the toolkit engine (compliance score + GAID 2025 DCPMI / CAR / breach checks) and exits non-zero on failure — a drop-in CI gate. The same logic is exported as `runNdprAudit` / `formatNdprAuditReport` from `/server`. See the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
 >
 > **NDPC GAID 2025 utilities (5.2–5.4):** `classifyDCPMI` (DCPMI registration tier + fee), `generateComplianceAuditReturn` (CAR initial-audit + 72-hour annual filing schedule), and `assessBreachNotification` (Section 40 / Article 33 notification completeness) — each pure, React-free, and exposed as a hook. `BreachReportForm` now renders a live NDPC-notification readiness panel as it's filled in.
@@ -77,6 +79,21 @@ The full SSR pattern (cookie read server-side → banner hydrates already-resolv
   <br />
   <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
 </p>
+
+---
+
+## Used by
+
+The toolkit is used by Nigerian software, operations, education, laboratory, and compliance teams, including:
+
+- [Perkflow Inc](https://perkflow.io)
+- [Finlab Nigeria](https://finlabnigeria.com)
+- [Burtech Products](https://burtechproducts.com)
+- [Chibek Instruments](https://chibek.com)
+- NGtaxkit
+- [Tanta Innovative](https://tantainnovatives.com)
+
+Only teams approved for public listing are included here and on the docs site.
 
 ---
 

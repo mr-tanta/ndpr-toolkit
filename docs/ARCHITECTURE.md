@@ -1,23 +1,43 @@
 # NDPR Toolkit Architecture
 
-> Internal architecture reference for `@tantainnovative/ndpr-toolkit` v3.x.
+> Internal architecture reference for `@tantainnovative/ndpr-toolkit` v5.x.
 > Covers the module system, entry points, key patterns, and build pipeline.
 
 ---
 
 ## Table of Contents
 
-1. [Module System](#1-module-system)
-2. [Entry Points](#2-entry-points)
-3. [Storage Adapter Pattern](#3-storage-adapter-pattern)
-4. [Compound Component Pattern](#4-compound-component-pattern)
-5. [i18n System](#5-i18n-system)
-6. [Compliance Score Engine](#6-compliance-score-engine)
-7. [Build Pipeline](#7-build-pipeline)
+1. [Source Roots](#1-source-roots)
+2. [Module System](#2-module-system)
+3. [Entry Points](#3-entry-points)
+4. [Storage Adapter Pattern](#4-storage-adapter-pattern)
+5. [Compound Component Pattern](#5-compound-component-pattern)
+6. [i18n System](#6-i18n-system)
+7. [Compliance Score Engine](#7-compliance-score-engine)
+8. [Build Pipeline](#8-build-pipeline)
 
 ---
 
-## 1. Module System
+## 1. Source Roots
+
+The repository has two TypeScript source trees with different ownership:
+
+| Path | Purpose |
+|------|---------|
+| `packages/ndpr-toolkit/src/` | Library source that is bundled by `pnpm build:lib` and published to npm. Put public package components, hooks, validators, adapters, presets, styles, and package tests here. |
+| `src/` | Next.js documentation/demo site source. Put app routes, marketing pages, docs UI, blog rendering, and site-only components here. |
+
+The root `package.json` is the published npm manifest. The inner
+`packages/ndpr-toolkit/package.json` is private and exists only for local
+package context; do not treat it as the publish source of truth.
+
+`tsup.config.ts` builds the package from `packages/ndpr-toolkit/src/`, with
+one compatibility entry for root `src/unstyled.ts`. The docs site imports the
+built/package APIs where possible, but site-only UI belongs under root `src/`.
+
+---
+
+## 2. Module System
 
 The toolkit is organized into four layers. Each layer depends only on the layers
 below it, never upward.
@@ -65,9 +85,9 @@ below it, never upward.
 
 ---
 
-## 2. Entry Points
+## 3. Entry Points
 
-The package exposes **14 entry points** via the `exports` field in `package.json`.
+The package exposes **22 entry points** via the `exports` field in `package.json`.
 Each resolves to CJS (`.js`), ESM (`.mjs`), and declaration (`.d.ts`) files.
 
 ```
@@ -75,19 +95,27 @@ Each resolves to CJS (`.js`), ESM (`.mjs`), and declaration (`.d.ts`) files.
 |
 |-- .              (index)        Everything: all components, hooks, utilities, types
 |-- /core                         Types + pure utilities only (zero React)
+|-- /server                       Server-safe validators, audit helpers, and pure utilities
 |-- /hooks                        All React hooks + useComplianceScore
+|-- /headless                     Alias for hook/headless workflows
 |-- /consent                      Consent components, hook, compound, + adapter types
 |-- /dsr                          DSR components, hook, compound
 |-- /dpia                         DPIA components + hook
 |-- /breach                       Breach components + hook
 |-- /policy                       Policy generator components + hook
 |-- /lawful-basis                 Lawful basis tracker + hook
+|-- /lawful-basis/lite            Read-only lawful-basis display path
 |-- /cross-border                 Cross-border transfer manager + hook
+|-- /cross-border/lite            Read-only cross-border display path
 |-- /ropa                         ROPA manager + hook
+|-- /ropa/lite                    Read-only ROPA display path
 |-- /adapters                     All storage adapter factories + compose
 |-- /presets                      Zero-config preset components
+|-- /presets/consent              Consent preset only
+|-- /presets/dsr                  DSR preset only
+|-- /presets/policy               Privacy-policy preset only
 |-- /unstyled                     Headless/unstyled component variants
-|-- /styles                       CSS file (animations.css)
+|-- /styles                       CSS file (styles.css)
 ```
 
 ### Dependency tree between entry points
@@ -112,7 +140,7 @@ tree-shaking.
 
 ---
 
-## 3. Storage Adapter Pattern
+## 4. Storage Adapter Pattern
 
 All hooks that persist data accept a pluggable `StorageAdapter<T>` interface,
 allowing any backend (browser storage, cookies, HTTP API, custom) without
@@ -223,7 +251,7 @@ useConsent({ options, adapter? })
 
 ---
 
-## 4. Compound Component Pattern
+## 5. Compound Component Pattern
 
 Domain modules (consent, DSR, etc.) expose a **compound component** API
 alongside the traditional monolithic components. This gives consumers full
@@ -288,7 +316,7 @@ function MyBanner() {
 
 ---
 
-## 5. i18n System
+## 6. i18n System
 
 All user-facing strings in toolkit components are localisable through the
 `NDPRProvider` context.
@@ -360,7 +388,7 @@ function MyComponent() {
 
 ---
 
-## 6. Compliance Score Engine
+## 7. Compliance Score Engine
 
 The compliance score engine (`src/utils/compliance-score.ts`) evaluates an
 organisation's NDPA compliance posture across **eight modules** and produces a
@@ -443,7 +471,7 @@ wraps this in a React hook with memoisation.
 
 ---
 
-## 7. Build Pipeline
+## 8. Build Pipeline
 
 The toolkit uses [tsup](https://tsup.egoist.dev/) (esbuild-based) for
 bundling, with a separate `tsc` step for declaration files.
@@ -502,8 +530,10 @@ separate `tsc -p tsconfig.lib.json` step instead (`pnpm build:types`).
 
 ### CSS handling
 
-The `onSuccess` hook copies `src/styles/animations.css` to `dist/styles.css`.
-This file is exposed via the `./styles` export in `package.json`.
+The `onSuccess` hook copies `packages/ndpr-toolkit/src/styles/styles.css` to
+`dist/styles.css`, falling back to the legacy `animations.css` only if the
+current stylesheet is missing. This file is exposed via the `./styles` export
+in `package.json`.
 
 ### Output structure
 
