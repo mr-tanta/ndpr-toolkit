@@ -174,7 +174,7 @@ export function useCrossBorderTransfer({
     }
 
     return () => { cancelled = true; };
-  }, []);  
+  }, [commitTransfers]);
 
   // Persist transfers to adapter (fire-and-forget)
   const persistTransfers = useCallback((updated: CrossBorderTransfer[]) => {
@@ -211,7 +211,7 @@ export function useCrossBorderTransfer({
 
       return newTransfer;
     },
-    [onAdd, persistTransfers]
+    [onAdd, commitTransfers, persistTransfers]
   );
 
   // Update an existing transfer

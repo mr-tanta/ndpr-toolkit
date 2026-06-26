@@ -200,7 +200,7 @@ export function useDSR({
     }
 
     return () => { cancelled = true; };
-  }, []);  
+  }, [commitRequests]);
 
   // Persist requests whenever they change (fire-and-forget)
   const persistRequests = useCallback((updated: DSRRequest[]) => {

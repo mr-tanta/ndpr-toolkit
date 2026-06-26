@@ -15,8 +15,10 @@ export function useDCPMI(
   input: DCPMIInput,
   options?: DCPMIClassificationOptions,
 ): DCPMIClassification {
+  const { dataSubjectsInSixMonths, isDesignated } = input;
+
   return useMemo(
-    () => classifyDCPMI(input, options),
-    [input.dataSubjectsInSixMonths, input.isDesignated, options],
+    () => classifyDCPMI({ dataSubjectsInSixMonths, isDesignated }, options),
+    [dataSubjectsInSixMonths, isDesignated, options],
   );
 }

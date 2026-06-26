@@ -11,8 +11,10 @@ export function useComplianceAuditReturn(
   input: CARInput,
   options?: CAROptions,
 ): ComplianceAuditReturn {
+  const { commencementDate, asOf, tier } = input;
+
   return useMemo(
-    () => generateComplianceAuditReturn(input, options),
-    [input.commencementDate, input.asOf, input.tier, options],
+    () => generateComplianceAuditReturn({ commencementDate, asOf, tier }, options),
+    [commencementDate, asOf, tier, options],
   );
 }

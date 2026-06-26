@@ -338,9 +338,10 @@ export const BreachReportForm: React.FC<BreachReportFormProps> = ({
     return assessBreachNotification(liveReport, { highRisk: involvesSensitiveData });
   }, [
     breachTitle, breachDescription, category, discoveredAt, occurredAt,
+    reporterName, reporterEmail, reporterDepartment, reporterPhone,
     affectedSystems, dataTypes, estimatedAffectedSubjects, approximateRecordCount,
     dataSubjectCategoriesInput, involvesSensitiveData, likelyConsequences, mitigationMeasures,
-    dpoName, dpoEmail, status, initialActions,
+    dpoName, dpoEmail, dpoPhone, status, initialActions,
   ]);
   const allItems = [...assessment.notificationToCommission, ...assessment.dataSubjectCommunication];
   const totalItems = allItems.length;

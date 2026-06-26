@@ -165,7 +165,7 @@ export function useLawfulBasis({
     }
 
     return () => { cancelled = true; };
-  }, []);  
+  }, [commitActivities]);
 
   // Persist activities to adapter (fire-and-forget)
   const persistActivities = useCallback((updated: ProcessingActivity[]) => {
