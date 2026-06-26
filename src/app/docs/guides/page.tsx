@@ -106,6 +106,12 @@ export const guides = [
     href: '/docs/guides/backend-integration',
     category: 'Advanced',
   },
+  {
+    title: 'Production Recipes',
+    description: 'Install @tantainnovative/ndpr-recipes as a versioned npm source package for Prisma, Drizzle, Next.js, Express, adapters, and middleware templates.',
+    href: '/docs/guides/production-recipes',
+    category: 'Advanced',
+  },
 ];
 
 const categoryColors: Record<string, string> = {

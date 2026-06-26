@@ -4,9 +4,9 @@ Backend recipes for Nigeria NDPA 2023 / NDPC GAID 2025 compliance with [@tantain
 
 ## What is this?
 
-This package is a **reference implementation** — not a library to install. Copy the files you need directly into your project and adapt them to fit your architecture. Each recipe is self-contained and heavily documented.
+This package is a **versioned reference implementation**. Install it when you want a pinned copy of the backend recipes in `node_modules`, then copy the files you need into your application and adapt them to fit your architecture. Each recipe is self-contained and heavily documented.
 
-> Do not `npm install` this package into your project. Clone or download the files and integrate them manually.
+> The recipes are source templates, not runtime abstractions. They are published on npm so teams can pin and audit the exact recipe version they copied.
 
 ---
 
@@ -73,30 +73,39 @@ This package is a **reference implementation** — not a library to install. Cop
 
 ## Quick Start
 
-### 1. Copy the database schema
+### 1. Install a pinned recipe version
+
+```bash
+pnpm add -D @tantainnovative/ndpr-recipes
+pnpm add @tantainnovative/ndpr-toolkit
+```
+
+You can also browse the same files in GitHub if you prefer manual copy/paste from the repository.
+
+### 2. Copy the database schema
 
 **Prisma:**
 
 ```bash
 # Copy into your project
-cp packages/ndpr-recipes/prisma/schema.prisma prisma/schema.prisma
+cp node_modules/@tantainnovative/ndpr-recipes/prisma/schema.prisma prisma/schema.prisma
 ```
 
 **Drizzle:**
 
 ```bash
 # Copy the schema file
-cp packages/ndpr-recipes/src/drizzle/schema.ts src/db/ndpr-schema.ts
+cp node_modules/@tantainnovative/ndpr-recipes/src/drizzle/schema.ts src/db/ndpr-schema.ts
 ```
 
-### 2. Set up the database connection
+### 3. Set up the database connection
 
 ```bash
 # .env
 DATABASE_URL="postgresql://user:password@localhost:5432/myapp_dev"
 ```
 
-### 3. Run migrations
+### 4. Run migrations
 
 **Prisma:**
 
@@ -114,7 +123,7 @@ npx drizzle-kit generate
 npx drizzle-kit migrate
 ```
 
-### 4. Copy and wire the adapters
+### 5. Copy and wire the adapters
 
 Pick the adapter for your ORM (see sections below), copy it into your project, and pass it to the relevant toolkit hook.
 

@@ -12,9 +12,10 @@ export default function BackendIntegrationGuide() {
       <section id="introduction" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Overview of ndpr-recipes</h2>
         <p className="mb-4 text-foreground">
-          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">@tantainnovative/ndpr-recipes</code> is a reference implementation — not an installable library.
-          Copy the files you need directly into your project and adapt them to your architecture. Each recipe is
-          self-contained, fully documented, and covers two ORM families, two server frameworks, and complete wiring examples.
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">@tantainnovative/ndpr-recipes</code> is the published npm package for backend recipe templates.
+          Install it when you want a pinned recipe version, then copy the source files you need into your app and adapt
+          them to your architecture. Each recipe is self-contained, fully documented, and covers two ORM families,
+          two server frameworks, and complete wiring examples.
         </p>
         <p className="mb-4 text-foreground">
           The repo also includes runnable backend examples for the first production handoff paths:
@@ -74,21 +75,29 @@ export default function BackendIntegrationGuide() {
           </table>
         </div>
 
-        <p className="mb-4 text-foreground">Copy the files you need from the recipes package into your project:</p>
+        <p className="mb-4 text-foreground">Install the recipes package, then copy the files you need into your project:</p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`# Clone the toolkit repo to access the recipes
-git clone https://github.com/mr-tanta/ndpr-toolkit.git
+          <pre className="text-foreground"><code>{`pnpm add -D @tantainnovative/ndpr-recipes
+pnpm add @tantainnovative/ndpr-toolkit
 
-# Copy the recipes source into your project
-cp -r ndpr-toolkit/packages/ndpr-recipes/src ./ndpr`}</code></pre>
+# Copy the recipes source into your app so you can own and modify it
+cp -r node_modules/@tantainnovative/ndpr-recipes/src ./ndpr
+cp node_modules/@tantainnovative/ndpr-recipes/prisma/schema.prisma ./prisma/schema.prisma`}</code></pre>
         </div>
+        <p className="mb-4 text-foreground">
+          Prefer browsing first? The same files live in{' '}
+          <Link href="https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes" className="text-blue-400 hover:text-blue-300">
+            the repository
+          </Link>
+          . The npm package is the safer handoff for production teams because it gives you a versioned source snapshot.
+        </p>
       </section>
 
       <section id="prisma-schema" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Prisma Schema</h2>
         <p className="mb-4 text-foreground">
           The recipes package ships a complete Prisma schema covering every NDPA compliance module and the audit log.
-          Copy <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">packages/ndpr-recipes/prisma/schema.prisma</code> into your project and run a migration.
+          Copy <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">node_modules/@tantainnovative/ndpr-recipes/prisma/schema.prisma</code> into your project and run a migration.
         </p>
 
         <div className="overflow-x-auto mb-6">

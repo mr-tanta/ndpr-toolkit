@@ -72,8 +72,8 @@ const v3Features = [
   {
     title: 'Backend Recipes',
     description:
-      'Pre-built patterns for Express, Next.js API routes, and REST endpoints — drop-in compliance for your backend.',
-    href: '/docs/guides/backend-integration',
+      'Versioned npm source templates for Prisma, Drizzle, Next.js, Express, adapters, and middleware.',
+    href: '/docs/guides/production-recipes',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -310,6 +310,18 @@ const implGuides = [
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2" />
         <path d="M8 21h8M12 17v4" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Production Recipes',
+    description: 'Install @tantainnovative/ndpr-recipes and copy versioned backend templates into your app.',
+    href: '/docs/guides/production-recipes',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+        <path d="M3.3 7 12 12l8.7-5" />
+        <path d="M12 22V12" />
       </svg>
     ),
   },

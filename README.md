@@ -647,7 +647,14 @@ Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (P
 
 ### Backend recipes
 
-`@tantainnovative/ndpr-recipes` is a reference implementation with production-ready database patterns:
+`@tantainnovative/ndpr-recipes` is the companion npm package for production backend templates. Install it as a pinned source package, copy the files you need into your app, and adapt them to your auth, tenancy, database, and audit-log conventions:
+
+```bash
+pnpm add @tantainnovative/ndpr-toolkit
+pnpm add -D @tantainnovative/ndpr-recipes
+```
+
+See the [Production Recipes guide](https://ndprtoolkit.com.ng/docs/guides/production-recipes) for the recommended handoff path.
 
 | Recipe | What you get |
 |--------|-------------|
@@ -658,7 +665,7 @@ Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (P
 | `src/express/` | Full NDPR router with consent, DSR, DPIA, breach, ROPA routes; breach, DPIA, and ROPA validate before writes |
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 
-Copy the files you need into your project. [Browse the recipes →](https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes)
+Copy from `node_modules/@tantainnovative/ndpr-recipes` for a pinned version, or [browse the recipes on GitHub](https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes).
 
 The runnable examples cover the first production handoff paths:
 
