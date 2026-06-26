@@ -22,8 +22,94 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import {
+  validateProcessingRecord,
+  type ProcessingRecord,
+} from '@tantainnovative/ndpr-toolkit/server';
 
 const prisma = new PrismaClient();
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
+function asStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+}
+
+function createValidationRecord(
+  body: Record<string, unknown>,
+  id = 'new-processing-record',
+): ProcessingRecord {
+  const purpose = asString(body.purpose) ?? '';
+  const dataSubjectCategories = asStringArray(body.dataSubjectCategories ?? body.dataSubjects);
+  const dpiaRequired = Boolean(body.dpiaRequired ?? body.dpiaConducted ?? false);
+
+  return {
+    id: asString(body.id) ?? id,
+    name: asString(body.name) ?? purpose,
+    description: asString(body.description) ?? purpose,
+    controllerDetails: body.controllerDetails as ProcessingRecord['controllerDetails'],
+    lawfulBasis: body.lawfulBasis as ProcessingRecord['lawfulBasis'],
+    lawfulBasisJustification: asString(body.lawfulBasisJustification) ?? '',
+    purposes: asStringArray(body.purposes).length > 0 ? asStringArray(body.purposes) : [purpose].filter(Boolean),
+    dataCategories: asStringArray(body.dataCategories),
+    sensitiveDataCategories: asStringArray(body.sensitiveDataCategories),
+    dataSubjectCategories,
+    recipients: asStringArray(body.recipients),
+    retentionPeriod: asString(body.retentionPeriod) ?? '',
+    retentionJustification: asString(body.retentionJustification),
+    securityMeasures: asStringArray(body.securityMeasures),
+    dataSource: (asString(body.dataSource) ?? 'data_subject') as ProcessingRecord['dataSource'],
+    thirdPartySourceDetails: asString(body.thirdPartySourceDetails),
+    dpiaRequired,
+    dpiaReference: asString(body.dpiaReference),
+    automatedDecisionMaking: Boolean(body.automatedDecisionMaking ?? false),
+    automatedDecisionMakingDetails: asString(body.automatedDecisionMakingDetails),
+    status: (asString(body.status) ?? 'active') as ProcessingRecord['status'],
+    department: asString(body.department),
+    systemsUsed: asStringArray(body.systemsUsed),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
+}
+
+function validateRopaBody(body: unknown): { valid: true; body: Record<string, unknown> } | { valid: false; response: NextResponse } {
+  if (!isRecord(body)) {
+    return {
+      valid: false,
+      response: NextResponse.json(
+        { error: 'Validation failed.', fields: { body: 'Request body must be a JSON object.' } },
+        { status: 400 },
+      ),
+    };
+  }
+
+  const result = validateProcessingRecord(createValidationRecord(body));
+  if (!result.valid) {
+    return {
+      valid: false,
+      response: NextResponse.json(
+        { error: 'Validation failed.', fields: { processingRecord: result.errors } },
+        { status: 400 },
+      ),
+    };
+  }
+
+  return { valid: true, body };
+}
+
+async function parseJson(req: NextRequest): Promise<unknown> {
+  try {
+    return await req.json();
+  } catch {
+    return null;
+  }
+}
 
 // ---------------------------------------------------------------------------
 // GET /api/ropa?status=active
@@ -65,20 +151,28 @@ export async function GET(req: NextRequest) {
  * Body (JSON):
  *   purpose             (required) — description of the processing activity
  *   lawfulBasis         (required) — consent | contract | legal_obligation | vital_interests
- *                                    | public_task | legitimate_interests
+ *                                    | public_interest | legitimate_interests
+ *   lawfulBasisJustification (required) — documented reason for the chosen lawful basis
+ *   controllerDetails   (required) — { name, contact, address }
  *   dataCategories      (required) — array of data category labels (e.g. ['name', 'email'])
  *   dataSubjects        (required) — array of subject category labels (e.g. ['customers'])
  *   recipients          (required) — array of recipient labels (e.g. ['payment processor'])
  *   retentionPeriod     (required) — human-readable retention policy (e.g. '7 years')
  *   securityMeasures    (required) — array of security measures in place
+ *   dataSource          (optional) — data_subject | third_party | public_source | other
  *   transferCountries   (optional) — array of countries receiving cross-border transfers
  *   transferMechanism   (optional) — legal mechanism for transfers (e.g. 'adequacy decision')
- *   dpiaConducted       (optional) — whether a DPIA has been performed (default false)
+ *   dpiaRequired        (optional) — whether a DPIA is required (default false)
+ *   dpiaReference       (required when dpiaRequired=true)
  *
  * Returns 201 with the newly created ProcessingRecord row.
  */
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  const parsed = await parseJson(req);
+  const validation = validateRopaBody(parsed);
+  if (!validation.valid) return validation.response;
+
+  const body = validation.body;
   const {
     purpose,
     lawfulBasis,
@@ -91,24 +185,6 @@ export async function POST(req: NextRequest) {
     transferMechanism,
     dpiaConducted,
   } = body;
-
-  if (
-    !purpose ||
-    !lawfulBasis ||
-    !Array.isArray(dataCategories) ||
-    !Array.isArray(dataSubjects) ||
-    !Array.isArray(recipients) ||
-    !retentionPeriod ||
-    !Array.isArray(securityMeasures)
-  ) {
-    return NextResponse.json(
-      {
-        error:
-          'purpose, lawfulBasis, dataCategories, dataSubjects, recipients, retentionPeriod, and securityMeasures are required',
-      },
-      { status: 400 },
-    );
-  }
 
   const record = await prisma.processingRecord.create({
     data: {

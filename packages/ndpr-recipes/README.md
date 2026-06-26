@@ -52,7 +52,7 @@ This package is a **reference implementation** — not a library to install. Cop
 | `src/nextjs/app-router/api/dsr/route.ts` | Next.js DSR API route |
 | `src/nextjs/app-router/api/breach/route.ts` | Next.js breach API route |
 | `src/nextjs/app-router/api/breach/[id]/route.ts` | Next.js breach detail route — returns GAID 2025 Art. 33 readiness |
-| `src/nextjs/app-router/api/ropa/route.ts` | Next.js ROPA API route |
+| `src/nextjs/app-router/api/ropa/route.ts` | Next.js ROPA API route with toolkit server validation |
 | `src/nextjs/app-router/api/compliance/route.ts` | Next.js compliance score API route |
 | `src/nextjs/app-router/api/registration/route.ts` | Next.js DCPMI tier + CAR schedule route (GAID 2025) |
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
@@ -61,7 +61,7 @@ This package is a **reference implementation** — not a library to install. Cop
 | `src/express/routes/consent.ts` | Express consent router |
 | `src/express/routes/dsr.ts` | Express DSR router |
 | `src/express/routes/breach.ts` | Express breach router — `GET /:id` returns GAID 2025 Art. 33 readiness |
-| `src/express/routes/ropa.ts` | Express ROPA router |
+| `src/express/routes/ropa.ts` | Express ROPA router with toolkit server validation |
 | `src/express/routes/compliance.ts` | Express compliance score router |
 | `src/express/routes/registration.ts` | Express DCPMI tier + CAR schedule router (GAID 2025) |
 | `src/express/middleware/consent-check.ts` | Express consent gate middleware |
@@ -239,7 +239,7 @@ cp src/nextjs/app-router/api/ropa/route.ts app/api/ropa/route.ts
 cp src/nextjs/app-router/api/compliance/route.ts app/api/compliance/route.ts
 ```
 
-Each route is fully documented with its HTTP methods, query params, and body shape at the top of the file. The consent route validates incoming payloads with `validateConsentStructured` from `@tantainnovative/ndpr-toolkit/server` before writing to Prisma, then records request metadata and an audit-log entry.
+Each route is fully documented with its HTTP methods, query params, and body shape at the top of the file. The consent route validates incoming payloads with `validateConsentStructured` from `@tantainnovative/ndpr-toolkit/server` before writing to Prisma, then records request metadata and an audit-log entry. The Next.js and Express ROPA routes validate production record completeness with `validateProcessingRecord` before database writes, including controller details, lawful-basis justification, data categories, recipients, retention, security measures, and DPIA references when required.
 
 ### Consent middleware (route protection)
 
@@ -439,6 +439,10 @@ Set `NDPR_DPO_NAME` / `NDPR_DPO_EMAIL` to record the contact point.
 ### Consent immutability
 
 The consent table follows an immutable-audit pattern: when a subject updates or withdraws consent, the old row has `revokedAt` set and a new row is inserted. At most one row per `subjectId` has `revokedAt = NULL` at any time. The route also validates the consent snapshot server-side before any write. This pattern ensures the full consent history is available for regulatory inspection without requiring separate audit log queries.
+
+### ROPA validation before persistence
+
+The ROPA routes accept a production-oriented processing record payload and map it to the simplified Prisma table. Before writing, they call `validateProcessingRecord` so incomplete accountability records fail fast with structured field errors. Required fields include `controllerDetails`, `lawfulBasisJustification`, `dataCategories`, `dataSubjects`, `recipients`, `retentionPeriod`, `securityMeasures`, and a `dpiaReference` whenever `dpiaRequired` is true. Use `public_interest` for public-interest processing; `public_task` is not part of the toolkit lawful-basis union.
 
 ---
 

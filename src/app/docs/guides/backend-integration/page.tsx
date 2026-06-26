@@ -52,7 +52,7 @@ export default function BackendIntegrationGuide() {
               </tr>
               <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 text-foreground">ROPA persistence</td>
-                <td className="border border-border px-4 py-2 text-foreground">Prisma adapter</td>
+                <td className="border border-border px-4 py-2 text-foreground">Prisma adapter, validated Next.js and Express routes</td>
               </tr>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground">Next.js App Router</td>
@@ -398,8 +398,8 @@ const { requests, submitRequest } = useDSR({ adapter });`}</code></pre>
               </tr>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">api/ropa/route.ts</td>
-                <td className="border border-border px-4 py-2 text-foreground">GET, POST, PATCH</td>
-                <td className="border border-border px-4 py-2 text-foreground">Manage processing activity records</td>
+                <td className="border border-border px-4 py-2 text-foreground">GET, POST, PATCH, DELETE</td>
+                <td className="border border-border px-4 py-2 text-foreground">Manage processing activity records with server validation</td>
               </tr>
               <tr className="bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">api/compliance/route.ts</td>
@@ -512,6 +512,43 @@ export async function DELETE(req: NextRequest) {
   });
 
   return NextResponse.json({ success: true });
+}`}</code></pre>
+        </div>
+
+        <h3 className="text-xl font-bold text-foreground mb-3">ROPA route — production validation</h3>
+        <p className="mb-4 text-foreground">
+          The maintained Next.js and Express ROPA routes validate each processing record with{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">validateProcessingRecord</code>{' '}
+          before Prisma writes. A valid payload must include controller details, lawful-basis justification,
+          data categories, data-subject categories, recipients, retention period, security measures, and a{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">dpiaReference</code>{' '}
+          whenever <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">dpiaRequired</code>{' '}
+          is true. Use <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">public_interest</code>{' '}
+          for public-interest processing.
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`// Copy the maintained routes:
+// packages/ndpr-recipes/src/nextjs/app-router/api/ropa/route.ts
+// packages/ndpr-recipes/src/express/routes/ropa.ts
+
+{
+  "purpose": "Customer order fulfilment",
+  "description": "Processes customer identity and delivery details to fulfil orders.",
+  "controllerDetails": {
+    "name": "Example Controller Ltd",
+    "contact": "privacy@example.com",
+    "address": "1 Compliance Way, Lagos"
+  },
+  "lawfulBasis": "contract",
+  "lawfulBasisJustification": "Processing is necessary to fulfil customer purchase contracts.",
+  "dataCategories": ["name", "email", "delivery address"],
+  "dataSubjects": ["customers"],
+  "recipients": ["payment processor", "delivery partner"],
+  "retentionPeriod": "7 years after order completion",
+  "securityMeasures": ["role-based access", "encryption at rest"],
+  "dataSource": "data_subject",
+  "dpiaRequired": false,
+  "automatedDecisionMaking": false
 }`}</code></pre>
         </div>
 

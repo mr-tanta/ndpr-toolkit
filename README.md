@@ -654,8 +654,8 @@ Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (P
 | `prisma/schema.prisma` | All 5 NDPA compliance tables |
 | `src/adapters/prisma-consent.ts` | Prisma `StorageAdapter<ConsentSettings>` |
 | `src/adapters/drizzle-consent.ts` | Drizzle `StorageAdapter<ConsentSettings>` |
-| `src/nextjs/app-router/` | Consent, DSR, Breach, ROPA, compliance route handlers |
-| `src/express/` | Full NDPR router with consent, DSR, breach, ROPA routes |
+| `src/nextjs/app-router/` | Consent, DSR, Breach, ROPA, compliance route handlers; consent and ROPA validate with server exports before writes |
+| `src/express/` | Full NDPR router with consent, DSR, breach, ROPA routes; ROPA validates with `validateProcessingRecord` before writes |
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 
 Copy the files you need into your project. [Browse the recipes →](https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes)
@@ -666,6 +666,8 @@ The runnable examples cover the first production handoff paths:
 |---------|----------------------|
 | [`examples/nextjs-app`](./examples/nextjs-app) | App Router consent endpoint that validates with `validateConsentStructured`, stores the current consent snapshot, and appends consent audit events. |
 | [`examples/dsr-backend-reference`](./examples/dsr-backend-reference) | DSR intake endpoint with server validation, Prisma persistence, reference IDs, 30-day target dates, and best-effort confirmation email. |
+
+The ROPA recipes now enforce the toolkit's production completeness checks before persistence. Include controller details, lawful-basis justification, data-subject categories, recipients, retention, security measures, and `dpiaReference` when `dpiaRequired` is true.
 
 ---
 
