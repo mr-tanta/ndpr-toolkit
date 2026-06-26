@@ -647,7 +647,7 @@ Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (P
 
 ### Backend recipes
 
-`@tantainnovative/ndpr-recipes` is a reference implementation with production-ready patterns:
+`@tantainnovative/ndpr-recipes` is a reference implementation with production-ready database patterns:
 
 | Recipe | What you get |
 |--------|-------------|
@@ -659,6 +659,13 @@ Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (P
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 
 Copy the files you need into your project. [Browse the recipes →](https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes)
+
+The runnable examples cover the first production handoff paths:
+
+| Example | What it demonstrates |
+|---------|----------------------|
+| [`examples/nextjs-app`](./examples/nextjs-app) | App Router consent endpoint that validates with `validateConsentStructured`, stores the current consent snapshot, and appends consent audit events. |
+| [`examples/dsr-backend-reference`](./examples/dsr-backend-reference) | DSR intake endpoint with server validation, Prisma persistence, reference IDs, 30-day target dates, and best-effort confirmation email. |
 
 ---
 

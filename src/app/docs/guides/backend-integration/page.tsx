@@ -16,6 +16,14 @@ export default function BackendIntegrationGuide() {
           Copy the files you need directly into your project and adapt them to your architecture. Each recipe is
           self-contained, fully documented, and covers two ORM families, two server frameworks, and complete wiring examples.
         </p>
+        <p className="mb-4 text-foreground">
+          The repo also includes runnable backend examples for the first production handoff paths:
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> examples/nextjs-app/app/api/consent/route.ts</code>{' '}
+          validates consent payloads with <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">validateConsentStructured</code>,
+          stores the current consent snapshot, and appends audit events;{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">examples/dsr-backend-reference</code>{' '}
+          covers DSR intake, Prisma persistence, reference IDs, target dates, and confirmation email.
+        </p>
 
         <div className="overflow-x-auto mb-6">
           <table className="w-full border-collapse text-sm">
@@ -402,11 +410,14 @@ const { requests, submitRequest } = useDSR({ adapter });`}</code></pre>
           </table>
         </div>
 
-        <h3 className="text-xl font-bold text-foreground mb-3">Consent route — complete example</h3>
+        <h3 className="text-xl font-bold text-foreground mb-3">Consent route — database pattern</h3>
         <p className="mb-4 text-foreground">
-          Below is the full consent route from the recipes package. It follows the immutable-audit pattern mandated
+          The route in the recipes package follows the immutable-audit pattern mandated
           by NDPA Section 25: revocation soft-deletes via <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">revokedAt</code>{' '}
-          rather than hard-deleting rows, and each write is echoed to the audit log.
+          rather than hard-deleting rows, each write is echoed to the audit log, and the request body is validated
+          with <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">validateConsentStructured</code>{' '}
+          before Prisma writes. The excerpt below shows the persistence shape; copy the maintained source from
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> packages/ndpr-recipes/src/nextjs/app-router/api/consent/route.ts</code>.
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`// app/api/consent/route.ts

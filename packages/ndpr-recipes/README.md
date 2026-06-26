@@ -48,7 +48,7 @@ This package is a **reference implementation** — not a library to install. Cop
 | `src/adapters/drizzle-dpia.ts` | Drizzle `StorageAdapter<DPIAResult[]>` |
 | `src/adapters/drizzle-lawful-basis.ts` | Drizzle `StorageAdapter<ProcessingActivity[]>` |
 | `src/adapters/drizzle-cross-border.ts` | Drizzle `StorageAdapter<CrossBorderTransfer[]>` |
-| `src/nextjs/app-router/api/consent/route.ts` | Next.js consent API route |
+| `src/nextjs/app-router/api/consent/route.ts` | Next.js consent API route with toolkit server validation |
 | `src/nextjs/app-router/api/dsr/route.ts` | Next.js DSR API route |
 | `src/nextjs/app-router/api/breach/route.ts` | Next.js breach API route |
 | `src/nextjs/app-router/api/breach/[id]/route.ts` | Next.js breach detail route — returns GAID 2025 Art. 33 readiness |
@@ -239,7 +239,7 @@ cp src/nextjs/app-router/api/ropa/route.ts app/api/ropa/route.ts
 cp src/nextjs/app-router/api/compliance/route.ts app/api/compliance/route.ts
 ```
 
-Each route is fully documented with its HTTP methods, query params, and body shape at the top of the file.
+Each route is fully documented with its HTTP methods, query params, and body shape at the top of the file. The consent route validates incoming payloads with `validateConsentStructured` from `@tantainnovative/ndpr-toolkit/server` before writing to Prisma, then records request metadata and an audit-log entry.
 
 ### Consent middleware (route protection)
 
@@ -438,7 +438,7 @@ Set `NDPR_DPO_NAME` / `NDPR_DPO_EMAIL` to record the contact point.
 
 ### Consent immutability
 
-The consent table follows an immutable-audit pattern: when a subject updates or withdraws consent, the old row has `revokedAt` set and a new row is inserted. At most one row per `subjectId` has `revokedAt = NULL` at any time. This pattern ensures the full consent history is available for regulatory inspection without requiring separate audit log queries.
+The consent table follows an immutable-audit pattern: when a subject updates or withdraws consent, the old row has `revokedAt` set and a new row is inserted. At most one row per `subjectId` has `revokedAt = NULL` at any time. The route also validates the consent snapshot server-side before any write. This pattern ensures the full consent history is available for regulatory inspection without requiring separate audit log queries.
 
 ---
 

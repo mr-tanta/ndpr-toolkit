@@ -20,6 +20,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import {
+  validateConsentStructured,
+  type ConsentSettings,
+} from '@tantainnovative/ndpr-toolkit/server';
 
 const prisma = new PrismaClient();
 
@@ -75,12 +79,35 @@ export async function GET(req: NextRequest) {
  * Returns 201 with the newly created ConsentRecord.
  */
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { subjectId, consents, version, method, lawfulBasis } = body;
-
-  if (!subjectId || !consents || !version) {
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
     return NextResponse.json(
-      { error: 'subjectId, consents, and version are required' },
+      { error: 'Body must be valid JSON.', fields: {} },
+      { status: 400 },
+    );
+  }
+
+  if (!isRecord(body)) {
+    return NextResponse.json(
+      { error: 'Validation failed.', fields: { _root: 'Payload must be an object' } },
+      { status: 400 },
+    );
+  }
+
+  const subjectId = typeof body.subjectId === 'string' ? body.subjectId.trim() : '';
+  const { valid, errors, data } = validateConsentStructured(body as ConsentSettings);
+
+  if (!subjectId || !valid || !data) {
+    return NextResponse.json(
+      {
+        error: 'Validation failed.',
+        fields: {
+          ...(!subjectId ? { subjectId: 'subjectId is required' } : {}),
+          ...Object.fromEntries(errors.map((error) => [error.field, error.message])),
+        },
+      },
       { status: 400 },
     );
   }
@@ -96,10 +123,10 @@ export async function POST(req: NextRequest) {
   const record = await prisma.consentRecord.create({
     data: {
       subjectId,
-      consents,
-      version,
-      method: method ?? 'api',
-      lawfulBasis: lawfulBasis ?? null,
+      consents: data.consents,
+      version: data.version,
+      method: data.method,
+      lawfulBasis: data.lawfulBasis ?? null,
       ipAddress: req.headers.get('x-forwarded-for'),
       userAgent: req.headers.get('user-agent'),
     },
@@ -112,11 +139,15 @@ export async function POST(req: NextRequest) {
       action: 'created',
       entityId: record.id,
       entityType: 'ConsentRecord',
-      changes: { subjectId, version, consents },
+      changes: { subjectId, version: data.version, consents: data.consents },
     },
   });
 
   return NextResponse.json(record, { status: 201 });
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 // ---------------------------------------------------------------------------
