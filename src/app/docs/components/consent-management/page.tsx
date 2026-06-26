@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
 import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function ConsentManagementDocs() {
   const jsonLd = {
@@ -103,6 +104,63 @@ const consent = useConsent({ options, adapter: memoryAdapter() });`}</code>
           <code className="text-sm text-foreground font-mono">pnpm add @tantainnovative/ndpr-toolkit</code>
         </pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="Consent Management"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRConsent',
+            useCase: 'Zero-config banner and preferences UI with NDPA defaults.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/consent',
+            exports: 'Consent.Provider, Consent.Banner',
+            useCase: 'Compound components for branded consent flows and custom layouts.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/hooks',
+            exports: 'useConsent',
+            useCase: 'Headless consent state for loaders, preference centers, and conditional scripts.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'validateConsentStructured',
+            useCase: 'Server-side validation before writing consent events to a database.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/api/consent/route.ts',
+            useCase: 'Copyable API route and adapters for production persistence and audit logging.',
+          },
+        ]}
+        checklist={[
+          'Define consent categories, required flags, copy, and policy version before release.',
+          'Persist category decisions with timestamp, collection method, IP/user metadata policy, and version.',
+          'Provide an obvious withdrawal and preference update path from the application footer or account area.',
+          'Keep an immutable audit trail for consent grant, update, and revocation events.',
+          'Validate every consent payload server-side before writing to durable storage.',
+          'Block analytics, marketing, and profiling services until the matching category is granted.',
+        ]}
+        backendNotes={[
+          'Use the recipes consent route as a source template, then connect it to your own database and auth/session layer.',
+          'Run validateConsentStructured in the API route so malformed category IDs or missing versions are rejected.',
+          'Model revocation as a new event or soft-revoked record instead of deleting the historical consent decision.',
+          'Expose read/update endpoints for the preference center so user settings survive browser changes.',
+        ]}
+        testingNotes={[
+          'Verify first-visit banner behavior across accept all, reject all, and custom preference paths.',
+          'Reload the browser and confirm stored settings are restored from the configured adapter.',
+          'Withdraw consent and confirm optional scripts stop loading on the next navigation.',
+          'Send malformed API payloads and confirm the route returns validation errors without writing records.',
+        ]}
+        commonMistakes={[
+          'Treating localStorage as the production audit log instead of syncing to durable backend storage.',
+          'Pre-checking optional consent categories or describing silence as consent.',
+          'Loading analytics, ads, or profiling SDKs before the user has granted that category.',
+          'Changing consent text without incrementing or storing the active policy/version identifier.',
+        ]}
+      />
 
       <section id="components" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Components</h2>

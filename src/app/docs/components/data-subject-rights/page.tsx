@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
 import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function DataSubjectRightsDocs() {
   const jsonLd = {
@@ -104,6 +105,63 @@ const dsr = useDSR({ requestTypes: types, adapter: apiAdapter('/api/dsr') });`}<
           <code className="text-sm text-foreground font-mono">pnpm add @tantainnovative/ndpr-toolkit</code>
         </pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="Data Subject Rights"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRSubjectRights',
+            useCase: 'Zero-config request portal with NDPA-aligned request types.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/dsr',
+            exports: 'DSR.Provider, DSR.Form, DSR.Dashboard',
+            useCase: 'Compound components for public intake, internal review, and tracking screens.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/hooks',
+            exports: 'useDSR',
+            useCase: 'Headless request state for custom forms, dashboards, and status views.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'validateDsrSubmissionStructured',
+            useCase: 'Server-side validation before accepting a data subject request.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/api/dsr/route.ts',
+            useCase: 'Copyable API route and reference backend for persistence, deadlines, and notifications.',
+          },
+        ]}
+        checklist={[
+          'Publish the supported request types and map each one to the internal owner who will fulfill it.',
+          'Collect only the identity details needed to verify the data subject for your risk level.',
+          'Generate a reference ID and 30-day target date as soon as the request is accepted.',
+          'Track assignment, status changes, extension reasons, and completion notes in an audit trail.',
+          'Protect internal dashboards with authentication and role-based access controls.',
+          'Define secure channels for sending exported personal data or denial explanations.',
+        ]}
+        backendNotes={[
+          'Use the recipes DSR route as the starting point, then connect it to your database, mailer, and admin auth.',
+          'Run validateDsrSubmissionStructured in the API route so incomplete subject details are rejected early.',
+          'Store target dates and status history explicitly; do not calculate deadlines only in the UI.',
+          'Keep attachments and identity documents out of public object storage unless signed URLs and retention rules are configured.',
+        ]}
+        testingNotes={[
+          'Submit every request type and confirm the generated reference ID, status, and due date are returned.',
+          'Check invalid email, missing request type, and incomplete subject details against the API route.',
+          'Update status and assignee from the dashboard, then confirm the timeline or audit log is preserved.',
+          'Verify unauthenticated users cannot access the internal request list or response workflow.',
+        ]}
+        commonMistakes={[
+          'Shipping the admin DSR dashboard on a public route without auth or role checks.',
+          'Collecting passport or government ID documents when a lower-risk verification step is enough.',
+          'Accepting requests without a target date, owner, or status trail.',
+          'Sending exports through ordinary email without considering encryption, expiry, and recipient verification.',
+        ]}
+      />
 
       <section id="components" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Components</h2>
