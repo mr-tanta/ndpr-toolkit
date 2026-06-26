@@ -17,7 +17,7 @@ overrides:
   # ^ not >= — test-exclude (jest coverage) does promisify(glob), which breaks on glob 9+
   glob: '^7.2.3'
   tar: '>=7.5.10'
-  js-yaml: '>=4.2.0'
+  js-yaml: '4.2.0'
   yaml: '>=2.8.3'
   picomatch: '>=2.3.2'
   flatted: '>=3.4.2'
