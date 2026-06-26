@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
 import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function BreachNotificationDocs() {
   const jsonLd = {
@@ -102,6 +103,62 @@ const breach = useBreach({ categories, adapter: apiAdapter('/api/breaches') });`
           <code className="text-sm text-foreground font-mono">pnpm add @tantainnovative/ndpr-toolkit</code>
         </pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="Breach Notification"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRBreachReport',
+            useCase: 'Zero-config breach intake form with NDPA-oriented defaults.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/breach',
+            exports: 'Breach.Provider, Breach.ReportForm',
+            useCase: 'Compound components for internal intake, assessment, and notification workflows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/hooks',
+            exports: 'useBreach',
+            useCase: 'Headless breach state for incident dashboards and operational queues.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'assessBreachNotification',
+            useCase: 'Server-side NDPC deadline and data-subject notification readiness assessment.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/api/breach/route.ts',
+            useCase: 'Copyable breach intake route plus Express, Prisma, and Drizzle backend templates.',
+          },
+        ]}
+        checklist={[
+          'Define who can report, triage, approve, and submit breach notifications.',
+          'Capture awareness time, affected systems, data categories, likely impact, containment, and reporter details.',
+          'Track the 72-hour NDPC notification deadline from the awareness timestamp.',
+          'Separate internal incident notes from regulator-facing and data-subject-facing communications.',
+          'Preserve status changes, risk decisions, notifications sent, and late-notification reasons.',
+        ]}
+        backendNotes={[
+          'Use the recipes breach route as the intake template, then connect it to your incident, mail, and auth systems.',
+          'Run assessBreachNotification in API handlers when creating or updating a breach record.',
+          'Store notification timestamps and recipients explicitly; do not infer them only from email logs.',
+          'Keep sensitive incident details behind strict role checks and short-lived access where possible.',
+        ]}
+        testingNotes={[
+          'Create low-risk and high-risk reports and confirm the notification assessment changes correctly.',
+          'Submit records near and after the 72-hour deadline and verify deadline warnings or late reasons.',
+          'Update containment and notification status, then confirm history remains visible to reviewers.',
+          'Verify unauthorized users cannot read breach details or trigger external notifications.',
+        ]}
+        commonMistakes={[
+          'Starting the deadline from investigation completion instead of awareness of the breach.',
+          'Treating breach intake as anonymous public contact-form data without incident access controls.',
+          'Sending affected-user notices before legal/privacy review of scope, risk, and remediation.',
+          'Keeping final notification evidence only in email inboxes rather than the breach record.',
+        ]}
+      />
 
       <section id="components" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Components</h2>

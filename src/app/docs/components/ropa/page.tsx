@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
 import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function ROPADocs() {
   const jsonLd = {
@@ -70,6 +71,62 @@ export default function ROPADocs() {
         </p>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">pnpm add @tantainnovative/ndpr-toolkit</code></pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="ROPA"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRROPA',
+            useCase: 'Zero-config processing activity register with NDPA-oriented defaults.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/ropa',
+            exports: 'ROPA.Provider, ROPA.Manager',
+            useCase: 'Compound components for custom ROPA workspaces and review flows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/hooks',
+            exports: 'useROPA',
+            useCase: 'Headless state for custom registers, filters, summaries, and export actions.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'validateProcessingRecord',
+            useCase: 'Server-side completeness checks before persisting processing records.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/api/ropa/route.ts',
+            useCase: 'Copyable API route plus Prisma and Drizzle adapters for durable ROPA storage.',
+          },
+        ]}
+        checklist={[
+          'Define one owner for each processing record and require review dates before release.',
+          'Capture controller details, purposes, categories, recipients, safeguards, retention, and DPIA references.',
+          'Track updates as versioned records or audit events rather than overwriting operational history.',
+          'Connect ROPA records to lawful basis, DPIA, cross-border transfer, and breach response workflows.',
+          'Restrict edit access to privacy, legal, security, and approved system owners.',
+        ]}
+        backendNotes={[
+          'Use the recipes ROPA route as the starting point, then wire it to your organization and user model.',
+          'Run validateProcessingRecord in create/update routes so incomplete records fail before database writes.',
+          'Store archived records for accountability; avoid hard deletion unless your retention policy requires it.',
+          'Keep exports generated from backend data so regulator-ready reports match the system of record.',
+        ]}
+        testingNotes={[
+          'Create a complete record, then verify summary counts, CSV export, and compliance gaps.',
+          'Submit incomplete records to the API and confirm validation errors name the missing fields.',
+          'Archive and update records, then confirm the audit trail or updated timestamp is preserved.',
+          'Verify users without the right role cannot create, edit, archive, or export processing records.',
+        ]}
+        commonMistakes={[
+          'Using ROPA only as a static spreadsheet while live systems change outside the register.',
+          'Leaving recipients, retention periods, transfer destinations, or security measures blank.',
+          'Hard-deleting old records without preserving why the processing activity changed.',
+          'Letting every admin user edit ROPA records without ownership or approval controls.',
+        ]}
+      />
 
       <section id="import" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Import</h2>

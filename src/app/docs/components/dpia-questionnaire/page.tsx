@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
 import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function DPIAQuestionnaireDocs() {
   const jsonLd = {
@@ -60,6 +61,62 @@ export default function DPIAQuestionnaireDocs() {
           <code className="text-sm text-foreground font-mono">pnpm add @tantainnovative/ndpr-toolkit</code>
         </pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="DPIA Questionnaire"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRDPIA',
+            useCase: 'Zero-config DPIA workflow with default question structure and result handling.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/dpia',
+            exports: 'DPIA.Provider, DPIA.Questionnaire',
+            useCase: 'Compound components for tailored DPIA journeys and review screens.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/hooks',
+            exports: 'useDPIA',
+            useCase: 'Headless questionnaire state for custom forms and embedded product workflows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'assessDPIARisk',
+            useCase: 'Server-side risk scoring for persisted answers and generated DPIA results.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/api/dpia/route.ts',
+            useCase: 'Copyable DPIA submission route plus Drizzle adapter for backend persistence.',
+          },
+        ]}
+        checklist={[
+          'Define which projects require DPIA intake before engineering or vendor launch approval.',
+          'Map questions to risk scoring, mitigation owners, due dates, and approval requirements.',
+          'Store answers, generated risk level, reviewer decisions, residual risk, and sign-off evidence.',
+          'Connect high-risk outcomes to remediation tickets or management approval workflows.',
+          'Restrict DPIA access because answers can reveal sensitive systems, vendors, and security controls.',
+        ]}
+        backendNotes={[
+          'Use the recipes DPIA route as the starting point for persisted submissions and review queues.',
+          'Run assessDPIARisk server-side so stored risk results cannot be manipulated from the browser.',
+          'Persist both raw answers and summarized findings so future reviews can explain the decision path.',
+          'Model re-assessment dates for projects that change scope, data type, vendor, or transfer destination.',
+        ]}
+        testingNotes={[
+          'Submit low, medium, and high-risk answer sets and confirm risk scoring and next steps.',
+          'Verify incomplete required answers cannot be persisted or marked ready for review.',
+          'Check reviewer status updates, mitigation notes, and approval dates survive reloads.',
+          'Confirm non-reviewers cannot access sensitive DPIA submissions or final reports.',
+        ]}
+        commonMistakes={[
+          'Using the questionnaire as a one-time form without owner, mitigation, and approval tracking.',
+          'Trusting client-side risk scores without recomputing them on the server.',
+          'Failing to revisit DPIAs when processing scope, vendors, or data categories change.',
+          'Publishing final reports that expose internal security details to users who do not need them.',
+        ]}
+      />
 
       <section id="usage" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Usage</h2>

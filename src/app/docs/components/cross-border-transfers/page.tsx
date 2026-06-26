@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
 import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function CrossBorderTransfersDocs() {
   const jsonLd = {
@@ -70,6 +71,62 @@ export default function CrossBorderTransfersDocs() {
         </p>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">pnpm add @tantainnovative/ndpr-toolkit</code></pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="Cross-Border Transfers"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRCrossBorder',
+            useCase: 'Zero-config transfer register with NDPA-oriented transfer fields.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/cross-border',
+            exports: 'CrossBorder.Provider, CrossBorder.Manager',
+            useCase: 'Compound components for custom transfer review and approval workflows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/hooks',
+            exports: 'useCrossBorderTransfer',
+            useCase: 'Headless transfer state for vendor, system, and data-map workflows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'validateTransfer, assessTransferRisk',
+            useCase: 'Server-side validation and risk assessment before approving transfers.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/adapters/drizzle-cross-border.ts',
+            useCase: 'Copyable Drizzle adapter for durable transfer records and safeguards.',
+          },
+        ]}
+        checklist={[
+          'Record destination country, recipient, categories, transfer mechanism, safeguards, and approval status.',
+          'Require review before new vendors, subprocessors, regions, or data categories are used.',
+          'Link transfers to ROPA records, DPIAs, vendor risk reviews, and contract evidence.',
+          'Track NDPC approval needs, standard clauses, binding rules, and supplementary safeguards.',
+          'Reassess transfers when countries, vendors, infrastructure, or legal mechanisms change.',
+        ]}
+        backendNotes={[
+          'Use the recipes Drizzle adapter as the persistence reference for transfer records.',
+          'Run validateTransfer and assessTransferRisk in API handlers before records are marked approved.',
+          'Store safeguard evidence and approval dates with the transfer, not only in external contract folders.',
+          'Model transfer status separately from vendor status so a vendor can be approved while a transfer is blocked.',
+        ]}
+        testingNotes={[
+          'Create adequate, safeguard-based, and high-risk transfers and confirm warnings and approval requirements.',
+          'Submit records missing destination, mechanism, data categories, or safeguard evidence to validation.',
+          'Update destination country or mechanism and verify risk assessment recalculates.',
+          'Verify only authorized users can approve, archive, or export transfer records.',
+        ]}
+        commonMistakes={[
+          'Treating cloud hosting region as a minor configuration detail instead of a transfer record input.',
+          'Approving a vendor once and failing to reassess new subprocessors or destination countries.',
+          'Keeping standard clauses or safeguard evidence outside the system of record.',
+          'Letting teams export data internationally before legal review is complete.',
+        ]}
+      />
 
       <section id="import" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Import</h2>

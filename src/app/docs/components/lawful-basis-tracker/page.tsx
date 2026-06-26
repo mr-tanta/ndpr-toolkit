@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
 import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function LawfulBasisTrackerDocs() {
   const jsonLd = {
@@ -69,6 +70,62 @@ export default function LawfulBasisTrackerDocs() {
         </p>
         <pre className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6"><code className="text-sm font-mono text-foreground">pnpm add @tantainnovative/ndpr-toolkit</code></pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="Lawful Basis Tracker"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRLawfulBasis',
+            useCase: 'Zero-config lawful-basis register with default processing activity structure.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/lawful-basis',
+            exports: 'LawfulBasis.Provider, LawfulBasis.Tracker',
+            useCase: 'Compound components for custom lawful-basis review and approval flows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/hooks',
+            exports: 'useLawfulBasis',
+            useCase: 'Headless processing activity state for embedded records and dashboards.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'validateProcessingActivity',
+            useCase: 'Server-side validation of basis, purpose, necessity, and documentation fields.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/adapters/drizzle-lawful-basis.ts',
+            useCase: 'Copyable Drizzle adapter for durable lawful-basis storage.',
+          },
+        ]}
+        checklist={[
+          'Require a lawful basis for every processing purpose before the activity goes live.',
+          'Record consent, contract, legal obligation, vital interest, public task, or legitimate interest rationale.',
+          'Link each activity to retention, data categories, recipients, DPIA needs, and ROPA records.',
+          'Review legitimate-interest activities for balancing-test evidence and objection handling.',
+          'Define review cadence and owners for stale, archived, or changed processing activities.',
+        ]}
+        backendNotes={[
+          'Use the recipes Drizzle adapter as the persistence reference for lawful-basis records.',
+          'Run validateProcessingActivity in create/update handlers before records become active.',
+          'Store supporting rationale and review dates separately from display labels so evidence survives copy edits.',
+          'Keep consent-dependent activities linked to the consent system rather than duplicating preference state.',
+        ]}
+        testingNotes={[
+          'Create activities for each lawful basis and verify summaries and compliance gaps.',
+          'Submit missing purpose, missing basis, and incomplete legitimate-interest records to validation.',
+          'Archive a basis and confirm dependent ROPA or dashboard summaries update correctly.',
+          'Verify users without privacy/legal permissions cannot approve or modify legal rationale.',
+        ]}
+        commonMistakes={[
+          'Using consent as the default basis when contract, legal obligation, or legitimate interest is the real basis.',
+          'Recording only the basis label without the purpose, necessity, and evidence behind it.',
+          'Leaving activities active after the product feature, vendor, or processing purpose changed.',
+          'Letting engineering-only owners approve legal basis changes without privacy review.',
+        ]}
+      />
 
       <section id="import" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Import</h2>
