@@ -27,7 +27,7 @@ v5 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 > **Legal source transparency:** See [Legal Sources & Update Governance](https://ndprtoolkit.com.ng/docs/guides/legal-sources-governance) for the official NDPA 2023, NDPC GAID 2025, and registration guidance references tracked by the toolkit, plus the release policy for regulatory changes.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/main/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
 </p>
 
 ---
@@ -77,7 +77,7 @@ import { cookieAdapter, apiAdapter, composeAdapters, localStorageAdapter } from 
 The full SSR pattern (cookie read server-side → banner hydrates already-resolved, no flash) is in the [Server-Side Storage guide](https://ndprtoolkit.com.ng/docs/guides/server-side-storage).
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/main/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
   <br />
   <em>Interactive consent demo with configurable position, theme, storage, and real-time state inspector</em>
 </p>
@@ -681,13 +681,13 @@ Every module has an interactive demo. No signup, no setup — try them instantly
 
 <p align="center">
   <a href="https://ndprtoolkit.com.ng/ndpr-demos">
-    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
+    <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/main/public/screenshots/demos-overview.png" alt="8 interactive live demos — zero setup required" width="800" />
   </a>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
-  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/main/public/screenshots/dsr-demo.png" alt="Data Subject Rights — 8 rights with request tracking" width="400" />
+  <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/main/public/screenshots/breach-demo.png" alt="Breach Notification — 72-hour countdown with step-by-step workflow" width="400" />
 </p>
 
 <p align="center">
