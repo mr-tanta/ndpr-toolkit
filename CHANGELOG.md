@@ -16,6 +16,15 @@ Compliance-impacting examples:
 - `Features`: add a new optional GAID check behind explicit config.
 - `Compliance Rule Changes`: update DCPMI thresholds, CAR deadlines, breach notification content assumptions, or compliance score weights because NDPC guidance changed.
 
+## [5.7.4](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.3...v5.7.4) (2026-06-27)
+
+
+### Documentation
+
+* clarify NDPA Toolkit / NDPA 2023 positioning while preserving NDPR package compatibility
+* add the NDPR vs NDPA naming guide and link it from README and docs navigation
+* update site, docs, recipes, and component metadata to lead with NDPA Toolkit while retaining NDPR search/package context
+
 ## [5.7.3](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.2...v5.7.3) (2026-06-26)
 
 

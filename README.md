@@ -16,7 +16,7 @@ v5 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app)
 [![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/nextjs-app)
 
-> **What's new in 5.7.3:** The docs site now includes an approved **Used by** section for teams shipping NDPA compliance with the toolkit, the release workflow uses explicit serial/coverage test scripts, and the maintainer docs now clearly separate the Next.js site source from the published package source.
+> **What's new in 5.7.4:** The docs now lead with **NDPA Toolkit** / **NDPA 2023 compliance** while preserving the `@tantainnovative/ndpr-toolkit` package name for compatibility, legacy imports, and search continuity.
 >
 > **What's new in 5.5:** The **`ndpr audit` CLI** scores a compliance config against the toolkit engine (compliance score + GAID 2025 DCPMI / CAR / breach checks) and exits non-zero on failure — a drop-in CI gate. The same logic is exported as `runNdprAudit` / `formatNdprAuditReport` from `/server`. See the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
 >
