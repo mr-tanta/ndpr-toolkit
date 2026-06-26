@@ -48,6 +48,13 @@ const reviewCadence = [
   ['Annual', 'Run a full source review against NDPA, GAID, and NDPC notices before the first release of each calendar year.'],
 ];
 
+const changelogTaxonomy = [
+  ['Features', 'Additive public APIs, components, hooks, routes, adapters, CLI behavior, or documented capabilities.'],
+  ['Bug Fixes', 'Corrections to shipped behavior, validation, packaging, security hardening, or regressions.'],
+  ['Documentation', 'Docs, examples, release guidance, legal citation wording, or site content that does not change package behavior.'],
+  ['Compliance Rule Changes', 'Changes to NDPA/NDPC/GAID assumptions, default thresholds, filing deadlines, citation mappings, scoring semantics, or compliance-sensitive validator behavior.'],
+];
+
 export default function LegalSourcesGovernanceGuide() {
   return (
     <DocLayout
@@ -145,6 +152,43 @@ export default function LegalSourcesGovernanceGuide() {
           <li>Minor releases add new regulatory utilities, new checks, new module coverage, or stricter optional validation.</li>
           <li>Major releases are reserved for breaking API changes or materially different compliance assumptions.</li>
           <li>Deprecated behavior should remain documented for at least one minor release unless it is legally misleading.</li>
+        </ul>
+      </section>
+
+      <section id="changelog-taxonomy" className="mb-8">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Changelog taxonomy</h2>
+        <p className="mb-4 text-foreground">
+          Compliance-impacting release notes are separated from ordinary feature, bug, and docs changes so adopters can
+          decide whether to update config, re-run audits, refresh evidence, or seek legal review.
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border border-border rounded-xl">
+            <thead>
+              <tr className="bg-card">
+                <th className="text-left p-3 border-b border-border">Heading</th>
+                <th className="text-left p-3 border-b border-border">Use when</th>
+              </tr>
+            </thead>
+            <tbody className="text-foreground">
+              {changelogTaxonomy.map(([heading, use]) => (
+                <tr key={heading}>
+                  <td className="p-3 border-b border-border font-medium">{heading}</td>
+                  <td className="p-3 border-b border-border">{use}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="user-responsibility" className="mb-8">
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">What users should do after updates</h2>
+        <ul className="list-disc pl-6 space-y-2 text-foreground">
+          <li>Watch GitHub Releases or npm version updates for compliance-impacting release notes.</li>
+          <li>Read any Compliance Rule Changes entry before upgrading production compliance workflows.</li>
+          <li>Re-run <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">ndpr audit</code> after upgrading if the change affects DCPMI, CAR, breach, score, or evidence behavior.</li>
+          <li>Refresh generated evidence or docs when citations, thresholds, deadlines, or source assumptions change.</li>
+          <li>Confirm current NDPC guidance with counsel, a licensed DPCO, or the regulator before relying on outputs for filings.</li>
         </ul>
       </section>
 

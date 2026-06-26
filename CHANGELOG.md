@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## Changelog taxonomy
+
+- **Features**: additive public APIs, components, hooks, routes, adapters, CLI behavior, or documented capabilities.
+- **Bug Fixes**: corrections to shipped behavior, validation, packaging, security hardening, or regressions.
+- **Documentation**: docs, examples, release guidance, legal citation wording, or site content that does not change package behavior.
+- **Compliance Rule Changes**: changes to NDPA/NDPC/GAID assumptions, default thresholds, filing deadlines, citation mappings, scoring semantics, or compliance-sensitive validator behavior. These entries should name the affected source and module, and should say whether users need to re-run audits, update config, refresh evidence, or seek legal review.
+
+Compliance-impacting examples:
+
+- `Documentation`: clarify a citation block or add a stronger "not legal advice" notice.
+- `Bug Fixes`: correct a false positive in `assessBreachNotification`.
+- `Features`: add a new optional GAID check behind explicit config.
+- `Compliance Rule Changes`: update DCPMI thresholds, CAR deadlines, breach notification content assumptions, or compliance score weights because NDPC guidance changed.
+
 ## [5.7.3](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.2...v5.7.3) (2026-06-26)
 
 

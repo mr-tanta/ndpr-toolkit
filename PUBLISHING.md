@@ -1,89 +1,104 @@
 # Publishing to npm
 
-## Pre-publish Checklist
+This repo publishes `@tantainnovative/ndpr-toolkit` from the repository root via
+GitHub Releases and npm Trusted Publishing. Companion packages
+(`@tantainnovative/create-ndpr`, `@tantainnovative/ndpr-recipes`, and the
+unscoped `create-ndpr` alias) publish from their package directories when their
+versions are new.
 
-✅ **Version Updated**: Package version set to 1.0.7
-✅ **Build Configuration**: tsup configured for library builds
-✅ **TypeScript Declarations**: Generated successfully
-✅ **Exports Configured**: Main, module, and types exports set
-✅ **Peer Dependencies**: React and React DOM moved to peerDependencies
-✅ **Files Whitelist**: Only dist/, README.md, and LICENSE will be published
-✅ **Changelog Updated**: CHANGELOG.md includes v1.0.7 changes
-✅ **README Updated**: Includes installation instructions and examples
+## Pre-release Checklist
+
+- Confirm `package.json#version` matches the intended release tag.
+- Run `pnpm verify:ci`.
+- For docs-site changes, run `pnpm build`.
+- Update `CHANGELOG.md` with the correct taxonomy: Features, Bug Fixes,
+  Documentation, or Compliance Rule Changes.
+- For compliance-sensitive changes, update affected legal citations, examples,
+  tests, and the relevant docs page.
+- Re-check `/docs/guides/legal-basis-and-citations` and
+  `/docs/guides/legal-sources-governance` when NDPA, NDPC, GAID, DCPMI, CAR, or
+  audit CLI behavior changes.
+- Do not claim the toolkit is legally complete or always current; state the
+  source, retrieval date or source version, and user responsibility to verify
+  current NDPC guidance.
+
+## Compliance Rule Release Policy
+
+Use this policy when a change affects statutory assumptions, compliance
+deadlines, NDPC filing expectations, legal citations, default thresholds, or
+compliance scoring.
+
+| Change type | Release level | Changelog heading |
+| --- | --- | --- |
+| Citation wording, docs clarification, examples, false-positive fixes, or non-breaking validator behavior | Patch | Documentation or Bug Fixes |
+| New regulatory utility, new module coverage, new check, stricter optional validation, or configurable updated threshold | Minor | Features or Compliance Rule Changes |
+| Removed export, changed required argument shape, materially different compliance assumption, or default behavior that can break existing workflows | Major | Breaking Changes and Compliance Rule Changes |
+
+When in doubt, choose the more conservative release level and explain the
+operational impact in the release notes.
 
 ## Build Commands
 
 ```bash
-# Build the library (this runs automatically before publish)
-pnpm build:lib
-
-# Test the build locally
-npm pack
-# This creates tantainnovative-ndpr-toolkit-1.0.7.tgz
+pnpm verify:ci
+pnpm build
+pnpm verify:tarball
 ```
 
-## Publishing Steps
+`pnpm verify:ci` runs lint, typecheck, serial Jest tests, library build, and the
+tarball verification gate. `pnpm build` verifies the public docs site and static
+export.
 
-1. **Login to npm** (if not already logged in):
+## Release Steps
+
+1. Merge the release PR after CI and CodeQL are green.
+2. From `main`, create and push the annotated tag:
+
    ```bash
-   npm login
+   git tag -a v<X.Y.Z> -m "v<X.Y.Z>"
+   git push origin v<X.Y.Z>
    ```
 
-2. **Publish to npm**:
+3. Create the GitHub release:
+
    ```bash
-   npm publish --access public
+   gh release create v<X.Y.Z> --title "v<X.Y.Z>" --notes-file /path/to/release-notes.md
    ```
 
-   Or if you want to do a dry run first:
+4. The `Publish to npm` workflow runs on `release: published`, installs with the
+   frozen lockfile, runs tests, builds the library, verifies every subpath, checks
+   the tag/version match, and publishes with provenance.
+5. Verify npm after the workflow completes:
+
    ```bash
-   npm publish --dry-run --access public
+   npm view @tantainnovative/ndpr-toolkit version
+   npm view @tantainnovative/ndpr-toolkit dist-tags --json
+   npm view @tantainnovative/ndpr-toolkit readme | head -25
    ```
 
-3. **Tag the release in git**:
-   ```bash
-   git tag v1.0.7
-   git push origin v1.0.7
-   ```
+## Companion Packages
 
-## What Gets Published
+The publish workflow also checks companion package versions:
 
-The following files/folders will be included in the npm package:
-- `dist/` - All built files (JS, MJS, and TypeScript declarations)
-- `README.md` - Package documentation
-- `LICENSE` - MIT license file
-- `package.json` - Package metadata
+- `packages/create-ndpr`
+- `packages/ndpr-recipes`
+- `packages/create-ndpr-unscoped`
 
-## Package Structure
+Each companion publish is idempotent: if that version already exists on npm, the
+step skips it. To publish only companion packages without a main-library release,
+run the `Publish to npm` workflow manually with `publish_companions: true`.
 
-```
-@tantainnovative/ndpr-toolkit@1.0.7
-├── dist/
-│   ├── index.js         # CommonJS entry
-│   ├── index.mjs        # ESM entry
-│   ├── index.d.ts       # TypeScript declarations
-│   ├── unstyled.js      # Unstyled components (CommonJS)
-│   ├── unstyled.mjs     # Unstyled components (ESM)
-│   ├── unstyled.d.ts    # Unstyled TypeScript declarations
-│   └── styles.css       # CSS for animations
-├── README.md
-├── LICENSE
-└── package.json
-```
+## User-facing Release Notes
 
-## Post-publish
+Every compliance-impacting release note should answer:
 
-After publishing:
-1. Verify the package on npm: https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit
-2. Test installation in a new project
-3. Update the GitHub repository with the new tag
-4. Create a GitHub release with the changelog
+- What source changed or was clarified?
+- Which modules are affected?
+- Is this a docs-only clarification, an optional new check, or a behavior change?
+- Do users need to update config, re-run audits, refresh evidence, or seek legal
+  review?
+- Which docs page contains the updated citation or migration guidance?
 
-## Version 1.0.7 Highlights
-
-- **Headless Mode**: Complete separation of state from UI
-- **Enhanced Hooks**: All requested methods in useConsent
-- **Unstyled Components**: For complete design freedom
-- **Render Props**: Maximum flexibility
-- **Event System**: Subscribe to consent changes
-- **TypeScript Generics**: Custom consent categories
-- **Better Documentation**: Comprehensive examples
+Users can watch GitHub Releases at
+<https://github.com/mr-tanta/ndpr-toolkit/releases> and npm versions at
+<https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit>.
