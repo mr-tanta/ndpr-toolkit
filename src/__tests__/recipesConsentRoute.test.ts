@@ -33,8 +33,10 @@ async function loadRecipeRoute(prisma = createPrismaMock()) {
     }),
     { virtual: true },
   );
-  jest.doMock('@tantainnovative/ndpr-toolkit/server', () =>
-    jest.requireActual('../../packages/ndpr-toolkit/src/server'),
+  jest.doMock(
+    '@tantainnovative/ndpr-toolkit/server',
+    () => jest.requireActual('../../packages/ndpr-toolkit/src/server'),
+    { virtual: true },
   );
 
   const route = await import(routePath);

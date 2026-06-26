@@ -8,8 +8,10 @@ const routePath = '../../examples/nextjs-app/app/api/consent/route';
 
 async function loadConsentRoute() {
   jest.resetModules();
-  jest.doMock('@tantainnovative/ndpr-toolkit/server', () =>
-    jest.requireActual('../../packages/ndpr-toolkit/src/server'),
+  jest.doMock(
+    '@tantainnovative/ndpr-toolkit/server',
+    () => jest.requireActual('../../packages/ndpr-toolkit/src/server'),
+    { virtual: true },
   );
   return import(routePath);
 }
