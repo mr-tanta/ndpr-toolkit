@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
+import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
 
 export default function AuditCliGuide() {
   return (
@@ -9,6 +10,8 @@ export default function AuditCliGuide() {
       title="Compliance Audit CLI"
       description="Run an NDPA 2023 compliance audit from the command line or CI with the ndpr binary"
     >
+      <LegalCitationBlock moduleId="audit-cli" />
+
       <section id="introduction" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">What the audit CLI does</h2>
         <p className="mb-4 text-foreground">

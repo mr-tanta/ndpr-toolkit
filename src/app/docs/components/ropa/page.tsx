@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
+import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
 
 export default function ROPADocs() {
   const jsonLd = {
@@ -42,6 +43,7 @@ export default function ROPADocs() {
           View Source
         </a>
       </div>
+      <LegalCitationBlock moduleId="ropa" />
 
       <section id="overview" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Overview</h2>

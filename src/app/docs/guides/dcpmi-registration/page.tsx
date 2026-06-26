@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
+import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
 
 export default function DCPMIRegistrationGuide() {
   return (
@@ -9,6 +10,8 @@ export default function DCPMIRegistrationGuide() {
       title="DCPMI Registration & Compliance Audit Returns"
       description="Classify Data Controllers/Processors of Major Importance and schedule NDPC Compliance Audit Returns under GAID 2025"
     >
+      <LegalCitationBlock moduleId="dcpmi-car" />
+
       <section id="introduction" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">What this covers</h2>
         <p className="mb-4 text-foreground">

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
+import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
 
 export default function ConsentManagementDocs() {
   const jsonLd = {
@@ -31,6 +32,7 @@ export default function ConsentManagementDocs() {
           View Source
         </a>
       </div>
+      <LegalCitationBlock moduleId="consent" />
 
       <section id="overview" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Overview</h2>

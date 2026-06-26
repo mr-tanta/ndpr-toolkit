@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
+import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
 
 export default function LawfulBasisTrackerDocs() {
   const jsonLd = {
@@ -42,6 +43,7 @@ export default function LawfulBasisTrackerDocs() {
           View Source
         </a>
       </div>
+      <LegalCitationBlock moduleId="lawful-basis" />
 
       <section id="overview" className="mb-8">
         <h2 className="text-2xl font-bold mb-4">Overview</h2>
