@@ -50,8 +50,8 @@ This package is a **reference implementation** — not a library to install. Cop
 | `src/adapters/drizzle-cross-border.ts` | Drizzle `StorageAdapter<CrossBorderTransfer[]>` |
 | `src/nextjs/app-router/api/consent/route.ts` | Next.js consent API route with toolkit server validation |
 | `src/nextjs/app-router/api/dsr/route.ts` | Next.js DSR API route |
-| `src/nextjs/app-router/api/breach/route.ts` | Next.js breach API route |
-| `src/nextjs/app-router/api/breach/[id]/route.ts` | Next.js breach detail route — returns GAID 2025 Art. 33 readiness |
+| `src/nextjs/app-router/api/breach/route.ts` | Next.js breach API route with intake validation + GAID 2025 Art. 33 readiness |
+| `src/nextjs/app-router/api/breach/[id]/route.ts` | Next.js breach detail/update route with lifecycle validation + readiness |
 | `src/nextjs/app-router/api/ropa/route.ts` | Next.js ROPA API route with toolkit server validation |
 | `src/nextjs/app-router/api/compliance/route.ts` | Next.js compliance score API route |
 | `src/nextjs/app-router/api/registration/route.ts` | Next.js DCPMI tier + CAR schedule route (GAID 2025) |
@@ -60,7 +60,7 @@ This package is a **reference implementation** — not a library to install. Cop
 | `src/express/index.ts` | Express router factory — mounts all routes |
 | `src/express/routes/consent.ts` | Express consent router |
 | `src/express/routes/dsr.ts` | Express DSR router |
-| `src/express/routes/breach.ts` | Express breach router — `GET /:id` returns GAID 2025 Art. 33 readiness |
+| `src/express/routes/breach.ts` | Express breach router with intake/update validation + GAID 2025 Art. 33 readiness |
 | `src/express/routes/ropa.ts` | Express ROPA router with toolkit server validation |
 | `src/express/routes/compliance.ts` | Express compliance score router |
 | `src/express/routes/registration.ts` | Express DCPMI tier + CAR schedule router (GAID 2025) |
@@ -239,7 +239,7 @@ cp src/nextjs/app-router/api/ropa/route.ts app/api/ropa/route.ts
 cp src/nextjs/app-router/api/compliance/route.ts app/api/compliance/route.ts
 ```
 
-Each route is fully documented with its HTTP methods, query params, and body shape at the top of the file. The consent route validates incoming payloads with `validateConsentStructured` from `@tantainnovative/ndpr-toolkit/server` before writing to Prisma, then records request metadata and an audit-log entry. The Next.js and Express ROPA routes validate production record completeness with `validateProcessingRecord` before database writes, including controller details, lawful-basis justification, data categories, recipients, retention, security measures, and DPIA references when required.
+Each route is fully documented with its HTTP methods, query params, and body shape at the top of the file. The consent route validates incoming payloads with `validateConsentStructured` from `@tantainnovative/ndpr-toolkit/server` before writing to Prisma, then records request metadata and an audit-log entry. The breach routes validate incident intake dates, reporter email, affected systems, data types, and lifecycle update values before writes, and return `ndpcReadiness` from `assessBreachNotification`. The Next.js and Express ROPA routes validate production record completeness with `validateProcessingRecord` before database writes, including controller details, lawful-basis justification, data categories, recipients, retention, security measures, and DPIA references when required.
 
 ### Consent middleware (route protection)
 
@@ -416,11 +416,13 @@ const auditReturn = generateComplianceAuditReturn({
 
 ### Breach Article-33 readiness
 
-The breach detail routes (`GET /api/breach/[id]` in Next.js, `GET /breach/:id`
-in Express) now return an `ndpcReadiness` object via `assessBreachNotification` —
-which GAID 2025 Article 33(5) notification fields are still missing and how many
-hours remain on the 72-hour clock — so you know what to collect before filing.
-Set `NDPR_DPO_NAME` / `NDPR_DPO_EMAIL` to record the contact point.
+The breach create and detail routes (`POST /api/breach`, `GET /api/breach/[id]`
+in Next.js; `POST /breach`, `GET /breach/:id` in Express) return an
+`ndpcReadiness` object via `assessBreachNotification` — which GAID 2025 Article
+33(5) notification fields are still missing and how many hours remain on the
+72-hour clock — so you know what to collect before filing. The update routes
+also reject invalid status and severity values before persistence. Set
+`NDPR_DPO_NAME` / `NDPR_DPO_EMAIL` to record the contact point.
 
 ---
 

@@ -2,6 +2,8 @@
  * @jest-environment node
  */
 
+export {};
+
 const nextRoutePath = '../../packages/ndpr-recipes/src/nextjs/app-router/api/ropa/route';
 const expressRoutePath = '../../packages/ndpr-recipes/src/express/routes/ropa';
 

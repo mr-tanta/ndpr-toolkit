@@ -26,6 +26,87 @@ import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/server';
 
 const prisma = new PrismaClient();
 export const breachRouter = Router();
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const VALID_STATUSES = new Set(['ongoing', 'investigating', 'resolved', 'closed']);
+const VALID_SEVERITIES = new Set(['critical', 'high', 'medium', 'low']);
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
+function isValidDateString(value: unknown): boolean {
+  return typeof value === 'string' && Number.isFinite(new Date(value).getTime());
+}
+
+function hasItems(value: unknown): value is string[] {
+  return Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === 'string');
+}
+
+function validateBreachCreate(body: unknown) {
+  if (!isRecord(body)) {
+    return { valid: false as const, fields: { body: 'Request body must be a JSON object.' } };
+  }
+
+  const fields: Record<string, string> = {};
+  for (const field of ['title', 'description', 'category', 'reporterName']) {
+    if (!asString(body[field])?.trim()) {
+      fields[field] = `${field} is required.`;
+    }
+  }
+  if (!isValidDateString(body.discoveredAt)) {
+    fields.discoveredAt = 'discoveredAt must be a valid ISO date.';
+  }
+  if (body.occurredAt !== undefined && body.occurredAt !== null && !isValidDateString(body.occurredAt)) {
+    fields.occurredAt = 'occurredAt must be a valid ISO date when provided.';
+  }
+  if (!asString(body.reporterEmail)?.trim() || !EMAIL_RE.test(asString(body.reporterEmail) ?? '')) {
+    fields.reporterEmail = 'reporterEmail must be a valid email address.';
+  }
+  if (!hasItems(body.affectedSystems)) {
+    fields.affectedSystems = 'affectedSystems must include at least one affected system.';
+  }
+  if (!hasItems(body.dataTypes)) {
+    fields.dataTypes = 'dataTypes must include at least one data type.';
+  }
+  if (
+    body.estimatedAffected !== undefined &&
+    body.estimatedAffected !== null &&
+    (typeof body.estimatedAffected !== 'number' || !Number.isFinite(body.estimatedAffected) || body.estimatedAffected < 0)
+  ) {
+    fields.estimatedAffected = 'estimatedAffected must be a non-negative number when provided.';
+  }
+
+  return Object.keys(fields).length > 0 ? { valid: false as const, fields } : { valid: true as const, body };
+}
+
+function validatePatchBody(body: unknown) {
+  if (!isRecord(body)) {
+    return { valid: false as const, fields: { body: 'Request body must be a JSON object.' } };
+  }
+
+  const fields: Record<string, string> = {};
+  if (body.status !== undefined && (typeof body.status !== 'string' || !VALID_STATUSES.has(body.status))) {
+    fields.status = 'status must be one of ongoing, investigating, resolved, or closed.';
+  }
+  if (
+    body.severity !== undefined &&
+    (typeof body.severity !== 'string' || !VALID_SEVERITIES.has(body.severity))
+  ) {
+    fields.severity = 'severity must be one of critical, high, medium, or low.';
+  }
+  if (body.initialActions !== undefined && typeof body.initialActions !== 'string') {
+    fields.initialActions = 'initialActions must be a string when provided.';
+  }
+  if (body.ndpcNotificationSent !== undefined && typeof body.ndpcNotificationSent !== 'boolean') {
+    fields.ndpcNotificationSent = 'ndpcNotificationSent must be a boolean when provided.';
+  }
+
+  return Object.keys(fields).length > 0 ? { valid: false as const, fields } : { valid: true as const, body };
+}
 
 // ---------------------------------------------------------------------------
 // NDPC notification readiness (GAID 2025 Article 33(5))
@@ -157,6 +238,11 @@ breachRouter.get('/', async (req, res) => {
  * Returns 201 with the newly created BreachReport row including auto-severity.
  */
 breachRouter.post('/', async (req, res) => {
+  const validation = validateBreachCreate(req.body);
+  if (!validation.valid) {
+    return res.status(400).json({ error: 'Validation failed.', fields: validation.fields });
+  }
+
   const {
     title,
     description,
@@ -170,22 +256,9 @@ breachRouter.post('/', async (req, res) => {
     dataTypes,
     estimatedAffected,
     initialActions,
-  } = req.body;
+  } = validation.body;
 
-  if (!title || !description || !category || !discoveredAt || !reporterName || !reporterEmail) {
-    return res.status(400).json({
-      error:
-        'title, description, category, discoveredAt, reporterName, and reporterEmail are required',
-    });
-  }
-
-  if (!Array.isArray(affectedSystems) || !Array.isArray(dataTypes)) {
-    return res.status(400).json({
-      error: 'affectedSystems and dataTypes must be arrays',
-    });
-  }
-
-  const severity = calculateSeverity(category, estimatedAffected);
+  const severity = calculateSeverity(category as string, estimatedAffected as number | undefined);
 
   const report = await prisma.breachReport.create({
     data: {
@@ -194,8 +267,8 @@ breachRouter.post('/', async (req, res) => {
       category,
       severity,
       status: 'ongoing',
-      discoveredAt: new Date(discoveredAt),
-      occurredAt: occurredAt ? new Date(occurredAt) : null,
+      discoveredAt: new Date(discoveredAt as string),
+      occurredAt: occurredAt ? new Date(occurredAt as string) : null,
       reporterName,
       reporterEmail,
       reporterDepartment: reporterDepartment ?? null,
@@ -216,7 +289,7 @@ breachRouter.post('/', async (req, res) => {
     },
   });
 
-  return res.status(201).json(report);
+  return res.status(201).json({ ...report, ndpcReadiness: assessReadiness(report) });
 });
 
 // ---------------------------------------------------------------------------
@@ -274,7 +347,12 @@ breachRouter.get('/:id', async (req, res) => {
  */
 breachRouter.patch('/:id', async (req, res) => {
   const { id } = req.params;
-  const { status, severity, initialActions, ndpcNotificationSent } = req.body;
+  const validation = validatePatchBody(req.body);
+  if (!validation.valid) {
+    return res.status(400).json({ error: 'Validation failed.', fields: validation.fields });
+  }
+
+  const { status, severity, initialActions, ndpcNotificationSent } = validation.body;
 
   const data: Record<string, unknown> = {};
   if (status !== undefined) data.status = status;

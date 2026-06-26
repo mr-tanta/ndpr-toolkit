@@ -22,10 +22,51 @@ import { PrismaClient } from '@prisma/client';
 import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/server';
 
 const prisma = new PrismaClient();
+const VALID_STATUSES = new Set(['ongoing', 'investigating', 'resolved', 'closed']);
+const VALID_SEVERITIES = new Set(['critical', 'high', 'medium', 'low']);
 
 /** Next.js App Router route context — contains dynamic segment params */
 interface RouteContext {
   params: { id: string };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+async function parseJson(req: NextRequest): Promise<unknown> {
+  try {
+    return await req.json();
+  } catch {
+    return null;
+  }
+}
+
+function validatePatchBody(body: unknown):
+  | { valid: true; body: Record<string, unknown> }
+  | { valid: false; fields: Record<string, string> } {
+  if (!isRecord(body)) {
+    return { valid: false, fields: { body: 'Request body must be a JSON object.' } };
+  }
+
+  const fields: Record<string, string> = {};
+  if (body.status !== undefined && (typeof body.status !== 'string' || !VALID_STATUSES.has(body.status))) {
+    fields.status = 'status must be one of ongoing, investigating, resolved, or closed.';
+  }
+  if (
+    body.severity !== undefined &&
+    (typeof body.severity !== 'string' || !VALID_SEVERITIES.has(body.severity))
+  ) {
+    fields.severity = 'severity must be one of critical, high, medium, or low.';
+  }
+  if (body.initialActions !== undefined && typeof body.initialActions !== 'string') {
+    fields.initialActions = 'initialActions must be a string when provided.';
+  }
+  if (body.ndpcNotificationSent !== undefined && typeof body.ndpcNotificationSent !== 'boolean') {
+    fields.ndpcNotificationSent = 'ndpcNotificationSent must be a boolean when provided.';
+  }
+
+  return Object.keys(fields).length > 0 ? { valid: false, fields } : { valid: true, body };
 }
 
 /**
@@ -128,7 +169,16 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
  */
 export async function PATCH(req: NextRequest, { params }: RouteContext) {
   const { id } = params;
-  const body = await req.json();
+  const parsed = await parseJson(req);
+  const validation = validatePatchBody(parsed);
+  if (!validation.valid) {
+    return NextResponse.json(
+      { error: 'Validation failed.', fields: validation.fields },
+      { status: 400 },
+    );
+  }
+
+  const body = validation.body;
   const { status, severity, initialActions, ndpcNotificationSent } = body;
 
   const data: Record<string, unknown> = {};

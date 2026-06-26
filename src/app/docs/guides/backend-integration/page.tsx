@@ -48,7 +48,7 @@ export default function BackendIntegrationGuide() {
               </tr>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground">Breach report persistence</td>
-                <td className="border border-border px-4 py-2 text-foreground">Prisma adapter</td>
+                <td className="border border-border px-4 py-2 text-foreground">Prisma adapter, validated Next.js and Express routes, NDPC readiness metadata</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 text-foreground">ROPA persistence</td>
@@ -393,8 +393,13 @@ const { requests, submitRequest } = useDSR({ adapter });`}</code></pre>
               </tr>
               <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">api/breach/route.ts</td>
-                <td className="border border-border px-4 py-2 text-foreground">GET, POST, PATCH</td>
-                <td className="border border-border px-4 py-2 text-foreground">Log and update breach reports</td>
+                <td className="border border-border px-4 py-2 text-foreground">GET, POST</td>
+                <td className="border border-border px-4 py-2 text-foreground">List and create validated breach reports with NDPC readiness</td>
+              </tr>
+              <tr className="border-b border-border bg-muted/30">
+                <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">api/breach/[id]/route.ts</td>
+                <td className="border border-border px-4 py-2 text-foreground">GET, PATCH</td>
+                <td className="border border-border px-4 py-2 text-foreground">Read breach readiness and validate lifecycle updates</td>
               </tr>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">api/ropa/route.ts</td>
@@ -512,6 +517,38 @@ export async function DELETE(req: NextRequest) {
   });
 
   return NextResponse.json({ success: true });
+}`}</code></pre>
+        </div>
+
+        <h3 className="text-xl font-bold text-foreground mb-3">Breach route — intake validation and readiness</h3>
+        <p className="mb-4 text-foreground">
+          The maintained Next.js and Express breach routes validate incident intake before Prisma writes:
+          valid ISO discovery dates, reporter email, non-empty affected systems, non-empty data types, and
+          non-negative affected-subject counts. Create and detail responses include{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">ndpcReadiness</code>{' '}
+          from <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">assessBreachNotification</code>{' '}
+          so DPO workflows can see missing GAID 2025 Article 33 notification content and the 72-hour deadline state.
+          The update routes also reject invalid status or severity values before persistence.
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`// Copy the maintained routes:
+// packages/ndpr-recipes/src/nextjs/app-router/api/breach/route.ts
+// packages/ndpr-recipes/src/nextjs/app-router/api/breach/[id]/route.ts
+// packages/ndpr-recipes/src/express/routes/breach.ts
+
+{
+  "title": "Customer export exposed",
+  "description": "A customer export was uploaded to a public bucket.",
+  "category": "unauthorized_access",
+  "discoveredAt": "2026-06-26T10:00:00.000Z",
+  "occurredAt": "2026-06-26T09:00:00.000Z",
+  "reporterName": "Ada DPO",
+  "reporterEmail": "ada@example.com",
+  "reporterDepartment": "Privacy",
+  "affectedSystems": ["object-storage"],
+  "dataTypes": ["name", "email"],
+  "estimatedAffected": 220,
+  "initialActions": "Bucket access was disabled."
 }`}</code></pre>
         </div>
 

@@ -20,8 +20,107 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/server';
 
 const prisma = new PrismaClient();
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
+
+function isValidDateString(value: unknown): boolean {
+  return typeof value === 'string' && Number.isFinite(new Date(value).getTime());
+}
+
+function hasItems(value: unknown): value is string[] {
+  return Array.isArray(value) && value.length > 0 && value.every((item) => typeof item === 'string');
+}
+
+function validateBreachCreate(body: unknown):
+  | { valid: true; body: Record<string, unknown> }
+  | { valid: false; fields: Record<string, string> } {
+  if (!isRecord(body)) {
+    return { valid: false, fields: { body: 'Request body must be a JSON object.' } };
+  }
+
+  const fields: Record<string, string> = {};
+  for (const field of ['title', 'description', 'category', 'reporterName']) {
+    if (!asString(body[field])?.trim()) {
+      fields[field] = `${field} is required.`;
+    }
+  }
+
+  if (!isValidDateString(body.discoveredAt)) {
+    fields.discoveredAt = 'discoveredAt must be a valid ISO date.';
+  }
+  if (body.occurredAt !== undefined && body.occurredAt !== null && !isValidDateString(body.occurredAt)) {
+    fields.occurredAt = 'occurredAt must be a valid ISO date when provided.';
+  }
+  if (!asString(body.reporterEmail)?.trim() || !EMAIL_RE.test(asString(body.reporterEmail) ?? '')) {
+    fields.reporterEmail = 'reporterEmail must be a valid email address.';
+  }
+  if (!hasItems(body.affectedSystems)) {
+    fields.affectedSystems = 'affectedSystems must include at least one affected system.';
+  }
+  if (!hasItems(body.dataTypes)) {
+    fields.dataTypes = 'dataTypes must include at least one data type.';
+  }
+  if (
+    body.estimatedAffected !== undefined &&
+    body.estimatedAffected !== null &&
+    (typeof body.estimatedAffected !== 'number' || !Number.isFinite(body.estimatedAffected) || body.estimatedAffected < 0)
+  ) {
+    fields.estimatedAffected = 'estimatedAffected must be a non-negative number when provided.';
+  }
+
+  return Object.keys(fields).length > 0 ? { valid: false, fields } : { valid: true, body };
+}
+
+async function parseJson(req: NextRequest): Promise<unknown> {
+  try {
+    return await req.json();
+  } catch {
+    return null;
+  }
+}
+
+function assessReadiness(report: any) {
+  const a = assessBreachNotification({
+    id: report.id,
+    title: report.title,
+    description: report.description,
+    category: report.category,
+    discoveredAt: new Date(report.discoveredAt).getTime(),
+    occurredAt: report.occurredAt ? new Date(report.occurredAt).getTime() : undefined,
+    reportedAt: new Date(report.reportedAt ?? report.discoveredAt).getTime(),
+    reporter: {
+      name: report.reporterName,
+      email: report.reporterEmail,
+      department: report.reporterDepartment ?? '',
+    },
+    affectedSystems: report.affectedSystems ?? [],
+    dataTypes: report.dataTypes ?? [],
+    estimatedAffectedSubjects: report.estimatedAffected ?? undefined,
+    initialActions: report.initialActions ?? undefined,
+    dpoContact: process.env.NDPR_DPO_EMAIL
+      ? { name: process.env.NDPR_DPO_NAME ?? 'DPO', email: process.env.NDPR_DPO_EMAIL }
+      : undefined,
+    status: report.status,
+  });
+  return {
+    complete: a.complete,
+    completeness: a.completeness,
+    missing: a.missing,
+    hoursRemaining: a.timing.hoursRemaining,
+    overdue: a.timing.overdue,
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Severity auto-calculation helper
@@ -112,7 +211,16 @@ export async function GET(req: NextRequest) {
  * Returns 201 with the newly created BreachReport row including auto-severity.
  */
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  const parsed = await parseJson(req);
+  const validation = validateBreachCreate(parsed);
+  if (!validation.valid) {
+    return NextResponse.json(
+      { error: 'Validation failed.', fields: validation.fields },
+      { status: 400 },
+    );
+  }
+
+  const body = validation.body;
   const {
     title,
     description,
@@ -128,25 +236,8 @@ export async function POST(req: NextRequest) {
     initialActions,
   } = body;
 
-  if (!title || !description || !category || !discoveredAt || !reporterName || !reporterEmail) {
-    return NextResponse.json(
-      {
-        error:
-          'title, description, category, discoveredAt, reporterName, and reporterEmail are required',
-      },
-      { status: 400 },
-    );
-  }
-
-  if (!Array.isArray(affectedSystems) || !Array.isArray(dataTypes)) {
-    return NextResponse.json(
-      { error: 'affectedSystems and dataTypes must be arrays' },
-      { status: 400 },
-    );
-  }
-
   // Auto-calculate severity from category and scale of impact.
-  const severity = calculateSeverity(category, estimatedAffected);
+  const severity = calculateSeverity(category as string, estimatedAffected as number | undefined);
 
   const report = await prisma.breachReport.create({
     data: {
@@ -155,8 +246,8 @@ export async function POST(req: NextRequest) {
       category,
       severity,
       status: 'ongoing',
-      discoveredAt: new Date(discoveredAt),
-      occurredAt: occurredAt ? new Date(occurredAt) : null,
+      discoveredAt: new Date(discoveredAt as string),
+      occurredAt: occurredAt ? new Date(occurredAt as string) : null,
       reporterName,
       reporterEmail,
       reporterDepartment: reporterDepartment ?? null,
@@ -178,5 +269,5 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  return NextResponse.json(report, { status: 201 });
+  return NextResponse.json({ ...report, ndpcReadiness: assessReadiness(report) }, { status: 201 });
 }
