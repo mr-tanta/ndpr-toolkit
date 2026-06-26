@@ -5,6 +5,12 @@ import { DocLayout } from '@/components/docs/DocLayout';
 
 export const guides = [
   {
+    title: 'Legal Basis & Citations',
+    description: 'Module-level citation index for NDPA, GAID, DCPMI, CAR, and audit CLI coverage.',
+    href: '/docs/guides/legal-basis-and-citations',
+    category: 'Trust',
+  },
+  {
     title: 'Legal Sources & Update Governance',
     description: 'How toolkit modules map to NDPA 2023, GAID 2025, and NDPC guidance, plus the release review process for regulatory changes.',
     href: '/docs/guides/legal-sources-governance',

@@ -245,6 +245,19 @@ const componentGuides = [
 
 const implGuides = [
   {
+    title: 'Legal Basis & Citations',
+    description: 'Module-level citation index for NDPA, GAID, DCPMI, CAR, and audit CLI coverage.',
+    href: '/docs/guides/legal-basis-and-citations',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3v18" />
+        <path d="M5 6h14" />
+        <path d="M6 6l-3 7h6L6 6z" />
+        <path d="M18 6l-3 7h6l-3-7z" />
+      </svg>
+    ),
+  },
+  {
     title: 'Legal Sources & Governance',
     description: 'Official NDPA and GAID references, module mapping, and the regulatory update policy.',
     href: '/docs/guides/legal-sources-governance',
