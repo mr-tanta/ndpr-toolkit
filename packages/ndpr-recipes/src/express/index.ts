@@ -11,6 +11,7 @@
  * --------------
  *   /consent    — Consent management (NDPA Section 25, 26)
  *   /dsr        — Data Subject Rights requests (NDPA Sections 34–38)
+ *   /dpia       — Data Protection Impact Assessments (NDPA Section 28)
  *   /breach     — Breach notification workflow (NDPA Section 40)
  *   /compliance — Compliance score dashboard
  *   /ropa       — Record of Processing Activities (NDPA accountability principle)
@@ -48,6 +49,7 @@
 import { Router } from 'express';
 import { consentRouter } from './routes/consent';
 import { dsrRouter } from './routes/dsr';
+import { dpiaRouter } from './routes/dpia';
 import { breachRouter } from './routes/breach';
 import { complianceRouter } from './routes/compliance';
 import { ropaRouter } from './routes/ropa';
@@ -68,6 +70,7 @@ export function createNDPRRouter(): Router {
 
   router.use('/consent', consentRouter);
   router.use('/dsr', dsrRouter);
+  router.use('/dpia', dpiaRouter);
   router.use('/breach', breachRouter);
   router.use('/compliance', complianceRouter);
   router.use('/ropa', ropaRouter);
@@ -79,6 +82,7 @@ export function createNDPRRouter(): Router {
 // Re-export middleware and individual routers for granular use.
 export { consentRouter } from './routes/consent';
 export { dsrRouter } from './routes/dsr';
+export { dpiaRouter } from './routes/dpia';
 export { breachRouter } from './routes/breach';
 export { complianceRouter } from './routes/compliance';
 export { ropaRouter } from './routes/ropa';

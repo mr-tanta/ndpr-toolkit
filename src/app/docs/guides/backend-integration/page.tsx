@@ -55,12 +55,16 @@ export default function BackendIntegrationGuide() {
                 <td className="border border-border px-4 py-2 text-foreground">Prisma adapter, validated Next.js and Express routes</td>
               </tr>
               <tr className="border-b border-border bg-muted/30">
-                <td className="border border-border px-4 py-2 text-foreground">Next.js App Router</td>
-                <td className="border border-border px-4 py-2 text-foreground">Consent, DSR, Breach, ROPA, Compliance route handlers</td>
+                <td className="border border-border px-4 py-2 text-foreground">DPIA persistence</td>
+                <td className="border border-border px-4 py-2 text-foreground">Drizzle adapter, validated Next.js and Express routes</td>
               </tr>
               <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 text-foreground">Next.js App Router</td>
+                <td className="border border-border px-4 py-2 text-foreground">Consent, DSR, DPIA, Breach, ROPA, Compliance route handlers</td>
+              </tr>
+              <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground">Express</td>
-                <td className="border border-border px-4 py-2 text-foreground">Full NDPR router with all five compliance routes</td>
+                <td className="border border-border px-4 py-2 text-foreground">Full NDPR router with consent, DSR, DPIA, breach, ROPA, compliance, and registration routes</td>
               </tr>
               <tr className="bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground">Consent middleware</td>
@@ -83,7 +87,7 @@ cp -r ndpr-toolkit/packages/ndpr-recipes/src ./ndpr`}</code></pre>
       <section id="prisma-schema" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Prisma Schema</h2>
         <p className="mb-4 text-foreground">
-          The recipes package ships a complete Prisma schema with five tables covering every NDPA compliance module.
+          The recipes package ships a complete Prisma schema covering every NDPA compliance module and the audit log.
           Copy <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">packages/ndpr-recipes/prisma/schema.prisma</code> into your project and run a migration.
         </p>
 
@@ -116,6 +120,11 @@ cp -r ndpr-toolkit/packages/ndpr-recipes/src ./ndpr`}</code></pre>
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">ndpr_processing_records</td>
                 <td className="border border-border px-4 py-2 text-foreground">Record of Processing Activities (ROPA) — purpose, lawful basis, retention periods.</td>
                 <td className="border border-border px-4 py-2 text-foreground">Accountability principle</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">ndpr_dpia_records</td>
+                <td className="border border-border px-4 py-2 text-foreground">Data Protection Impact Assessments with risk score, approval status, and full questionnaire data.</td>
+                <td className="border border-border px-4 py-2 text-foreground">§28</td>
               </tr>
               <tr className="bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">ndpr_audit_log</td>
@@ -212,9 +221,26 @@ model ProcessingRecord {
   @@map("ndpr_processing_records")
 }
 
+model DPIARecord {
+  id          String   @id @default(cuid())
+  projectName String
+  description String
+  dpiaData    Json                    // assessor, answers, risks, conclusion, version
+  overallRisk String                  // low | medium | high | critical
+  score       Int
+  status      String   @default("draft") // draft | in_progress | completed | approved | rejected
+  conductedBy String
+  approvedBy  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@map("ndpr_dpia_records")
+}
+
 model ComplianceAuditLog {
   id          String   @id @default(cuid())
-  module      String                          // consent | dsr | breach | ropa
+  module      String                          // consent | dsr | dpia | breach | ropa
   action      String                          // created | updated | revoked | completed | ...
   entityId    String                          // ID of the affected record
   entityType  String                          // ConsentRecord | DSRRequest | BreachReport | ...
@@ -366,7 +392,7 @@ const { requests, submitRequest } = useDSR({ adapter });`}</code></pre>
       <section id="nextjs-routes" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Next.js API Routes</h2>
         <p className="mb-4 text-foreground">
-          The recipes include ready-made Next.js App Router handlers for all five compliance modules. Copy each route
+          The recipes include ready-made Next.js App Router handlers for the compliance modules. Copy each route
           file from <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">src/nextjs/app-router/api/</code> into your project&apos;s{' '}
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">app/api/</code> directory:
         </p>
@@ -400,6 +426,11 @@ const { requests, submitRequest } = useDSR({ adapter });`}</code></pre>
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">api/breach/[id]/route.ts</td>
                 <td className="border border-border px-4 py-2 text-foreground">GET, PATCH</td>
                 <td className="border border-border px-4 py-2 text-foreground">Read breach readiness and validate lifecycle updates</td>
+              </tr>
+              <tr className="border-b border-border">
+                <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">api/dpia/route.ts</td>
+                <td className="border border-border px-4 py-2 text-foreground">GET, POST, PUT, DELETE</td>
+                <td className="border border-border px-4 py-2 text-foreground">Persist validated DPIA records with audit logging</td>
               </tr>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">api/ropa/route.ts</td>
@@ -552,6 +583,41 @@ export async function DELETE(req: NextRequest) {
 }`}</code></pre>
         </div>
 
+        <h3 className="text-xl font-bold text-foreground mb-3">DPIA route — Section 28 persistence</h3>
+        <p className="mb-4 text-foreground">
+          The maintained Next.js and Express DPIA routes persist complete assessment records to{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">DPIARecord</code>{' '}
+          and write each create, update, and delete to the compliance audit log. The routes validate project metadata,
+          full <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">dpiaData</code>, risk level,
+          non-negative score, and lifecycle status before Prisma writes.
+        </p>
+        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
+          <pre className="text-foreground"><code>{`// Copy the maintained routes:
+// packages/ndpr-recipes/src/nextjs/app-router/api/dpia/route.ts
+// packages/ndpr-recipes/src/express/routes/dpia.ts
+
+{
+  "projectName": "Customer analytics model",
+  "description": "Profiling customer activity for product recommendations.",
+  "dpiaData": {
+    "assessor": {
+      "name": "Ada DPO",
+      "role": "DPO",
+      "email": "ada@example.com"
+    },
+    "answers": { "highRiskProcessing": true },
+    "risks": [{ "id": "risk_1", "title": "Profiling risk", "score": 12 }],
+    "conclusion": "Proceed with mitigation plan.",
+    "recommendations": ["Run quarterly review."],
+    "version": "1.0",
+    "ndpcConsultationRequired": true
+  },
+  "overallRisk": "high",
+  "score": 12,
+  "conductedBy": "ada@example.com"
+}`}</code></pre>
+        </div>
+
         <h3 className="text-xl font-bold text-foreground mb-3">ROPA route — production validation</h3>
         <p className="mb-4 text-foreground">
           The maintained Next.js and Express ROPA routes validate each processing record with{' '}
@@ -603,7 +669,7 @@ const dsrAdapter     = apiAdapter('/api/dsr');`}</code></pre>
       <section id="express-routes" className="mb-8">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Express Routes</h2>
         <p className="mb-4 text-foreground">
-          For non-Next.js Node.js backends, the recipes include an Express router factory that mounts all five
+          For non-Next.js Node.js backends, the recipes include an Express router factory that mounts the
           compliance routes in one call. Copy the <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">src/express/</code> directory
           into your project, then mount it:
         </p>
@@ -647,6 +713,10 @@ app.listen(3001);`}</code></pre>
                 <td className="border border-border px-4 py-2 text-foreground">Breach notification (NDPA §40)</td>
               </tr>
               <tr className="border-b border-border bg-muted/30">
+                <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">GET/POST/PUT/DELETE /api/ndpr/dpia</td>
+                <td className="border border-border px-4 py-2 text-foreground">Data Protection Impact Assessments (NDPA §28)</td>
+              </tr>
+              <tr className="border-b border-border">
                 <td className="border border-border px-4 py-2 text-foreground font-mono text-xs">GET/POST/PATCH  /api/ndpr/ropa</td>
                 <td className="border border-border px-4 py-2 text-foreground">Record of Processing Activities</td>
               </tr>

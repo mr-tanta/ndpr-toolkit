@@ -23,8 +23,9 @@ This package is a **reference implementation** — not a library to install. Cop
 | DSR request persistence | Prisma adapter, Drizzle adapter |
 | Breach report persistence | Prisma adapter |
 | ROPA persistence | Prisma adapter |
-| Next.js App Router | Consent, DSR, Breach, ROPA, Compliance, Registration route handlers |
-| Express | Full NDPR router with consent, DSR, breach, ROPA, compliance, registration routes |
+| DPIA persistence | Drizzle adapter, validated Next.js and Express routes |
+| Next.js App Router | Consent, DSR, DPIA, Breach, ROPA, Compliance, Registration route handlers |
+| Express | Full NDPR router with consent, DSR, DPIA, breach, ROPA, compliance, registration routes |
 | Consent middleware | Next.js edge middleware + Express middleware |
 | GAID 2025 (DCPMI + CAR) | `/registration` route — tier classification + Compliance Audit Return schedule |
 | Breach Article-33 readiness | Breach detail routes return which NDPC notification fields are still missing |
@@ -35,7 +36,7 @@ This package is a **reference implementation** — not a library to install. Cop
 
 | File | Description |
 |---|---|
-| `prisma/schema.prisma` | Prisma schema — all 5 NDPA compliance tables |
+| `prisma/schema.prisma` | Prisma schema — NDPA compliance tables plus audit log |
 | `src/drizzle/schema.ts` | Drizzle ORM schema — mirrors the Prisma schema |
 | `src/adapters/prisma-consent.ts` | Prisma `StorageAdapter<ConsentSettings>` |
 | `src/adapters/prisma-dsr.ts` | Prisma `StorageAdapter<DSRRequest[]>` |
@@ -50,6 +51,7 @@ This package is a **reference implementation** — not a library to install. Cop
 | `src/adapters/drizzle-cross-border.ts` | Drizzle `StorageAdapter<CrossBorderTransfer[]>` |
 | `src/nextjs/app-router/api/consent/route.ts` | Next.js consent API route with toolkit server validation |
 | `src/nextjs/app-router/api/dsr/route.ts` | Next.js DSR API route |
+| `src/nextjs/app-router/api/dpia/route.ts` | Next.js DPIA API route with intake/update validation + audit logging |
 | `src/nextjs/app-router/api/breach/route.ts` | Next.js breach API route with intake validation + GAID 2025 Art. 33 readiness |
 | `src/nextjs/app-router/api/breach/[id]/route.ts` | Next.js breach detail/update route with lifecycle validation + readiness |
 | `src/nextjs/app-router/api/ropa/route.ts` | Next.js ROPA API route with toolkit server validation |
@@ -60,6 +62,7 @@ This package is a **reference implementation** — not a library to install. Cop
 | `src/express/index.ts` | Express router factory — mounts all routes |
 | `src/express/routes/consent.ts` | Express consent router |
 | `src/express/routes/dsr.ts` | Express DSR router |
+| `src/express/routes/dpia.ts` | Express DPIA router with intake/update validation + audit logging |
 | `src/express/routes/breach.ts` | Express breach router with intake/update validation + GAID 2025 Art. 33 readiness |
 | `src/express/routes/ropa.ts` | Express ROPA router with toolkit server validation |
 | `src/express/routes/compliance.ts` | Express compliance score router |

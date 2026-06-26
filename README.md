@@ -651,11 +651,11 @@ Detects Next.js (App Router or Pages Router) or Express, prompts for your ORM (P
 
 | Recipe | What you get |
 |--------|-------------|
-| `prisma/schema.prisma` | All 5 NDPA compliance tables |
+| `prisma/schema.prisma` | NDPA compliance tables for consent, DSR, breach, ROPA, DPIA, and audit logs |
 | `src/adapters/prisma-consent.ts` | Prisma `StorageAdapter<ConsentSettings>` |
 | `src/adapters/drizzle-consent.ts` | Drizzle `StorageAdapter<ConsentSettings>` |
-| `src/nextjs/app-router/` | Consent, DSR, Breach, ROPA, compliance route handlers; consent, breach, and ROPA validate before writes |
-| `src/express/` | Full NDPR router with consent, DSR, breach, ROPA routes; breach and ROPA validate before writes |
+| `src/nextjs/app-router/` | Consent, DSR, Breach, DPIA, ROPA, compliance route handlers; consent, breach, DPIA, and ROPA validate before writes |
+| `src/express/` | Full NDPR router with consent, DSR, DPIA, breach, ROPA routes; breach, DPIA, and ROPA validate before writes |
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 
 Copy the files you need into your project. [Browse the recipes →](https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes)
@@ -670,6 +670,8 @@ The runnable examples cover the first production handoff paths:
 The ROPA recipes now enforce the toolkit's production completeness checks before persistence. Include controller details, lawful-basis justification, data-subject categories, recipients, retention, security measures, and `dpiaReference` when `dpiaRequired` is true.
 
 The breach recipes validate incident intake dates, reporter email, affected systems, data types, and lifecycle update values before persistence. Create/detail responses include `ndpcReadiness` from `assessBreachNotification` so DPO workflows can see missing GAID 2025 Article 33 notification content and 72-hour deadline status.
+
+The DPIA recipes now provide maintained Next.js and Express persistence routes for `DPIARecord`, with validation for project metadata, `dpiaData`, risk level, score, status, and audit-log writes before records are created, updated, or deleted.
 
 ---
 
