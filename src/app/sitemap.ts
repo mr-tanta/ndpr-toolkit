@@ -191,6 +191,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
     },
     {
+      url: `${baseUrl}/docs/guides/ndpr-vs-ndpa-naming`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.78,
+    },
+    {
       url: `${baseUrl}/docs/guides/managing-consent`,
       lastModified: now,
       changeFrequency: 'monthly',

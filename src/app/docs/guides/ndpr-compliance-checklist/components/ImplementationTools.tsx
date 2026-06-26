@@ -5,9 +5,9 @@ import Link from 'next/link';
 export default function ImplementationTools() {
   return (
     <section id="implementation-tools" className="mb-8">
-      <h2 className="text-2xl font-bold mb-4">Implementation Tools in the NDPR Toolkit</h2>
+      <h2 className="text-2xl font-bold mb-4">Implementation Tools in the NDPA Toolkit</h2>
       <p className="mb-4">
-        The NDPR Toolkit provides a comprehensive set of components and utilities to help you implement
+        The NDPA Toolkit provides a comprehensive set of components and utilities to help you implement
         NDPA 2023-compliant features in your web applications. Here&apos;s how the toolkit can help you address
         key compliance requirements:
       </p>

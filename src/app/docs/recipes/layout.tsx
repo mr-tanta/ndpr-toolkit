@@ -8,11 +8,11 @@ export const metadata: Metadata = {
     'Nigeria NDPA recipes, NDPA cookie consent ecommerce, NDPR newsletter consent Nigeria, NDPA contact form privacy notice, careers applicant rights NDPA, admin DSR management',
   alternates: { canonical: '/docs/recipes' },
   openGraph: {
-    title: 'Nigeria NDPA Recipes — NDPR Toolkit',
+    title: 'Nigeria NDPA Recipes — NDPA Toolkit',
     description:
       'Production-tested NDPA 2023 patterns: ecommerce consent, newsletter, contact forms, careers rights, admin DSR portal.',
     url: 'https://ndprtoolkit.com.ng/docs/recipes',
-    siteName: 'NDPR Toolkit',
+    siteName: 'NDPA Toolkit',
     locale: 'en_NG',
     type: 'website',
   },

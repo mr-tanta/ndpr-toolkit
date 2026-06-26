@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://ndprtoolkit.com.ng"),
   title: {
-    default: "NDPR Toolkit — Nigeria Data Protection Act (NDPA) 2023 Library for React & Next.js",
-    template: "%s | NDPR Toolkit (Nigeria NDPA)",
+    default: "NDPA Toolkit — Nigeria Data Protection Act (NDPA) 2023 Library for React & Next.js",
+    template: "%s | NDPA Toolkit (Nigeria NDPA)",
   },
   description:
     "Open-source React & TypeScript library for Nigeria Data Protection Act (NDPA) 2023 compliance. Cookie consent banner, data-subject rights portal, DPIA, 72-hour breach notification, RoPA, lawful-basis tracker, and privacy-policy generator — built for Nigerian fintech, insurtech, and SaaS.",
@@ -56,11 +56,11 @@ export const metadata: Metadata = {
     "theme-color": "#1d4ed8",
   },
   openGraph: {
-    title: "NDPR Toolkit — Nigeria Data Protection Act (NDPA) 2023 Library for React",
+    title: "NDPA Toolkit — Nigeria Data Protection Act (NDPA) 2023 Library for React",
     description:
       "Open-source React & TypeScript library for Nigeria NDPA 2023 compliance. Cookie consent, DSR portal, DPIA, 72-hour breach notification, RoPA, and privacy-policy generator built for Nigerian fintech, insurtech, and SaaS.",
     type: "website",
-    siteName: "NDPR Toolkit",
+    siteName: "NDPA Toolkit",
     locale: "en_NG",
     url: "https://ndprtoolkit.com.ng",
     images: [
@@ -68,13 +68,13 @@ export const metadata: Metadata = {
         url: "/screenshots/hero.png",
         width: 1280,
         height: 800,
-        alt: "NDPR Toolkit — Nigeria Data Protection Act 2023 Library for React",
+        alt: "NDPA Toolkit — Nigeria Data Protection Act 2023 Library for React",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "NDPR Toolkit — Nigeria NDPA 2023 Library for React & Next.js",
+    title: "NDPA Toolkit — Nigeria NDPA 2023 Library for React & Next.js",
     description:
       "Open-source React/TypeScript library for Nigeria NDPA 2023 compliance: consent, DSR, DPIA, breach notification, RoPA, lawful-basis, privacy policy. MIT-licensed.",
     images: ["/screenshots/hero.png"],
@@ -94,9 +94,9 @@ export const metadata: Metadata = {
 const softwareApplicationJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "NDPR Toolkit",
+  name: "NDPA Toolkit",
   alternateName: [
-    "NDPA Toolkit",
+    "NDPR Toolkit",
     "Nigeria Data Protection Toolkit",
     "@tantainnovative/ndpr-toolkit",
   ],

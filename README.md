@@ -26,6 +26,8 @@ v5 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 
 > **Legal source transparency:** See [Legal Basis & Citations](https://ndprtoolkit.com.ng/docs/guides/legal-basis-and-citations) for NDPA 2023 module references, NDPC GAID 2025 DCPMI/CAR utility references, and audit CLI boundaries, plus the linked governance policy for regulatory changes.
 >
+> **Naming note:** The npm package remains `@tantainnovative/ndpr-toolkit` for compatibility and search continuity, but current legal positioning is **NDPA Toolkit** / **NDPA 2023 compliance**. See [NDPR vs NDPA Naming](https://ndprtoolkit.com.ng/docs/guides/ndpr-vs-ndpa-naming).
+>
 > **Compliance updates:** Watch [GitHub Releases](https://github.com/mr-tanta/ndpr-toolkit/releases) or npm version updates for compliance-impacting changes. Release notes call out NDPA/NDPC/GAID rule changes separately from features, bug fixes, and docs. The toolkit is implementation support, not legal advice; verify current NDPC guidance before relying on outputs for regulated filings or audit evidence.
 
 <p align="center">
@@ -667,7 +669,7 @@ See the [Production Recipes guide](https://ndprtoolkit.com.ng/docs/guides/produc
 | `src/adapters/prisma-consent.ts` | Prisma `StorageAdapter<ConsentSettings>` |
 | `src/adapters/drizzle-consent.ts` | Drizzle `StorageAdapter<ConsentSettings>` |
 | `src/nextjs/app-router/` | Consent, DSR, Breach, DPIA, ROPA, compliance route handlers; consent, breach, DPIA, and ROPA validate before writes |
-| `src/express/` | Full NDPR router with consent, DSR, DPIA, breach, ROPA routes; breach, DPIA, and ROPA validate before writes |
+| `src/express/` | Full NDPA compliance router with consent, DSR, DPIA, breach, ROPA routes; breach, DPIA, and ROPA validate before writes |
 | `src/nextjs/app-router/middleware.ts` | Next.js consent gate middleware |
 
 Copy from `node_modules/@tantainnovative/ndpr-recipes` for a pinned version, or [browse the recipes on GitHub](https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes).

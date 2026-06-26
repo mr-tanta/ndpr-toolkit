@@ -245,6 +245,18 @@ const componentGuides = [
 
 const implGuides = [
   {
+    title: 'NDPR vs NDPA Naming',
+    description: 'How the docs preserve NDPR package compatibility while leading with NDPA 2023 as the current legal term.',
+    href: '/docs/guides/ndpr-vs-ndpa-naming',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 7h16" />
+        <path d="M4 12h10" />
+        <path d="M4 17h16" />
+      </svg>
+    ),
+  },
+  {
     title: 'Legal Basis & Citations',
     description: 'Citation index for NDPA modules, GAID DCPMI/CAR utilities, and audit CLI coverage.',
     href: '/docs/guides/legal-basis-and-citations',

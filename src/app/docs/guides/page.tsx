@@ -5,6 +5,12 @@ import { DocLayout } from '@/components/docs/DocLayout';
 
 export const guides = [
   {
+    title: 'NDPR vs NDPA Naming',
+    description: 'Why public copy leads with NDPA 2023 while package names and legacy imports still use NDPR.',
+    href: '/docs/guides/ndpr-vs-ndpa-naming',
+    category: 'Trust',
+  },
+  {
     title: 'Legal Basis & Citations',
     description: 'Citation index for NDPA modules, GAID DCPMI/CAR utilities, and audit CLI coverage.',
     href: '/docs/guides/legal-basis-and-citations',

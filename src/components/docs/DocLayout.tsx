@@ -80,6 +80,7 @@ const navigation: NavItem[] = [
       { title: 'Headless / hooks-only API', href: '/docs/guides/headless', isNew: true },
       { title: 'Production DSR backend', href: '/docs/guides/production-dsr-backend', isNew: true },
       { title: 'Production Recipes', href: '/docs/guides/production-recipes', isNew: true },
+      { title: 'NDPR vs NDPA Naming', href: '/docs/guides/ndpr-vs-ndpa-naming', isNew: true },
       { title: 'Legal Basis & Citations', href: '/docs/guides/legal-basis-and-citations', isNew: true },
       { title: 'Legal Sources & Update Governance', href: '/docs/guides/legal-sources-governance', isNew: true },
       { title: 'NDPA Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
