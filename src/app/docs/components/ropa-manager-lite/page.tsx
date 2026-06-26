@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function ROPAManagerLiteDocs() {
   return (
@@ -27,6 +28,52 @@ export default function ROPAManagerLiteDocs() {
           <code>{`import { ROPAManagerLite } from '@tantainnovative/ndpr-toolkit/ropa/lite';`}</code>
         </pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="ROPAManagerLite"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/ropa/lite',
+            exports: 'ROPAManagerLite',
+            useCase: 'Read-only ROPA summaries, gap alerts, and processing-record tables.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/ropa',
+            exports: 'ROPAManager, validateProcessingRecord',
+            useCase: 'Full read/write manager and validation path for admins and record owners.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/api/ropa/route.ts',
+            useCase: 'Reference backend source for durable records consumed by read-only views.',
+          },
+        ]}
+        checklist={[
+          'Feed lite views from the same backend records used by the full ROPA manager.',
+          'Use onRecordClick only for routes the current user is allowed to open.',
+          'Show review dates, stale-record gaps, and archived status clearly on audit dashboards.',
+          'Keep write actions out of lite pages; route editors to the full manager or admin workflow.',
+          'Document which audience each lite view serves: executive summary, DPO review, audit export, or team dashboard.',
+        ]}
+        backendNotes={[
+          'Use the recipes ROPA route or adapter as the source of truth, then project read-only records into the lite component.',
+          'Apply authorization before fetching data; hiding edit controls is not an access-control boundary.',
+          'Return stable record IDs so row click-through and audit links remain durable.',
+          'Filter or redact records before public or customer-facing transparency views.',
+        ]}
+        testingNotes={[
+          'Compare lite summaries with the full ROPA manager and backend record counts.',
+          'Check overdue reviews, compliance gaps, archived records, and empty states.',
+          'Verify keyboard activation works for clickable rows.',
+          'Confirm unauthorized users cannot fetch hidden record details through linked routes or APIs.',
+        ]}
+        commonMistakes={[
+          'Using lite pages as the only ROPA workflow and losing edit, validation, and approval controls.',
+          'Passing stale static JSON while the production ROPA backend changes.',
+          'Assuming read-only UI replaces backend authorization.',
+          'Showing sensitive processing details to broad audiences without redaction.',
+        ]}
+      />
 
       <section id="quickstart" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quickstart</h2>

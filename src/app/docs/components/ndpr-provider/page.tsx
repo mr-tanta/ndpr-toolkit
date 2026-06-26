@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function NDPRProviderDocs() {
   return (
@@ -24,6 +25,57 @@ export default function NDPRProviderDocs() {
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm"> organizationName</code> / <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">dpoEmail</code> across multiple forms, (b) ship a non-English UI, or (c) want a managed error boundary around the toolkit surface.
         </p>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="NDPRProvider"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit',
+            exports: 'NDPRProvider, useNDPRConfig',
+            useCase: 'App-level organization, DPO, storage, theme, and error-boundary configuration.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/core',
+            exports: 'useNDPRLocale, defaultLocale, yorubaLocale, igboLocale, hausaLocale, pidginLocale',
+            useCase: 'Locale-aware copy and merged fallback strings for toolkit components.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit',
+            exports: 'NDPRThemeProvider',
+            useCase: 'Pair with NDPRProvider when brand tokens need full CSS-variable control.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/layout-example.tsx',
+            useCase: 'Reference root layout showing provider, theme, locale, and metadata wiring.',
+          },
+        ]}
+        checklist={[
+          'Set the legal organization name, DPO/privacy email, NDPC registration number, and storage prefix from trusted configuration.',
+          'Wire onError to production monitoring so toolkit render failures are visible to the engineering owner.',
+          'Choose one root provider for the app unless a sub-brand genuinely needs different copy or storage keys.',
+          'Review locale strings with fluent speakers and privacy owners before shipping non-English flows.',
+          'Document which environment owns provider values so staging and production do not drift.',
+        ]}
+        backendNotes={[
+          'Load provider values from environment or organization settings rather than hard-coded demo strings.',
+          'Keep DPO email and organization identity synchronized with public policy, DSR, and breach notification records.',
+          'Use storageKeyPrefix to separate tenants, sub-brands, or test environments on shared domains.',
+          'Treat provider locale and theme changes as release changes because they affect public-facing legal UX.',
+        ]}
+        testingNotes={[
+          'Render every major component under the provider and confirm organization and DPO details appear correctly.',
+          'Trigger a controlled component error and confirm onError reaches the monitoring service.',
+          'Check all enabled locales for missing labels, truncation, and legal meaning changes.',
+          'Verify staging and production use distinct storage prefixes when they share a browser domain.',
+        ]}
+        commonMistakes={[
+          'Leaving sample organization names or DPO emails in production configuration.',
+          'Nesting providers accidentally and overriding locale or organization details in part of the app.',
+          'Using translated strings without privacy/legal review.',
+          'Relying on the error boundary without forwarding errors to monitoring.',
+        ]}
+      />
 
       <section id="quickstart" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quickstart</h2>

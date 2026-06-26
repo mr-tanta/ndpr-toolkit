@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function CrossBorderTransferManagerLiteDocs() {
   return (
@@ -26,6 +27,52 @@ export default function CrossBorderTransferManagerLiteDocs() {
           <code>{`import { CrossBorderTransferManagerLite } from '@tantainnovative/ndpr-toolkit/cross-border/lite';`}</code>
         </pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="CrossBorderTransferManagerLite"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/cross-border/lite',
+            exports: 'CrossBorderTransferManagerLite',
+            useCase: 'Read-only transfer summaries, risk alerts, and transfer tables.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/cross-border',
+            exports: 'CrossBorderTransferManager, validateTransfer',
+            useCase: 'Full read/write manager and validation path for transfer review workflows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/adapters/drizzle-cross-border.ts',
+            useCase: 'Reference persistence adapter for transfer records consumed by read-only views.',
+          },
+        ]}
+        checklist={[
+          'Feed lite views from approved transfer records, not vendor intake drafts.',
+          'Use onTransferClick only for routes the current user can access.',
+          'Surface pending approvals, high-risk flags, missing TIA, and NDPC approval requirements.',
+          'Route edits, approvals, and safeguard evidence uploads to the full CrossBorderTransferManager.',
+          'Decide whether transfer details are internal-only or safe for customer-facing transparency.',
+        ]}
+        backendNotes={[
+          'Use the recipes adapter as the durable source for transfer records.',
+          'Apply authorization before returning transfer records because lite UI is display-only, not a security boundary.',
+          'Return status, risk level, TIA status, and safeguard metadata so alerts match the approved record.',
+          'Redact vendor contracts, safeguard evidence, and internal risk notes before public views.',
+        ]}
+        testingNotes={[
+          'Compare lite summaries and risk alerts with the full manager and backend records.',
+          'Check high-risk, missing-TIA, pending-approval, active, and archived transfer states.',
+          'Verify keyboard row activation and no-op behavior when onTransferClick is omitted.',
+          'Confirm users cannot fetch restricted vendor or safeguard evidence through linked routes.',
+        ]}
+        commonMistakes={[
+          'Using lite pages for transfer approval workflows instead of the full manager.',
+          'Showing draft vendor regions as approved transfers.',
+          'Treating hidden edit controls as authorization.',
+          'Publishing sensitive vendor and safeguard details without review or redaction.',
+        ]}
+      />
 
       <section id="quickstart" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quickstart</h2>

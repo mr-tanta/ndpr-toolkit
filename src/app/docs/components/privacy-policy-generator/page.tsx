@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { DocLayout } from '../DocLayout';
 import { LegalCitationBlock } from '@/components/docs/LegalCitationBlock';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function PrivacyPolicyGeneratorDocs() {
   const jsonLd = {
@@ -61,6 +62,62 @@ export default function PrivacyPolicyGeneratorDocs() {
           <code className="text-sm text-foreground font-mono">pnpm add @tantainnovative/ndpr-toolkit</code>
         </pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="Privacy Policy Generator"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRPrivacyPolicy',
+            useCase: 'Zero-config privacy policy surface for common NDPA disclosures.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/policy',
+            exports: 'Policy.Provider, Policy.Generator',
+            useCase: 'Compound components for custom policy authoring and preview workflows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/hooks',
+            exports: 'usePrivacyPolicy, useDefaultPrivacyPolicy',
+            useCase: 'Headless policy state for custom editors, previews, and publishing flows.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'generatePolicyText, evaluatePolicyCompliance',
+            useCase: 'Server-side policy rendering and completeness checks before publication.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/layout-example.tsx',
+            useCase: 'Reference app wiring for organization details, DPO contact, locale, and policy consumers.',
+          },
+        ]}
+        checklist={[
+          'Confirm organization identity, DPO contact, lawful bases, data categories, recipients, retention, and transfer disclosures.',
+          'Version every published policy and keep historical copies available for audit and consent records.',
+          'Run policy output through legal/privacy review before making it the public source of truth.',
+          'Link the published policy to consent collection, DSR intake, cookies, and account settings.',
+          'Define an owner and review cadence for changes in vendors, processing purposes, or retention periods.',
+        ]}
+        backendNotes={[
+          'Use generatePolicyText server-side when publishing canonical policy content from stored variables.',
+          'Run evaluatePolicyCompliance before publication to surface missing disclosures or stale sections.',
+          'Store the rendered content, source variables, reviewer, approval date, and policy version together.',
+          'Keep public policy pages cacheable, but purge caches immediately when the approved version changes.',
+        ]}
+        testingNotes={[
+          'Generate a policy with all required variables filled and verify no template tokens remain.',
+          'Check missing DPO email, retention, transfer, and processor details fail the publication checklist.',
+          'Export markdown, HTML, and PDF where used, then compare them against the same approved version.',
+          'Verify public links, consent banner links, and account settings all resolve to the current policy.',
+        ]}
+        commonMistakes={[
+          'Publishing generated text without review by the privacy owner or legal reviewer.',
+          'Changing policy content without a version bump or historical copy.',
+          'Leaving placeholder variables in a public policy page.',
+          'Describing data uses in the policy that do not match live consent, ROPA, or vendor records.',
+        ]}
+      />
 
       <section id="components" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Components</h2>

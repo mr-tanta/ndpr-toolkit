@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function LawfulBasisTrackerLiteDocs() {
   return (
@@ -27,6 +28,52 @@ export default function LawfulBasisTrackerLiteDocs() {
           <code>{`import { LawfulBasisTrackerLite } from '@tantainnovative/ndpr-toolkit/lawful-basis/lite';`}</code>
         </pre>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="LawfulBasisTrackerLite"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/lawful-basis/lite',
+            exports: 'LawfulBasisTrackerLite',
+            useCase: 'Read-only lawful-basis summaries, gap alerts, and activity tables.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/lawful-basis',
+            exports: 'LawfulBasisTracker, validateProcessingActivity',
+            useCase: 'Full read/write manager and validation path for admins and privacy reviewers.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/adapters/drizzle-lawful-basis.ts',
+            useCase: 'Reference persistence adapter for records consumed by read-only views.',
+          },
+        ]}
+        checklist={[
+          'Feed lite views from approved lawful-basis records, not draft activities.',
+          'Use onActivityClick only for detail pages the current user can access.',
+          'Display pending approvals, sensitive-data flags, and cross-border indicators where relevant.',
+          'Route edits, approvals, and LIA workflows to the full LawfulBasisTracker.',
+          'Define whether the lite view is internal-only or safe for customer-facing transparency.',
+        ]}
+        backendNotes={[
+          'Use the recipes adapter as the durable source for lawful-basis activities.',
+          'Apply authorization before returning activities because lite UI does not enforce backend permissions.',
+          'Return approved status and review metadata so dashboards do not imply draft records are final.',
+          'Redact internal rationale before exposing activity summaries outside privacy/legal teams.',
+        ]}
+        testingNotes={[
+          'Compare lite counts and gap alerts with the full manager and backend records.',
+          'Check records with pending approval, sensitive data, cross-border transfers, and archived status.',
+          'Verify keyboard row activation and no-op behavior when onActivityClick is omitted.',
+          'Confirm users cannot fetch restricted rationale or approval details through linked routes.',
+        ]}
+        commonMistakes={[
+          'Using lite pages for approval workflows instead of the full manager.',
+          'Showing draft legal bases as approved production records.',
+          'Treating hidden edit controls as authorization.',
+          'Publishing internal legitimate-interest rationale without review or redaction.',
+        ]}
+      />
 
       <section id="quickstart" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quickstart</h2>

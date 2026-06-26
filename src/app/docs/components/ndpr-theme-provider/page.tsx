@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function NDPRThemeProviderDocs() {
   return (
@@ -24,6 +25,57 @@ export default function NDPRThemeProviderDocs() {
           set just the few tokens you care about (brand colour, radius) and leave the rest alone.
         </p>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="NDPRThemeProvider"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit',
+            exports: 'NDPRThemeProvider, NDPRTheme',
+            useCase: 'Typed theme object for scoped CSS-variable branding.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/styles',
+            exports: 'global stylesheet',
+            useCase: 'Base token definitions and component styles consumed by the provider.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/unstyled',
+            exports: 'unstyled entry points',
+            useCase: 'Alternative when your design system owns all component styling.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/layout-example.tsx',
+            useCase: 'Reference root layout for combining provider configuration and theme tokens.',
+          },
+        ]}
+        checklist={[
+          'Confirm brand colors meet contrast requirements in consent, DSR, breach, and dashboard states.',
+          'Use RGB triplets consistently and convert design-system hex values before passing them to the theme.',
+          'Test light mode, dark mode, high-contrast OS settings, and mobile breakpoints.',
+          'Keep legal/action states visually distinct: success, warning, destructive, disabled, and focus ring.',
+          'Decide whether the provider or raw CSS variables owns production theming, then document that ownership.',
+        ]}
+        backendNotes={[
+          'Theme values are client-rendered UI configuration; keep secrets and tenant-private data out of theme objects.',
+          'For multi-tenant apps, load approved theme tokens from tenant configuration and validate values before rendering.',
+          'Use a root layout or shell component so theme tokens wrap all toolkit surfaces consistently.',
+          'Pair theme releases with visual regression checks because legal forms and banners are user-facing controls.',
+        ]}
+        testingNotes={[
+          'Inspect consent banners, forms, tables, modals, and dashboard score colors under the final theme.',
+          'Run keyboard focus checks so custom ring colors remain visible on every interactive control.',
+          'Check dark-mode text, borders, warning states, and disabled states for readability.',
+          'Verify exported or printed policy views are not dependent on unreadable screen-only colors.',
+        ]}
+        commonMistakes={[
+          'Passing hex colors directly instead of RGB triplets.',
+          'Changing primary color without checking focus, warning, destructive, and success states.',
+          'Scoping the provider too low so modals or banners render outside the themed subtree.',
+          'Using the theme provider when raw CSS variables or unstyled components would be simpler for the host design system.',
+        ]}
+      />
 
       <section id="quickstart" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quickstart</h2>

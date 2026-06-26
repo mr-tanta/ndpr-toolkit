@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
+import { ProductionReadinessBlock } from '@/components/docs/ProductionReadinessBlock';
 
 export default function NDPRDashboardDocs() {
   return (
@@ -22,6 +23,57 @@ export default function NDPRDashboardDocs() {
           <li>A prioritised recommendations list, capped at <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">maxRecommendations</code> (default 5).</li>
         </ul>
       </section>
+
+      <ProductionReadinessBlock
+        moduleName="NDPRDashboard"
+        importRows={[
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit',
+            exports: 'NDPRDashboard, getComplianceScore',
+            useCase: 'Render a reviewed ComplianceReport or compute one from trusted compliance inputs.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/presets',
+            exports: 'NDPRComplianceDashboard',
+            useCase: 'Compute and render the dashboard from raw ComplianceInput in one component.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-toolkit/server',
+            exports: 'getComplianceScore',
+            useCase: 'Server-side score computation for DPO dashboards and scheduled reports.',
+          },
+          {
+            packagePath: '@tantainnovative/ndpr-recipes',
+            exports: 'src/nextjs/app-router/api/compliance/route.ts',
+            useCase: 'Reference route for computing compliance scores from production records.',
+          },
+        ]}
+        checklist={[
+          'Feed the dashboard from reviewed source-of-record data, not hand-entered status guesses.',
+          'Show the scoring timestamp, source period, and owner where the dashboard is used operationally.',
+          'Decide which recommendations create tickets, alerts, or management review actions.',
+          'Restrict internal dashboards when scores reveal security gaps, incident posture, or vendor risk.',
+          'Document how each compliance input maps to consent, DSR, DPIA, breach, policy, lawful basis, transfer, and ROPA evidence.',
+        ]}
+        backendNotes={[
+          'Use the recipes compliance route as the starting point for collecting module status from backend tables.',
+          'Run getComplianceScore server-side for scheduled snapshots and executive reporting.',
+          'Store historical scores so improvements and regressions can be explained over time.',
+          'Avoid letting client-side users override raw inputs unless the change is reviewed and persisted.',
+        ]}
+        testingNotes={[
+          'Test excellent, needs-work, and critical input sets and confirm score bands and recommendations.',
+          'Verify stale policy dates, late DSR timelines, missing breach records, and transfer gaps affect the expected modules.',
+          'Check dashboard access control for DPO, admin, auditor, and ordinary user roles.',
+          'Compare dashboard values with underlying module records before relying on reports externally.',
+        ]}
+        commonMistakes={[
+          'Treating the score as certification rather than an operational health indicator.',
+          'Feeding the dashboard from static sample data after production records exist.',
+          'Publishing internal remediation recommendations to public users.',
+          'Ignoring historical score snapshots, which makes regressions difficult to explain.',
+        ]}
+      />
 
       <section id="quickstart" className="mb-10">
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Quickstart</h2>
