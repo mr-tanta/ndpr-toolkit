@@ -79,6 +79,7 @@ const navigation: NavItem[] = [
       { title: 'Theming with NDPRThemeProvider', href: '/docs/guides/theming', isNew: true },
       { title: 'Headless / hooks-only API', href: '/docs/guides/headless', isNew: true },
       { title: 'Production DSR backend', href: '/docs/guides/production-dsr-backend', isNew: true },
+      { title: 'Legal Sources & Update Governance', href: '/docs/guides/legal-sources-governance', isNew: true },
       { title: 'NDPA Compliance Checklist', href: '/docs/guides/ndpr-compliance-checklist' },
       { title: 'Conducting a DPIA', href: '/docs/guides/conducting-dpia' },
       { title: 'Managing Consent', href: '/docs/guides/managing-consent' },

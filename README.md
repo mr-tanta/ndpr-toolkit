@@ -24,6 +24,8 @@ v5 ships **zero-config presets**, **pluggable storage adapters**, **compound com
 >
 > **Earlier highlights:** Structured-result validators are the only shape — `{ field, code, message }[]` with stable codes; uniform `onAdd` / `onUpdate` / `onArchive` callbacks; `NDPRDPIA.onResult(result)` (5.0). Arabic + French locales with RTL-correct CSS (4.1.0). React 17 dropped; `^18 || ^19` (4.0.0). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
 
+> **Legal source transparency:** See [Legal Sources & Update Governance](https://ndprtoolkit.com.ng/docs/guides/legal-sources-governance) for the official NDPA 2023, NDPC GAID 2025, and registration guidance references tracked by the toolkit, plus the release policy for regulatory changes.
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/v5.0.0/public/screenshots/hero.png" alt="NDPA Toolkit — NDPA Compliance Made Beautiful" width="800" />
 </p>

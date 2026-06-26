@@ -245,6 +245,19 @@ const componentGuides = [
 
 const implGuides = [
   {
+    title: 'Legal Sources & Governance',
+    description: 'Official NDPA and GAID references, module mapping, and the regulatory update policy.',
+    href: '/docs/guides/legal-sources-governance',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 3v4a2 2 0 0 0 2 2h4" />
+        <path d="M5 4a2 2 0 0 1 2-2h7l6 6v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z" />
+        <path d="M9 15h6" />
+        <path d="M9 18h6" />
+      </svg>
+    ),
+  },
+  {
     title: 'Storage Adapters',
     description: 'Plug in localStorage, IndexedDB, REST, or a fully custom storage backend.',
     href: '/docs/guides/adapters',

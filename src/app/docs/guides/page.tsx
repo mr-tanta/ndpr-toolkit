@@ -3,7 +3,13 @@
 import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
 
-const guides = [
+export const guides = [
+  {
+    title: 'Legal Sources & Update Governance',
+    description: 'How toolkit modules map to NDPA 2023, GAID 2025, and NDPC guidance, plus the release review process for regulatory changes.',
+    href: '/docs/guides/legal-sources-governance',
+    category: 'Trust',
+  },
   {
     title: 'Conducting a DPIA',
     description: 'Step-by-step guide to conducting a Data Protection Impact Assessment.',
@@ -110,6 +116,7 @@ const categoryColors: Record<string, string> = {
   Overview: '#10b981',
   Customization: '#06b6d4',
   'Getting Started': '#10b981',
+  Trust: '#475569',
 };
 
 export default function GuidesPage() {
