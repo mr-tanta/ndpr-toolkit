@@ -156,7 +156,7 @@ importers:
         version: 1.381.0
       posthog-node:
         specifier: ^5.36.3
-        version: 5.36.3
+        version: 5.38.2
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -1379,8 +1379,14 @@ packages:
   '@posthog/core@1.30.9':
     resolution: {integrity: sha512-Cn004VJ7ZWQRaVQG7efh+pMtRMIVZznktngXe5I3E8wClRdMwCZaSa6jo/X04Oc04z8PeMp4GEcWVkdEhmAEXw==}
 
+  '@posthog/core@1.35.3':
+    resolution: {integrity: sha512-EsGPbSLl39Jgo2KZ+kI9UAxFnh5nddaN5bNm2rXvUwF+vGmam9eN1EXeNbxhRU7ulEeIiGdm7XjoU7pzavkgIQ==}
+
   '@posthog/types@1.381.0':
     resolution: {integrity: sha512-AW68BovKFCNbPdq3VjOzfQeSQRYMvQVv+46LDywWFXO/oOTXFKwjY92FaJQSTXWgTNgDpqigCw3yUFDinK3hZA==}
+
+  '@posthog/types@1.390.2':
+    resolution: {integrity: sha512-WcfKz2GNn2vfDX8vXmJYbKxegPxVWHuDQ/pHdAn0HoZDXDFnEp/+x3qBQA+fEvtbPjjtjgAt2wIgJMlM7asx7g==}
 
   '@radix-ui/primitive@1.1.4':
     resolution: {integrity: sha512-7AdCK9PQyiljKoBDbN8OuctCbd/esdwZPQ8RtOE3SsyQtUpiPb+ND75q0jEhC1m1ecBI0MFNeLJvwIh9iKHRcQ==}
@@ -2189,6 +2195,9 @@ packages:
 
   '@types/node@25.9.2':
     resolution: {integrity: sha512-G05zqtJhcDLb8uslf5EjCxXg9G1KQxiV8OS0R26IC//Eoyitzqe8z37I7cqvnZlrlSfgocQRfSn/AHBZJJFyGw==}
+
+  '@types/node@25.9.4':
+    resolution: {integrity: sha512-dszCsrKb5U7ZsVZBWiHFklTloVl0mSEnWH/iZXfZUlI4rzCUnsvGmgqfuVRHL54ugE7/wRuxEIXRa2iMZ+BG6g==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -4777,8 +4786,8 @@ packages:
   posthog-js@1.381.0:
     resolution: {integrity: sha512-botkF0PUSd19qUTB7lJxKRQAc+9b9v3XcAZnqG/4LMDXJPvMxPeSCj6OVx8e9GCZN38kOg6yUcXMXDTcBqKdlw==}
 
-  posthog-node@5.36.3:
-    resolution: {integrity: sha512-cbAB8w3lJf+rQlxgBVkbQha/yJnt7NFe8l23iE5brLl4YLv10y+Xk6a0SzquZzk5tebznW0qpz3WEUJpf2OI9w==}
+  posthog-node@5.38.2:
+    resolution: {integrity: sha512-eiKpU+vX4hVuHbO/EosvPHsmh2AVIdoVmWss/uUOs1t4b0ViCblw2o8OIFqHxKj3mYRnSOBlX0Dw3wBvcCaYpA==}
     engines: {node: ^20.20.0 || >=22.22.0}
     peerDependencies:
       rxjs: ^7.0.0
@@ -6971,7 +6980,13 @@ snapshots:
     dependencies:
       '@posthog/types': 1.381.0
 
+  '@posthog/core@1.35.3':
+    dependencies:
+      '@posthog/types': 1.390.2
+
   '@posthog/types@1.381.0': {}
+
+  '@posthog/types@1.390.2': {}
 
   '@radix-ui/primitive@1.1.4': {}
 
@@ -7638,6 +7653,10 @@ snapshots:
   '@types/ms@2.1.0': {}
 
   '@types/node@25.9.2':
+    dependencies:
+      undici-types: 7.24.6
+
+  '@types/node@25.9.4':
     dependencies:
       undici-types: 7.24.6
 
@@ -8560,7 +8579,7 @@ snapshots:
 
   docx@9.7.1:
     dependencies:
-      '@types/node': 25.9.2
+      '@types/node': 25.9.4
       hash.js: 1.1.7
       jszip: 3.10.1
       nanoid: 5.1.11
@@ -10854,9 +10873,9 @@ snapshots:
       query-selector-shadow-dom: 1.0.1
       web-vitals: 5.3.0
 
-  posthog-node@5.36.3:
+  posthog-node@5.38.2:
     dependencies:
-      '@posthog/core': 1.30.9
+      '@posthog/core': 1.35.3
 
   preact@10.29.2: {}
 
