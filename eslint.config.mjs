@@ -12,6 +12,7 @@ const eslintConfig = [
       "**/out/**",
       "**/dist/**",
       "**/build/**",
+      "**/storybook-static/**",
       "**/coverage/**",
       "**/.turbo/**",
       "**/public/**",

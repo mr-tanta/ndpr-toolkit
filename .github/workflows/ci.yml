@@ -44,8 +44,14 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
+      - name: Type check Storybook
+        run: pnpm typecheck:storybook
+
       - name: Run tests with coverage
         run: pnpm test:coverage
+
+      - name: Build Storybook
+        run: pnpm build:storybook
 
       - name: Upload coverage report
         if: matrix.node-version == '22.x'

@@ -726,6 +726,20 @@ Each module ships a minimal Next.js scaffold you can fork in StackBlitz or CodeS
 
 Or open the [all-in-one example](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app) that demos every module in a single app.
 
+### Browse consent components in Storybook
+
+The consent module has local Storybook coverage for `ConsentBanner`, `ConsentManager`, and the compound `Consent.*` API, including default, pre-filled, dark-mode, and category-specific examples.
+
+```bash
+pnpm storybook
+```
+
+For a static Storybook bundle:
+
+```bash
+pnpm build:storybook
+```
+
 ### SSR-safe consent scaffolds
 
 Cookie-bridged consent that hydrates without a flash. Each scaffold reads the `ndpr-consent` cookie on the server, seeds the banner's `show` prop, then lets the browser `cookieAdapter` take over. See the [Server-Side Storage guide](https://ndprtoolkit.com.ng/docs/guides/server-side-storage) for the pattern.
@@ -959,6 +973,8 @@ import type {
 ## Contributing
 
 Contributions are welcome. Please read the [Contributing Guide](./CONTRIBUTING.md) before submitting a pull request.
+
+Use `pnpm storybook` when changing consent UI components. The stories live beside the package components under `packages/ndpr-toolkit/src/components/consent/` and are type-checked with `pnpm typecheck:storybook`.
 
 ---
 

@@ -25,6 +25,7 @@ const customJestConfig = {
   collectCoverageFrom: [
     'packages/ndpr-toolkit/src/**/*.{ts,tsx}',
     '!packages/ndpr-toolkit/src/**/*.d.ts',
+    '!packages/ndpr-toolkit/src/**/*.stories.{ts,tsx}',
     '!packages/ndpr-toolkit/src/**/__tests__/**',
     '!packages/ndpr-toolkit/src/**/index.{ts,tsx}',
   ],

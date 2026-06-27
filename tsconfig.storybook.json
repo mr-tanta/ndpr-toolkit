@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "moduleResolution": "bundler",
+    "types": ["node", "react", "react-dom"]
+  },
+  "include": [
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx",
+    "packages/ndpr-toolkit/src/**/*.ts",
+    "packages/ndpr-toolkit/src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "packages/ndpr-toolkit/src/__tests__/**",
+    "packages/ndpr-toolkit/coverage/**",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

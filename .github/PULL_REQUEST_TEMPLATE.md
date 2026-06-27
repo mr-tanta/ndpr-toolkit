@@ -35,6 +35,7 @@
 - [ ] `pnpm test` — full Jest suite passes
 - [ ] `pnpm verify:tarball` — every documented subpath resolves (ESM + CJS + TS)
 - [ ] `npx tsc --noEmit -p tsconfig.json` — docs site clean
+- [ ] `pnpm typecheck:storybook && pnpm build:storybook` — consent stories compile and render
 - [ ] Manually exercised the changed surface in `pnpm dev`
 
 ## Checklist
