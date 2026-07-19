@@ -44,8 +44,25 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
+      - name: Build library package boundary
+        # Recipes resolve @tantainnovative/ndpr-toolkit through root package
+        # exports. Build fresh declarations first so stale dist types cannot
+        # hide source-to-consumer incompatibilities.
+        run: pnpm build:lib
+
+      - name: Type check backend recipes
+        run: pnpm typecheck:recipes
+
+      - name: Verify generated create-ndpr scaffolds
+        # Render all Next App, Next Pages, and Express branches for Prisma,
+        # Drizzle, and no ORM; generate Prisma types; then run strict tsc.
+        run: pnpm verify:create-ndpr
+
       - name: Type check Storybook
         run: pnpm typecheck:storybook
+
+      # The library was built before recipe typechecking so all following
+      # artifact tests inspect the same fresh package boundary.
 
       - name: Run tests with coverage
         run: pnpm test:coverage
@@ -60,9 +77,6 @@ jobs:
           name: coverage-report
           path: coverage/
           retention-days: 14
-
-      - name: Build library
-        run: pnpm build:lib
 
       - name: Verify entry points
         # Entry list synced with publish.yml — both check 22 entries.

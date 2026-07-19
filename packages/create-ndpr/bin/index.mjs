@@ -1,638 +1,473 @@
 #!/usr/bin/env node
 
-import { createInterface } from 'readline';
+import { createInterface } from 'node:readline';
 import {
   existsSync,
   mkdirSync,
-  writeFileSync,
   readFileSync,
-  readdirSync,
-  statSync,
-} from 'fs';
-import { join, dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
+  realpathSync,
+  writeFileSync,
+} from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
 const CWD = process.cwd();
-
-// ---------------------------------------------------------------------------
-// ANSI colour helpers (no external deps)
-// ---------------------------------------------------------------------------
+// Keep this exact pin synchronized with the repository root package version.
+const TOOLKIT_VERSION = '6.0.0';
+const FORCE = process.argv.slice(2).includes('--force');
 
 const c = {
-  reset: '\x1b[0m',
-  bold: '\x1b[1m',
-  dim: '\x1b[2m',
-  green: '\x1b[32m',
-  cyan: '\x1b[36m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  magenta: '\x1b[35m',
-  red: '\x1b[31m',
-  white: '\x1b[37m',
+  reset: '\x1b[0m', bold: '\x1b[1m', dim: '\x1b[2m', green: '\x1b[32m',
+  cyan: '\x1b[36m', yellow: '\x1b[33m', red: '\x1b[31m',
 };
-
-const bold = (s) => `${c.bold}${s}${c.reset}`;
-const green = (s) => `${c.green}${s}${c.reset}`;
-const cyan = (s) => `${c.cyan}${s}${c.reset}`;
-const yellow = (s) => `${c.yellow}${s}${c.reset}`;
-const dim = (s) => `${c.dim}${s}${c.reset}`;
-const red = (s) => `${c.red}${s}${c.reset}`;
-
-// ---------------------------------------------------------------------------
-// Banner
-// ---------------------------------------------------------------------------
+const colour = (code, value) => `${code}${value}${c.reset}`;
+const bold = (value) => colour(c.bold, value);
+const green = (value) => colour(c.green, value);
+const cyan = (value) => colour(c.cyan, value);
+const yellow = (value) => colour(c.yellow, value);
+const dim = (value) => colour(c.dim, value);
+const red = (value) => colour(c.red, value);
 
 function printBanner() {
   console.log();
-  console.log(bold(cyan('  ███╗   ██╗██████╗ ██████╗ ██████╗ ')));
-  console.log(bold(cyan('  ████╗  ██║██╔══██╗██╔══██╗██╔══██╗')));
-  console.log(bold(cyan('  ██╔██╗ ██║██║  ██║██████╔╝██████╔╝')));
-  console.log(bold(cyan('  ██║╚██╗██║██║  ██║██╔═══╝ ██╔══██╗')));
-  console.log(bold(cyan('  ██║ ╚████║██████╔╝██║     ██║  ██║')));
-  console.log(bold(cyan('  ╚═╝  ╚═══╝╚═════╝ ╚═╝     ╚═╝  ╚═╝')));
-  console.log();
-  console.log(bold('  create-ndpr') + dim(' — NDPA compliance scaffolder'));
-  console.log(dim('  Powered by @tantainnovative/ndpr-toolkit'));
+  console.log(bold(cyan('  create-ndpr')) + dim(' — NDPA compliance scaffolder'));
+  console.log(dim(`  Generates @tantainnovative/ndpr-toolkit@${TOOLKIT_VERSION} integrations`));
+  if (FORCE) {
+    console.log(yellow('  --force enabled: existing generated files may be replaced.'));
+  }
   console.log();
 }
 
-// ---------------------------------------------------------------------------
-// Stack detection
-// ---------------------------------------------------------------------------
-
 function detectStack() {
-  const detected = {
-    framework: null,       // 'nextjs-app' | 'nextjs-pages' | 'express' | null
-    orm: null,             // 'prisma' | 'drizzle' | null
-    hasPackageJson: false,
-  };
-
-  // Check package.json exists
+  const detected = { framework: null, orm: null };
   const pkgPath = join(CWD, 'package.json');
+  let dependencies = {};
   if (existsSync(pkgPath)) {
-    detected.hasPackageJson = true;
     try {
       const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
-      const deps = {
-        ...((pkg.dependencies) || {}),
-        ...((pkg.devDependencies) || {}),
-      };
-
-      if (deps['express']) {
-        detected.framework = 'express';
-      }
-
-      if (deps['drizzle-orm'] || deps['drizzle-kit']) {
-        detected.orm = 'drizzle';
-      }
-      if (deps['@prisma/client'] || deps['prisma']) {
-        detected.orm = 'prisma';
-      }
+      dependencies = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
+      if (dependencies.express) detected.framework = 'express';
+      if (dependencies['drizzle-orm'] || dependencies['drizzle-kit']) detected.orm = 'drizzle';
+      if (dependencies['@prisma/client'] || dependencies.prisma) detected.orm = 'prisma';
     } catch {
-      // ignore parse errors
+      console.log(yellow('  package.json could not be parsed; continuing with manual choices.'));
     }
   }
 
-  // Next.js detection via config file
-  const nextConfigs = ['next.config.js', 'next.config.ts', 'next.config.mjs'];
-  const hasNextConfig = nextConfigs.some((f) => existsSync(join(CWD, f)));
-  if (hasNextConfig) {
-    // App Router vs Pages Router: check for app/ directory
-    const hasAppDir =
-      existsSync(join(CWD, 'app')) ||
-      existsSync(join(CWD, 'src', 'app'));
-    detected.framework = hasAppDir ? 'nextjs-app' : 'nextjs-pages';
+  const nextConfigs = ['next.config.js', 'next.config.cjs', 'next.config.mjs', 'next.config.ts'];
+  const hasNext = Boolean(dependencies.next) || nextConfigs.some((file) => existsSync(join(CWD, file)));
+  if (hasNext) {
+    const hasApp = existsSync(join(CWD, 'app')) || existsSync(join(CWD, 'src', 'app'));
+    detected.framework = hasApp ? 'nextjs-app' : 'nextjs-pages';
   }
 
-  // ORM detection via project structure (if not already found in deps)
   if (!detected.orm) {
-    if (existsSync(join(CWD, 'prisma', 'schema.prisma'))) {
-      detected.orm = 'prisma';
-    } else {
-      const drizzleConfigs = ['drizzle.config.ts', 'drizzle.config.js', 'drizzle.config.mjs'];
-      if (drizzleConfigs.some((f) => existsSync(join(CWD, f)))) {
-        detected.orm = 'drizzle';
-      }
+    if (existsSync(join(CWD, 'prisma', 'schema.prisma'))) detected.orm = 'prisma';
+    else if (['ts', 'js', 'mjs', 'cjs'].some((ext) => existsSync(join(CWD, `drizzle.config.${ext}`)))) {
+      detected.orm = 'drizzle';
     }
   }
-
   return detected;
 }
 
-// ---------------------------------------------------------------------------
-// Readline helpers
-// ---------------------------------------------------------------------------
-
 function createRL() {
-  return createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+  return createInterface({ input: process.stdin, output: process.stdout });
 }
-
 function ask(rl, question) {
-  return new Promise((resolve) => {
-    rl.question(question, (answer) => resolve(answer.trim()));
-  });
+  return new Promise((resolve) => rl.question(question, (answer) => resolve(answer.trim())));
 }
-
-async function askRequired(rl, question, label) {
-  let value = '';
-  while (!value) {
-    value = await ask(rl, question);
-    if (!value) {
-      console.log(red(`  ${label} is required.`));
-    }
+async function askValidated(rl, question, label, validate) {
+  while (true) {
+    const value = await ask(rl, question);
+    const problem = validate(value);
+    if (!problem) return value;
+    console.log(red(`  ${label}: ${problem}`));
   }
-  return value;
 }
-
 async function askChoice(rl, question, choices, defaultIndex = 0) {
-  const lines = choices.map((c, i) => `  ${i + 1}) ${c}`).join('\n');
-  const prompt = `${question}\n${lines}\n  Choice [${defaultIndex + 1}]: `;
+  const lines = choices.map((choice, index) => `  ${index + 1}) ${choice}`).join('\n');
   while (true) {
-    const raw = await ask(rl, prompt);
+    const raw = await ask(rl, `${question}\n${lines}\n  Choice [${defaultIndex + 1}]: `);
     if (!raw) return defaultIndex;
-    const n = parseInt(raw, 10);
-    if (!isNaN(n) && n >= 1 && n <= choices.length) return n - 1;
-    console.log(yellow(`  Please enter a number between 1 and ${choices.length}.`));
+    const selected = Number.parseInt(raw, 10);
+    if (Number.isInteger(selected) && selected >= 1 && selected <= choices.length) return selected - 1;
+    console.log(yellow(`  Enter a number from 1-${choices.length}.`));
   }
 }
-
-async function askCheckboxes(rl, question, options, defaults = []) {
-  const defaultStr = defaults.length ? ` [default: ${defaults.map((i) => i + 1).join(',')}]` : '';
-  const lines = options.map((o, i) => `  ${i + 1}) ${o}`).join('\n');
-  const prompt = `${question}${defaultStr}\n${lines}\n  Enter numbers separated by commas (or press Enter for default): `;
-
+async function askCheckboxes(rl, question, options, defaults) {
+  const lines = options.map((option, index) => `  ${index + 1}) ${option}`).join('\n');
+  const defaultText = defaults.map((index) => index + 1).join(',');
   while (true) {
-    const raw = await ask(rl, prompt);
+    const raw = await ask(
+      rl,
+      `${question} [default: ${defaultText}]\n${lines}\n  Enter comma-separated numbers: `,
+    );
     if (!raw) return defaults;
-    const parts = raw.split(',').map((s) => s.trim()).filter(Boolean);
-    const indices = [];
-    let valid = true;
-    for (const p of parts) {
-      const n = parseInt(p, 10);
-      if (isNaN(n) || n < 1 || n > options.length) {
-        console.log(yellow(`  Invalid option: ${p}. Enter numbers from 1-${options.length}.`));
-        valid = false;
-        break;
-      }
-      indices.push(n - 1);
+    const values = raw.split(',').map((value) => Number.parseInt(value.trim(), 10));
+    if (values.every((value) => Number.isInteger(value) && value >= 1 && value <= options.length)) {
+      return [...new Set(values.map((value) => value - 1))];
     }
-    if (valid) return [...new Set(indices)];
+    console.log(yellow(`  Enter only numbers from 1-${options.length}.`));
   }
 }
-
 async function askYesNo(rl, question, defaultYes = true) {
-  const hint = defaultYes ? '[Y/n]' : '[y/N]';
-  const answer = await ask(rl, `${question} ${hint}: `);
-  if (!answer) return defaultYes;
-  return answer.toLowerCase().startsWith('y');
+  const answer = await ask(rl, `${question} ${defaultYes ? '[Y/n]' : '[y/N]'}: `);
+  return answer ? answer.toLowerCase().startsWith('y') : defaultYes;
 }
 
-// ---------------------------------------------------------------------------
-// Template rendering
-// ---------------------------------------------------------------------------
+function javascriptStringLiteral(value) {
+  return JSON.stringify(String(value))
+    .replaceAll('\u2028', '\\u2028')
+    .replaceAll('\u2029', '\\u2029');
+}
+function javascriptTemplateLiteralContent(value) {
+  return JSON.stringify(String(value))
+    .slice(1, -1)
+    .replaceAll('`', '\\`')
+    .replaceAll('${', '\\${')
+    .replaceAll('\u2028', '\\u2028')
+    .replaceAll('\u2029', '\\u2029');
+}
+function commentTemplateValue(value) {
+  return String(value)
+    .replace(/[\u0000-\u001f\u007f\u2028\u2029]+/g, ' ')
+    .replaceAll('*/', '* /');
+}
+function tenantSlug(value) {
+  const slug = String(value).toLowerCase().normalize('NFKD')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+  return slug || 'ndpr-tenant';
+}
+function createTemplateVars({ orgName, dpoEmail, framework, orm }) {
+  return {
+    ORG_NAME_COMMENT: commentTemplateValue(orgName),
+    ORG_NAME_LITERAL: javascriptStringLiteral(orgName),
+    DPO_EMAIL_LITERAL: javascriptStringLiteral(dpoEmail),
+    ORG_NAME_TEMPLATE: javascriptTemplateLiteralContent(orgName),
+    DPO_EMAIL_TEMPLATE: javascriptTemplateLiteralContent(dpoEmail),
+    TENANT_ID: tenantSlug(orgName),
+    TOOLKIT_VERSION,
+    FRAMEWORK: framework,
+    ORM: orm,
+  };
+}
 
-/**
- * Render a template with `{{KEY}}` variable substitution and minimal
- * conditional-block support.
- *
- * Conditional syntax:
- *
- *   // {{#if ORM=prisma}}
- *   import { PrismaClient } from '@prisma/client';
- *   // {{/if}}
- *
- *   // {{#if ORM=drizzle}}
- *   import { db } from '@/drizzle';
- *   // {{/if}}
- *
- *   // {{#if ORM=none}}
- *   // TODO: wire to your storage of choice
- *   const store = new Map();
- *   // {{/if}}
- *
- * The block is kept when `vars[KEY] === value` (e.g. `vars.ORM === 'prisma'`),
- * otherwise the block and its markers are stripped. Marker comments (with
- * optional leading `//` and any trailing whitespace) are always removed.
- */
 function renderTemplate(templateName, vars) {
   const templatePath = join(TEMPLATES_DIR, templateName);
-  if (!existsSync(templatePath)) {
-    throw new Error(`Template not found: ${templateName}`);
-  }
+  if (!existsSync(templatePath)) throw new Error(`Template not found: ${templateName}`);
   let content = readFileSync(templatePath, 'utf8');
-
-  // Conditional blocks first (so variable substitution doesn't munge the
-  // marker syntax). Pattern allows an optional `// ` prefix on the markers
-  // so templates can comment them out and remain valid TypeScript.
   const ifPattern =
     /(?:[ \t]*\/\/[ \t]*)?\{\{#if[ \t]+([A-Z_]+)=([a-zA-Z0-9_-]+)\}\}\s*([\s\S]*?)(?:[ \t]*\/\/[ \t]*)?\{\{\/if\}\}[ \t]*\n?/g;
-  content = content.replace(ifPattern, (_match, key, expected, body) => {
-    if (vars[key] === expected) {
-      // Keep the body; strip a trailing newline if it leaves a blank line
-      return body.endsWith('\n') ? body : body + '\n';
-    }
-    return '';
-  });
-
-  for (const [key, value] of Object.entries(vars)) {
-    content = content.replaceAll(`{{${key}}}`, value);
+  content = content.replace(ifPattern, (_match, key, expected, body) =>
+    vars[key] === expected ? (body.endsWith('\n') ? body : `${body}\n`) : '',
+  );
+  const unresolvedDirective = content.match(/\{\{(?:#if|\/if)[^}]*\}\}/);
+  if (unresolvedDirective) {
+    throw new Error(`Unresolved template directive ${unresolvedDirective[0]} in ${templateName}`);
   }
+  content = content.replace(/\{\{([A-Z_]+)\}\}/g, (placeholder, key) => {
+    if (!Object.hasOwn(vars, key)) {
+      throw new Error(`Unresolved template variable ${placeholder} in ${templateName}`);
+    }
+    return String(vars[key]);
+  });
   return content;
 }
 
-function writeFile(filePath, content) {
-  const dir = dirname(filePath);
-  if (!existsSync(dir)) {
-    mkdirSync(dir, { recursive: true });
-  }
-  writeFileSync(filePath, content, 'utf8');
-}
-
-// ---------------------------------------------------------------------------
-// File generation
-// ---------------------------------------------------------------------------
-
 const GENERATED_FILES = [];
-
-function generate(destRelative, templateName, vars = {}) {
-  const destPath = join(CWD, destRelative);
-  const content = renderTemplate(templateName, vars);
-  writeFile(destPath, content);
-  GENERATED_FILES.push(destRelative);
-  console.log(`  ${green('+')} ${destRelative}`);
+const SKIPPED_FILES = [];
+function skip(relativePath, reason) {
+  SKIPPED_FILES.push(relativePath);
+  console.log(`  ${dim('-')} ${dim(relativePath)} ${dim(`(skipped — ${reason})`)}`);
+}
+function writeGenerated(relativePath, content, { neverOverwrite = false } = {}) {
+  const destination = join(CWD, relativePath);
+  if (existsSync(destination) && (neverOverwrite || !FORCE)) {
+    skip(relativePath, neverOverwrite ? 'existing file must be merged manually' : 'already exists; pass --force to replace');
+    return false;
+  }
+  const directory = dirname(destination);
+  if (!existsSync(directory)) mkdirSync(directory, { recursive: true });
+  try {
+    writeFileSync(destination, content, { encoding: 'utf8', flag: FORCE && !neverOverwrite ? 'w' : 'wx' });
+  } catch (error) {
+    if (error && error.code === 'EEXIST') {
+      skip(relativePath, 'created concurrently; left unchanged');
+      return false;
+    }
+    throw error;
+  }
+  GENERATED_FILES.push(relativePath);
+  console.log(`  ${green('+')} ${relativePath}`);
+  return true;
+}
+function generate(relativePath, templateName, vars, options) {
+  return writeGenerated(relativePath, renderTemplate(templateName, vars), options);
 }
 
-function generateRaw(destRelative, content) {
-  const destPath = join(CWD, destRelative);
-  writeFile(destPath, content);
-  GENERATED_FILES.push(destRelative);
-  console.log(`  ${green('+')} ${destRelative}`);
+const PAGES_METHODS = {
+  consent: ['GET', 'POST', 'DELETE'],
+  dsr: ['GET', 'POST'],
+  breach: ['GET', 'POST'],
+  dpia: ['GET', 'POST', 'PUT', 'DELETE'],
+  'lawful-basis': ['GET', 'POST', 'PUT', 'DELETE'],
+  'cross-border': ['GET', 'POST', 'PUT', 'DELETE'],
+};
+function renderPagesRoute(templateName, vars, methods) {
+  let content = renderTemplate(templateName, vars)
+    .replace('Next.js App Router', 'Next.js Pages Router')
+    .replace(
+      "import { NextRequest, NextResponse } from 'next/server';",
+      "import { NextRequest, NextResponse } from 'next/server';\nimport type { NextApiRequest, NextApiResponse } from 'next';",
+    );
+  const map = methods.map((method) => `${method}`).join(', ');
+  content += `\n\ntype AppRouteHandler = (request: NextRequest) => Promise<Response>;\nconst pageHandlers: Record<string, AppRouteHandler> = { ${map} };\n\nexport default async function handler(req: NextApiRequest, res: NextApiResponse) {\n  const method = (req.method ?? '').toUpperCase();\n  const routeHandler = pageHandlers[method];\n  if (!routeHandler) {\n    res.setHeader('Allow', Object.keys(pageHandlers));\n    return res.status(405).json({ error: 'Method not allowed' });\n  }\n\n  const headers = new Headers();\n  for (const [name, value] of Object.entries(req.headers)) {\n    if (Array.isArray(value)) value.forEach((item) => headers.append(name, item));\n    else if (value !== undefined) headers.set(name, value);\n  }\n  headers.delete('content-length');\n  const init: Omit<RequestInit, 'signal'> = { method, headers };\n  if (method !== 'GET' && method !== 'HEAD') {\n    init.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body ?? {});\n    if (!headers.has('content-type')) headers.set('content-type', 'application/json');\n  }\n\n  const request = new NextRequest(new URL(req.url ?? '/', 'http://localhost'), init);\n  const response = await routeHandler(request);\n  response.headers.forEach((value, name) => res.setHeader(name, value));\n  const responseBody = await response.text();\n  if (!responseBody) return res.status(response.status).end();\n  return res.status(response.status).send(responseBody);\n}\n`;
+  return content;
 }
 
-function skip(destRelative, reason) {
-  console.log(`  ${dim('-')} ${dim(destRelative)} ${dim(`(skipped — ${reason})`)}`);
+function renderExpressIndex(selectedModules) {
+  const routeNames = {
+    consent: 'consentRouter', dsr: 'dsrRouter', breach: 'breachRouter',
+    dpia: 'dpiaRouter', 'lawful-basis': 'lawfulBasisRouter',
+    'cross-border': 'crossBorderRouter',
+  };
+  const enabled = selectedModules.filter((module) => routeNames[module]);
+  const imports = enabled.map((module) =>
+    `import { ${routeNames[module]} } from './routes/${module}';`,
+  ).join('\n');
+  const mounts = enabled.map((module) =>
+    `  router.use('/${module}', ${routeNames[module]});`,
+  ).join('\n');
+  return `import { Router } from 'express';\n${imports}\n\nexport function createNDPRRouter(): Router {\n  const router = Router();\n${mounts}\n  return router;\n}\n`;
 }
 
-// ---------------------------------------------------------------------------
-// Main
-// ---------------------------------------------------------------------------
+const NEXT_TEMPLATES = {
+  consent: 'nextjs-consent-route.ts', dsr: 'nextjs-dsr-route.ts',
+  breach: 'nextjs-breach-route.ts', dpia: 'nextjs-dpia-route.ts',
+  'lawful-basis': 'nextjs-lawful-basis-route.ts',
+  'cross-border': 'nextjs-cross-border-route.ts',
+};
+const EXPRESS_TEMPLATES = {
+  consent: 'express-consent-route.ts', dsr: 'express-dsr-route.ts',
+  breach: 'express-breach-route.ts', dpia: 'express-dpia-route.ts',
+  'lawful-basis': 'express-lawful-basis-route.ts',
+  'cross-border': 'express-cross-border-route.ts',
+};
+
+/**
+ * Render the exact integration files produced by the interactive CLI without
+ * reading prompts or writing to disk. The verifier consumes this same API.
+ */
+function renderIntegrationFiles({
+  framework,
+  orm,
+  selectedModules,
+  vars,
+  useSrcDirectory = false,
+}) {
+  if (!['nextjs-app', 'nextjs-pages', 'express', 'none'].includes(framework)) {
+    throw new Error(`Unsupported framework: ${framework}`);
+  }
+  if (!['prisma', 'drizzle', 'none'].includes(orm)) {
+    throw new Error(`Unsupported ORM: ${orm}`);
+  }
+
+  const templateVars = { ...vars, FRAMEWORK: framework, ORM: orm };
+  const modules = [...new Set(selectedModules)];
+  const files = [];
+  const addTemplate = (relativePath, templateName, routeVars = templateVars, options) => {
+    files.push({
+      relativePath,
+      content: renderTemplate(templateName, routeVars),
+      ...(options ? { options } : {}),
+    });
+  };
+
+  if (orm === 'prisma') {
+    addTemplate(
+      'prisma/schema.prisma',
+      'prisma-schema.prisma',
+      templateVars,
+      { neverOverwrite: true },
+    );
+  } else if (orm === 'drizzle') {
+    addTemplate('src/drizzle/ndpr-schema.ts', 'drizzle-schema.ts');
+    addTemplate('src/drizzle/index.ts', 'drizzle-client.ts');
+  }
+
+  if (framework === 'nextjs-app' || framework === 'nextjs-pages') {
+    const sourceRoot = useSrcDirectory ? 'src/' : '';
+    const appDir = `${sourceRoot}app`;
+    const pagesDir = `${sourceRoot}pages`;
+    const contextPath = `${sourceRoot}ndpr/request-context.ts`;
+    const drizzleBase = framework === 'nextjs-app'
+      ? (useSrcDirectory ? '../../../drizzle' : '../../../src/drizzle')
+      : (useSrcDirectory ? '../../drizzle' : '../../src/drizzle');
+    addTemplate(contextPath, 'nextjs-request-context.ts');
+
+    if (modules.includes('consent')) {
+      addTemplate(
+        framework === 'nextjs-app'
+          ? `${appDir}/ndpr-layout.tsx`
+          : `${pagesDir}/ndpr-provider.tsx`,
+        'nextjs-layout.tsx',
+      );
+    }
+
+    for (const [moduleName, template] of Object.entries(NEXT_TEMPLATES)) {
+      if (!modules.includes(moduleName)) continue;
+      const routeVars = {
+        ...templateVars,
+        NDPR_CONTEXT_IMPORT: framework === 'nextjs-app'
+          ? '../../../ndpr/request-context'
+          : '../../ndpr/request-context',
+        NDPR_DB_IMPORT: drizzleBase,
+        NDPR_SCHEMA_IMPORT: `${drizzleBase}/ndpr-schema`,
+      };
+      if (framework === 'nextjs-app') {
+        addTemplate(`${appDir}/api/${moduleName}/route.ts`, template, routeVars);
+      } else {
+        files.push({
+          relativePath: `${pagesDir}/api/${moduleName}.ts`,
+          content: renderPagesRoute(template, routeVars, PAGES_METHODS[moduleName]),
+        });
+      }
+    }
+  } else if (framework === 'express') {
+    addTemplate('src/ndpr/request-context.ts', 'express-request-context.ts');
+    for (const [moduleName, template] of Object.entries(EXPRESS_TEMPLATES)) {
+      if (!modules.includes(moduleName)) continue;
+      addTemplate(`src/ndpr/routes/${moduleName}.ts`, template, {
+        ...templateVars,
+        NDPR_CONTEXT_IMPORT: '../request-context',
+        NDPR_DB_IMPORT: '../../drizzle',
+        NDPR_SCHEMA_IMPORT: '../../drizzle/ndpr-schema',
+      });
+    }
+    files.push({
+      relativePath: 'src/ndpr/index.ts',
+      content: renderExpressIndex(modules),
+    });
+  }
+
+  return files;
+}
 
 async function main() {
   printBanner();
-
-  // --- Detect stack ---
   const detected = detectStack();
-
   console.log(bold('  Detected project setup:'));
-  if (detected.framework) {
-    const label = {
-      'nextjs-app': 'Next.js (App Router)',
-      'nextjs-pages': 'Next.js (Pages Router)',
-      'express': 'Express',
-    }[detected.framework];
-    console.log(`  ${cyan('Framework:')} ${label}`);
-  } else {
-    console.log(`  ${cyan('Framework:')} ${yellow('Not detected')}`);
-  }
-
-  if (detected.orm) {
-    console.log(`  ${cyan('ORM:')}       ${detected.orm === 'prisma' ? 'Prisma' : 'Drizzle'}`);
-  } else {
-    console.log(`  ${cyan('ORM:')}       ${dim('Not detected')}`);
-  }
+  console.log(`  ${cyan('Framework:')} ${detected.framework ?? dim('not detected')}`);
+  console.log(`  ${cyan('ORM:')}       ${detected.orm ?? dim('not detected')}`);
   console.log();
 
   const rl = createRL();
-
   try {
-    // --- Organisation details ---
-    console.log(bold('  Organisation details'));
-    console.log(dim('  These are embedded in the generated files.'));
-    console.log();
-
-    const orgName = await askRequired(
+    const orgName = await askValidated(
       rl,
-      `  ${cyan('Organisation name')} (e.g. Acme Corp Nigeria Ltd): `,
+      `  ${cyan('Organisation name')}: `,
       'Organisation name',
+      (value) => !value ? 'is required' : value.length > 120 ? 'must be at most 120 characters' : /[\u0000-\u001f]/.test(value) ? 'contains control characters' : null,
     );
-
-    const dpoEmail = await askRequired(
+    const dpoEmail = await askValidated(
       rl,
-      `  ${cyan('DPO email address')} (e.g. dpo@acmecorp.ng): `,
+      `  ${cyan('DPO email address')}: `,
       'DPO email',
+      (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? null : 'must be a valid email address',
     );
-    console.log();
 
-    // --- Framework confirmation/override ---
-    const frameworkLabels = [
-      'Next.js — App Router',
-      'Next.js — Pages Router',
-      'Express',
-      'None (generate shared files only)',
-    ];
+    const frameworkLabels = ['Next.js — App Router', 'Next.js — Pages Router', 'Express', 'None'];
     const frameworkValues = ['nextjs-app', 'nextjs-pages', 'express', 'none'];
+    const frameworkDefault = Math.max(0, frameworkValues.indexOf(detected.framework ?? 'none'));
+    const frameworkIndex = await askChoice(rl, `  ${cyan('Framework')}`, frameworkLabels, frameworkDefault);
+    const framework = frameworkValues[frameworkIndex];
 
-    let detectedFrameworkIdx = frameworkValues.indexOf(detected.framework ?? 'none');
-    if (detectedFrameworkIdx === -1) detectedFrameworkIdx = 3;
-
-    console.log(bold('  Framework'));
-    const frameworkIdx = await askChoice(
-      rl,
-      `  ${cyan('Which framework are you using?')}`,
-      frameworkLabels,
-      detectedFrameworkIdx,
-    );
-    const framework = frameworkValues[frameworkIdx];
-    console.log();
-
-    // --- Modules ---
-    const moduleOptions = [
-      'consent      — NDPA §25-26 consent management',
-      'dsr          — Data Subject Rights requests (§34-38)',
-      'breach       — Breach notification workflow (§40)',
-      'policy       — Privacy policy generation',
-      'dpia         — Data Protection Impact Assessment',
-      'lawful-basis — Lawful basis register',
-      'cross-border — Cross-border transfer management',
-      'ropa         — Record of Processing Activities',
+    const moduleLabels = [
+      'consent — NDPA §25-26', 'dsr — data-subject rights', 'breach — notification',
+      'policy — privacy policy', 'dpia — impact assessment',
+      'lawful-basis — processing register', 'cross-border — transfer register', 'ropa — processing activities',
     ];
     const moduleValues = ['consent', 'dsr', 'breach', 'policy', 'dpia', 'lawful-basis', 'cross-border', 'ropa'];
+    const moduleIndices = await askCheckboxes(rl, `  ${cyan('Modules')}`, moduleLabels, [0, 1, 2]);
+    const selectedModules = moduleIndices.map((index) => moduleValues[index]);
 
-    console.log(bold('  Compliance modules'));
-    const selectedModuleIndices = await askCheckboxes(
-      rl,
-      `  ${cyan('Which modules do you want to include?')}`,
-      moduleOptions,
-      [0, 1, 2],  // consent, dsr, breach by default
-    );
-    const selectedModules = selectedModuleIndices.map((i) => moduleValues[i]);
-    console.log();
-
-    // --- ORM ---
-    const ormLabels = ['Prisma', 'Drizzle', 'None (skip database schema)'];
+    const ormLabels = ['Prisma', 'Drizzle', 'None (development stores only)'];
     const ormValues = ['prisma', 'drizzle', 'none'];
+    const ormDefault = Math.max(0, ormValues.indexOf(detected.orm ?? 'none'));
+    const ormIndex = await askChoice(rl, `  ${cyan('ORM')}`, ormLabels, ormDefault);
+    const orm = ormValues[ormIndex];
 
-    let detectedOrmIdx = ormValues.indexOf(detected.orm ?? 'none');
-    if (detectedOrmIdx === -1) detectedOrmIdx = 0;
-
-    console.log(bold('  Database / ORM'));
-    const ormIdx = await askChoice(
-      rl,
-      `  ${cyan('Which ORM are you using?')}`,
-      ormLabels,
-      detectedOrmIdx,
-    );
-    const orm = ormValues[ormIdx];
-    console.log();
-
-    // --- Confirm ---
-    console.log(bold('  Summary'));
-    console.log(`  ${cyan('Organisation:')} ${orgName}`);
-    console.log(`  ${cyan('DPO email:')}    ${dpoEmail}`);
-    console.log(`  ${cyan('Framework:')}    ${frameworkLabels[frameworkIdx]}`);
-    console.log(`  ${cyan('ORM:')}          ${ormLabels[ormIdx]}`);
-    console.log(`  ${cyan('Modules:')}      ${selectedModules.join(', ')}`);
-    console.log();
-
-    const confirmed = await askYesNo(rl, `  ${cyan('Generate files?')}`, true);
-    if (!confirmed) {
+    console.log(`\n  ${cyan('Organisation:')} ${orgName}`);
+    console.log(`  ${cyan('Framework:')}    ${frameworkLabels[frameworkIndex]}`);
+    console.log(`  ${cyan('ORM:')}          ${ormLabels[ormIndex]}`);
+    console.log(`  ${cyan('Modules:')}      ${selectedModules.join(', ') || 'none'}\n`);
+    if (!await askYesNo(rl, `  ${cyan('Generate files?')}`)) {
       console.log(yellow('\n  Aborted. No files were written.\n'));
-      process.exit(0);
+      return;
     }
-    console.log();
 
-    // -------------------------------------------------------------------------
-    // File generation
-    // -------------------------------------------------------------------------
-
-    console.log(bold('  Generating files...'));
-    console.log();
-
-    const vars = {
-      ORG_NAME: orgName,
-      DPO_EMAIL: dpoEmail,
-      // Drives `{{#if ORM=prisma}}` / `{{#if ORM=drizzle}}` / `{{#if ORM=none}}`
-      // conditional blocks in the route templates.
-      ORM: orm,
-      FRAMEWORK: framework,
-    };
-
-    // .env.example
+    const vars = createTemplateVars({ orgName, dpoEmail, framework, orm });
+    console.log(`\n${bold('  Generating files...')}\n`);
     generate('.env.example', 'env-example', vars);
 
-    // ORM schema
-    if (orm === 'prisma') {
-      if (existsSync(join(CWD, 'prisma', 'schema.prisma'))) {
-        skip('prisma/schema.prisma', 'already exists — merge the NDPR models manually');
-        console.log(dim(`    See: ${TEMPLATES_DIR}/prisma-schema.prisma`));
-      } else {
-        generate('prisma/schema.prisma', 'prisma-schema.prisma', vars);
-      }
-    } else if (orm === 'drizzle') {
-      if (existsSync(join(CWD, 'src', 'drizzle', 'ndpr-schema.ts'))) {
-        skip('src/drizzle/ndpr-schema.ts', 'already exists');
-      } else {
-        generate('src/drizzle/ndpr-schema.ts', 'drizzle-schema.ts', vars);
-      }
+    const useSrcDirectory = framework === 'nextjs-app'
+      ? existsSync(join(CWD, 'src', 'app'))
+      : framework === 'nextjs-pages'
+        ? existsSync(join(CWD, 'src', 'pages'))
+        : false;
+    const integrationFiles = renderIntegrationFiles({
+      framework,
+      orm,
+      selectedModules,
+      vars,
+      useSrcDirectory,
+    });
+    for (const file of integrationFiles) {
+      writeGenerated(file.relativePath, file.content, file.options);
     }
 
-    // Routes that already support all 3 ORMs via per-{{#if ORM=...}} blocks.
-    // Add a template to this set as it gets ORM-aware. Other route templates
-    // still hard-code Prisma, so we skip them when orm === 'none' to avoid
-    // emitting code with a broken `@prisma/client` import.
-    //
-    // All Next.js and Express route templates went ORM-aware in 3.6.2.
-    // The express-setup.ts wrapper still assumes Prisma — see the
-    // separate skip handling below.
-    const ORM_AWARE_TEMPLATES = new Set([
-      'nextjs-consent-route.ts',
-      'nextjs-dsr-route.ts',
-      'nextjs-breach-route.ts',
-      'nextjs-dpia-route.ts',
-      'nextjs-lawful-basis-route.ts',
-      'nextjs-cross-border-route.ts',
-      'express-consent-route.ts',
-      'express-dpia-route.ts',
-      'express-lawful-basis-route.ts',
-      'express-cross-border-route.ts',
-    ]);
-    const generateRoute = (dest, templateName) => {
-      if (orm === 'none' && !ORM_AWARE_TEMPLATES.has(templateName)) {
-        skip(
-          dest,
-          `template hardcodes Prisma; skipping because you chose ORM=none. ` +
-            `Re-run create-ndpr with ORM=prisma|drizzle or copy the template from ` +
-            `https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/create-ndpr/templates/${templateName} ` +
-            `and adapt it to your storage layer.`,
-        );
-        return;
-      }
-      generate(dest, templateName, vars);
-    };
+    generate('ndpr.audit.json', 'ndpr-audit.json', vars);
+    generate('.github/workflows/ndpr-audit.yml', 'github-ndpr-audit.yml', vars);
 
-    // Framework-specific files
-    if (framework === 'nextjs-app') {
-      const appDir = existsSync(join(CWD, 'src', 'app')) ? 'src/app' : 'app';
-
-      // Layout wrapper
-      generate(`${appDir}/ndpr-layout.tsx`, 'nextjs-layout.tsx', vars);
-
-      // API routes per selected module
-      if (selectedModules.includes('consent')) {
-        generateRoute(`${appDir}/api/consent/route.ts`, 'nextjs-consent-route.ts');
-      }
-      if (selectedModules.includes('dsr')) {
-        generateRoute(`${appDir}/api/dsr/route.ts`, 'nextjs-dsr-route.ts');
-      }
-      if (selectedModules.includes('breach')) {
-        generateRoute(`${appDir}/api/breach/route.ts`, 'nextjs-breach-route.ts');
-      }
-      if (selectedModules.includes('dpia')) {
-        generateRoute(`${appDir}/api/dpia/route.ts`, 'nextjs-dpia-route.ts');
-      }
-      if (selectedModules.includes('lawful-basis')) {
-        generateRoute(`${appDir}/api/lawful-basis/route.ts`, 'nextjs-lawful-basis-route.ts');
-      }
-      if (selectedModules.includes('cross-border')) {
-        generateRoute(`${appDir}/api/cross-border/route.ts`, 'nextjs-cross-border-route.ts');
-      }
-    } else if (framework === 'nextjs-pages') {
-      console.log(yellow('  Note: Pages Router API routes generated under pages/api/'));
-      if (selectedModules.includes('consent')) {
-        generateRoute('pages/api/consent.ts', 'nextjs-consent-route.ts');
-      }
-      if (selectedModules.includes('dsr')) {
-        generateRoute('pages/api/dsr.ts', 'nextjs-dsr-route.ts');
-      }
-      if (selectedModules.includes('breach')) {
-        generateRoute('pages/api/breach.ts', 'nextjs-breach-route.ts');
-      }
-      if (selectedModules.includes('dpia')) {
-        generateRoute('pages/api/dpia.ts', 'nextjs-dpia-route.ts');
-      }
-      if (selectedModules.includes('lawful-basis')) {
-        generateRoute('pages/api/lawful-basis.ts', 'nextjs-lawful-basis-route.ts');
-      }
-      if (selectedModules.includes('cross-border')) {
-        generateRoute('pages/api/cross-border.ts', 'nextjs-cross-border-route.ts');
-      }
-    } else if (framework === 'express') {
-      // express-setup.ts wires up a PrismaClient directly and is not yet
-      // ORM-aware, so it only produces working code for Prisma. Skip it (with
-      // a pointer) for Drizzle and None rather than emit a broken import.
-      if (orm === 'prisma') {
-        generate('src/ndpr/index.ts', 'express-setup.ts', vars);
-      } else {
-        skip(
-          'src/ndpr/index.ts',
-          `Express setup template currently assumes Prisma; skipping for ORM=${orm}. ` +
-            'See https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/create-ndpr/templates/express-setup.ts',
-        );
-      }
-      if (selectedModules.includes('consent')) {
-        generateRoute('src/ndpr/routes/consent.ts', 'express-consent-route.ts');
-      }
-      if (selectedModules.includes('dpia')) {
-        generateRoute('src/ndpr/routes/dpia.ts', 'express-dpia-route.ts');
-      }
-      if (selectedModules.includes('lawful-basis')) {
-        generateRoute('src/ndpr/routes/lawful-basis.ts', 'express-lawful-basis-route.ts');
-      }
-      if (selectedModules.includes('cross-border')) {
-        generateRoute('src/ndpr/routes/cross-border.ts', 'express-cross-border-route.ts');
-      }
-    }
-
-    // -------------------------------------------------------------------------
-    // Compliance-as-code: ndpr audit config + CI gate (GAID 2025)
-    // -------------------------------------------------------------------------
-    // Always scaffolded, regardless of framework/ORM — the audit runs against a
-    // declarative config, not your database, so it works for every project.
-    if (existsSync(join(CWD, 'ndpr.audit.json'))) {
-      skip('ndpr.audit.json', 'already exists — keep your edits');
-    } else {
-      generateRaw('ndpr.audit.json', readFileSync(join(TEMPLATES_DIR, 'ndpr-audit.json'), 'utf8'));
-    }
-    if (existsSync(join(CWD, '.github', 'workflows', 'ndpr-audit.yml'))) {
-      skip('.github/workflows/ndpr-audit.yml', 'already exists');
-    } else {
-      generate('.github/workflows/ndpr-audit.yml', 'github-ndpr-audit.yml', vars);
-    }
-
-    // -------------------------------------------------------------------------
-    // Summary
-    // -------------------------------------------------------------------------
-
-    console.log();
-    console.log(bold(green('  Done! Files generated:')));
-    for (const f of GENERATED_FILES) {
-      console.log(`  ${green('✓')} ${f}`);
-    }
-    console.log();
-
-    // Next steps
+    console.log(`\n${bold(green('  Done.'))} Generated ${GENERATED_FILES.length} file(s); skipped ${SKIPPED_FILES.length}.\n`);
     console.log(bold('  Next steps:'));
-    console.log();
-
-    if (orm === 'prisma') {
-      console.log(`  ${cyan('1.')} Set your database URL in .env:`);
-      console.log(dim('     DATABASE_URL="postgresql://user:password@localhost:5432/mydb_dev"'));
-      console.log();
-      console.log(`  ${cyan('2.')} Install the Prisma client and run migrations:`);
-      console.log(dim('     pnpm add @prisma/client'));
-      console.log(dim('     pnpm add -D prisma'));
-      console.log(dim('     pnpm prisma migrate dev --name ndpr-init'));
-      console.log();
-    } else if (orm === 'drizzle') {
-      console.log(`  ${cyan('1.')} Set your database URL in .env:`);
-      console.log(dim('     DATABASE_URL="postgresql://user:password@localhost:5432/mydb_dev"'));
-      console.log();
-      console.log(`  ${cyan('2.')} Install Drizzle and push the schema:`);
-      console.log(dim('     pnpm add drizzle-orm @paralleldrive/cuid2'));
-      console.log(dim('     pnpm add -D drizzle-kit'));
-      console.log(dim('     pnpm drizzle-kit push'));
-      console.log();
+    console.log(dim(`  1. Install the exact toolkit version: pnpm add @tantainnovative/ndpr-toolkit@${TOOLKIT_VERSION}`));
+    console.log(dim('  2. Set DATABASE_URL and NDPR_TENANT_ID in your server environment.'));
+    console.log(dim('  3. Connect the generated request-context resolver to verified authentication.'));
+    if (orm === 'prisma') console.log(dim('  4. Run: pnpm prisma migrate dev --name ndpr-init'));
+    if (orm === 'drizzle') {
+      console.log(dim('  4. Pass your Drizzle instance to configureNDPRDatabase() during server startup.'));
+      console.log(dim('     Then run your pinned-compatible drizzle-kit migration command.'));
     }
-
-    console.log(`  ${cyan(`${orm === 'none' ? '1' : '3'}`.padStart(1))}. Install the ndpr-toolkit:`);
-    console.log(dim('     pnpm add @tantainnovative/ndpr-toolkit@^5.7.2'));
-    console.log();
-
-    if (framework === 'nextjs-app' || framework === 'nextjs-pages') {
-      const appDir = existsSync(join(CWD, 'src', 'app')) ? 'src/app' : 'app';
-      console.log(`  ${cyan(`${orm === 'none' ? '2' : '4'}`.padStart(1))}. Wrap your root layout with NDPRLayout:`);
-      console.log(dim(`     // ${appDir}/layout.tsx`));
-      console.log(dim(`     import NDPRLayout from './${appDir.includes('src') ? '' : ''}ndpr-layout';`));
-      console.log(dim('     // Render <NDPRLayout>{children}</NDPRLayout> inside your <body>'));
-      console.log();
+    if (framework === 'nextjs-pages' && selectedModules.includes('consent')) {
+      console.log(dim('  5. Wrap Component with NDPRClientProvider from pages/ndpr-provider in pages/_app.tsx.'));
+    } else if (framework === 'nextjs-app' && selectedModules.includes('consent')) {
+      console.log(dim('  5. Render NDPRClientProvider from app/ndpr-layout.tsx inside app/layout.tsx.'));
     } else if (framework === 'express') {
-      console.log(`  ${cyan(`${orm === 'none' ? '2' : '4'}`.padStart(1))}. Mount the NDPR router in your Express app:`);
-      console.log(dim("     import { createNDPRRouter } from './src/ndpr';"));
-      console.log(dim("     app.use('/api/ndpr', createNDPRRouter());"));
-      console.log();
+      console.log(dim("  5. Mount createNDPRRouter() at your chosen '/api/ndpr' path."));
     }
-
-    const auditStep = framework === 'none' ? (orm === 'none' ? 3 : 5) : orm === 'none' ? 3 : 5;
-    console.log(`  ${cyan(`${auditStep}`)}. Keep compliance from regressing — edit ${bold('ndpr.audit.json')} to match`);
-    console.log(dim('     your real posture, then run the audit (also wired into CI for you):'));
-    console.log(dim('     npx ndpr audit --min-score 70'));
-    console.log();
-
-    console.log(dim('  Documentation: https://ndprtoolkit.com.ng'));
-    console.log(dim('  Repository:    https://github.com/mr-tanta/ndpr-toolkit'));
-    console.log();
-
+    console.log(dim('  Review every generated TODO and do not deploy in-memory stores as evidence.\n'));
   } finally {
     rl.close();
   }
 }
 
-main().catch((err) => {
-  console.error(red(`\n  Error: ${err.message}\n`));
-  process.exit(1);
-});
+export {
+  createTemplateVars,
+  renderIntegrationFiles,
+  renderPagesRoute,
+  renderTemplate,
+};
+
+const isDirectExecution = Boolean(
+  process.argv[1]
+  && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url)),
+);
+if (isDirectExecution) {
+  main().catch((error) => {
+    console.error(red(`\n  Error: ${error instanceof Error ? error.message : String(error)}\n`));
+    process.exitCode = 1;
+  });
+}

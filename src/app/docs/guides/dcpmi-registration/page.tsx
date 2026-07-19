@@ -22,12 +22,15 @@ export default function DCPMIRegistrationGuide() {
           processing, then an annual return; <strong>OHL</strong> organisations renew their registration annually instead.
         </p>
         <p className="mb-4 text-foreground">
-          The toolkit ships two pure utilities for this regime —{' '}
+          The toolkit ships two pure, React-free utilities for this regime —{' '}
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">classifyDCPMI()</code> and{' '}
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">generateComplianceAuditReturn()</code>{' '}
-          — plus the <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useDCPMI</code> and{' '}
-          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useComplianceAuditReturn</code> hooks.
-          They carry no React dependency, so they run equally well in a Server Action, a route handler, or a scheduled job.
+          from <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">/core</code> or{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">/server</code>. Those pure functions can run in
+          a Server Action, route handler, or scheduled job. Client React UIs can instead use the{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useDCPMI</code> and{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useComplianceAuditReturn</code> hooks from{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">/hooks</code>; the hooks require React.
         </p>
         <p className="mb-4 text-foreground">
           This is not a standalone DCPMI module, portfolio dashboard, DPCO registration workflow, or NDPC filing system.
@@ -134,7 +137,8 @@ result.dataSubjectsConsidered;             // 6200`}</code></pre>
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">generateComplianceAuditReturn()</code>{' '}
           derives the CAR schedule for a DCPMI: the initial-audit due date (commencement + 15 months) and the next
           annual filing deadline relative to a reference date. The NDPC baseline deadline is 31 March, filed via the{' '}
-          <strong>NDPC Information Management Portal (NIMP)</strong>.
+          <strong>NDPC Information Management Portal (NIMP)</strong>; the default ruleset snapshot includes the
+          repository-reviewed 2026 extension to 30 May.
         </p>
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`import { generateComplianceAuditReturn } from '@tantainnovative/ndpr-toolkit/core';
@@ -147,9 +151,9 @@ const car = generateComplianceAuditReturn({
 
 car.applicable;                       // true
 car.schedule.initialAuditDueDate;     // "2026-04-15"  (commencement + 15 months)
-car.schedule.nextFilingDeadline;      // "2026-03-31"
+car.schedule.nextFilingDeadline;      // "2026-05-30"  (bundled 2026 extension)
 car.schedule.filingYear;              // 2026
-car.status.daysUntilNextDeadline;     // 10
+car.status.daysUntilNextDeadline;     // 70
 car.status.initialAuditDue;           // false
 car.notes;                            // GAID/NIMP guidance strings`}</code></pre>
         </div>
@@ -163,15 +167,11 @@ car.notes;                            // GAID/NIMP guidance strings`}</code></pr
 
         <h3 className="text-xl font-semibold text-foreground mt-8 mb-3">Deadline overrides</h3>
         <p className="mb-4 text-foreground">
-          NDPC deadlines shift — the 2026 filing was extended to 30 May. Supply per-year overrides so your schedule
-          tracks the current notice:
+          The bundled ruleset already applies the 2026 extension to 30 May. Pass a per-year{' '}
+          <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">deadlineOverrides</code>{' '}
+          value only when a later verified NDPC notice changes a year that is not represented by the current snapshot.
+          Keep that override in reviewed server configuration so filing calculations remain auditable.
         </p>
-        <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
-          <pre className="text-foreground"><code>{`generateComplianceAuditReturn(
-  { commencementDate: '2025-01-15', asOf: '2026-04-01', tier: 'UHL' },
-  { deadlineOverrides: { 2026: '2026-05-30' } },
-).schedule.nextFilingDeadline;        // "2026-05-30"`}</code></pre>
-        </div>
       </section>
 
       <section id="hooks" className="mb-8">

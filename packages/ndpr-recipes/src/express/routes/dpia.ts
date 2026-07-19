@@ -1,258 +1,212 @@
-/**
- * Express — DPIA (Data Protection Impact Assessment) Router
- *
- * Handles listing, creating, updating, and deleting DPIA records. Under NDPA
- * Section 28, controllers must conduct and document a DPIA before processing
- * that is likely to create high risk for data subjects.
- *
- * Routes
- * ------
- *   GET    /dpia?status=draft — List DPIA records, optionally filtered
- *   GET    /dpia/:id          — Read one DPIA record
- *   POST   /dpia              — Create a validated DPIA record
- *   PUT    /dpia/:id          — Update a DPIA record
- *   DELETE /dpia/:id          — Delete a DPIA record
- *
- * @module express/routes/dpia
- */
-
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, type DPIARecord } from '@prisma/client';
 import { Router } from 'express';
+import {
+  getNDPRContextProblem,
+  resolveNDPRRequestContext,
+} from '../request-context';
+import {
+  dpiaCreateData,
+  dpiaStateFromRow,
+  normalizeDpiaInput,
+  runSerializableTransaction,
+  toInputJson,
+} from '../../nextjs/shared-contracts';
 
 const prisma = new PrismaClient();
 export const dpiaRouter = Router();
-
-const RISK_LEVELS = new Set(['low', 'medium', 'high', 'critical']);
 const STATUSES = new Set(['draft', 'in_progress', 'completed', 'approved', 'rejected']);
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
+/** Staff-only tenant DPIA list. */
+dpiaRouter.get('/', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
 
-function asString(value: unknown): string | undefined {
-  return typeof value === 'string' ? value : undefined;
-}
-
-function isNonEmptyString(value: unknown): value is string {
-  return typeof value === 'string' && value.trim().length > 0;
-}
-
-function isNonNegativeNumber(value: unknown): value is number {
-  return typeof value === 'number' && Number.isFinite(value) && value >= 0;
-}
-
-function isValidDpiaData(value: unknown): boolean {
-  if (!isRecord(value)) return false;
-  return (
-    isRecord(value.assessor) &&
-    isRecord(value.answers) &&
-    Array.isArray(value.risks) &&
-    isNonEmptyString(value.conclusion) &&
-    isNonEmptyString(value.version)
-  );
-}
-
-function validateCreateBody(body: unknown) {
-  const fields: Record<string, string> = {};
-
-  if (!isRecord(body)) {
-    return {
-      valid: false as const,
-      fields: { body: 'Request body must be a JSON object.' },
-    };
+  const status = typeof request.query.status === 'string' ? request.query.status : undefined;
+  if (status && !STATUSES.has(status)) {
+    return response.status(400).json({ error: 'Unsupported DPIA status' });
   }
-
-  if (!isNonEmptyString(body.projectName)) fields.projectName = 'projectName is required.';
-  if (!isNonEmptyString(body.description)) fields.description = 'description is required.';
-  if (!isValidDpiaData(body.dpiaData)) {
-    fields.dpiaData = 'dpiaData must include assessor, answers, risks, conclusion, and version.';
-  }
-  if (!RISK_LEVELS.has(asString(body.overallRisk) ?? '')) {
-    fields.overallRisk = 'overallRisk must be one of low, medium, high, or critical.';
-  }
-  if (!isNonNegativeNumber(body.score)) fields.score = 'score must be a non-negative number.';
-  if (!isNonEmptyString(body.conductedBy)) fields.conductedBy = 'conductedBy is required.';
-  if (body.approvedBy !== undefined && body.approvedBy !== null && typeof body.approvedBy !== 'string') {
-    fields.approvedBy = 'approvedBy must be a string when provided.';
-  }
-
-  return Object.keys(fields).length > 0
-    ? { valid: false as const, fields }
-    : { valid: true as const, body };
-}
-
-function validateUpdateBody(body: unknown) {
-  const fields: Record<string, string> = {};
-
-  if (!isRecord(body)) {
-    return {
-      valid: false as const,
-      fields: { body: 'Request body must be a JSON object.' },
-    };
-  }
-
-  if (body.projectName !== undefined && !isNonEmptyString(body.projectName)) {
-    fields.projectName = 'projectName must be a non-empty string when provided.';
-  }
-  if (body.description !== undefined && !isNonEmptyString(body.description)) {
-    fields.description = 'description must be a non-empty string when provided.';
-  }
-  if (body.dpiaData !== undefined && !isValidDpiaData(body.dpiaData)) {
-    fields.dpiaData = 'dpiaData must include assessor, answers, risks, conclusion, and version.';
-  }
-  if (body.status !== undefined && !STATUSES.has(asString(body.status) ?? '')) {
-    fields.status = 'status must be one of draft, in_progress, completed, approved, or rejected.';
-  }
-  if (body.overallRisk !== undefined && !RISK_LEVELS.has(asString(body.overallRisk) ?? '')) {
-    fields.overallRisk = 'overallRisk must be one of low, medium, high, or critical.';
-  }
-  if (body.score !== undefined && !isNonNegativeNumber(body.score)) {
-    fields.score = 'score must be a non-negative number.';
-  }
-  if (body.conductedBy !== undefined && !isNonEmptyString(body.conductedBy)) {
-    fields.conductedBy = 'conductedBy must be a non-empty string when provided.';
-  }
-  if (body.approvedBy !== undefined && body.approvedBy !== null && typeof body.approvedBy !== 'string') {
-    fields.approvedBy = 'approvedBy must be a string when provided.';
-  }
-
-  return Object.keys(fields).length > 0
-    ? { valid: false as const, fields }
-    : { valid: true as const, body };
-}
-
-// ---------------------------------------------------------------------------
-// GET /dpia?status=draft
-// ---------------------------------------------------------------------------
-
-dpiaRouter.get('/', async (req, res) => {
-  const { status } = req.query;
-
-  const records = await prisma.dPIARecord.findMany({
-    where: typeof status === 'string' ? { status } : undefined,
+  const rows = await prisma.dPIARecord.findMany({
+    where: {
+      tenantId: context.tenantId,
+      removedAt: null,
+      ...(status ? { status } : {}),
+    },
     orderBy: { createdAt: 'desc' },
   });
-
-  return res.json(records);
+  return response.json(rows.map(dpiaResponse));
 });
 
-// ---------------------------------------------------------------------------
-// GET /dpia/:id
-// ---------------------------------------------------------------------------
+/** Read one tenant DPIA. */
+dpiaRouter.get('/:id', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
 
-dpiaRouter.get('/:id', async (req, res) => {
-  const record = await prisma.dPIARecord.findUnique({ where: { id: req.params.id } });
-
-  if (!record) {
-    return res.status(404).json({ error: 'DPIA record not found' });
-  }
-
-  return res.json(record);
-});
-
-// ---------------------------------------------------------------------------
-// POST /dpia
-// ---------------------------------------------------------------------------
-
-dpiaRouter.post('/', async (req, res) => {
-  const validation = validateCreateBody(req.body);
-  if (!validation.valid) {
-    return res.status(400).json({ error: 'Validation failed.', fields: validation.fields });
-  }
-
-  const {
-    projectName,
-    description,
-    dpiaData,
-    overallRisk,
-    score,
-    conductedBy,
-    approvedBy,
-  } = validation.body;
-
-  const record = await prisma.dPIARecord.create({
-    data: {
-      projectName,
-      description,
-      dpiaData,
-      overallRisk,
-      score,
-      status: 'draft',
-      conductedBy,
-      approvedBy: approvedBy ?? null,
+  const row = await prisma.dPIARecord.findFirst({
+    where: {
+      tenantId: context.tenantId,
+      id: request.params.id,
+      removedAt: null,
     },
   });
-
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'dpia',
-      action: 'created',
-      entityId: record.id,
-      entityType: 'DPIARecord',
-      changes: { projectName, overallRisk, score, status: 'draft' },
-    },
-  });
-
-  return res.status(201).json(record);
+  if (!row) return response.status(404).json({ error: 'DPIA record not found' });
+  return response.json(dpiaResponse(row));
 });
 
-// ---------------------------------------------------------------------------
-// PUT /dpia/:id
-// ---------------------------------------------------------------------------
+/** Create lossless DPIA state with derived conductor and risk score. */
+dpiaRouter.post('/', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
 
-dpiaRouter.put('/:id', async (req, res) => {
-  const validation = validateUpdateBody(req.body);
-  if (!validation.valid) {
-    return res.status(400).json({ error: 'Validation failed.', fields: validation.fields });
-  }
+  const validation = normalizeDpiaInput(
+    request.body,
+    context.actor as NonNullable<typeof context.actor>,
+  );
+  if (!validation.valid) return validationResponse(response, validation.fields);
 
-  const { id } = req.params;
-  const existing = await prisma.dPIARecord.findUnique({ where: { id } });
-  if (!existing) {
-    return res.status(404).json({ error: 'DPIA record not found' });
-  }
-
-  const record = await prisma.dPIARecord.update({
-    where: { id },
-    data: validation.body,
+  const tenantId = context.tenantId;
+  const ipAddress = request.ip || request.socket.remoteAddress || null;
+  const row = await prisma.$transaction(async (transaction) => {
+    const created = await transaction.dPIARecord.create({
+      data: dpiaCreateData(tenantId, validation.data),
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'dpia',
+        action: 'created',
+        entityId: created.id,
+        entityType: 'DPIARecord',
+        changes: toInputJson({
+          status: created.status,
+          overallRisk: created.overallRisk,
+          derivedRiskScore: created.score,
+        }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return created;
   });
-
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'dpia',
-      action: 'updated',
-      entityId: record.id,
-      entityType: 'DPIARecord',
-      changes: validation.body,
-    },
-  });
-
-  return res.json(record);
+  return response.status(201).json(dpiaResponse(row));
 });
 
-// ---------------------------------------------------------------------------
-// DELETE /dpia/:id
-// ---------------------------------------------------------------------------
+/** Update allowlisted DPIA fields; body conductor/approver values are ignored. */
+dpiaRouter.put('/:id', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
 
-dpiaRouter.delete('/:id', async (req, res) => {
-  const { id } = req.params;
+  const tenantId = context.tenantId;
+  const id = request.params.id;
+  const ipAddress = request.ip || request.socket.remoteAddress || null;
+  const transactionResult = await runSerializableTransaction(prisma, async (transaction) => {
+    const existing = await transaction.dPIARecord.findFirst({
+      where: { tenantId, id, removedAt: null },
+    });
+    if (!existing) return { kind: 'missing' as const };
+    const validation = normalizeDpiaInput(
+      request.body,
+      context.actor as NonNullable<typeof context.actor>,
+      dpiaStateFromRow(existing),
+    );
+    if (!validation.valid) return { kind: 'invalid' as const, fields: validation.fields };
 
-  const existing = await prisma.dPIARecord.findUnique({ where: { id } });
-  if (!existing) {
-    return res.status(404).json({ error: 'DPIA record not found' });
-  }
-
-  await prisma.dPIARecord.delete({ where: { id } });
-
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'dpia',
-      action: 'deleted',
-      entityId: id,
-      entityType: 'DPIARecord',
-      changes: { projectName: existing.projectName },
-    },
+    const createData = dpiaCreateData(tenantId, validation.data);
+    const { tenantId: _tenantId, id: _id, removedAt: _removedAt, ...updateData } = createData;
+    const updated = await transaction.dPIARecord.update({
+      where: { tenantId_id: { tenantId, id } },
+      data: updateData,
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'dpia',
+        action: 'updated',
+        entityId: id,
+        entityType: 'DPIARecord',
+        changes: toInputJson({
+          status: updated.status,
+          overallRisk: updated.overallRisk,
+          derivedRiskScore: updated.score,
+        }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return { kind: 'updated' as const, row: updated };
   });
 
-  return res.json({ success: true });
+  if (!transactionResult.committed) {
+    return response.status(409).json({
+      error: 'Concurrent DPIA update conflict; retry the request.',
+    });
+  }
+  const result = transactionResult.value;
+  if (result.kind === 'missing') return response.status(404).json({ error: 'DPIA record not found' });
+  if (result.kind === 'invalid') return validationResponse(response, result.fields);
+  return response.json(dpiaResponse(result.row));
 });
+
+/** Soft-remove DPIA state and audit in one transaction. */
+dpiaRouter.delete('/:id', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
+
+  const tenantId = context.tenantId;
+  const id = request.params.id;
+  const ipAddress = request.ip || request.socket.remoteAddress || null;
+  const transactionResult = await runSerializableTransaction(prisma, async (transaction) => {
+    const existing = await transaction.dPIARecord.findFirst({
+      where: { tenantId, id, removedAt: null },
+    });
+    if (!existing) return false;
+    await transaction.dPIARecord.update({
+      where: { tenantId_id: { tenantId, id } },
+      data: { removedAt: new Date() },
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'dpia',
+        action: 'removed',
+        entityId: id,
+        entityType: 'DPIARecord',
+        changes: toInputJson({ projectName: existing.projectName }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return true;
+  });
+  if (!transactionResult.committed) {
+    return response.status(409).json({
+      error: 'Concurrent DPIA removal conflict; retry the request.',
+    });
+  }
+  const removed = transactionResult.value;
+  if (!removed) return response.status(404).json({ error: 'DPIA record not found' });
+  return response.json({ success: true });
+});
+
+function dpiaResponse(row: DPIARecord) {
+  const state = dpiaStateFromRow(row);
+  return {
+    ...state.result,
+    status: state.status,
+    score: row.score,
+    scoreSemantics: 'highest current risk score (residual score when present)',
+    conductedBy: state.conductedBy,
+    approvedBy: state.approvedBy,
+  };
+}
+
+function validationResponse(
+  response: { status(code: number): { json(value: unknown): unknown } },
+  fields: Record<string, string>,
+) {
+  return response.status(400).json({ error: 'Validation failed.', fields });
+}

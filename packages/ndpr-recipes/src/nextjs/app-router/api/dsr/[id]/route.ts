@@ -1,115 +1,196 @@
-/**
- * Next.js App Router — DSR Single-Request Route
- *
- * Handles reading and updating individual Data Subject Rights requests.
- * Used by the DPO/admin interface to view request details and move requests
- * through the processing workflow as required by NDPA Sections 34–38.
- *
- * Endpoints
- * ---------
- *   GET   /api/dsr/[id]   — Fetch a single DSR request by ID
- *   PATCH /api/dsr/[id]   — Update request status, assignee, or internal notes
- *
- * How to use
- * ----------
- * Copy this file to `app/api/dsr/[id]/route.ts` in your Next.js project.
- *
- * @module dsr/[id]/route
- */
-
+import { Prisma, PrismaClient, type DSRRequest as PrismaDSRRequest } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import {
+  getNDPRContextProblem,
+  isNDPRStaffContext,
+  resolveNDPRRequestContext,
+} from '../../../request-context';
+import {
+  isRecord,
+  normalizeDsrStatus,
+  runSerializableTransaction,
+  toInputJson,
+} from '../../../../shared-contracts';
 
 const prisma = new PrismaClient();
+const ALLOWED_STATUSES = new Set([
+  'pending',
+  'awaitingVerification',
+  'inProgress',
+  'in_progress',
+  'completed',
+  'rejected',
+]);
 
-/** Next.js App Router route context — contains dynamic segment params */
 interface RouteContext {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-// ---------------------------------------------------------------------------
-// GET /api/dsr/[id]
-// ---------------------------------------------------------------------------
-
-/**
- * Fetch a single DSR request by its ID.
- *
- * Used by the admin detail view to display full request information including
- * the submission timestamp, due date, and any internal notes added by the DPO.
- *
- * Path params:
- *   id (required) — the DSRRequest record ID
- *
- * Returns 200 with the DSRRequest row, or 404 if not found.
- */
-export async function GET(_req: NextRequest, { params }: RouteContext) {
-  const { id } = params;
-
-  const request = await prisma.dSRRequest.findUnique({ where: { id } });
-
-  if (!request) {
-    return NextResponse.json({ error: 'DSR request not found' }, { status: 404 });
+/** Read one request as verified staff or as its owning data subject. */
+export async function GET(request: NextRequest, route: RouteContext) {
+  const context = await resolveNDPRRequestContext(request);
+  const tenantProblem = getNDPRContextProblem(context, 'tenant');
+  if (tenantProblem) {
+    return NextResponse.json({ error: tenantProblem.error }, { status: tenantProblem.status });
   }
-
-  return NextResponse.json(request);
-}
-
-// ---------------------------------------------------------------------------
-// PATCH /api/dsr/[id]
-// ---------------------------------------------------------------------------
-
-/**
- * Update a DSR request's status, assignee, or internal notes.
- *
- * This route is called by DPO tooling to progress a request through the
- * statutory workflow: pending → in_progress → completed (or rejected).
- * Status transitions are timestamped so the 30-day SLA can be tracked.
- *
- * Body (JSON, all fields optional):
- *   status        — pending | in_progress | completed | rejected
- *   assignedTo    — name/ID of the staff member handling the request
- *   internalNotes — free-text notes visible only to internal staff
- *
- * Returns 200 with the updated DSRRequest row.
- */
-export async function PATCH(req: NextRequest, { params }: RouteContext) {
-  const { id } = params;
-  const body = await req.json();
-  const { status, assignedTo, internalNotes } = body;
-
-  // Build the update payload — only include fields the caller supplied.
-  const data: Record<string, unknown> = {};
-
-  if (status !== undefined) {
-    data.status = status;
-
-    // Stamp workflow timestamps when moving to acknowledged or completed states.
-    if (status === 'in_progress') data.acknowledgedAt = new Date();
-    if (status === 'completed') data.completedAt = new Date();
-  }
-
-  if (assignedTo !== undefined) data.assignedTo = assignedTo;
-  if (internalNotes !== undefined) data.internalNotes = internalNotes;
-
-  if (Object.keys(data).length === 0) {
+  const staff = isNDPRStaffContext(context);
+  if (!staff && !context.subjectId) {
     return NextResponse.json(
-      { error: 'At least one of status, assignedTo, or internalNotes must be provided' },
+      { error: 'A verified data-subject or staff identity is required' },
+      { status: 401 },
+    );
+  }
+
+  const { id } = await route.params;
+  const row = await prisma.dSRRequest.findFirst({
+    where: {
+      tenantId: context.tenantId,
+      id,
+      removedAt: null,
+      ...(!staff ? { subjectId: context.subjectId as string } : {}),
+    },
+  });
+  if (!row) return NextResponse.json({ error: 'DSR request not found' }, { status: 404 });
+  return NextResponse.json(
+    staff
+      ? { ...row, status: normalizeDsrStatus(row.status) }
+      : subjectDsrResponse(row),
+  );
+}
+
+/** Staff-only workflow update with server-derived assignee and note author. */
+export async function PATCH(request: NextRequest, route: RouteContext) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
+
+  const body = await parseJson(request);
+  if (!isRecord(body)) {
+    return NextResponse.json(
+      { error: 'Validation failed.', fields: { body: 'Request body must be an object.' } },
+      { status: 400 },
+    );
+  }
+  const requestedStatus = body.status;
+  if (requestedStatus !== undefined
+    && (typeof requestedStatus !== 'string' || !ALLOWED_STATUSES.has(requestedStatus))) {
+    return NextResponse.json(
+      { error: 'Validation failed.', fields: { status: 'Unsupported DSR status.' } },
+      { status: 400 },
+    );
+  }
+  const status = requestedStatus === 'in_progress' ? 'inProgress' : requestedStatus;
+  const note = typeof body.internalNote === 'string'
+    ? body.internalNote.trim()
+    : typeof body.internalNotes === 'string'
+      ? body.internalNotes.trim()
+      : undefined;
+  if ((body.internalNote !== undefined || body.internalNotes !== undefined) && !note) {
+    return NextResponse.json(
+      { error: 'Validation failed.', fields: { internalNote: 'internalNote must be non-empty text.' } },
+      { status: 400 },
+    );
+  }
+  const assignToCurrentActor = body.assignToMe === true || body.assignedTo !== undefined;
+  if (status === undefined && !note && !assignToCurrentActor) {
+    return NextResponse.json(
+      { error: 'Provide status, assignToMe, or internalNote.' },
       { status: 400 },
     );
   }
 
-  const updated = await prisma.dSRRequest.update({ where: { id }, data });
+  const { id } = await route.params;
+  const tenantId = context.tenantId;
+  const actorId = context.actorId as string;
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+  const transactionResult = await runSerializableTransaction(prisma, async (transaction) => {
+    const existing = await transaction.dSRRequest.findFirst({
+      where: { tenantId, id, removedAt: null },
+    });
+    if (!existing) return null;
 
-  // Audit log for every status change (NDPA Section 44 accountability).
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'dsr',
-      action: 'updated',
-      entityId: id,
-      entityType: 'DSRRequest',
-      changes: data as any,
-    },
+    const now = new Date();
+    const data: Prisma.DSRRequestUncheckedUpdateInput = { updatedAt: now };
+    if (typeof status === 'string') {
+      data.status = status;
+      if (status === 'completed' && existing.status !== 'completed') {
+        data.completedAt = now;
+      } else if (status !== 'completed') {
+        data.completedAt = null;
+      }
+    }
+    if (assignToCurrentActor) data.assignedTo = actorId;
+    if (note) {
+      const currentNotes = Array.isArray(existing.internalNotes)
+        ? existing.internalNotes as Array<Record<string, unknown>>
+        : [];
+      data.internalNotes = toInputJson([
+        ...currentNotes,
+        { timestamp: now.getTime(), author: actorId, note },
+      ]);
+    }
+
+    const row = await transaction.dSRRequest.update({
+      where: { tenantId_id: { tenantId, id } },
+      data,
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'dsr',
+        action: 'updated',
+        entityId: id,
+        entityType: 'DSRRequest',
+        changes: toInputJson({
+          status: typeof status === 'string' ? status : undefined,
+          assignedToCurrentActor: assignToCurrentActor,
+          internalNoteAdded: Boolean(note),
+        }),
+        performedBy: actorId,
+        ipAddress,
+      },
+    });
+    return row;
   });
 
-  return NextResponse.json(updated);
+  if (!transactionResult.committed) {
+    return NextResponse.json(
+      { error: 'Concurrent DSR update conflict; retry the request.' },
+      { status: 409 },
+    );
+  }
+  const updated = transactionResult.value;
+  if (!updated) return NextResponse.json({ error: 'DSR request not found' }, { status: 404 });
+  return NextResponse.json({ ...updated, status: normalizeDsrStatus(updated.status) });
+}
+
+async function parseJson(request: NextRequest): Promise<unknown> {
+  try {
+    return await request.json();
+  } catch {
+    return null;
+  }
+}
+
+
+function subjectDsrResponse(row: PrismaDSRRequest) {
+  return {
+    id: row.id,
+    type: row.type,
+    status: normalizeDsrStatus(row.status),
+    subjectName: row.subjectName,
+    subjectEmail: row.subjectEmail,
+    subjectPhone: row.subjectPhone,
+    description: row.description,
+    additionalInfo: row.additionalInfo,
+    rejectionReason: row.rejectionReason,
+    attachments: row.attachments,
+    extensionRequested: row.extensionRequested,
+    extensionReason: row.extensionReason,
+    submittedAt: row.submittedAt,
+    updatedAt: row.updatedAt,
+    verifiedAt: row.verifiedAt,
+    completedAt: row.completedAt,
+    dueAt: row.dueAt,
+  };
 }

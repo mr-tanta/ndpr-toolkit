@@ -376,7 +376,7 @@ import frLocale from './locales/fr';
 ### Using locale strings in components
 
 ```tsx
-import { useNDPRLocale } from '@tantainnovative/ndpr-toolkit/core';
+import { useNDPRLocale } from '@tantainnovative/ndpr-toolkit';
 
 function MyComponent() {
   const locale = useNDPRLocale();

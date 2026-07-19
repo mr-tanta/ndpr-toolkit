@@ -1,166 +1,127 @@
-/**
- * Drizzle adapter for the Lawful Basis module.
- *
- * Implements StorageAdapter<ProcessingActivity[]> backed by the
- * `ndpr_lawful_basis_records` Drizzle table.
- *
- * Every processing activity must have a documented lawful basis under NDPA
- * Part III (Sections 24-28). This adapter stores the assessment of which
- * lawful basis applies, along with the justification and data categories.
- *
- * Behaviour
- * ---------
- * - LOAD  → returns all lawful basis records, ordered newest first.
- * - SAVE  → upserts each ProcessingActivity by ID using Drizzle's
- *           `onConflictDoUpdate` pattern.
- * - REMOVE → soft-deletes by clearing the records (sets justification to
- *            'Archived via adapter.remove()' and clears data categories).
- *            No hard deletes — the audit trail is preserved.
- *
- * Usage
- * -----
- * Copy this file into your project alongside your Drizzle client, then wire it
- * into the toolkit:
- *
- *   import { drizzle } from 'drizzle-orm/node-postgres';
- *   import { Pool } from 'pg';
- *   import { drizzleLawfulBasisAdapter } from './adapters/drizzle-lawful-basis';
- *   import * as schema from './drizzle/schema';
- *
- *   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
- *   const db = drizzle(pool, { schema });
- *
- *   function LawfulBasisPage() {
- *     const adapter = drizzleLawfulBasisAdapter(db, 'dpo@example.com');
- *     // pass adapter to your lawful basis hook or use it directly
- *   }
- *
- * Prerequisites
- * -------------
- * - The `ndpr_lawful_basis_records` table must exist (run your Drizzle migration).
- * - `drizzle-orm` must be installed in your project.
- * - `@tantainnovative/ndpr-toolkit` must be installed in your project.
- *
- * @module adapters/drizzle-lawful-basis
- */
+import { and, desc, eq, isNull, notInArray } from 'drizzle-orm';
+import type { ProcessingActivity, StorageAdapter } from '@tantainnovative/ndpr-toolkit';
+import { lawfulBasisRecords, type NewLawfulBasisRecord } from '../drizzle/schema';
+import {
+  assertTenantContext,
+  serverStorageCapabilities,
+  type TenantAdapterContext,
+} from './server-storage';
 
-import { eq, desc } from 'drizzle-orm';
-import type { StorageAdapter } from '@tantainnovative/ndpr-toolkit';
-import type { ProcessingActivity } from '@tantainnovative/ndpr-toolkit';
-import { lawfulBasisRecords } from '../drizzle/schema';
-
-/**
- * Creates a Drizzle-backed StorageAdapter for ProcessingActivity[].
- *
- * @param db         - Your Drizzle database instance (any driver — pg, neon, libsql, etc.)
- * @param assessedBy - Identifier (email or name) of the person responsible for
- *                     lawful basis assessments. Stored on every record.
- * @returns A StorageAdapter<ProcessingActivity[]> ready to use with the lawful basis module.
- */
+/** Creates an atomic, tenant-scoped Drizzle lawful-basis adapter. */
 export function drizzleLawfulBasisAdapter(
   db: any,
+  context: TenantAdapterContext,
   assessedBy: string,
 ): StorageAdapter<ProcessingActivity[]> {
+  assertTenantContext(context);
+  if (assessedBy.trim().length === 0) {
+    throw new TypeError('assessedBy must be a non-empty server-established actor identifier');
+  }
+  const { tenantId } = context;
+
   return {
-    /**
-     * Load all lawful basis records, ordered newest first.
-     * Returns null if no records exist.
-     */
+    capabilities: serverStorageCapabilities,
+
     async load(): Promise<ProcessingActivity[] | null> {
-      const rows = await db
+      const rows: Array<typeof lawfulBasisRecords.$inferSelect> = await db
         .select()
         .from(lawfulBasisRecords)
-        .where(eq(lawfulBasisRecords.assessedBy, assessedBy))
+        .where(
+          and(eq(lawfulBasisRecords.tenantId, tenantId), isNull(lawfulBasisRecords.removedAt)),
+        )
         .orderBy(desc(lawfulBasisRecords.createdAt));
-
-      if (rows.length === 0) return null;
-
-      return rows.map(mapRowToProcessingActivity);
+      return rows.length === 0 ? null : rows.map(mapRowToProcessingActivity);
     },
 
-    /**
-     * Persist the current list of processing activities with their lawful basis.
-     * Each activity is upserted by ID so partial updates work.
-     */
     async save(activities: ProcessingActivity[]): Promise<void> {
-      if (activities.length === 0) return;
+      const retainedIds = activities.map(({ id }) => id);
+      await db.transaction(async (transaction: typeof db) => {
+        await transaction
+          .update(lawfulBasisRecords)
+          .set({ removedAt: new Date() })
+          .where(
+            retainedIds.length > 0
+              ? and(
+                  eq(lawfulBasisRecords.tenantId, tenantId),
+                  isNull(lawfulBasisRecords.removedAt),
+                  notInArray(lawfulBasisRecords.id, retainedIds),
+                )
+              : and(
+                  eq(lawfulBasisRecords.tenantId, tenantId),
+                  isNull(lawfulBasisRecords.removedAt),
+                ),
+          );
 
-      await Promise.all(
-        activities.map((activity) => {
-          const row = mapProcessingActivityToRow(activity, assessedBy);
-          return db
+        for (const activity of activities) {
+          const row = mapProcessingActivityToRow(activity, tenantId, assessedBy);
+          await transaction
             .insert(lawfulBasisRecords)
-            .values({ id: activity.id, ...row })
+            .values(row)
             .onConflictDoUpdate({
-              target: lawfulBasisRecords.id,
+              target: [lawfulBasisRecords.tenantId, lawfulBasisRecords.id],
               set: row,
             });
-        }),
-      );
+        }
+      });
     },
 
-    /**
-     * Soft-archive all lawful basis records for this assessor.
-     * Records are not deleted — they are marked with an archive note
-     * so the NDPA compliance audit trail is preserved.
-     */
     async remove(): Promise<void> {
       await db
         .update(lawfulBasisRecords)
-        .set({
-          justification: 'Archived via adapter.remove()',
-          updatedAt: new Date(),
-        })
-        .where(eq(lawfulBasisRecords.assessedBy, assessedBy));
+        .set({ removedAt: new Date() })
+        .where(
+          and(eq(lawfulBasisRecords.tenantId, tenantId), isNull(lawfulBasisRecords.removedAt)),
+        );
     },
   };
 }
 
-// ---------------------------------------------------------------------------
-// Mapping helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Map a raw Drizzle row (from ndpr_lawful_basis_records) to the toolkit's
- * ProcessingActivity type. Some rich fields default to placeholder values —
- * extend the schema if you need full round-trip fidelity.
- */
-function mapRowToProcessingActivity(row: any): ProcessingActivity {
+function mapRowToProcessingActivity(
+  row: typeof lawfulBasisRecords.$inferSelect,
+): ProcessingActivity {
+  if (!row.activityData) {
+    throw new Error(`Lawful-basis record ${row.id} is missing its lossless activityData snapshot`);
+  }
   return {
+    ...row.activityData,
     id: row.id,
-    name: row.activityName,
-    description: row.justification,
-    lawfulBasis: row.lawfulBasis as ProcessingActivity['lawfulBasis'],
-    lawfulBasisJustification: row.justification,
-    dataCategories: (row.dataCategories as string[]) ?? [],
-    involvesSensitiveData: false,
-    dataSubjectCategories: [],
-    purposes: (row.purposes as string[]) ?? [],
-    retentionPeriod: '',
-    crossBorderTransfer: false,
+    lawfulBasis: row.lawfulBasis,
+    status: row.status,
     createdAt: row.createdAt.getTime(),
     updatedAt: row.updatedAt.getTime(),
-    reviewDate: row.reviewDate?.getTime() ?? undefined,
-    status: 'active',
+    reviewDate: row.reviewDate?.getTime(),
   };
 }
 
-/**
- * Map a toolkit ProcessingActivity to the Drizzle insert/update row shape.
- */
 function mapProcessingActivityToRow(
   activity: ProcessingActivity,
+  tenantId: string,
   assessedBy: string,
-): Record<string, unknown> {
+): NewLawfulBasisRecord {
   return {
+    tenantId,
+    id: activity.id,
     activityName: activity.name,
+    description: activity.description,
     lawfulBasis: activity.lawfulBasis,
-    justification: activity.lawfulBasisJustification || activity.description,
+    justification: activity.lawfulBasisJustification,
     dataCategories: activity.dataCategories,
+    involvesSensitiveData: activity.involvesSensitiveData,
+    sensitiveDataCondition: activity.sensitiveDataCondition ?? null,
+    dataSubjectCategories: activity.dataSubjectCategories,
     purposes: activity.purposes,
+    retentionPeriod: activity.retentionPeriod,
+    retentionJustification: activity.retentionJustification ?? null,
+    recipients: activity.recipients ?? null,
+    crossBorderTransfer: activity.crossBorderTransfer,
+    status: activity.status,
+    dpoApproval: activity.dpoApproval ?? null,
+    activityData: activity,
     assessedBy,
-    assessedAt: new Date(activity.createdAt),
+    assessedAt: new Date(activity.updatedAt),
     reviewDate: activity.reviewDate ? new Date(activity.reviewDate) : null,
-    updatedAt: new Date(),
+    createdAt: new Date(activity.createdAt),
+    updatedAt: new Date(activity.updatedAt),
+    removedAt: null,
   };
 }

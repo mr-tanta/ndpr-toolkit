@@ -1,217 +1,116 @@
-/**
- * Next.js App Router — Breach Notification Single-Report Route
- *
- * Handles reading and updating individual breach reports.
- * Used by the DPO interface to track an incident through its lifecycle
- * and record the NDPC notification status as required by NDPA Section 40.
- *
- * Endpoints
- * ---------
- *   GET   /api/breach/[id]   — Fetch a single breach report by ID
- *   PATCH /api/breach/[id]   — Update breach status, severity, or add actions taken
- *
- * How to use
- * ----------
- * Copy this file to `app/api/breach/[id]/route.ts` in your Next.js project.
- *
- * @module breach/[id]/route
- */
-
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/server';
+import { NextRequest, NextResponse } from 'next/server';
+import {
+  getNDPRContextProblem,
+  resolveNDPRRequestContext,
+} from '../../../request-context';
+import {
+  breachCreateData,
+  breachResponse,
+  breachStateFromRow,
+  runSerializableTransaction,
+  toInputJson,
+  updateBreachStateRecord,
+} from '../../../../shared-contracts';
 
 const prisma = new PrismaClient();
-const VALID_STATUSES = new Set(['ongoing', 'investigating', 'resolved', 'closed']);
-const VALID_SEVERITIES = new Set(['critical', 'high', 'medium', 'low']);
 
-/** Next.js App Router route context — contains dynamic segment params */
 interface RouteContext {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+/** Fetch a complete, tenant-scoped breach report and readiness assessment. */
+export async function GET(request: NextRequest, route: RouteContext) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
+
+  const { id } = await route.params;
+  const row = await prisma.breachReport.findFirst({
+    where: { tenantId: context.tenantId, id, removedAt: null },
+  });
+  if (!row) return NextResponse.json({ error: 'Breach report not found' }, { status: 404 });
+  return NextResponse.json(breachResponse(row));
 }
 
-async function parseJson(req: NextRequest): Promise<unknown> {
+/**
+ * Update report content and/or complete assessment/notification evidence.
+ * Severity and sent flags are derived from nested evidence, never request flags.
+ */
+export async function PATCH(request: NextRequest, route: RouteContext) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
+
+  const parsed = await parseJson(request);
+  const { id } = await route.params;
+  const tenantId = context.tenantId;
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+
+  const transactionResult = await runSerializableTransaction(prisma, async (transaction) => {
+    const existing = await transaction.breachReport.findFirst({
+      where: { tenantId, id, removedAt: null },
+    });
+    if (!existing) return { kind: 'missing' as const };
+
+    const validation = updateBreachStateRecord(
+      parsed,
+      breachStateFromRow(existing),
+      context.actor as NonNullable<typeof context.actor>,
+    );
+    if (!validation.valid) {
+      return { kind: 'invalid' as const, fields: validation.fields };
+    }
+
+    const createData = breachCreateData(tenantId, validation.data);
+    const { tenantId: _tenantId, id: _id, removedAt: _removedAt, ...updateData } = createData;
+    const updated = await transaction.breachReport.update({
+      where: { tenantId_id: { tenantId, id } },
+      data: updateData,
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'breach',
+        action: 'updated',
+        entityId: id,
+        entityType: 'BreachReport',
+        changes: toInputJson({
+          status: validation.data.report.status,
+          assessmentCount: validation.data.assessments.length,
+          notificationEvidenceCount: validation.data.notifications.length,
+          derivedSeverity: updated.severity,
+        }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return { kind: 'updated' as const, row: updated };
+  });
+
+  if (!transactionResult.committed) {
+    return NextResponse.json(
+      { error: 'Concurrent breach update conflict; retry the request.' },
+      { status: 409 },
+    );
+  }
+  const result = transactionResult.value;
+  if (result.kind === 'missing') {
+    return NextResponse.json({ error: 'Breach report not found' }, { status: 404 });
+  }
+  if (result.kind === 'invalid') {
+    return NextResponse.json(
+      { error: 'Validation failed.', fields: result.fields },
+      { status: 400 },
+    );
+  }
+  return NextResponse.json(breachResponse(result.row));
+}
+
+async function parseJson(request: NextRequest): Promise<unknown> {
   try {
-    return await req.json();
+    return await request.json();
   } catch {
     return null;
   }
-}
-
-function validatePatchBody(body: unknown):
-  | { valid: true; body: Record<string, unknown> }
-  | { valid: false; fields: Record<string, string> } {
-  if (!isRecord(body)) {
-    return { valid: false, fields: { body: 'Request body must be a JSON object.' } };
-  }
-
-  const fields: Record<string, string> = {};
-  if (body.status !== undefined && (typeof body.status !== 'string' || !VALID_STATUSES.has(body.status))) {
-    fields.status = 'status must be one of ongoing, investigating, resolved, or closed.';
-  }
-  if (
-    body.severity !== undefined &&
-    (typeof body.severity !== 'string' || !VALID_SEVERITIES.has(body.severity))
-  ) {
-    fields.severity = 'severity must be one of critical, high, medium, or low.';
-  }
-  if (body.initialActions !== undefined && typeof body.initialActions !== 'string') {
-    fields.initialActions = 'initialActions must be a string when provided.';
-  }
-  if (body.ndpcNotificationSent !== undefined && typeof body.ndpcNotificationSent !== 'boolean') {
-    fields.ndpcNotificationSent = 'ndpcNotificationSent must be a boolean when provided.';
-  }
-
-  return Object.keys(fields).length > 0 ? { valid: false, fields } : { valid: true, body };
-}
-
-/**
- * Assess a stored breach row against the NDPA S.40 / GAID 2025 Article 33(5)
- * notification content requirements, returning which mandated items are still
- * missing and how long is left on the 72-hour clock.
- *
- * Note: this recipe's `BreachReport` table is intentionally simplified, so
- * fields like likely consequences, mitigation measures, data-subject categories
- * and record count aren't persisted — they'll show as "missing" until you
- * extend the schema. Set NDPR_DPO_NAME / NDPR_DPO_EMAIL to record the contact
- * point (Art. 33(5)(h)).
- */
-function assessReadiness(report: any) {
-  const a = assessBreachNotification({
-    id: report.id,
-    title: report.title,
-    description: report.description,
-    category: report.category,
-    discoveredAt: new Date(report.discoveredAt).getTime(),
-    occurredAt: report.occurredAt ? new Date(report.occurredAt).getTime() : undefined,
-    reportedAt: new Date(report.reportedAt ?? report.discoveredAt).getTime(),
-    reporter: {
-      name: report.reporterName,
-      email: report.reporterEmail,
-      department: report.reporterDepartment ?? '',
-    },
-    affectedSystems: report.affectedSystems ?? [],
-    dataTypes: report.dataTypes ?? [],
-    estimatedAffectedSubjects: report.estimatedAffected ?? undefined,
-    initialActions: report.initialActions ?? undefined,
-    dpoContact: process.env.NDPR_DPO_EMAIL
-      ? { name: process.env.NDPR_DPO_NAME ?? 'DPO', email: process.env.NDPR_DPO_EMAIL }
-      : undefined,
-    status: report.status,
-  });
-  return {
-    complete: a.complete,
-    completeness: a.completeness,
-    missing: a.missing,
-    hoursRemaining: a.timing.hoursRemaining,
-    overdue: a.timing.overdue,
-  };
-}
-
-// ---------------------------------------------------------------------------
-// GET /api/breach/[id]
-// ---------------------------------------------------------------------------
-
-/**
- * Fetch a single breach report by its ID.
- *
- * Returns the full report including affected systems, data types, and the
- * NDPC notification status. Used by the incident detail page and for
- * generating the formal NDPC breach notification document.
- *
- * Path params:
- *   id (required) — the BreachReport record ID
- *
- * Returns 200 with the BreachReport row, or 404 if not found.
- */
-export async function GET(_req: NextRequest, { params }: RouteContext) {
-  const { id } = params;
-
-  const report = await prisma.breachReport.findUnique({ where: { id } });
-
-  if (!report) {
-    return NextResponse.json({ error: 'Breach report not found' }, { status: 404 });
-  }
-
-  // Surface NDPC notification readiness alongside the report so the incident
-  // detail view can show what's still needed before filing (GAID 2025 Art. 33).
-  return NextResponse.json({ ...report, ndpcReadiness: assessReadiness(report) });
-}
-
-// ---------------------------------------------------------------------------
-// PATCH /api/breach/[id]
-// ---------------------------------------------------------------------------
-
-/**
- * Update a breach report's status, severity, NDPC notification status, or
- * containment actions.
- *
- * Key workflow transitions tracked here:
- *   ongoing → investigating     (DPO has begun assessment)
- *   investigating → resolved    (threat contained, remediation complete)
- *   resolved → closed           (post-incident review done, NDPC notified)
- *
- * The ndpcNotificationSent flag and ndpcNotifiedAt timestamp are set here
- * once the formal NDPC notification has been dispatched, fulfilling the
- * 72-hour reporting obligation under NDPA Section 40.
- *
- * Body (JSON, all fields optional):
- *   status                — ongoing | investigating | resolved | closed
- *   severity              — critical | high | medium | low
- *   initialActions        — append/replace containment actions text
- *   ndpcNotificationSent  — boolean — set true once NDPC is formally notified
- *
- * Returns 200 with the updated BreachReport row.
- */
-export async function PATCH(req: NextRequest, { params }: RouteContext) {
-  const { id } = params;
-  const parsed = await parseJson(req);
-  const validation = validatePatchBody(parsed);
-  if (!validation.valid) {
-    return NextResponse.json(
-      { error: 'Validation failed.', fields: validation.fields },
-      { status: 400 },
-    );
-  }
-
-  const body = validation.body;
-  const { status, severity, initialActions, ndpcNotificationSent } = body;
-
-  const data: Record<string, unknown> = {};
-
-  if (status !== undefined) data.status = status;
-  if (severity !== undefined) data.severity = severity;
-  if (initialActions !== undefined) data.initialActions = initialActions;
-
-  // Stamp the NDPC notification timestamp when the flag is first set to true.
-  if (ndpcNotificationSent === true) {
-    data.ndpcNotificationSent = true;
-    data.ndpcNotifiedAt = new Date();
-  }
-
-  if (Object.keys(data).length === 0) {
-    return NextResponse.json(
-      { error: 'At least one of status, severity, initialActions, or ndpcNotificationSent must be provided' },
-      { status: 400 },
-    );
-  }
-
-  const updated = await prisma.breachReport.update({ where: { id }, data });
-
-  // Audit log — every status change on a breach is significant for compliance.
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'breach',
-      action: 'updated',
-      entityId: id,
-      entityType: 'BreachReport',
-      changes: data as any,
-    },
-  });
-
-  return NextResponse.json(updated);
 }

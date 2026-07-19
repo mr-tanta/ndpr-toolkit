@@ -1,8 +1,12 @@
 import { useMemo } from 'react';
 import { getComplianceScore } from '../utils/compliance-score';
-import type { ComplianceInput, ComplianceReport } from '../utils/compliance-score';
+import type {
+  ComplianceInput,
+  ComplianceReport,
+  ComplianceScoreOptions,
+} from '../utils/compliance-score';
 
-export interface UseComplianceScoreOptions {
+export interface UseComplianceScoreOptions extends ComplianceScoreOptions {
   /**
    * Snapshot of the organisation's compliance signals — consent settings,
    * DSR queue, breach log, lawful-basis register, transfers, ROPA, etc.
@@ -35,7 +39,13 @@ export interface UseComplianceScoreOptions {
  * }
  * ```
  */
-export function useComplianceScore({ input }: UseComplianceScoreOptions): ComplianceReport {
-  const inputKey = JSON.stringify(input);
-  return useMemo(() => getComplianceScore(input), [inputKey]); // eslint-disable-line react-hooks/exhaustive-deps
+export function useComplianceScore({
+  input,
+  ...scoreOptions
+}: UseComplianceScoreOptions): ComplianceReport {
+  const inputKey = JSON.stringify({ input, scoreOptions });
+  return useMemo(
+    () => getComplianceScore(input, scoreOptions),
+    [inputKey], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 }

@@ -19,12 +19,12 @@ import { siteConfig } from '@/lib/site-config';
 
 /* ── Data ─────────────────────────────────────────────────── */
 
-const v3Features = [
+const releaseFeatures = [
   {
-    title: 'Storage Adapters',
+    title: 'Production Security Boundaries',
     description:
-      'Swap storage backends at runtime — localStorage, IndexedDB, REST API, or a custom adapter — without touching component code.',
-    href: '/docs/guides/adapters',
+      'Keep tenant, subject, actor, role, reporter, and assessor authority on the server through verified request-context seams.',
+    href: '/docs/guides/backend-integration',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <ellipse cx="12" cy="5" rx="9" ry="3" />
@@ -34,10 +34,10 @@ const v3Features = [
     ),
   },
   {
-    title: 'Compound Components',
+    title: 'Atomic Tenant-Scoped Recipes',
     description:
-      'Compose granular sub-components to build exactly the UI you need, with full control over layout and structure.',
-    href: '/docs/guides/compound-components',
+      'Scope every maintained persistence path by tenant and commit business records with accountability events in one transaction.',
+    href: '/docs/guides/production-recipes',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7" />
@@ -48,10 +48,10 @@ const v3Features = [
     ),
   },
   {
-    title: 'Zero-Config Presets',
+    title: 'Complete Scaffold Matrix',
     description:
-      'Drop in NDPRConsent, NDPRSubjectRights, and other presets for instant compliance with zero boilerplate.',
-    href: '/docs/guides/presets',
+      'Generate strict Next.js App/Pages or Express integrations across root/src layouts and Prisma, Drizzle, or no ORM.',
+    href: '/docs/guides/cli-scaffolder',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -59,10 +59,10 @@ const v3Features = [
     ),
   },
   {
-    title: 'Compliance Score',
+    title: 'Fail-Closed Breach & CAR',
     description:
-      'Real-time compliance scoring across all NDPA 2023 obligations, surfaced through the NDPRDashboard component.',
-    href: '/docs/guides/compliance-score',
+      'Reject impossible chronology, incomplete duty evidence, malformed filing records, and untrusted ruleset provenance.',
+    href: '/docs/guides/audit-cli',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
@@ -70,10 +70,10 @@ const v3Features = [
     ),
   },
   {
-    title: 'Backend Recipes',
+    title: 'Canonical Consent Replay',
     description:
-      'Versioned npm source templates for Prisma, Drizzle, Next.js, Express, adapters, and middleware.',
-    href: '/docs/guides/production-recipes',
+      'Round-trip safe-integer client timestamps, detect replay collisions, preserve history, and return only canonical ConsentSettings.',
+    href: '/docs/guides/server-side-storage',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -82,10 +82,10 @@ const v3Features = [
     ),
   },
   {
-    title: 'Styling & Customization',
+    title: 'Reviewed Database Migration',
     description:
-      'Full className injection system — pass unstyled mode, merge Tailwind, or use CSS variables to match any brand.',
-    href: '/docs/guides/styling-customization',
+      'Upgrade populated recipes 0.1.x/0.2.0 databases with runner-specific SQL, evidence review queues, and tested rollback boundaries.',
+    href: '/docs/guides/production-recipes',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <circle cx="13.5" cy="6.5" r=".5" />
@@ -525,12 +525,12 @@ export default function DocsPage() {
         <Section
           badge={`What's New in v${siteConfig.version}`}
           title="Everything new in the latest release"
-          subtitle="Six major capabilities added to make NDPA compliance faster, more flexible, and production-ready."
+          subtitle="Production boundaries, fail-closed evidence, canonical replay, complete scaffolds, and a reviewed database upgrade path."
           gradient
         >
           <Container>
-            <div className="docs-v3-grid">
-              {v3Features.map((feat, i) => (
+            <div className="docs-release-grid">
+              {releaseFeatures.map((feat, i) => (
                 <FeatureCard
                   key={feat.href}
                   icon={feat.icon}
@@ -542,16 +542,16 @@ export default function DocsPage() {
               ))}
             </div>
             <style>{`
-              .docs-v3-grid {
+              .docs-release-grid {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: var(--space-5);
               }
               @media (max-width: 900px) {
-                .docs-v3-grid { grid-template-columns: repeat(2, 1fr); }
+                .docs-release-grid { grid-template-columns: repeat(2, 1fr); }
               }
               @media (max-width: 600px) {
-                .docs-v3-grid { grid-template-columns: 1fr; }
+                .docs-release-grid { grid-template-columns: 1fr; }
               }
             `}</style>
           </Container>
@@ -809,9 +809,9 @@ export default function DocsPage() {
         <CTASection
           badge="Ready to build?"
           badgeVariant="default"
-          title="Start shipping compliant features"
+          title="Start shipping privacy features"
           gradientWord="today"
-          subtitle={`${siteConfig.moduleCount} modules, ${siteConfig.testCount}+ tests, zero-config presets — everything you need to be NDPA 2023 compliant from day one.`}
+          subtitle={`${siteConfig.moduleCount} modules, ${siteConfig.testCount}+ tests, and zero-config presets for NDPA implementation support — not legal certification or a substitute for current regulatory review.`}
           actions={[
             { label: 'Browse Components', href: '/docs/components' },
             {

@@ -8,152 +8,242 @@ datasource db {
 }
 
 model ConsentRecord {
-  id            String   @id @default(cuid())
-  subjectId     String
-  consents      Json
-  version       String
-  method        String
-  lawfulBasis   String?
-  ipAddress     String?
-  userAgent     String?
-  createdAt     DateTime @default(now())
-  revokedAt     DateTime?
+  tenantId         String    @map("tenant_id")
+  id               String    @default(cuid())
+  subjectId        String    @map("subject_id")
+  activeSubjectKey String?   @unique(map: "consent_active_subject_key") @map("active_subject_key")
+  consents         Json
+  version          String
+  method           String
+  hasInteracted    Boolean   @map("has_interacted")
+  lawfulBasis      String?   @map("lawful_basis")
+  ipAddress        String?   @map("ip_address")
+  userAgent        String?   @map("user_agent")
+  clientTimestamp  DateTime? @map("client_timestamp")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  revokedAt        DateTime? @map("revoked_at")
 
-  @@index([subjectId])
+  @@id([tenantId, id], map: "ndpr_consent_records_pkey")
+  @@index([tenantId, subjectId, revokedAt], map: "consent_tenant_subject_active_idx")
   @@map("ndpr_consent_records")
 }
 
 model DSRRequest {
-  id                String   @id @default(cuid())
-  type              String
-  status            String   @default("pending")
-  subjectName       String
-  subjectEmail      String
-  subjectPhone      String?
-  identifierType    String
-  identifierValue   String
-  description       String?
-  internalNotes     String?
-  assignedTo        String?
-  submittedAt       DateTime @default(now())
-  acknowledgedAt    DateTime?
-  completedAt       DateTime?
-  dueAt             DateTime
+  tenantId           String    @map("tenant_id")
+  id                 String    @default(cuid())
+  subjectId          String    @map("subject_id")
+  type               String
+  status             String    @default("pending")
+  subjectName        String    @map("subject_name")
+  subjectEmail       String    @map("subject_email")
+  subjectPhone       String?   @map("subject_phone")
+  identifierType     String?   @map("identifier_type")
+  identifierValue    String?   @map("identifier_value")
+  description        String?
+  lawfulBasis        String?   @map("lawful_basis")
+  additionalInfo     Json?     @map("additional_info")
+  internalNotes      Json?     @map("internal_notes")
+  verification       Json?
+  rejectionReason    String?   @map("rejection_reason")
+  attachments        Json?
+  extensionRequested Boolean?  @map("extension_requested")
+  extensionReason    String?   @map("extension_reason")
+  assignedTo         String?   @map("assigned_to")
+  submittedAt        DateTime  @default(now()) @map("submitted_at")
+  updatedAt          DateTime  @default(now()) @map("updated_at")
+  verifiedAt         DateTime? @map("verified_at")
+  completedAt        DateTime? @map("completed_at")
+  dueAt              DateTime? @map("due_at")
+  removedAt          DateTime? @map("adapter_removed_at")
 
-  @@index([status])
-  @@index([subjectEmail])
+  @@id([tenantId, subjectId, id], map: "ndpr_dsr_requests_pkey")
+  @@unique([tenantId, id], map: "dsr_tenant_id_unique")
+  @@index([tenantId, subjectId, removedAt, submittedAt], map: "dsr_tenant_subject_active_idx")
+  @@index([tenantId, status], map: "dsr_tenant_status_idx")
   @@map("ndpr_dsr_requests")
 }
 
 model BreachReport {
-  id                    String   @id @default(cuid())
-  title                 String
-  description           String
-  category              String
-  severity              String
-  status                String   @default("ongoing")
-  discoveredAt          DateTime
-  occurredAt            DateTime?
-  reportedAt            DateTime @default(now())
-  ndpcNotifiedAt        DateTime?
-  reporterName          String
-  reporterEmail         String
-  reporterDepartment    String?
-  affectedSystems       Json
-  dataTypes             Json
-  estimatedAffected     Int?
-  initialActions        String?
-  ndpcNotificationSent  Boolean  @default(false)
+  tenantId                  String    @map("tenant_id")
+  id                        String    @default(cuid())
+  title                     String
+  description               String
+  category                  String
+  severity                  String?
+  status                    String    @default("ongoing")
+  discoveredAt              DateTime  @map("discovered_at")
+  occurredAt                DateTime? @map("occurred_at")
+  reportedAt                DateTime  @default(now()) @map("reported_at")
+  ndpcNotifiedAt            DateTime? @map("ndpc_notified_at")
+  reporterName              String    @map("reporter_name")
+  reporterEmail             String    @map("reporter_email")
+  reporterDepartment        String?   @map("reporter_department")
+  reporterPhone             String?   @map("reporter_phone")
+  affectedSystems           Json      @map("affected_systems")
+  dataTypes                 Json      @map("data_types")
+  involvesSensitiveData     Boolean?  @map("involves_sensitive_data")
+  estimatedAffectedSubjects Int?      @map("estimated_affected_subjects")
+  approximateRecordCount    Int?      @map("approximate_record_count")
+  dataSubjectCategories     Json?     @map("data_subject_categories")
+  likelyConsequences        String?   @map("likely_consequences")
+  mitigationMeasures        String?   @map("mitigation_measures")
+  isPhasedReport            Boolean?  @map("is_phased_report")
+  supplementsReportId       String?   @map("supplements_report_id")
+  dpoContact                Json?     @map("dpo_contact")
+  initialActions            String?   @map("initial_actions")
+  attachments               Json?
+  assessments               Json      @default("[]")
+  notifications             Json      @default("[]")
+  ndpcNotificationSent      Boolean   @default(false) @map("ndpc_notification_sent")
+  removedAt                 DateTime? @map("adapter_removed_at")
 
-  @@index([status])
-  @@index([severity])
+  @@id([tenantId, id], map: "ndpr_breach_reports_pkey")
+  @@index([tenantId, removedAt, status], map: "breach_tenant_active_status_idx")
+  @@index([tenantId, severity], map: "breach_tenant_severity_idx")
   @@map("ndpr_breach_reports")
 }
 
 model ProcessingRecord {
-  id                  String   @id @default(cuid())
-  purpose             String
-  lawfulBasis         String
-  dataCategories      Json
-  dataSubjects        Json
-  recipients          Json
-  retentionPeriod     String
-  securityMeasures    Json
-  transferCountries   Json?
-  transferMechanism   String?
-  dpiaConducted       Boolean @default(false)
-  status              String  @default("active")
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  tenantId          String    @map("tenant_id")
+  id                String    @default(cuid())
+  purpose           String
+  lawfulBasis       String    @map("lawful_basis")
+  dataCategories    Json      @map("data_categories")
+  dataSubjects      Json      @map("data_subjects")
+  recipients        Json
+  retentionPeriod   String    @map("retention_period")
+  securityMeasures  Json      @map("security_measures")
+  transferCountries Json?     @map("transfer_countries")
+  transferMechanism String?   @map("transfer_mechanism")
+  dpiaConducted     Boolean   @default(false) @map("dpia_conducted")
+  recordData        Json?     @map("record_data")
+  status            String    @default("active")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
+  removedAt         DateTime? @map("adapter_removed_at")
 
+  @@id([tenantId, id], map: "ndpr_processing_records_pkey")
+  @@index([tenantId, removedAt, status], map: "processing_tenant_active_status_idx")
+  @@index([tenantId, lawfulBasis], map: "processing_tenant_basis_idx")
   @@map("ndpr_processing_records")
 }
 
-model DPIARecord {
-  id           String   @id @default(cuid())
-  projectName  String
-  description  String
-  dpiaData     Json
-  overallRisk  String
-  score        Int
-  status       String   @default("draft")
-  conductedBy  String
-  approvedBy   String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model RopaRegister {
+  tenantId  String    @id @map("tenant_id")
+  metadata  Json
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  removedAt DateTime? @map("adapter_removed_at")
 
-  @@index([status])
-  @@index([conductedBy])
+  @@index([tenantId, removedAt], map: "ropa_register_tenant_active_idx")
+  @@map("ndpr_ropa_registers")
+}
+
+model DPIARecord {
+  tenantId    String    @map("tenant_id")
+  id          String    @default(cuid())
+  projectName String    @map("project_name")
+  description String
+  dpiaData    Json      @map("dpia_data")
+  overallRisk String    @map("overall_risk")
+  score       Int
+  status      String    @default("draft")
+  conductedBy String    @map("conducted_by")
+  approvedBy  String?   @map("approved_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  removedAt   DateTime? @map("adapter_removed_at")
+
+  @@id([tenantId, id], map: "ndpr_dpia_records_pkey")
+  @@index([tenantId, removedAt, status], map: "dpia_tenant_active_status_idx")
+  @@index([tenantId, conductedBy], map: "dpia_tenant_conductor_idx")
   @@map("ndpr_dpia_records")
 }
 
 model LawfulBasisRecord {
-  id               String   @id @default(cuid())
-  activityName     String
-  lawfulBasis      String
-  justification    String
-  dataCategories   Json
-  purposes         Json
-  assessedBy       String
-  assessedAt       DateTime @default(now())
-  reviewDate       DateTime?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  tenantId               String    @map("tenant_id")
+  id                     String    @default(cuid())
+  activityName           String    @map("activity_name")
+  description            String?
+  lawfulBasis            String    @map("lawful_basis")
+  justification          String
+  dataCategories         Json      @map("data_categories")
+  involvesSensitiveData  Boolean?  @map("involves_sensitive_data")
+  sensitiveDataCondition String?   @map("sensitive_data_condition")
+  dataSubjectCategories  Json?     @map("data_subject_categories")
+  purposes               Json
+  retentionPeriod        String?   @map("retention_period")
+  retentionJustification String?   @map("retention_justification")
+  recipients             Json?
+  crossBorderTransfer    Boolean?  @map("cross_border_transfer")
+  status                 String    @default("active")
+  dpoApproval            Json?     @map("dpo_approval")
+  activityData           Json?     @map("activity_data")
+  assessedBy             String    @map("assessed_by")
+  assessedAt             DateTime  @default(now()) @map("assessed_at")
+  reviewDate             DateTime? @map("review_date")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @default(now()) @updatedAt @map("updated_at")
+  removedAt              DateTime? @map("adapter_removed_at")
 
-  @@index([lawfulBasis])
-  @@index([assessedBy])
+  @@id([tenantId, id], map: "ndpr_lawful_basis_records_pkey")
+  @@index([tenantId, lawfulBasis], map: "lawful_basis_tenant_basis_idx")
+  @@index([tenantId, assessedBy], map: "lawful_basis_tenant_assessor_idx")
+  @@index([tenantId, removedAt, status], map: "lawful_basis_tenant_active_status_idx")
   @@map("ndpr_lawful_basis_records")
 }
 
 model CrossBorderTransferRecord {
-  id                    String   @id @default(cuid())
-  destinationCountry    String
-  recipientName         String
-  transferMechanism     String
-  safeguards            String
-  dataCategories        Json
-  adequacyStatus        String
-  ndpcApprovalRequired  Boolean  @default(false)
-  ndpcApprovalReference String?
-  riskLevel             String
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  tenantId               String    @map("tenant_id")
+  id                     String    @default(cuid())
+  destinationCountry     String    @map("destination_country")
+  destinationCountryCode String?   @map("destination_country_code")
+  recipientName          String    @map("recipient_name")
+  recipientContact       Json?     @map("recipient_contact")
+  transferMechanism      String    @map("transfer_mechanism")
+  safeguards             Json
+  dataCategories         Json      @map("data_categories")
+  includesSensitiveData  Boolean?  @map("includes_sensitive_data")
+  estimatedDataSubjects  Int?      @map("estimated_data_subjects")
+  purpose                String?
+  adequacyStatus         String    @map("adequacy_status")
+  riskAssessment         String?   @map("risk_assessment")
+  riskLevel              String    @map("risk_level")
+  ndpcApprovalRequired   Boolean   @default(false) @map("ndpc_approval_required")
+  ndpcApprovalReference  String?   @map("ndpc_approval_reference")
+  ndpcApproval           Json?     @map("ndpc_approval")
+  tiaCompleted           Boolean?  @map("tia_completed")
+  tiaReference           String?   @map("tia_reference")
+  frequency              String?
+  status                 String    @default("active")
+  startDate              DateTime? @map("start_date")
+  endDate                DateTime? @map("end_date")
+  reviewDate             DateTime? @map("review_date")
+  transferData           Json?     @map("transfer_data")
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @default(now()) @updatedAt @map("updated_at")
+  removedAt              DateTime? @map("adapter_removed_at")
 
-  @@index([destinationCountry])
-  @@index([riskLevel])
+  @@id([tenantId, id], map: "ndpr_cross_border_transfer_records_pkey")
+  @@index([tenantId, destinationCountry], map: "cross_border_tenant_destination_idx")
+  @@index([tenantId, riskLevel], map: "cross_border_tenant_risk_idx")
+  @@index([tenantId, removedAt, status], map: "cross_border_tenant_active_status_idx")
   @@map("ndpr_cross_border_transfer_records")
 }
 
 model ComplianceAuditLog {
-  id          String   @id @default(cuid())
+  tenantId    String   @map("tenant_id")
+  id          String   @default(cuid())
   action      String
   module      String
-  details     Json?
-  performedBy String?
-  ipAddress   String?
-  createdAt   DateTime @default(now())
+  entityId    String   @map("entity_id")
+  entityType  String   @map("entity_type")
+  changes     Json?
+  performedBy String?  @map("performed_by")
+  ipAddress   String?  @map("ip_address")
+  createdAt   DateTime @default(now()) @map("created_at")
 
-  @@index([module])
-  @@index([performedBy])
+  @@id([tenantId, id], map: "ndpr_audit_log_pkey")
+  @@index([tenantId, module, entityId], map: "audit_tenant_module_entity_idx")
+  @@index([tenantId, performedBy], map: "audit_tenant_actor_idx")
   @@map("ndpr_audit_log")
 }

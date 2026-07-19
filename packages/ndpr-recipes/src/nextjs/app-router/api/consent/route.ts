@@ -1,192 +1,206 @@
-/**
- * Next.js App Router — Consent API Route
- *
- * Handles reading, writing, and revoking data subject consent records as
- * required by NDPA Section 25 (lawful basis) and Section 26 (consent withdrawal).
- *
- * Endpoints
- * ---------
- *   GET    /api/consent?subjectId=xxx   — Load the active consent record
- *   POST   /api/consent                 — Save new consent (revokes previous)
- *   DELETE /api/consent?subjectId=xxx   — Revoke all active consent
- *
- * How to use
- * ----------
- * Copy this file to `app/api/consent/route.ts` in your Next.js project.
- * Ensure the `ndpr_consent_records` table exists (run the ndpr-recipes migration).
- *
- * @module consent/route
- */
-
+import { PrismaClient, type ConsentRecord } from '@prisma/client';
+import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit/server';
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import {
-  validateConsentStructured,
-  type ConsentSettings,
-} from '@tantainnovative/ndpr-toolkit/server';
+  getNDPRContextProblem,
+  resolveNDPRRequestContext,
+} from '../../request-context';
+import {
+  runSerializableTransaction,
+  toInputJson,
+  validateConsentPayload,
+} from '../../../shared-contracts';
 
 const prisma = new PrismaClient();
 
-// ---------------------------------------------------------------------------
-// GET /api/consent?subjectId=xxx
-// ---------------------------------------------------------------------------
-
-/**
- * Load the most recent active (non-revoked) consent record for a data subject.
- *
- * NDPA Section 25 requires that data controllers retain evidence of consent —
- * this endpoint lets your front-end verify whether a subject has already
- * consented so you can skip the consent banner on return visits.
- *
- * Query params:
- *   subjectId (required) — stable identifier for the data subject
- *
- * Returns 200 with the ConsentRecord, or 200 with `null` if none exists.
- */
-export async function GET(req: NextRequest) {
-  const subjectId = req.nextUrl.searchParams.get('subjectId');
-
-  if (!subjectId) {
-    return NextResponse.json({ error: 'subjectId required' }, { status: 400 });
-  }
+/** Load consent for the verified subject. Query/body subject IDs are ignored. */
+export async function GET(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'subject');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
 
   const record = await prisma.consentRecord.findFirst({
-    where: { subjectId, revokedAt: null },
+    where: {
+      tenantId: context.tenantId,
+      subjectId: context.subjectId as string,
+      revokedAt: null,
+    },
     orderBy: { createdAt: 'desc' },
   });
 
-  return NextResponse.json(record);
+  return NextResponse.json(record ? toConsentSettings(record) : null);
 }
 
-// ---------------------------------------------------------------------------
-// POST /api/consent
-// ---------------------------------------------------------------------------
-
 /**
- * Persist a new consent decision for a data subject.
- *
- * The route follows the immutable-audit pattern mandated by NDPA Section 25:
- * any previously active record is soft-revoked before the new one is inserted,
- * so the full consent history is preserved for accountability purposes.
- *
- * Body (JSON):
- *   subjectId   (required) — stable subject identifier
- *   consents    (required) — map of consent category → boolean
- *   version     (required) — consent policy version string
- *   method      (optional) — how consent was captured (default: 'api')
- *   lawfulBasis (optional) — NDPA lawful basis, e.g. 'consent', 'legitimate_interest'
- *
- * Returns 201 with the newly created ConsentRecord.
+ * Save one explicit consent choice for the verified subject. Replacement,
+ * insert, and accountability audit are committed atomically. A repeated API
+ * adapter request with the same client timestamp returns the original record.
  */
-export async function POST(req: NextRequest) {
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
+export async function POST(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'subject');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
+
+  const body = await parseJson(request);
+  const validation = validateConsentPayload(body);
+  if (!validation.valid) {
     return NextResponse.json(
-      { error: 'Body must be valid JSON.', fields: {} },
+      { error: 'Validation failed.', fields: validation.fields },
       { status: 400 },
     );
   }
 
-  if (!isRecord(body)) {
-    return NextResponse.json(
-      { error: 'Validation failed.', fields: { _root: 'Payload must be an object' } },
-      { status: 400 },
-    );
-  }
+  const settings = validation.data;
+  const tenantId = context.tenantId;
+  const subjectId = context.subjectId as string;
+  const clientTimestamp = new Date(settings.timestamp);
+  const activeSubjectKey = JSON.stringify([tenantId, subjectId]);
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+  const userAgent = request.headers.get('user-agent');
 
-  const subjectId = typeof body.subjectId === 'string' ? body.subjectId.trim() : '';
-  const { valid, errors, data } = validateConsentStructured(body as ConsentSettings);
-
-  if (!subjectId || !valid || !data) {
-    return NextResponse.json(
-      {
-        error: 'Validation failed.',
-        fields: {
-          ...(!subjectId ? { subjectId: 'subjectId is required' } : {}),
-          ...Object.fromEntries(errors.map((error) => [error.field, error.message])),
-        },
+  const transactionResult = await runSerializableTransaction(prisma, async (transaction) => {
+    const replay = await transaction.consentRecord.findFirst({
+      where: {
+        tenantId,
+        subjectId,
+        clientTimestamp,
+        version: settings.version,
+        method: settings.method,
       },
-      { status: 400 },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (replay) {
+      return sameConsentMutation(replay, settings)
+        ? { kind: 'record' as const, record: replay }
+        : { kind: 'conflict' as const };
+    }
+
+    await transaction.consentRecord.updateMany({
+      where: { tenantId, subjectId, revokedAt: null },
+      data: { revokedAt: new Date(), activeSubjectKey: null },
+    });
+    const created = await transaction.consentRecord.create({
+      data: {
+        tenantId,
+        subjectId,
+        activeSubjectKey,
+        consents: toInputJson(settings.consents),
+        version: settings.version,
+        method: settings.method,
+        hasInteracted: settings.hasInteracted,
+        lawfulBasis: settings.lawfulBasis ?? null,
+        ipAddress,
+        userAgent,
+        clientTimestamp,
+      },
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'consent',
+        action: 'created',
+        entityId: created.id,
+        entityType: 'ConsentRecord',
+        changes: toInputJson({
+          version: settings.version,
+          method: settings.method,
+          hasInteracted: settings.hasInteracted,
+          consentCategories: Object.keys(settings.consents),
+          subjectId,
+          subjectIdentitySource: context.subjectSource,
+        }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return { kind: 'record' as const, record: created };
+  });
+
+  if (!transactionResult.committed) {
+    return NextResponse.json(
+      { error: 'Concurrent consent update conflict; retry the same idempotent request.' },
+      { status: 409 },
     );
   }
-
-  // Revoke any previously active consent records so there is at most one
-  // active record per subject at all times (immutable-audit pattern).
-  await prisma.consentRecord.updateMany({
-    where: { subjectId, revokedAt: null },
-    data: { revokedAt: new Date() },
-  });
-
-  // Insert the new consent record, capturing request metadata for evidence.
-  const record = await prisma.consentRecord.create({
-    data: {
-      subjectId,
-      consents: data.consents,
-      version: data.version,
-      method: data.method,
-      lawfulBasis: data.lawfulBasis ?? null,
-      ipAddress: req.headers.get('x-forwarded-for'),
-      userAgent: req.headers.get('user-agent'),
-    },
-  });
-
-  // Write an audit log entry for accountability (NDPA Section 44).
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'consent',
-      action: 'created',
-      entityId: record.id,
-      entityType: 'ConsentRecord',
-      changes: { subjectId, version: data.version, consents: data.consents },
-    },
-  });
-
-  return NextResponse.json(record, { status: 201 });
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-// ---------------------------------------------------------------------------
-// DELETE /api/consent?subjectId=xxx
-// ---------------------------------------------------------------------------
-
-/**
- * Revoke all active consent records for a data subject.
- *
- * NDPA Section 26 grants data subjects the right to withdraw consent at any
- * time. This endpoint soft-revokes records rather than deleting them so the
- * audit trail remains intact for regulatory inspection.
- *
- * Query params:
- *   subjectId (required) — stable identifier for the data subject
- *
- * Returns 200 `{ success: true }` when complete.
- */
-export async function DELETE(req: NextRequest) {
-  const subjectId = req.nextUrl.searchParams.get('subjectId');
-
-  if (!subjectId) {
-    return NextResponse.json({ error: 'subjectId required' }, { status: 400 });
+  const record = transactionResult.value;
+  if (record.kind === 'conflict') {
+    return NextResponse.json(
+      { error: 'Idempotency collision: timestamp/version/method already identify a different consent payload.' },
+      { status: 409 },
+    );
   }
+  return NextResponse.json(toConsentSettings(record.record), { status: 201 });
+}
 
-  await prisma.consentRecord.updateMany({
-    where: { subjectId, revokedAt: null },
-    data: { revokedAt: new Date() },
+/** Revoke active consent for the verified subject without deleting evidence. */
+export async function DELETE(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'subject');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
+
+  const tenantId = context.tenantId;
+  const subjectId = context.subjectId as string;
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+  const revoked = await prisma.$transaction(async (transaction) => {
+    const result = await transaction.consentRecord.updateMany({
+      where: { tenantId, subjectId, revokedAt: null },
+      data: { revokedAt: new Date(), activeSubjectKey: null },
+    });
+    if (result.count > 0) {
+      await transaction.complianceAuditLog.create({
+        data: {
+          tenantId,
+          module: 'consent',
+          action: 'revoked',
+          entityId: subjectId,
+          entityType: 'ConsentRecord',
+          changes: toInputJson({
+            revokedRecords: result.count,
+            subjectId,
+            subjectIdentitySource: context.subjectSource,
+          }),
+          performedBy: context.actorId,
+          ipAddress,
+        },
+      });
+    }
+    return result.count;
   });
 
-  // Write an audit log entry for the revocation.
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'consent',
-      action: 'revoked',
-      entityId: subjectId,
-      entityType: 'ConsentRecord',
-    },
-  });
+  return NextResponse.json({ success: true, revoked });
+}
 
-  return NextResponse.json({ success: true });
+function toConsentSettings(record: ConsentRecord): ConsentSettings {
+  return {
+    consents: record.consents as ConsentSettings['consents'],
+    timestamp: record.clientTimestamp?.getTime() ?? record.createdAt.getTime(),
+    version: record.version,
+    method: record.method,
+    hasInteracted: record.hasInteracted,
+    lawfulBasis: (record.lawfulBasis as ConsentSettings['lawfulBasis']) ?? undefined,
+  };
+}
+
+async function parseJson(request: NextRequest): Promise<unknown> {
+  try {
+    return await request.json();
+  } catch {
+    return null;
+  }
+}
+
+
+function sameConsentMutation(
+  record: ConsentRecord,
+  settings: ConsentSettings,
+): boolean {
+  const storedConsents = record.consents as Record<string, boolean>;
+  return JSON.stringify(sortedConsentEntries(storedConsents))
+      === JSON.stringify(sortedConsentEntries(settings.consents))
+    && record.hasInteracted === settings.hasInteracted
+    && (record.lawfulBasis ?? undefined) === settings.lawfulBasis;
+}
+
+function sortedConsentEntries(consents: Record<string, boolean>) {
+  return Object.entries(consents).sort(([left], [right]) => left.localeCompare(right));
 }

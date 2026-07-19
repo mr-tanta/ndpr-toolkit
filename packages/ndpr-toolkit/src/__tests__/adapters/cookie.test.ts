@@ -243,3 +243,25 @@ describe('cookieAdapter', () => {
     });
   });
 });
+
+
+
+describe('cookieAdapter hardening contracts', () => {
+  it('rejects cookies larger than the configured byte budget', () => {
+    const adapter = cookieAdapter('large', {
+      maxBytes: 40,
+      onError: jest.fn(),
+    });
+    expect(() => adapter.save({ value: 'x'.repeat(100) })).toThrow();
+  });
+
+  it('labels browser-written cookies as mutable UX state', () => {
+    expect(cookieAdapter('consent').capabilities).toEqual(
+      expect.objectContaining({
+        integrity: 'unverified-client-state',
+        evidenceSuitability: 'ux-state-only',
+        serverReadable: true,
+      }),
+    );
+  });
+});

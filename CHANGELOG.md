@@ -16,6 +16,39 @@ Compliance-impacting examples:
 - `Features`: add a new optional GAID check behind explicit config.
 - `Compliance Rule Changes`: update DCPMI thresholds, CAR deadlines, breach notification content assumptions, or compliance score weights because NDPC guidance changed.
 
+## [6.0.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.4...v6.0.0) (2026-07-19)
+
+### ⚠ BREAKING CHANGES
+
+* **breach:** `highRisk` and `notificationRequired` are force-on-only options (`true`). A duty may resolve to false only from complete risk evidence correlated to the same breach; missing, malformed, mismatched, or impossible evidence now fails closed.
+* **recipes:** tenant, subject, actor, reporter, assessor, and role authority now comes from server configuration or verified request context. Existing copied integrations must set `NDPR_TENANT_ID`, connect `resolveVerifiedNDPRActor`, and preserve the tenant predicates and atomic audit writes.
+* **recipes schema:** consent, DSR, breach, ROPA, DPIA, lawful-basis, cross-border, and audit persistence is tenant-scoped. Populated `@tantainnovative/ndpr-recipes@0.1.x` or `0.2.0` databases must use the reviewed `migrations/0.3.0` procedure; do not use a blind Prisma or Drizzle schema push.
+* **generated APIs:** consent responses expose canonical `ConsentSettings` rather than raw persistence rows, and evidence DELETE operations archive records instead of physically deleting them.
+
+### Features
+
+* **create-ndpr:** generate and strictly verify 15 complete Next.js App/Pages, root/`src`, Express, Prisma, Drizzle, and no-ORM combinations with fail-closed request-context seams.
+* **recipes:** add production request-context, operational-indicator, server-storage, atomic persistence, replay-safe consent, evidence archival, and complete migration artifacts.
+* **packages:** release `@tantainnovative/create-ndpr@0.5.0` and `@tantainnovative/ndpr-recipes@0.3.0`; the unscoped `create-ndpr@1.0.0` alias remains unchanged and delegates to the latest scoped CLI.
+
+### Bug Fixes
+
+* **consent:** preserve canonical safe-integer client timestamps across create, replay, replacement, persistence, and load paths; reject fractional timestamps before database access.
+* **breach:** enforce ordered incident/evidence chronology and prevent bare boolean false values or incomplete assessments from waiving notification duties.
+* **car:** reject noncanonical, inherited, accessor-backed, out-of-range, cross-year, or impossible deadline overrides and malformed ruleset provenance without invoking hostile getters.
+* **recipes:** reject malformed Express JSON bodies before database access and derive reporter/assessor/approval fields from verified server context.
+
+### Compliance Rule Changes
+
+* Bundle the reviewed 2026 CAR filing extension to 30 May with explicit ruleset provenance. Re-run CAR and aggregate audit output after upgrading and verify current NDPC guidance before filing.
+* Treat Commission and high-risk data-subject breach duties as applicable until complete correlated assessment evidence establishes otherwise. Re-run stored breach-readiness assessments after upgrading.
+
+### Security and Release Integrity
+
+* Build fresh toolkit declarations before recipe typechecking so stale `dist` output cannot hide package-boundary errors.
+* Verify the exact npm tarball later published, recheck its SHA-256 before upload, and exercise all 22 ESM, CJS, TypeScript, and stylesheet subpaths.
+* Preserve historical consent and evidence records through revocation/soft archival and keep business plus accountability writes in one transaction.
+
 ## [5.7.4](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.3...v5.7.4) (2026-06-27)
 
 

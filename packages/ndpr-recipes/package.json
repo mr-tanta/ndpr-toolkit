@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-recipes",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": false,
   "description": "Backend recipes for @tantainnovative/ndpr-toolkit — Prisma schemas, API routes, and ORM adapters for Nigeria NDPA 2023 / NDPC GAID 2025 compliance",
   "license": "MIT",
@@ -14,21 +14,79 @@
     "url": "git+https://github.com/mr-tanta/ndpr-toolkit.git",
     "directory": "packages/ndpr-recipes"
   },
-  "keywords": ["ndpa", "ndpr", "gaid-2025", "dcpmi", "compliance-audit-return", "nigeria", "data-protection", "prisma", "nextjs", "express"],
+  "scripts": {
+    "build": "pnpm prisma:generate && tsc -p tsconfig.json",
+    "typecheck": "pnpm prisma:generate && tsc --noEmit -p tsconfig.json",
+    "prisma:format": "prisma format --schema prisma/schema.prisma",
+    "prisma:validate": "prisma validate --schema prisma/schema.prisma",
+    "prisma:generate": "prisma generate --schema prisma/schema.prisma"
+  },
+  "keywords": [
+    "ndpa",
+    "ndpr",
+    "gaid-2025",
+    "dcpmi",
+    "compliance-audit-return",
+    "nigeria",
+    "data-protection",
+    "prisma",
+    "nextjs",
+    "express"
+  ],
   "files": [
+    "dist/**/*",
     "src/**/*",
     "prisma/**/*",
+    "migrations/**/*",
     "README.md"
   ],
   "peerDependencies": {
-    "@tantainnovative/ndpr-toolkit": "^5.7.3"
+    "@paralleldrive/cuid2": ">=3.3.0 <4.0.0",
+    "@prisma/client": ">=6.19.3 <7.0.0",
+    "@tantainnovative/ndpr-toolkit": "6.0.0",
+    "drizzle-orm": ">=0.45.2 <1.0.0",
+    "express": ">=5.2.1 <6.0.0",
+    "next": ">=16.2.7 <17.0.0",
+    "react": ">=19.2.7 <20.0.0"
   },
   "peerDependenciesMeta": {
+    "@paralleldrive/cuid2": {
+      "optional": true
+    },
+    "@prisma/client": {
+      "optional": true
+    },
     "@tantainnovative/ndpr-toolkit": {
       "optional": false
+    },
+    "drizzle-orm": {
+      "optional": true
+    },
+    "express": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
     }
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@paralleldrive/cuid2": "3.3.0",
+    "@prisma/client": "6.19.3",
+    "@tantainnovative/ndpr-toolkit": "workspace:6.0.0",
+    "@types/express": "5.0.6",
+    "@types/node": "22.20.1",
+    "@types/react": "19.2.17",
+    "drizzle-orm": "0.45.2",
+    "express": "5.2.1",
+    "next": "16.2.7",
+    "prisma": "6.19.3",
+    "react": "19.2.7",
+    "typescript": "6.0.3"
   }
 }

@@ -16,8 +16,15 @@ export type { CrossBorderTransfer, CrossBorderSummary } from './types/cross-bord
 export type { ProcessingRecord, RecordOfProcessingActivities, ROPASummary } from './types/ropa';
 
 // All hooks
-export { useConsent } from './hooks/useConsent';
-export type { UseConsentOptions, UseConsentReturn } from './hooks/useConsent';
+export {
+  useConsent,
+  ConsentPersistenceError,
+} from './hooks/useConsent';
+export type {
+  UseConsentOptions,
+  UseConsentReturn,
+  ConsentPersistenceOperation,
+} from './hooks/useConsent';
 export { useDCPMI } from './hooks/useDCPMI';
 export type { DCPMIInput, DCPMIClassification, DCPMIClassificationOptions } from './utils/dcpmi';
 export { useCookieScan } from './hooks/useCookieScan';
@@ -57,7 +64,13 @@ export type { UseROPAOptions, UseROPAReturn } from './hooks/useROPA';
 // Compliance score
 export { useComplianceScore } from './hooks/useComplianceScore';
 export type { UseComplianceScoreOptions } from './hooks/useComplianceScore';
-export type { ComplianceInput, ComplianceReport } from './utils/compliance-score';
+export type {
+  ComplianceInput,
+  ComplianceReport,
+  ComplianceScoreOptions,
+  ComplianceApplicability,
+  ComplianceRulesetOverrides,
+} from './utils/compliance-score';
 
 export { useAdaptivePolicyWizard } from './hooks/useAdaptivePolicyWizard';
 export type { UseAdaptivePolicyWizardOptions, UseAdaptivePolicyWizardReturn } from './hooks/useAdaptivePolicyWizard';

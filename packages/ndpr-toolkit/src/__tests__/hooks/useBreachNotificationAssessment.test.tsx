@@ -46,7 +46,22 @@ describe('useBreachNotificationAssessment', () => {
   });
 
   it('requires data-subject communication on high risk', () => {
-    const assessment = { highRisksToRightsAndFreedoms: true } as RiskAssessment;
+    const assessment: RiskAssessment = {
+      id: 'a1',
+      breachId: report.id,
+      assessedAt: DISCOVERED + HOUR,
+      assessor: { name: 'Bola', role: 'DPO', email: 'dpo@example.com' },
+      confidentialityImpact: 3,
+      integrityImpact: 2,
+      availabilityImpact: 1,
+      harmLikelihood: 3,
+      harmSeverity: 4,
+      overallRiskScore: 3.2,
+      riskLevel: 'high',
+      risksToRightsAndFreedoms: true,
+      highRisksToRightsAndFreedoms: true,
+      justification: 'The exposed identifiers create a high phishing risk.',
+    };
     const r = capture(report, { assessment, asOf: DISCOVERED + 24 * HOUR });
     expect(r.dataSubjectCommunicationRequired).toBe(true);
   });

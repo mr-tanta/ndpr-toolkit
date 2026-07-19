@@ -1,68 +1,113 @@
-/**
- * RSC-safety guards for the /server entry.
- *
- * These tests inspect the built bundle (dist/server.{mjs,js}) rather than
- * the source, because the contract we're enforcing is what consumers
- * actually pull when they `import from '@tantainnovative/ndpr-toolkit/server'`.
- * Source-level guards can pass while bundler chunk-splitting silently pulls
- * in React via a transitive dependency.
- *
- * If the build hasn't been run yet, the tests skip cleanly so a fresh
- * `pnpm test` (without a prior `pnpm build`) doesn't fail spuriously.
- */
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 
-const distDir = path.resolve(__dirname, '..', '..', 'dist');
-const serverMjs = path.join(distDir, 'server.mjs');
-const serverCjs = path.join(distDir, 'server.js');
+const distDir = path.resolve(process.cwd(), 'dist');
+const entries = ['core', 'server'] as const;
 
-const distExists = fs.existsSync(serverMjs) && fs.existsSync(serverCjs);
+type EntryName = (typeof entries)[number];
+type ModuleFormat = 'mjs' | 'js';
 
-(distExists ? describe : describe.skip)(
-  '/server entry — built bundle RSC-safety',
-  () => {
-    let mjs: string;
-    let cjs: string;
+function artifact(entry: EntryName, format: ModuleFormat): string {
+  return path.join(distDir, `${entry}.${format}`);
+}
 
-    beforeAll(() => {
-      mjs = fs.readFileSync(serverMjs, 'utf8');
-      cjs = fs.readFileSync(serverCjs, 'utf8');
-    });
+function collectLocalGraph(
+  entryFile: string,
+  format: ModuleFormat,
+  visited = new Set<string>(),
+): Set<string> {
+  if (visited.has(entryFile)) return visited;
+  visited.add(entryFile);
 
-    it('does not contain a "use client" directive (ESM)', () => {
-      // Match the directive at file start or after whitespace/comments.
-      // Banner injection in tsup writes "use client"; (with semicolon).
-      expect(mjs).not.toMatch(/['"]use client['"]/);
-    });
+  const source = fs.readFileSync(entryFile, 'utf8');
+  const pattern =
+    format === 'mjs'
+      ? /(?:from\s*|import\s*\(\s*|import\s*)["'](\.\/[^"']+)["']/g
+      : /require\(\s*["'](\.\/[^"']+)["']\s*\)/g;
 
-    it('does not contain a "use client" directive (CJS)', () => {
-      expect(cjs).not.toMatch(/['"]use client['"]/);
-    });
+  for (const match of source.matchAll(pattern)) {
+    const dependency = path.resolve(path.dirname(entryFile), match[1]);
+    if (fs.existsSync(dependency)) {
+      collectLocalGraph(dependency, format, visited);
+    }
+  }
+  return visited;
+}
 
-    it('does not import react (ESM)', () => {
-      // Cover bare imports, scoped imports, and dynamic imports.
-      expect(mjs).not.toMatch(/from\s+['"]react['"]/);
-      expect(mjs).not.toMatch(/from\s+['"]react-dom['"]/);
-      expect(mjs).not.toMatch(/import\(\s*['"]react['"]\s*\)/);
-    });
+function graphSource(entry: EntryName, format: ModuleFormat): string {
+  return [...collectLocalGraph(artifact(entry, format), format)]
+    .map((file) => fs.readFileSync(file, 'utf8'))
+    .join('\n');
+}
 
-    it('does not require react (CJS)', () => {
-      expect(cjs).not.toMatch(/require\(\s*['"]react['"]\s*\)/);
-      expect(cjs).not.toMatch(/require\(\s*['"]react-dom['"]\s*\)/);
-    });
+function importWithReactServerCondition(entry: EntryName): void {
+  const url = pathToFileURL(artifact(entry, 'mjs')).href;
+  const forbiddenExports =
+    entry === 'core'
+      ? `
+        for (const name of ['NDPRProvider', 'useNDPRConfig', 'useNDPRLocale']) {
+          if (name in module) throw new Error('/core unexpectedly exports ' + name);
+        }
+      `
+      : '';
+  execFileSync(
+    process.execPath,
+    [
+      '--conditions=react-server',
+      '--input-type=module',
+      '--eval',
+      `const module = await import(${JSON.stringify(url)});${forbiddenExports}`,
+    ],
+    { encoding: 'utf8', stdio: 'pipe' },
+  );
+}
 
-    it('does not reference NDPRProvider, useState, or useContext in source', () => {
-      // Sanity: the curated entry must not transitively pull in React-only
-      // primitives. If any of these appear in the bundled output, a
-      // re-export above accidentally dragged React in.
-      const combined = mjs + '\n' + cjs;
-      expect(combined).not.toMatch(/\bNDPRProvider\b/);
-      // useState/useContext etc. would only appear if a React component
-      // chunk got pulled in. Note: `useFoo` *names* from our own hooks
-      // are intentionally not checked here — those are consumer-facing
-      // re-exports that don't belong on /server but won't pull React if
-      // they're absent. The structural check is the React import above.
-    });
-  },
-);
+function requireBuiltCjs(entry: EntryName): void {
+  execFileSync(
+    process.execPath,
+    [
+      '--conditions=react-server',
+      '--eval',
+      `require(${JSON.stringify(artifact(entry, 'js'))})`,
+    ],
+    { encoding: 'utf8', stdio: 'pipe' },
+  );
+}
+
+describe.each(entries)('/%s built entry — RSC safety', (entry) => {
+  beforeAll(() => {
+    for (const format of ['mjs', 'js'] as const) {
+      const file = artifact(entry, format);
+      if (!fs.existsSync(file)) {
+        throw new Error(
+          `Missing ${file}. Build the library before running built-artifact RSC tests.`,
+        );
+      }
+    }
+  });
+
+  it.each(['mjs', 'js'] as const)(
+    'has no client directive or React dependency in its reachable %s graph',
+    (format) => {
+      const source = graphSource(entry, format);
+      expect(source).not.toMatch(/["']use client["']/);
+      expect(source).not.toMatch(
+        /(?:from\s*|require\(\s*)["']react(?:-dom)?(?:\/[^"']*)?["']/,
+      );
+      expect(source).not.toMatch(
+        /import\(\s*["']react(?:-dom)?(?:\/[^"']*)?["']\s*\)/,
+      );
+      expect(source).not.toMatch(/\bNDPRProvider\b/);
+    },
+  );
+
+  it('imports under the react-server condition', () => {
+    expect(() => importWithReactServerCondition(entry)).not.toThrow();
+  });
+
+  it('loads its CommonJS artifact without React', () => {
+    expect(() => requireBuiltCjs(entry)).not.toThrow();
+  });
+});

@@ -57,10 +57,9 @@ jobs:
         # Node 22 ships with npm 10.x; npm Trusted Publishing (the GitHub
         # OIDC → npm token exchange) requires npm 11.5.1 or later.
         #
-        # Pinned to npm@11 (3.10.6) instead of npm@latest — a future major
-        # npm release could break publish on the day it lands. Bump this
-        # pin deliberately.
-        run: npm install -g npm@11
+        # Pin exactly so the publishing client cannot drift between releases.
+        # Bump this deliberately after a reviewed workflow rehearsal.
+        run: npm install -g npm@11.5.1
 
       - name: Install dependencies
         # --frozen-lockfile: build the published tarball from the exact locked
@@ -69,11 +68,23 @@ jobs:
         # and a frozen install can't silently drift into a published build.
         run: pnpm install --frozen-lockfile
 
+      - name: Build library
+        # Build first because the RSC safety suite verifies the published
+        # core/server artifacts and does not skip when dist is absent.
+        run: pnpm build:lib
+
+      - name: Build backend recipes
+        # Compile every shipped Next.js/Express/ORM recipe before publishing
+        # the companion package; this also regenerates its pinned Prisma client.
+        run: pnpm build:recipes
+
+      - name: Verify generated create-ndpr scaffolds
+        # Blocks CLI publication if any generated framework/ORM branch or the
+        # generated Prisma schema fails strict consumer-style typechecking.
+        run: pnpm verify:create-ndpr
+
       - name: Run tests
         run: pnpm test:serial
-
-      - name: Build library
-        run: pnpm build:lib
 
       - name: Verify entry points
         run: |
@@ -104,14 +115,29 @@ jobs:
           fi
           echo "Version verified: $PKG_VERSION"
 
-      # Tarball-level integration test: build a packed tarball, install it
-      # into a fresh sandbox, then resolve every documented subpath via
-      # ESM import, CJS require, /styles asset path, and TypeScript tsc.
-      # Closes the gap that let 3.8.0 through 3.10.2 silently ship with
-      # missing exports — see scripts/verify-tarball.mjs for full rationale.
-      # If this step fails, the publish does not happen.
+      # Pack once with lifecycle scripts disabled. The exact archive path is
+      # passed to both the consumer verifier and npm publish, eliminating the
+      # rebuild/repack gap that can otherwise invalidate tarball verification.
+      - name: Pack immutable toolkit release artifact
+        id: pack-toolkit
+        env:
+          ARTIFACT_DIR: ${{ runner.temp }}/ndpr-toolkit-publish
+        run: |
+          mkdir -p "$ARTIFACT_DIR"
+          PACK_JSON=$(npm pack --json --ignore-scripts --pack-destination "$ARTIFACT_DIR")
+          TARBALL=$(printf '%s' "$PACK_JSON" | node -e "let input=''; process.stdin.on('data', c => input += c); process.stdin.on('end', () => process.stdout.write(JSON.parse(input)[0].filename));")
+          TARBALL_PATH="$ARTIFACT_DIR/$TARBALL"
+          test -f "$TARBALL_PATH"
+          echo "path=$TARBALL_PATH" >> "$GITHUB_OUTPUT"
+          echo "sha256=$(sha256sum "$TARBALL_PATH" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          echo "Packed $TARBALL_PATH"
+
+      # Tarball-level integration test: install the immutable release archive
+      # into a fresh sandbox, then resolve every documented subpath via ESM,
+      # CJS, /styles, and TypeScript. The verifier does not delete a supplied
+      # tarball, leaving the same bytes available to the publish step.
       - name: Verify tarball — every subpath resolves (ESM + CJS + TS)
-        run: pnpm verify:tarball --skip-build
+        run: pnpm verify:tarball --tarball "${{ steps.pack-toolkit.outputs.path }}"
 
       # Authentication: npm Trusted Publishing via OIDC.
       # Uses `npm publish` (not `pnpm publish`) because pnpm doesn't yet
@@ -120,14 +146,20 @@ jobs:
       # above and the registry .npmrc that actions/setup-node wrote, then
       # exchanges it for a short-lived npm token. No NPM_TOKEN needed.
       #
-      # Requires a registered trusted publisher at:
-      #   https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit/access
-      #
+      # Publish the already-verified tarball with lifecycle scripts disabled:
+      # root prepublishOnly must not rebuild dist after consumer verification.
       # `--provenance` adds the sigstore attestation.
-      - name: Publish to npm (Trusted Publishing + provenance attestation)
+      - name: Publish verified tarball to npm (Trusted Publishing + provenance)
         if: github.event_name == 'release'
         working-directory: .
-        run: npm publish --access public --provenance
+        run: |
+          TARBALL="${{ steps.pack-toolkit.outputs.path }}"
+          ACTUAL_SHA=$(sha256sum "$TARBALL" | cut -d' ' -f1)
+          if [ "$ACTUAL_SHA" != "${{ steps.pack-toolkit.outputs.sha256 }}" ]; then
+            echo "Verified tarball changed before publish" >&2
+            exit 1
+          fi
+          npm publish "$TARBALL" --access public --provenance --ignore-scripts
 
       # -----------------------------------------------------------------------
       # Companion packages — same Trusted Publishing (OIDC) mechanism, each from

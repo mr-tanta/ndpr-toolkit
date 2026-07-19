@@ -1,71 +1,69 @@
-import { ConsentSettings } from '../types/consent';
+import type { ConsentSettings } from '../types/consent';
 
 const DEFAULT_STORAGE_KEY = 'ndpr_consent';
 const AUDIT_SUFFIX = '_audit';
 
 /**
- * Represents a single entry in the consent audit trail.
- * Each entry captures what happened, when, and the full consent state
- * at that point in time, satisfying NDPA recordkeeping requirements.
+ * Client consent activity records are mutable browser state. They can support
+ * UX and troubleshooting, but they are not append-only, tamper-evident, or
+ * authoritative regulatory evidence. Persist authoritative records through
+ * an authenticated server-side system with retention and integrity controls.
  */
+export const CLIENT_CONSENT_ACTIVITY_NOTICE =
+  'Browser consent activity is mutable UX state, not authoritative compliance evidence.';
+
+/** A client-side snapshot of a consent action. */
 export interface ConsentAuditEntry {
-  /** The type of consent action that occurred */
-  action: 'consent_given' | 'consent_withdrawn' | 'consent_updated' | 'consent_expired';
-  /** Unix timestamp (ms) when the action occurred */
+  action:
+    | 'consent_given'
+    | 'consent_withdrawn'
+    | 'consent_updated'
+    | 'consent_expired';
   timestamp: number;
-  /** Version of the consent form at the time of the action */
   version: string;
-  /** Full snapshot of consent category states */
   categories: Record<string, boolean>;
-  /** How consent was collected (e.g. "banner", "customize", "api") */
   method: string;
-  /** Browser user-agent string for forensic traceability */
+  /** Browser-provided context; optional and trivially spoofable. */
   userAgent?: string;
 }
 
-/**
- * Determines the appropriate audit action by comparing previous and current
- * consent settings. Returns the action type that best describes the change.
- */
-function determineAction(
-  previous: ConsentSettings | null,
-  current: ConsentSettings
-): ConsentAuditEntry['action'] {
-  if (!previous) {
-    return 'consent_given';
-  }
+export type ConsentAuditAppendFailureReason =
+  | 'storage-unavailable'
+  | 'invalid-existing-log'
+  | 'write-failed';
 
-  const prevConsents = previous.consents;
-  const currConsents = current.consents;
-
-  // Check if all current consents are false/withdrawn
-  const allWithdrawn = Object.values(currConsents).every(v => !v);
-  if (allWithdrawn) {
-    return 'consent_withdrawn';
-  }
-
-  // Check if any previously-true consent is now false
-  const anyRevoked = Object.keys(prevConsents).some(
-    key => prevConsents[key] && currConsents[key] === false
-  );
-  if (anyRevoked) {
-    return 'consent_withdrawn';
-  }
-
-  return 'consent_updated';
+export interface ConsentAuditAppendResult {
+  persisted: boolean;
+  medium: 'local-storage';
+  evidenceSuitability: 'ux-state-only';
+  notice: typeof CLIENT_CONSENT_ACTIVITY_NOTICE;
+  failureReason?: ConsentAuditAppendFailureReason;
+  error?: unknown;
 }
 
-/**
- * Creates a new audit entry from consent settings. If `previousSettings` is
- * provided, the action is automatically determined by comparing old and new
- * states. Otherwise `action` defaults to `'consent_given'`.
- */
+function determineAction(
+  previous: ConsentSettings | null,
+  current: ConsentSettings,
+): ConsentAuditEntry['action'] {
+  if (!previous) return 'consent_given';
+
+  const allWithdrawn = Object.values(current.consents).every((value) => !value);
+  if (allWithdrawn) return 'consent_withdrawn';
+
+  const anyRevoked = Object.keys(previous.consents).some(
+    (key) => previous.consents[key] && current.consents[key] === false,
+  );
+  return anyRevoked ? 'consent_withdrawn' : 'consent_updated';
+}
+
+/** Create a client activity snapshot from validated consent settings. */
 export function createAuditEntry(
   settings: ConsentSettings,
   previousSettings?: ConsentSettings | null,
-  actionOverride?: ConsentAuditEntry['action']
+  actionOverride?: ConsentAuditEntry['action'],
 ): ConsentAuditEntry {
-  const action = actionOverride ?? determineAction(previousSettings ?? null, settings);
+  const action =
+    actionOverride ?? determineAction(previousSettings ?? null, settings);
 
   return {
     action,
@@ -73,57 +71,83 @@ export function createAuditEntry(
     version: settings.version,
     categories: { ...settings.consents },
     method: settings.method,
-    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+    userAgent:
+      typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
   };
 }
 
 /**
- * Retrieves the full consent audit log from localStorage.
- * Returns an empty array if no log exists or parsing fails.
- *
- * @param storageKey - Base storage key (the audit key is derived as `${storageKey}_audit`)
+ * Retrieve mutable client activity from localStorage. An empty array means
+ * either no data or unavailable/invalid browser storage; do not use this as
+ * proof that no consent activity occurred.
  */
-export function getAuditLog(storageKey: string = DEFAULT_STORAGE_KEY): ConsentAuditEntry[] {
-  const auditKey = `${storageKey}${AUDIT_SUFFIX}`;
-
-  if (typeof window === 'undefined') {
-    return [];
-  }
+export function getAuditLog(
+  storageKey: string = DEFAULT_STORAGE_KEY,
+): ConsentAuditEntry[] {
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') return [];
 
   try {
-    const raw = localStorage.getItem(auditKey);
-    if (!raw) {
-      return [];
-    }
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    const raw = localStorage.getItem(`${storageKey}${AUDIT_SUFFIX}`);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    return Array.isArray(parsed) ? (parsed as ConsentAuditEntry[]) : [];
   } catch {
     return [];
   }
 }
 
 /**
- * Appends a single audit entry to the consent audit log in localStorage.
- * The log is append-only; existing entries are never modified.
- *
- * @param entry     - The audit entry to append
- * @param storageKey - Base storage key (the audit key is derived as `${storageKey}_audit`)
+ * Add an entry by rewriting the localStorage array. This operation is neither
+ * atomic nor append-only. Its result makes write failures observable while
+ * remaining backward-compatible for callers that ignore the return value.
  */
 export function appendAuditEntry(
   entry: ConsentAuditEntry,
-  storageKey: string = DEFAULT_STORAGE_KEY
-): void {
-  const auditKey = `${storageKey}${AUDIT_SUFFIX}`;
+  storageKey: string = DEFAULT_STORAGE_KEY,
+): ConsentAuditAppendResult {
+  const baseResult: Pick<
+    ConsentAuditAppendResult,
+    'medium' | 'evidenceSuitability' | 'notice'
+  > = {
+    medium: 'local-storage',
+    evidenceSuitability: 'ux-state-only',
+    notice: CLIENT_CONSENT_ACTIVITY_NOTICE,
+  };
 
-  if (typeof window === 'undefined') {
-    return;
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+    return {
+      ...baseResult,
+      persisted: false,
+      failureReason: 'storage-unavailable',
+    };
   }
 
+  const auditKey = `${storageKey}${AUDIT_SUFFIX}`;
   try {
-    const existing = getAuditLog(storageKey);
-    existing.push(entry);
-    localStorage.setItem(auditKey, JSON.stringify(existing));
-  } catch {
-    // Silently fail — storage may be full or unavailable
+    const raw = localStorage.getItem(auditKey);
+    let existing: ConsentAuditEntry[] = [];
+    if (raw) {
+      const parsed = JSON.parse(raw) as unknown;
+      if (!Array.isArray(parsed)) {
+        return {
+          ...baseResult,
+          persisted: false,
+          failureReason: 'invalid-existing-log',
+          error: new TypeError('Existing client consent activity is not an array'),
+        };
+      }
+      existing = parsed as ConsentAuditEntry[];
+    }
+
+    localStorage.setItem(auditKey, JSON.stringify([...existing, entry]));
+    return { ...baseResult, persisted: true };
+  } catch (error) {
+    return {
+      ...baseResult,
+      persisted: false,
+      failureReason:
+        error instanceof SyntaxError ? 'invalid-existing-log' : 'write-failed',
+      error,
+    };
   }
 }

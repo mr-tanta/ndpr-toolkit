@@ -1,24 +1,17 @@
 /**
- * Core module — cross-cutting types, utilities, locales, and the NDPRProvider.
+ * Core module — React-free cross-cutting types, utilities, and locale data.
  *
- * What this entry contains:
- * - All NDPA-related TypeScript types (no runtime cost in JS).
- * - Pure validators / generators (validateConsentStructured, generatePolicyText, etc.).
- * - Locale data (defaultLocale, yorubaLocale, ...) and the mergeLocale helper.
- * - NDPRProvider plus its `useNDPRConfig` / `useNDPRLocale` hooks. These
- *   pull in React Context — they are *client-only* and bring React into the
- *   import graph wherever this entry is consumed.
+ * This entry has the same server-safe runtime contract as `/server`: it does
+ * not export components, hooks, providers, or any module with a transitive
+ * React dependency. It is suitable for React Server Components, Node, edge,
+ * workers, and browser code that only needs toolkit logic.
  *
- * RSC guidance:
- * Importing `validateConsentStructured` (or any pure utility above) from a
- * Server Component file is fine — bundlers tree-shake the Provider out of
- * the server bundle as long as you do not also call the hooks. For a strictly
- * zero-React surface (no Provider, no hooks, no transitive React import),
- * use `@tantainnovative/ndpr-toolkit/server`.
+ * `NDPRProvider`, `useNDPRConfig`, and `useNDPRLocale` are client APIs and are
+ * exported from the package root instead.
  *
  * @example
  *   import { validateConsentStructured } from '@tantainnovative/ndpr-toolkit/core';
- *   import { NDPRProvider } from '@tantainnovative/ndpr-toolkit'; // root entry
+ *   import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
  */
 
 // All types
@@ -34,10 +27,6 @@ export type { LawfulBasisComplianceGap, LawfulBasisValidationResult } from './ut
 export type { TransferValidationResult, TransferRiskResult } from './utils/cross-border';
 export type { ROPAComplianceGap, ROPAValidationResult } from './utils/ropa';
 
-// NDPRProvider
-export { NDPRProvider, useNDPRConfig, useNDPRLocale } from './components/NDPRProvider';
-export type { NDPRConfig } from './components/NDPRProvider';
-
 // i18n locale support
 export type { NDPRLocale } from './types/locale';
 export { defaultLocale } from './locales/en';
@@ -52,8 +41,17 @@ export { mergeLocale } from './utils/locale';
 // All utility functions
 export { validateConsentStructured, validateConsentOptionsStructured } from './utils/consent';
 export type { StructuredValidationError, StructuredValidationResult } from './utils/consent';
-export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
-export type { ConsentAuditEntry } from './utils/consent-audit';
+export {
+  createAuditEntry,
+  getAuditLog,
+  appendAuditEntry,
+  CLIENT_CONSENT_ACTIVITY_NOTICE,
+} from './utils/consent-audit';
+export type {
+  ConsentAuditEntry,
+  ConsentAuditAppendResult,
+  ConsentAuditAppendFailureReason,
+} from './utils/consent-audit';
 export { scanCookies, KNOWN_COOKIES } from './utils/cookie-scanner';
 export type {
   DeclaredCookie,
@@ -130,4 +128,17 @@ export {
 
 // Storage adapter type — re-exported here for ergonomics. The concrete
 // adapter implementations live in `/adapters`.
-export type { StorageAdapter } from './adapters/types';
+export { StorageAdapterError } from './adapters/types';
+export type {
+  StorageAdapter,
+  StorageAdapterCapabilities,
+  StorageAdapterConcurrency,
+  StorageAdapterDurability,
+  StorageAdapterErrorContext,
+  StorageAdapterEvidenceSuitability,
+  StorageAdapterFailureOptions,
+  StorageAdapterIntegrity,
+  StorageAdapterMedium,
+  StorageAdapterMutationFailureMode,
+  StorageAdapterOperation,
+} from './adapters/types';

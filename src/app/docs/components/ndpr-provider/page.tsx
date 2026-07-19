@@ -31,13 +31,13 @@ export default function NDPRProviderDocs() {
         importRows={[
           {
             packagePath: '@tantainnovative/ndpr-toolkit',
-            exports: 'NDPRProvider, useNDPRConfig',
-            useCase: 'App-level organization, DPO, storage, theme, and error-boundary configuration.',
+            exports: 'NDPRProvider, useNDPRConfig, useNDPRLocale',
+            useCase: 'App-level organization, DPO, locale, storage, theme, and error-boundary configuration.',
           },
           {
             packagePath: '@tantainnovative/ndpr-toolkit/core',
-            exports: 'useNDPRLocale, defaultLocale, yorubaLocale, igboLocale, hausaLocale, pidginLocale',
-            useCase: 'Locale-aware copy and merged fallback strings for toolkit components.',
+            exports: 'defaultLocale, yorubaLocale, igboLocale, hausaLocale, pidginLocale',
+            useCase: 'React-free locale data and fallback helpers for server or shared code.',
           },
           {
             packagePath: '@tantainnovative/ndpr-toolkit',
@@ -184,9 +184,9 @@ function PolicyHeader() {
   );
 }
 
-// useNDPRLocale — exported from /core (returns the merged locale,
+// useNDPRLocale — exported from the root entry (returns the merged locale,
 // so every key is always present and non-nullable)
-import { useNDPRLocale } from '@tantainnovative/ndpr-toolkit/core';
+import { useNDPRLocale } from '@tantainnovative/ndpr-toolkit';
 
 function ConsentTitle() {
   const locale = useNDPRLocale();

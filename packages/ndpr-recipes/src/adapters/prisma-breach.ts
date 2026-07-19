@@ -1,136 +1,90 @@
-/**
- * Prisma adapter for the Breach Notification module.
- *
- * Implements StorageAdapter<BreachState> backed by the `ndpr_breach_reports`
- * Prisma model, where BreachState is the shape managed by the useBreach() hook:
- *
- *   {
- *     reports: BreachReport[];
- *     assessments: RiskAssessment[];
- *     notifications: RegulatoryNotification[];
- *   }
- *
- * This adapter persists and loads BreachReport records. RiskAssessments and
- * RegulatoryNotifications are derived/stored as JSON on the breach row for
- * simplicity — extend the schema if you need full relational queries on them.
- *
- * Behaviour
- * ---------
- * - LOAD  → loads all breach reports from the database, ordered newest first.
- * - SAVE  → upserts each report. Assessments and notifications are stored as
- *           JSON in extended columns (see note below on extending the schema).
- * - REMOVE → marks all reports as 'resolved' (no hard deletes; NDPA audit trail).
- *
- * Extending for assessments and notifications
- * -------------------------------------------
- * If you need full query support for RiskAssessments and RegulatoryNotifications,
- * add `assessments Json?` and `notifications Json?` columns to the BreachReport
- * model in your schema.prisma, then update the mapping helpers below.
- *
- * Usage
- * -----
- * Copy this file into your project, then wire it into the toolkit hook:
- *
- *   import { PrismaClient } from '@prisma/client';
- *   import { useBreach } from '@tantainnovative/ndpr-toolkit';
- *   import { prismaBreachAdapter } from './adapters/prisma-breach';
- *
- *   const prisma = new PrismaClient();
- *
- *   function BreachPage() {
- *     const adapter = prismaBreachAdapter(prisma);
- *     const { reports, submitReport } = useBreach({ adapter });
- *     // ...
- *   }
- *
- * Prerequisites
- * -------------
- * - The `ndpr_breach_reports` table must exist (run the ndpr-recipes Prisma migration).
- * - `@prisma/client` must be installed in your project.
- * - `@tantainnovative/ndpr-toolkit` must be installed in your project.
- */
+import {
+  Prisma,
+  type BreachReport as PrismaBreachReport,
+  type PrismaClient,
+} from '@prisma/client';
+import type {
+  BreachReport,
+  RegulatoryNotification,
+  RiskAssessment,
+  StorageAdapter,
+} from '@tantainnovative/ndpr-toolkit';
+import {
+  assertTenantContext,
+  serverStorageCapabilities,
+  type TenantAdapterContext,
+} from './server-storage';
 
-import type { PrismaClient } from '@prisma/client';
-import type { StorageAdapter } from '@tantainnovative/ndpr-toolkit';
-import type { BreachReport, RiskAssessment, RegulatoryNotification } from '@tantainnovative/ndpr-toolkit';
-
-/** The state shape managed by the useBreach() hook */
 export interface BreachState {
   reports: BreachReport[];
   assessments: RiskAssessment[];
   notifications: RegulatoryNotification[];
 }
 
-/**
- * Creates a Prisma-backed StorageAdapter for the breach module's state.
- *
- * @param prisma - Your application's PrismaClient instance.
- * @returns A StorageAdapter<BreachState> ready to pass to useBreach().
- */
-export function prismaBreachAdapter(prisma: PrismaClient): StorageAdapter<BreachState> {
+/** Creates an atomic, tenant-scoped Prisma adapter for complete breach state. */
+export function prismaBreachAdapter(
+  prisma: PrismaClient,
+  context: TenantAdapterContext,
+): StorageAdapter<BreachState> {
+  assertTenantContext(context);
+  const { tenantId } = context;
+
   return {
-    /**
-     * Load all breach reports from the database.
-     * Assessments and notifications are returned as empty arrays here;
-     * extend the schema (see file header) if you need to persist them.
-     */
+    capabilities: serverStorageCapabilities,
+
     async load(): Promise<BreachState | null> {
-      const rows = await (prisma as any).breachReport.findMany({
+      const rows = await prisma.breachReport.findMany({
+        where: { tenantId, removedAt: null },
         orderBy: { reportedAt: 'desc' },
       });
-
       if (rows.length === 0) return null;
 
       return {
         reports: rows.map(mapRowToBreachReport),
-        // Assessments and notifications require schema extension — return empty
-        // arrays as a safe default so the hook renders without error.
-        assessments: [],
-        notifications: [],
+        assessments: rows.flatMap((row) => fromJsonArray<RiskAssessment>(row.assessments)),
+        notifications: rows.flatMap((row) =>
+          fromJsonArray<RegulatoryNotification>(row.notifications),
+        ),
       };
     },
 
-    /**
-     * Persist the current breach state.
-     * Each report is upserted by ID. Assessments and notifications are ignored
-     * unless you extend the schema with Json columns for them.
-     */
     async save(state: BreachState): Promise<void> {
-      await Promise.all(
-        state.reports.map((report) =>
-          (prisma as any).breachReport.upsert({
-            where: { id: report.id },
-            update: mapBreachReportToRow(report),
-            create: {
-              id: report.id,
-              ...mapBreachReportToRow(report),
-            },
-          }),
-        ),
-      );
+      assertRelatedRecords(state);
+      const retainedIds = state.reports.map(({ id }) => id);
+
+      await prisma.$transaction(async (transaction) => {
+        await transaction.breachReport.updateMany({
+          where: {
+            tenantId,
+            removedAt: null,
+            ...(retainedIds.length > 0 ? { id: { notIn: retainedIds } } : {}),
+          },
+          data: { removedAt: new Date() },
+        });
+
+        for (const report of state.reports) {
+          const assessments = state.assessments.filter(({ breachId }) => breachId === report.id);
+          const notifications = state.notifications.filter(({ breachId }) => breachId === report.id);
+          const row = mapBreachReportToRow(report, tenantId, assessments, notifications);
+          await transaction.breachReport.upsert({
+            where: { tenantId_id: { tenantId, id: report.id } },
+            create: row,
+            update: row,
+          });
+        }
+      });
     },
 
-    /**
-     * Soft-close all ongoing breach reports by setting their status to 'resolved'.
-     * Hard deletes are never performed to preserve the NDPA compliance audit trail.
-     */
     async remove(): Promise<void> {
-      await (prisma as any).breachReport.updateMany({
-        where: { status: 'ongoing' },
-        data: { status: 'resolved' },
+      await prisma.breachReport.updateMany({
+        where: { tenantId, removedAt: null },
+        data: { removedAt: new Date() },
       });
     },
   };
 }
 
-// ---------------------------------------------------------------------------
-// Mapping helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Map a raw Prisma BreachReport row to the toolkit's BreachReport type.
- */
-function mapRowToBreachReport(row: any): BreachReport {
+function mapRowToBreachReport(row: PrismaBreachReport): BreachReport {
   return {
     id: row.id,
     title: row.title,
@@ -139,43 +93,108 @@ function mapRowToBreachReport(row: any): BreachReport {
     discoveredAt: row.discoveredAt.getTime(),
     occurredAt: row.occurredAt?.getTime(),
     reportedAt: row.reportedAt.getTime(),
-    status: row.status as BreachReport['status'],
     reporter: {
       name: row.reporterName,
       email: row.reporterEmail,
       department: row.reporterDepartment ?? '',
+      phone: row.reporterPhone ?? undefined,
     },
-    affectedSystems: (row.affectedSystems as string[]) ?? [],
-    dataTypes: (row.dataTypes as string[]) ?? [],
-    estimatedAffectedSubjects: row.estimatedAffected ?? undefined,
+    affectedSystems: fromJsonArray<string>(row.affectedSystems),
+    dataTypes: fromJsonArray<string>(row.dataTypes),
+    involvesSensitiveData: row.involvesSensitiveData ?? undefined,
+    estimatedAffectedSubjects: row.estimatedAffectedSubjects ?? undefined,
+    approximateRecordCount: row.approximateRecordCount ?? undefined,
+    dataSubjectCategories: fromOptionalJson<string[]>(row.dataSubjectCategories),
+    likelyConsequences: row.likelyConsequences ?? undefined,
+    mitigationMeasures: row.mitigationMeasures ?? undefined,
+    isPhasedReport: row.isPhasedReport ?? undefined,
+    supplementsReportId: row.supplementsReportId ?? undefined,
+    dpoContact: fromOptionalJson<BreachReport['dpoContact']>(row.dpoContact),
+    status: row.status as BreachReport['status'],
     initialActions: row.initialActions ?? undefined,
+    attachments: fromOptionalJson<BreachReport['attachments']>(row.attachments),
   };
 }
 
-/**
- * Map a toolkit BreachReport to the Prisma `create`/`update` data shape.
- * The `severity` field is derived from the breach category as a sensible default
- * — replace with your own logic or pass it explicitly via additionalInfo.
- */
-function mapBreachReportToRow(report: BreachReport): Record<string, unknown> {
+function mapBreachReportToRow(
+  report: BreachReport,
+  tenantId: string,
+  assessments: RiskAssessment[],
+  notifications: RegulatoryNotification[],
+): Prisma.BreachReportUncheckedCreateInput {
   return {
+    tenantId,
+    id: report.id,
     title: report.title,
     description: report.description,
     category: report.category,
-    // Severity isn't on the toolkit BreachReport type; default to 'medium'.
-    // Consider storing it via additionalInfo or extending the type.
-    severity: 'medium',
+    severity: highestRiskLevel(assessments),
     status: report.status,
     discoveredAt: new Date(report.discoveredAt),
     occurredAt: report.occurredAt ? new Date(report.occurredAt) : null,
     reportedAt: new Date(report.reportedAt),
+    ndpcNotifiedAt: notifications.length
+      ? new Date(Math.min(...notifications.map(({ sentAt }) => sentAt)))
+      : null,
     reporterName: report.reporter.name,
     reporterEmail: report.reporter.email,
-    reporterDepartment: report.reporter.department ?? null,
-    affectedSystems: report.affectedSystems,
-    dataTypes: report.dataTypes,
-    estimatedAffected: report.estimatedAffectedSubjects ?? null,
+    reporterDepartment: report.reporter.department || null,
+    reporterPhone: report.reporter.phone ?? null,
+    affectedSystems: toInputJson(report.affectedSystems),
+    dataTypes: toInputJson(report.dataTypes),
+    involvesSensitiveData: report.involvesSensitiveData ?? null,
+    estimatedAffectedSubjects: report.estimatedAffectedSubjects ?? null,
+    approximateRecordCount: report.approximateRecordCount ?? null,
+    dataSubjectCategories: jsonOrDbNull(report.dataSubjectCategories),
+    likelyConsequences: report.likelyConsequences ?? null,
+    mitigationMeasures: report.mitigationMeasures ?? null,
+    isPhasedReport: report.isPhasedReport ?? null,
+    supplementsReportId: report.supplementsReportId ?? null,
+    dpoContact: jsonOrDbNull(report.dpoContact),
     initialActions: report.initialActions ?? null,
-    // ndpcNotificationSent is managed separately via the notification workflow.
+    attachments: jsonOrDbNull(report.attachments),
+    assessments: toInputJson(assessments),
+    notifications: toInputJson(notifications),
+    ndpcNotificationSent: notifications.length > 0,
+    removedAt: null,
   };
+}
+
+function highestRiskLevel(assessments: RiskAssessment[]): RiskAssessment['riskLevel'] | null {
+  const rank: Record<RiskAssessment['riskLevel'], number> = {
+    low: 0,
+    medium: 1,
+    high: 2,
+    critical: 3,
+  };
+  return assessments.reduce<RiskAssessment['riskLevel'] | null>(
+    (highest, assessment) =>
+      highest === null || rank[assessment.riskLevel] > rank[highest]
+        ? assessment.riskLevel
+        : highest,
+    null,
+  );
+}
+
+function assertRelatedRecords(state: BreachState): void {
+  const reportIds = new Set(state.reports.map(({ id }) => id));
+  const orphan = [...state.assessments, ...state.notifications].find(
+    ({ breachId }) => !reportIds.has(breachId),
+  );
+  if (orphan) {
+    throw new Error(`Breach child record ${orphan.id} references unknown report ${orphan.breachId}`);
+  }
+}
+
+function toInputJson(value: unknown): Prisma.InputJsonValue {
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
+function jsonOrDbNull(value: unknown) {
+  return value === undefined ? Prisma.DbNull : toInputJson(value);
+}
+function fromJsonArray<T>(value: Prisma.JsonValue): T[] {
+  return value as unknown as T[];
+}
+function fromOptionalJson<T>(value: Prisma.JsonValue | null): T | undefined {
+  return value === null ? undefined : (value as unknown as T);
 }

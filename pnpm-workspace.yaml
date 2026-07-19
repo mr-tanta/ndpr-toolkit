@@ -1,6 +1,14 @@
 # pnpm settings live here (not .npmrc) so they're honored consistently across
 # pnpm 10 and 11 — pnpm 11 ignores these keys in .npmrc, which previously left
 # the lockfile's autoInstallPeers out of sync with CI and broke --frozen-lockfile.
+# Companion packages are workspace projects. The nested packages/ndpr-toolkit
+# manifest intentionally remains excluded because the repository root already
+# owns the same package name.
+packages:
+  - 'packages/create-ndpr'
+  - 'packages/create-ndpr-unscoped'
+  - 'packages/ndpr-recipes'
+
 autoInstallPeers: true
 
 # These security overrides are INTENTIONALLY duplicated in package.json

@@ -9,14 +9,14 @@
 [![CI](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
-v5 ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA. **5.2–5.5 add an NDPC GAID 2025 layer**: a DCPMI designation classifier, a Compliance Audit Returns scheduler, a Section 40 / Article 33 breach-notification checker (wired live into `BreachReportForm`), and an **`ndpr audit` CLI** that gates compliance in CI.
+The toolkit ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA. **5.2–5.5 add an NDPC GAID 2025 layer**: a DCPMI designation classifier, a Compliance Audit Returns scheduler, a Section 40 / Article 33 breach-notification checker (wired live into `BreachReportForm`), and an **`ndpr audit` CLI** that gates compliance in CI.
 
 **[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[Latest Release](https://github.com/mr-tanta/ndpr-toolkit/releases/latest)**
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app)
 [![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/nextjs-app)
 
-> **What's new in 5.7.4:** The docs now lead with **NDPA Toolkit** / **NDPA 2023 compliance** while preserving the `@tantainnovative/ndpr-toolkit` package name for compatibility, legacy imports, and search continuity.
+> **What's new in 6.0.0:** A production-boundary hardening release. Tenant, subject, actor, and role authority are server-controlled; recipe business/audit writes are atomic; consent replay uses canonical safe-integer client timestamps; breach duties fail closed unless complete correlated evidence establishes otherwise; and CAR configuration/provenance is strictly validated. Fresh scaffolds from `@tantainnovative/create-ndpr@0.5.0` cover all 15 framework/layout/ORM combinations. The unscoped `create-ndpr@1.0.0` alias remains unchanged and delegates to the latest scoped CLI. Backend users upgrading to `@tantainnovative/ndpr-recipes@0.3.0` from `0.1.x` or `0.2.0` must use the reviewed [`migrations/0.3.0` guide](./packages/ndpr-recipes/migrations/0.3.0/README.md) rather than a blind schema push.
 >
 > **What's new in 5.5:** The **`ndpr audit` CLI** scores a compliance config against the toolkit engine (compliance score + GAID 2025 DCPMI / CAR / breach checks) and exits non-zero on failure — a drop-in CI gate. The same logic is exported as `runNdprAudit` / `formatNdprAuditReport` from `/server`. See the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
 >
@@ -316,13 +316,15 @@ import {
 
 Build-output guard tests assert this entry never carries a `"use client"` directive and never imports `react` — the RSC-safety contract is structurally enforced.
 
-### Core — types + utilities + Provider
+### Core — React-free types + utilities
 
-Adds the `NDPRProvider` React Context on top of `/server`'s pure surface. Use when you want types and validators alongside the provider in the same import.
+A React-free compatibility entry for cross-cutting types, locale data, validators, scoring, and compliance utilities. Like `/server`, it is safe in React Server Components, Node, edge, and worker code and does not export components, hooks, or providers.
 
 ```ts
-import { NDPRProvider, validateConsentStructured, getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
+import { validateConsentStructured, getComplianceScore } from '@tantainnovative/ndpr-toolkit/core';
 ```
+
+Import `NDPRProvider`, `useNDPRConfig`, and `useNDPRLocale` from the package root when you need those client APIs.
 
 ### Adapters — pluggable storage
 
@@ -505,7 +507,7 @@ result.compliance.initialAuditWithinMonths; // 15
 
 Thresholds and fees are the September 2025 GAID baseline and are configurable (`classifyDCPMI(input, { thresholds, fees })`) since the NDPC revises them. Pass `isDesignated: true` for an organisation the Commission has separately listed — it resolves to the `'listed'` tier regardless of volume.
 
-`generateComplianceAuditReturn()` schedules a DCPMI's **Compliance Audit Returns** — the initial audit due within 15 months of commencement, then the next annual filing deadline (NDPC baseline 31 March, filed via the NDPC Information Management Portal / NIMP):
+`generateComplianceAuditReturn()` schedules a DCPMI's **Compliance Audit Returns** — the initial audit due within 15 months of commencement, then the next annual filing deadline (NDPC baseline 31 March, filed via the NDPC Information Management Portal / NIMP). The default ruleset includes the repository-reviewed 2026 extension to 30 May:
 
 ```ts
 import { generateComplianceAuditReturn } from '@tantainnovative/ndpr-toolkit/core';
@@ -517,16 +519,12 @@ const car = generateComplianceAuditReturn({
 });
 
 car.schedule.initialAuditDueDate;     // "2026-04-15"  (commencement + 15 months)
-car.schedule.nextFilingDeadline;      // "2026-03-31"
-car.status.daysUntilNextDeadline;     // 10
+car.schedule.nextFilingDeadline;      // "2026-05-30"  (bundled 2026 extension)
+car.status.daysUntilNextDeadline;     // 70
 car.status.initialAuditDue;           // false
-
-// NDPC deadlines shift — the 2026 filing was extended to 30 May:
-generateComplianceAuditReturn(
-  { commencementDate: '2025-01-15', asOf: '2026-04-01', tier: 'UHL' },
-  { deadlineOverrides: { 2026: '2026-05-30' } },
-).schedule.nextFilingDeadline;        // "2026-05-30"
 ```
+
+Pass `deadlineOverrides` when a later verified NDPC notice changes a year that is not already represented by the default ruleset snapshot.
 
 Both ship as memoised hooks for React UIs — `useDCPMI(input, options?)` and `useComplianceAuditReturn(input, options?)` from `@tantainnovative/ndpr-toolkit/hooks`.
 
@@ -543,7 +541,7 @@ import { assessBreachNotification } from '@tantainnovative/ndpr-toolkit/core';
 
 const result = assessBreachNotification(breachReport, {
   asOf: Date.now(),
-  assessment: riskAssessment, // optional — high risk triggers the S.40(3) data-subject duty
+  assessment: riskAssessment, // complete correlated evidence may establish false; omission keeps duties on
 });
 
 result.complete;             // false until every mandated item is present
@@ -674,6 +672,10 @@ See the [Production Recipes guide](https://ndprtoolkit.com.ng/docs/guides/produc
 
 Copy from `node_modules/@tantainnovative/ndpr-recipes` for a pinned version, or [browse the recipes on GitHub](https://github.com/mr-tanta/ndpr-toolkit/tree/main/packages/ndpr-recipes).
 
+Upgrading populated 0.1.x or 0.2.0 recipe tables requires the reviewed transactional migration and evidence backfill—do not apply the new schema with a blind `db push`. Standalone psql and Prisma use the wrapped [`migrations/0.3.0/postgresql.sql`](./packages/ndpr-recipes/migrations/0.3.0/postgresql.sql); a Drizzle-managed migration uses only the transaction-control-free [`migrations/0.3.0/drizzle.sql`](./packages/ndpr-recipes/migrations/0.3.0/drizzle.sql) inside Drizzle's outer transaction. Follow the [mapping, verification, deployment, and rollback guide](./packages/ndpr-recipes/migrations/0.3.0/README.md).
+
+Before exposing copied routes, configure the server-only `NDPR_TENANT_ID` and replace the fail-closed `resolveVerifiedNDPRActor` seam with your verified session integration. Consent and subject DSR operations accept only a verified account subject or an `anon_<UUID>` capability in `X-NDPR-Subject-Id`; DPIA, breach, ROPA, compliance, registration, and DSR administration require a verified actor mapped to `ndpr:staff` or `ndpr:admin`. Request bodies and query strings are never tenant, subject, actor, or role authority.
+
 The runnable examples cover the first production handoff paths:
 
 | Example | What it demonstrates |
@@ -683,7 +685,7 @@ The runnable examples cover the first production handoff paths:
 
 The ROPA recipes now enforce the toolkit's production completeness checks before persistence. Include controller details, lawful-basis justification, data-subject categories, recipients, retention, security measures, and `dpiaReference` when `dpiaRequired` is true.
 
-The breach recipes validate incident intake dates, reporter email, affected systems, data types, and lifecycle update values before persistence. Create/detail responses include `ndpcReadiness` from `assessBreachNotification` so DPO workflows can see missing GAID 2025 Article 33 notification content and 72-hour deadline status.
+The breach recipes validate incident chronology, affected systems, data types, and lifecycle update values before persistence. Reporter identity is derived from the verified staff context rather than accepted from request data; your authentication integration remains responsible for supplying authoritative, normalized profile fields (including email). Create/detail responses include `ndpcReadiness` from `assessBreachNotification` so DPO workflows can see missing GAID 2025 Article 33 notification content and 72-hour deadline status.
 
 The DPIA recipes now provide maintained Next.js and Express persistence routes for `DPIARecord`, with validation for project metadata, `dpiaData`, risk level, score, status, and audit-log writes before records are created, updated, or deleted.
 
@@ -757,7 +759,8 @@ Cookie-bridged consent that hydrates without a flash. Each scaffold reads the `n
 Wrap your app in `<NDPRProvider locale={...}>` and every shipped component picks up the translation:
 
 ```tsx
-import { NDPRProvider, arabicLocale, frenchLocale } from '@tantainnovative/ndpr-toolkit/core';
+import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
+import { arabicLocale, frenchLocale } from '@tantainnovative/ndpr-toolkit/core';
 
 <NDPRProvider locale={arabicLocale}>
   <App />
@@ -867,7 +870,7 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 |------|-------------|--------------|:--------:|
 | `.` (default) | Everything | `react`, optional Radix peers for `/presets` | No |
 | `/server` | **Pure validators, generators, scoring, the `ndpr audit` engine + GAID 2025 utilities, locales, adapters, types — zero React** | `tslib` | **Yes** |
-| `/core` | Types, utility functions, NDPRProvider | `react`[^core] | Partial |
+| `/core` | **React-free types, locale data, validators, scoring, and utilities** | `tslib` | **Yes** |
 | `/hooks` | React hooks for all 8 modules | `react` | No |
 | `/headless` | **Alias of `/hooks`** — identical exports under a more discoverable name (3.10.0) | `react` | No |
 | `/presets` | All zero-config preset components (barrel) | `react`, Radix peers | No |
@@ -889,7 +892,6 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/unstyled` | All published components with `unstyled` defaulted to `true` | `react` | No |
 | `/styles` | Default CSS stylesheet — `import "@tantainnovative/ndpr-toolkit/styles"` once in your app entry | none | N/A |
 
-[^core]: `/core` re-exports the React `NDPRProvider` for backward compatibility. For strictly server-side imports use `/server` — it carries the same pure validators with no React surface.
 
 ### PDF / DOCX export peers
 

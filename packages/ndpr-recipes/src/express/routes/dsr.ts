@@ -1,203 +1,321 @@
-/**
- * Express — DSR (Data Subject Rights) Router
- *
- * Handles listing, creating, retrieving, and updating Data Subject Rights
- * requests as required by NDPA Sections 34–38 (rights to access, rectification,
- * erasure, portability, and objection). Requests must be fulfilled within
- * 30 days of submission under the Act.
- *
- * Routes
- * ------
- *   GET    /dsr              — List DSR requests (optional ?status= filter)
- *   POST   /dsr              — Submit a new DSR request
- *   GET    /dsr/:id          — Fetch a single DSR request by ID
- *   PATCH  /dsr/:id          — Update request status, assignee, or internal notes
- *
- * How to use
- * ----------
- * This router is mounted automatically by `createNDPRRouter()` in `../index.ts`.
- *
- * @module express/routes/dsr
- */
-
+import { Prisma, PrismaClient, type DSRRequest as PrismaDSRRequest } from '@prisma/client';
+import {
+  validateDsrSubmissionStructured,
+  type DsrSubmissionPayload,
+} from '@tantainnovative/ndpr-toolkit/server';
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import {
+  getNDPRContextProblem,
+  isNDPRStaffContext,
+  resolveNDPRRequestContext,
+} from '../request-context';
+import {
+  addOperationalDays,
+  DSR_OPERATIONAL_TARGET_NOTICE,
+  getDsrOperationalTargetDays,
+  isRecord,
+  jsonOrDbNull,
+  normalizeDsrStatus,
+  runSerializableTransaction,
+  toInputJson,
+} from '../../nextjs/shared-contracts';
 
 const prisma = new PrismaClient();
 export const dsrRouter = Router();
+const ALLOWED_TYPES = [
+  'information',
+  'access',
+  'rectification',
+  'erasure',
+  'restriction',
+  'portability',
+  'objection',
+  'automated_decision_making',
+  'withdraw_consent',
+];
+const ALLOWED_STATUSES = new Set([
+  'pending',
+  'awaitingVerification',
+  'inProgress',
+  'in_progress',
+  'completed',
+  'rejected',
+]);
 
-// ---------------------------------------------------------------------------
-// GET /dsr?status=pending
-// ---------------------------------------------------------------------------
+/** Staff-only tenant list. */
+dsrRouter.get('/', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
 
-/**
- * List all DSR requests, optionally filtered by status.
- *
- * Returns requests ordered newest-first so overdue items are easier to spot.
- * Filter by status=pending to see requests awaiting acknowledgement.
- *
- * Query params:
- *   status (optional) — pending | in_progress | completed | rejected
- *
- * Returns 200 with an array of DSRRequest rows.
- */
-dsrRouter.get('/', async (req, res) => {
-  const { status } = req.query;
-
-  const requests = await prisma.dSRRequest.findMany({
-    where: typeof status === 'string' ? { status } : undefined,
+  const requestedStatus = typeof request.query.status === 'string' ? request.query.status : undefined;
+  if (requestedStatus && !ALLOWED_STATUSES.has(requestedStatus)) {
+    return response.status(400).json({ error: 'Unsupported DSR status' });
+  }
+  const statuses = requestedStatus === 'in_progress' || requestedStatus === 'inProgress'
+    ? ['inProgress', 'in_progress']
+    : requestedStatus
+      ? [requestedStatus]
+      : undefined;
+  const rows = await prisma.dSRRequest.findMany({
+    where: {
+      tenantId: context.tenantId,
+      removedAt: null,
+      ...(statuses ? { status: { in: statuses } } : {}),
+    },
     orderBy: { submittedAt: 'desc' },
   });
-
-  return res.json(requests);
+  return response.json(
+    rows.map((item) => ({ ...item, status: normalizeDsrStatus(item.status) })),
+  );
 });
 
-// ---------------------------------------------------------------------------
-// POST /dsr
-// ---------------------------------------------------------------------------
+/** Submit a request for the verified subject; body subject IDs are ignored. */
+dsrRouter.post('/', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'subject');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
 
-/**
- * Submit a new Data Subject Rights request.
- *
- * Creates a new request with status 'pending' and automatically sets the
- * statutory 30-day deadline (dueAt) as required by NDPA Section 34.
- * An audit log entry is created for accountability purposes.
- *
- * Body (JSON):
- *   type             (required) — access | rectification | erasure | portability | objection
- *   subjectName      (required) — full name of the data subject
- *   subjectEmail     (required) — email address of the data subject
- *   identifierType   (required) — how the subject is identified (e.g. 'email', 'account_id')
- *   identifierValue  (required) — the subject's identifier value
- *   subjectPhone     (optional) — phone number
- *   description      (optional) — additional context from the subject
- *
- * Returns 201 with the newly created DSRRequest row.
- */
-dsrRouter.post('/', async (req, res) => {
-  const {
-    type,
-    subjectName,
-    subjectEmail,
-    subjectPhone,
-    identifierType,
-    identifierValue,
-    description,
-  } = req.body;
-
-  if (!type || !subjectName || !subjectEmail || !identifierType || !identifierValue) {
-    return res.status(400).json({
-      error:
-        'type, subjectName, subjectEmail, identifierType, and identifierValue are required',
+  const submittedAt = Date.now();
+  const validation = validateDsrSubmissionStructured(
+    normalizeSubmission(request.body, submittedAt),
+    { requireIdentityVerification: true, allowedRequestTypes: ALLOWED_TYPES },
+  );
+  if (!validation.valid || !validation.data) {
+    return response.status(400).json({
+      error: 'Validation failed.',
+      fields: Object.fromEntries(
+        validation.errors.map((error) => [error.field, error.message]),
+      ),
     });
   }
 
-  // NDPA mandates a 30-day response window from submission.
-  const dueAt = new Date();
-  dueAt.setDate(dueAt.getDate() + 30);
-
-  const request = await prisma.dSRRequest.create({
-    data: {
-      type,
-      subjectName,
-      subjectEmail,
-      subjectPhone: subjectPhone ?? null,
-      identifierType,
-      identifierValue,
-      description: description ?? null,
-      status: 'pending',
-      dueAt,
-    },
+  const data = validation.data;
+  const description = isRecord(request.body) && typeof request.body.description === 'string'
+    ? request.body.description.trim() || null
+    : null;
+  const tenantId = context.tenantId;
+  const subjectId = context.subjectId as string;
+  const targetDays = getDsrOperationalTargetDays();
+  const submittedDate = new Date(submittedAt);
+  const dueAt = addOperationalDays(submittedDate, targetDays);
+  const ipAddress = request.ip || request.socket.remoteAddress || null;
+  const row = await prisma.$transaction(async (transaction) => {
+    const created = await transaction.dSRRequest.create({
+      data: {
+        tenantId,
+        subjectId,
+        type: data.requestType,
+        status: 'pending',
+        subjectName: data.dataSubject.fullName,
+        subjectEmail: data.dataSubject.email,
+        subjectPhone: data.dataSubject.phone ?? null,
+        identifierType: data.dataSubject.identifierType,
+        identifierValue: data.dataSubject.identifierValue,
+        description,
+        additionalInfo: jsonOrDbNull(data.additionalInfo),
+        submittedAt: submittedDate,
+        updatedAt: submittedDate,
+        dueAt,
+      },
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'dsr',
+        action: 'submitted',
+        entityId: created.id,
+        entityType: 'DSRRequest',
+        changes: toInputJson({
+          type: data.requestType,
+          status: 'pending',
+          operationalTargetDays: targetDays,
+          subjectId,
+          subjectIdentitySource: context.subjectSource,
+        }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return created;
   });
 
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'dsr',
-      action: 'submitted',
-      entityId: request.id,
-      entityType: 'DSRRequest',
-      changes: { type, subjectEmail, status: 'pending' },
+  return response.status(201).json({
+    ...row,
+    operationalTarget: {
+      days: targetDays,
+      source: 'NDPR_DSR_TARGET_DAYS',
+      notice: DSR_OPERATIONAL_TARGET_NOTICE,
     },
   });
-
-  return res.status(201).json(request);
 });
 
-// ---------------------------------------------------------------------------
-// GET /dsr/:id
-// ---------------------------------------------------------------------------
-
-/**
- * Fetch a single DSR request by its ID.
- *
- * Returns full request details including the due date, submission timestamp,
- * assignee, and any internal notes added by the DPO.
- *
- * Path params:
- *   id (required) — the DSRRequest record ID
- *
- * Returns 200 with the DSRRequest row, or 404 if not found.
- */
-dsrRouter.get('/:id', async (req, res) => {
-  const { id } = req.params;
-
-  const request = await prisma.dSRRequest.findUnique({ where: { id } });
-
-  if (!request) {
-    return res.status(404).json({ error: 'DSR request not found' });
+/** Read one request as verified staff or its owning data subject. */
+dsrRouter.get('/:id', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const tenantProblem = getNDPRContextProblem(context, 'tenant');
+  if (tenantProblem) return response.status(tenantProblem.status).json({ error: tenantProblem.error });
+  const staff = isNDPRStaffContext(context);
+  if (!staff && !context.subjectId) {
+    return response.status(401).json({ error: 'A verified data-subject or staff identity is required' });
   }
 
-  return res.json(request);
+  const row = await prisma.dSRRequest.findFirst({
+    where: {
+      tenantId: context.tenantId,
+      id: request.params.id,
+      removedAt: null,
+      ...(!staff ? { subjectId: context.subjectId as string } : {}),
+    },
+  });
+  if (!row) return response.status(404).json({ error: 'DSR request not found' });
+  return response.json(
+    staff
+      ? { ...row, status: normalizeDsrStatus(row.status) }
+      : subjectDsrResponse(row),
+  );
 });
 
-// ---------------------------------------------------------------------------
-// PATCH /dsr/:id
-// ---------------------------------------------------------------------------
-
-/**
- * Update a DSR request's status, assignee, or internal notes.
- *
- * Used by DPO tooling to progress requests through the statutory workflow:
- * pending → in_progress → completed (or rejected). Status transitions are
- * timestamped so the 30-day SLA can be tracked per NDPA Section 34.
- *
- * Body (JSON, all fields optional):
- *   status        — pending | in_progress | completed | rejected
- *   assignedTo    — name/ID of the staff member handling the request
- *   internalNotes — free-text notes visible only to internal staff
- *
- * Returns 200 with the updated DSRRequest row.
- */
-dsrRouter.patch('/:id', async (req, res) => {
-  const { id } = req.params;
-  const { status, assignedTo, internalNotes } = req.body;
-
-  const data: Record<string, unknown> = {};
-  if (status !== undefined) {
-    data.status = status;
-    if (status === 'in_progress') data.acknowledgedAt = new Date();
-    if (status === 'completed') data.completedAt = new Date();
-  }
-  if (assignedTo !== undefined) data.assignedTo = assignedTo;
-  if (internalNotes !== undefined) data.internalNotes = internalNotes;
-
-  if (Object.keys(data).length === 0) {
-    return res.status(400).json({
-      error: 'At least one of status, assignedTo, or internalNotes must be provided',
+/** Staff-only update with server-derived assignee and note author. */
+dsrRouter.patch('/:id', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
+  if (!isRecord(request.body)) {
+    return response.status(400).json({
+      error: 'Validation failed.',
+      fields: { body: 'Request body must be an object.' },
     });
   }
 
-  const updated = await prisma.dSRRequest.update({ where: { id }, data });
+  const body = request.body;
+  const requestedStatus = body.status;
+  if (requestedStatus !== undefined
+    && (typeof requestedStatus !== 'string' || !ALLOWED_STATUSES.has(requestedStatus))) {
+    return response.status(400).json({
+      error: 'Validation failed.',
+      fields: { status: 'Unsupported DSR status.' },
+    });
+  }
+  const status = requestedStatus === 'in_progress' ? 'inProgress' : requestedStatus;
+  const note = typeof body.internalNote === 'string'
+    ? body.internalNote.trim()
+    : typeof body.internalNotes === 'string'
+      ? body.internalNotes.trim()
+      : undefined;
+  if ((body.internalNote !== undefined || body.internalNotes !== undefined) && !note) {
+    return response.status(400).json({
+      error: 'Validation failed.',
+      fields: { internalNote: 'internalNote must be non-empty text.' },
+    });
+  }
+  const assignToCurrentActor = body.assignToMe === true || body.assignedTo !== undefined;
+  if (status === undefined && !note && !assignToCurrentActor) {
+    return response.status(400).json({ error: 'Provide status, assignToMe, or internalNote.' });
+  }
 
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'dsr',
-      action: 'updated',
-      entityId: id,
-      entityType: 'DSRRequest',
-      changes: data as any,
-    },
+  const tenantId = context.tenantId;
+  const id = request.params.id;
+  const actorId = context.actorId as string;
+  const ipAddress = request.ip || request.socket.remoteAddress || null;
+  const transactionResult = await runSerializableTransaction(prisma, async (transaction) => {
+    const existing = await transaction.dSRRequest.findFirst({
+      where: { tenantId, id, removedAt: null },
+    });
+    if (!existing) return null;
+    const now = new Date();
+    const data: Prisma.DSRRequestUncheckedUpdateInput = { updatedAt: now };
+    if (typeof status === 'string') {
+      data.status = status;
+      if (status === 'completed' && existing.status !== 'completed') {
+        data.completedAt = now;
+      } else if (status !== 'completed') {
+        data.completedAt = null;
+      }
+    }
+    if (assignToCurrentActor) data.assignedTo = actorId;
+    if (note) {
+      const currentNotes = Array.isArray(existing.internalNotes)
+        ? existing.internalNotes as Array<Record<string, unknown>>
+        : [];
+      data.internalNotes = toInputJson([
+        ...currentNotes,
+        { timestamp: now.getTime(), author: actorId, note },
+      ]);
+    }
+
+    const row = await transaction.dSRRequest.update({
+      where: { tenantId_id: { tenantId, id } },
+      data,
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'dsr',
+        action: 'updated',
+        entityId: id,
+        entityType: 'DSRRequest',
+        changes: toInputJson({
+          status: typeof status === 'string' ? status : undefined,
+          assignedToCurrentActor: assignToCurrentActor,
+          internalNoteAdded: Boolean(note),
+        }),
+        performedBy: actorId,
+        ipAddress,
+      },
+    });
+    return row;
   });
 
-  return res.json(updated);
+  if (!transactionResult.committed) {
+    return response.status(409).json({
+      error: 'Concurrent DSR update conflict; retry the request.',
+    });
+  }
+  const updated = transactionResult.value;
+  if (!updated) return response.status(404).json({ error: 'DSR request not found' });
+  return response.json({ ...updated, status: normalizeDsrStatus(updated.status) });
 });
+
+function normalizeSubmission(
+  value: unknown,
+  submittedAt: number,
+): DsrSubmissionPayload | unknown {
+  if (!isRecord(value)) return value;
+  const nested = isRecord(value.dataSubject) ? value.dataSubject : {};
+  return {
+    requestType: value.requestType ?? value.type,
+    dataSubject: {
+      fullName: nested.fullName ?? value.subjectName,
+      email: nested.email ?? value.subjectEmail,
+      phone: nested.phone ?? value.subjectPhone,
+      identifierType: nested.identifierType ?? value.identifierType,
+      identifierValue: nested.identifierValue ?? value.identifierValue,
+    },
+    additionalInfo: value.additionalInfo,
+    submittedAt,
+  };
+}
+
+
+function subjectDsrResponse(row: PrismaDSRRequest) {
+  return {
+    id: row.id,
+    type: row.type,
+    status: normalizeDsrStatus(row.status),
+    subjectName: row.subjectName,
+    subjectEmail: row.subjectEmail,
+    subjectPhone: row.subjectPhone,
+    description: row.description,
+    additionalInfo: row.additionalInfo,
+    rejectionReason: row.rejectionReason,
+    attachments: row.attachments,
+    extensionRequested: row.extensionRequested,
+    extensionReason: row.extensionReason,
+    submittedAt: row.submittedAt,
+    updatedAt: row.updatedAt,
+    verifiedAt: row.verifiedAt,
+    completedAt: row.completedAt,
+    dueAt: row.dueAt,
+  };
+}

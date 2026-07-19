@@ -46,7 +46,7 @@ export type { PolicyExporterClassNames } from './components/policy/PolicyExporte
 export type { PolicySection, PolicyTemplate, PolicyVariable, OrganizationInfo, PrivacyPolicy } from './types/privacy';
 
 // NDPRProvider
-export { NDPRProvider, useNDPRConfig } from './components/NDPRProvider';
+export { NDPRProvider, useNDPRConfig, useNDPRLocale } from './components/NDPRProvider';
 export type { NDPRConfig } from './components/NDPRProvider';
 
 // Theme Provider (ergonomic wrapper over --ndpr-* CSS custom properties)
@@ -63,8 +63,17 @@ export type {
   StructuredValidationError,
   StructuredValidationResult,
 } from './utils/consent';
-export { createAuditEntry, getAuditLog, appendAuditEntry } from './utils/consent-audit';
-export type { ConsentAuditEntry } from './utils/consent-audit';
+export {
+  createAuditEntry,
+  getAuditLog,
+  appendAuditEntry,
+  CLIENT_CONSENT_ACTIVITY_NOTICE,
+} from './utils/consent-audit';
+export type {
+  ConsentAuditEntry,
+  ConsentAuditAppendResult,
+  ConsentAuditAppendFailureReason,
+} from './utils/consent-audit';
 export { scanCookies, KNOWN_COOKIES } from './utils/cookie-scanner';
 export type {
   DeclaredCookie,
@@ -83,16 +92,38 @@ export type {
 } from './utils/breach-notification';
 
 // Aggregate NDPA compliance audit
-export { runNdprAudit, formatNdprAuditReport } from './utils/audit';
+export {
+  runNdprAudit,
+  formatNdprAuditReport,
+  validateNdprAuditConfig,
+  DEFAULT_AUDIT_RULESET,
+} from './utils/audit';
 export type {
-  NdprAuditInput, NdprAuditOptions, NdprAuditResult, AuditCheck, AuditCheckStatus, FormatAuditReportOptions,
+  NdprAuditInput,
+  NdprAuditOptions,
+  NdprAuditScope,
+  NdprAuditResult,
+  BreachAuditEvidence,
+  AuditConfigValidationError,
+  AuditConfigValidationResult,
+  AuditCheck,
+  AuditCheckStatus,
+  FormatAuditReportOptions,
 } from './utils/audit';
 export { generatePolicyText } from './utils/privacy';
 export { DEFAULT_POLICY_SECTIONS, DEFAULT_POLICY_VARIABLES, createBusinessPolicyTemplate } from './utils/policy-templates';
 export { sanitizeInput } from './utils/sanitize';
 
 // Hooks
-export { useConsent } from './hooks/useConsent';
+export {
+  useConsent,
+  ConsentPersistenceError,
+} from './hooks/useConsent';
+export type {
+  UseConsentOptions,
+  UseConsentReturn,
+  ConsentPersistenceOperation,
+} from './hooks/useConsent';
 export { useDSR } from './hooks/useDSR';
 export { useDPIA } from './hooks/useDPIA';
 export type { DPIAAnswerMap, DPIAAnswerValue } from './hooks/useDPIA';
@@ -155,11 +186,17 @@ export { NDPRDashboard } from './components/dashboard/NDPRDashboard';
 export type { NDPRDashboardProps, NDPRDashboardClassNames } from './components/dashboard/NDPRDashboard';
 
 // Compliance Score Utility
-export { getComplianceScore } from './utils/compliance-score';
+export { getComplianceScore, DEFAULT_COMPLIANCE_RULESET } from './utils/compliance-score';
 export type {
   ComplianceReport,
   ComplianceInput,
   ComplianceRating,
+  ComplianceModuleName,
+  ComplianceRuleset,
+  ComplianceRulesetOverrides,
+  ComplianceApplicability,
+  ComplianceScoreOptions,
+  ComplianceProvenance,
   ModuleScore,
   Recommendation,
   RecommendationPriority,
@@ -168,7 +205,12 @@ export type {
 } from './utils/compliance-score';
 
 // DCPMI Classification Utility (NDPC GAID 2025)
-export { classifyDCPMI, DEFAULT_DCPMI_THRESHOLDS, DEFAULT_DCPMI_FEES_NGN } from './utils/dcpmi';
+export {
+  classifyDCPMI,
+  DEFAULT_DCPMI_THRESHOLDS,
+  DEFAULT_DCPMI_FEES_NGN,
+  DEFAULT_DCPMI_RULESET,
+} from './utils/dcpmi';
 export type {
   DCPMITier,
   DCPMIInput,
@@ -179,8 +221,18 @@ export type {
 } from './utils/dcpmi';
 
 // Compliance Audit Returns Utility (NDPC GAID 2025)
-export { generateComplianceAuditReturn } from './utils/car';
-export type { CARInput, CAROptions, ComplianceAuditReturn } from './utils/car';
+export {
+  generateComplianceAuditReturn,
+  DEFAULT_CAR_RULESET,
+  DEFAULT_CAR_DEADLINE_OVERRIDES,
+} from './utils/car';
+export type {
+  CARInput,
+  CAROptions,
+  CARFilingEvidence,
+  CARAnnualFilingStatus,
+  ComplianceAuditReturn,
+} from './utils/car';
 
 // Legal notice
 export {
@@ -220,15 +272,32 @@ export type { ROPAManagerProps } from './components/ropa/ROPAManager';
 // Adapter types (3.11.0) — surface from the root entry so consumers building
 // custom adapters don't need to import from /adapters.
 // ---------------------------------------------------------------------------
-export type { StorageAdapter } from './adapters/types';
+export { StorageAdapterError } from './adapters/types';
+export type {
+  StorageAdapter,
+  StorageAdapterCapabilities,
+  StorageAdapterConcurrency,
+  StorageAdapterDurability,
+  StorageAdapterErrorContext,
+  StorageAdapterEvidenceSuitability,
+  StorageAdapterFailureOptions,
+  StorageAdapterIntegrity,
+  StorageAdapterMedium,
+  StorageAdapterMutationFailureMode,
+  StorageAdapterOperation,
+} from './adapters/types';
+export { ApiAdapterError } from './adapters/api';
 export type {
   ApiAdapterOptions,
   ApiAdapterErrorContext,
   ApiAdapterSuccessContext,
   ApiAdapterRetryConfig,
   ApiAdapterMethod,
+  ApiAdapterIdempotencyContext,
 } from './adapters/api';
 export type { CookieAdapterOptions } from './adapters/cookie';
+export type { LocalStorageAdapterOptions } from './adapters/local-storage';
+export type { SessionStorageAdapterOptions } from './adapters/session-storage';
 
 // ---------------------------------------------------------------------------
 // DSR server-side validation types — also reachable from /server. Re-exported

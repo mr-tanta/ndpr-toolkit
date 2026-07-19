@@ -109,12 +109,20 @@ async function main() {
     process.stderr.write(`Failed to parse ${configPath}: ${err.message}\n`);
     return 2;
   }
-  if (!config || typeof config.compliance !== 'object' || config.compliance === null) {
-    process.stderr.write(`Config ${configPath} must contain a "compliance" object.\n`);
+  const {
+    runNdprAudit,
+    formatNdprAuditReport,
+    validateNdprAuditConfig,
+  } = await import('@tantainnovative/ndpr-toolkit/server');
+
+  const validation = validateNdprAuditConfig(config);
+  if (!validation.valid) {
+    process.stderr.write(`Invalid audit config ${configPath}:\n`);
+    for (const error of validation.errors) {
+      process.stderr.write(`  - ${error.path}: ${error.message}\n`);
+    }
     return 2;
   }
-
-  const { runNdprAudit, formatNdprAuditReport } = await import('@tantainnovative/ndpr-toolkit/server');
 
   const options = { ...(config.options ?? {}) };
   if (args.flags['min-score'] !== undefined) {
@@ -130,7 +138,13 @@ async function main() {
   }
 
   const result = runNdprAudit(
-    { compliance: config.compliance, dcpmi: config.dcpmi, car: config.car, breaches: config.breaches },
+    {
+      compliance: config.compliance,
+      dcpmi: config.dcpmi,
+      car: config.car,
+      breaches: config.breaches,
+      breachEvidence: config.breachEvidence,
+    },
     options,
   );
 

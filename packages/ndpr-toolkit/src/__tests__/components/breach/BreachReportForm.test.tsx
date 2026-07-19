@@ -2,6 +2,21 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BreachReportForm } from '../../../components/breach/BreachReportForm';
 import type { BreachCategory } from '../../../types/breach';
+import { assessBreachNotification } from '../../../utils/breach-notification';
+
+jest.mock('../../../utils/breach-notification', () => {
+  const actual = jest.requireActual<typeof import('../../../utils/breach-notification')>(
+    '../../../utils/breach-notification',
+  );
+  return {
+    ...actual,
+    assessBreachNotification: jest.fn(actual.assessBreachNotification),
+  };
+});
+
+const mockAssessBreachNotification = assessBreachNotification as jest.MockedFunction<
+  typeof assessBreachNotification
+>;
 
 const mockCategories: BreachCategory[] = [
   {
@@ -267,6 +282,22 @@ describe('BreachReportForm live completeness panel', () => {
       <BreachReportForm categories={mockCategories} onSubmit={mockOnSubmit} showCompleteness={false} />
     );
     expect(getPanel(container)).toBeNull();
+  });
+
+  it('only forwards highRisk when sensitive data explicitly forces the duty on', () => {
+    mockAssessBreachNotification.mockClear();
+    render(<BreachReportForm categories={mockCategories} onSubmit={mockOnSubmit} />);
+
+    const initialOptions = mockAssessBreachNotification.mock.calls[
+      mockAssessBreachNotification.mock.calls.length - 1
+    ][1];
+    expect(initialOptions).not.toHaveProperty('highRisk');
+
+    fireEvent.click(screen.getByLabelText(/sensitive personal data/i));
+    const forcedOptions = mockAssessBreachNotification.mock.calls[
+      mockAssessBreachNotification.mock.calls.length - 1
+    ][1];
+    expect(forcedOptions).toEqual(expect.objectContaining({ highRisk: true }));
   });
 
   it('shows the data-subject communication duty when sensitive data is involved', () => {
