@@ -213,6 +213,33 @@ describe('ndpr-recipes DPIA routes', () => {
     expect(prisma.complianceAuditLog.create).not.toHaveBeenCalled();
   });
 
+  it('rejects prototype-reserved Next.js DPIA question ids before writing to Prisma', async () => {
+    const { route, prisma } = await loadNextDpiaRoute();
+    const payload = validDpiaPayload();
+    Object.assign(payload.dpiaData, {
+      answers: Object.fromEntries([
+        ['__proto__', 'attacker-controlled'],
+      ]),
+    });
+    payload.dpiaData.risks[0].relatedQuestionIds = ['__proto__'];
+
+    const response = await route.POST(
+      nextRequestWithJson('https://example.test/api/dpia', payload),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(body).toEqual({
+      error: 'Validation failed.',
+      fields: {
+        answers: 'Question IDs must be non-reserved text with at most 200 characters.',
+      },
+    });
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+    expect(prisma.dPIARecord.create).not.toHaveBeenCalled();
+    expect(prisma.complianceAuditLog.create).not.toHaveBeenCalled();
+  });
+
   it('persists derived, tenant-scoped Next.js DPIA evidence and audit data', async () => {
     const { route, prisma } = await loadNextDpiaRoute();
 

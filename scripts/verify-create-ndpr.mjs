@@ -80,10 +80,19 @@ const ESCAPING_CASES = [
   },
 ];
 
+const CODEQL_MODE = process.argv.includes('--codeql');
+const CODEQL_FIXTURE_ROOT = path.join(ROOT, 'codeql-generated', 'create-ndpr');
+
 let fixtureRoot;
 try {
-  fixtureRoot = mkdtempSync(path.join(ROOT, '.verify-create-ndpr-'));
-  console.log(`create-ndpr fixture: ${path.basename(fixtureRoot)}`);
+  if (CODEQL_MODE) {
+    rmSync(CODEQL_FIXTURE_ROOT, { recursive: true, force: true });
+    mkdirSync(CODEQL_FIXTURE_ROOT, { recursive: true });
+    fixtureRoot = CODEQL_FIXTURE_ROOT;
+  } else {
+    fixtureRoot = mkdtempSync(path.join(ROOT, '.verify-create-ndpr-'));
+  }
+  console.log(`create-ndpr fixture: ${path.relative(ROOT, fixtureRoot)}`);
 
   const prismaSchema = checkedRender(
     'prisma-schema.prisma',
@@ -168,7 +177,14 @@ try {
   console.log('✓ strict TypeScript passed for 15 complete framework/layout/ORM combinations');
   console.log('✓ create-ndpr generated scaffold verification passed');
 } finally {
-  if (fixtureRoot) rmSync(fixtureRoot, { recursive: true, force: true });
+  if (fixtureRoot) {
+    if (CODEQL_MODE) {
+      rmSync(path.join(fixtureRoot, 'generated'), { recursive: true, force: true });
+      console.log(`✓ retained rendered CodeQL fixtures at ${path.relative(ROOT, fixtureRoot)}`);
+    } else {
+      rmSync(fixtureRoot, { recursive: true, force: true });
+    }
+  }
 }
 
 function verifyPromptEscaping({ label, orgName, dpoEmail }) {

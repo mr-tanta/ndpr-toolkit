@@ -1,0 +1,8 @@
+name: NDPR Toolkit CodeQL configuration
+
+# The template sources contain mutually exclusive Handlebars branches and are
+# not valid TypeScript until rendered. The workflow renders and verifies all 15
+# framework/layout/ORM combinations under codeql-generated/create-ndpr, which
+# CodeQL analyzes instead of reporting impossible cross-branch assignments.
+paths-ignore:
+  - packages/create-ndpr/templates/**

@@ -41,17 +41,19 @@ jobs:
         # fails fast instead of silently drifting.
         run: pnpm install --frozen-lockfile
 
-      - name: Type check
-        run: npx tsc --noEmit
-
       - name: Build library package boundary
         # Recipes resolve @tantainnovative/ndpr-toolkit through root package
-        # exports. Build fresh declarations first so stale dist types cannot
-        # hide source-to-consumer incompatibilities.
+        # exports. Build fresh declarations before any root check can import
+        # recipe source through the stale published self-devDependency.
         run: pnpm build:lib
 
       - name: Type check backend recipes
+        # Generates the pinned Prisma client before root tsc follows imports
+        # from maintained recipe regression tests.
         run: pnpm typecheck:recipes
+
+      - name: Type check
+        run: npx tsc --noEmit
 
       - name: Verify generated create-ndpr scaffolds
         # Render all Next App, Next Pages, and Express branches for Prisma,

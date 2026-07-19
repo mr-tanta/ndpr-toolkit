@@ -15,7 +15,7 @@ export const siteConfig = {
   moduleCount: 8,
 
   /** Number of passing tests */
-  testCount: 1467,
+  testCount: 1468,
 
   /** Number of customizable classNames sections */
   classNameSections: 194,

@@ -1887,26 +1887,40 @@ function normalizeCrossBorderTransfers(
     : { valid: true, data: transfers };
 }
 
+function isSafeDpiaQuestionId(questionId: string): boolean {
+  return questionId.length > 0
+    && questionId.length <= 200
+    && questionId !== '__proto__'
+    && questionId !== 'prototype'
+    && !Object.prototype.hasOwnProperty.call(Object.prototype, questionId);
+}
+
 function normalizeDpiaAnswers(
   value: unknown,
   fields: Record<string, string>,
 ): DPIAResult['answers'] | undefined {
   if (!isRecord(value)) return undefined;
-  const answers: DPIAResult['answers'] = {};
-  for (const [questionId, answer] of Object.entries(value)) {
+  const answers = new Map<string, DPIAResult['answers'][string]>();
+  for (const [rawQuestionId, answer] of Object.entries(value)) {
+    const questionId = rawQuestionId.trim();
+    if (!questionId || !isSafeDpiaQuestionId(questionId)) {
+      fields.answers =
+        'Question IDs must be non-reserved text with at most 200 characters.';
+      continue;
+    }
     const validScalar = typeof answer === 'string'
       || typeof answer === 'boolean'
       || (typeof answer === 'number' && Number.isFinite(answer));
     const validStringArray = Array.isArray(answer)
       && answer.every((item) => typeof item === 'string');
-    if (!questionId.trim() || (!validScalar && !validStringArray)) {
-      fields[`answers.${questionId || '(empty)'}`] =
+    if (!validScalar && !validStringArray) {
+      fields[`answers.${questionId}`] =
         'Answer must be a string, finite number, boolean, or string array.';
       continue;
     }
-    answers[questionId] = Array.isArray(answer) ? [...answer] : answer;
+    answers.set(questionId, Array.isArray(answer) ? [...answer] : answer);
   }
-  return answers;
+  return Object.fromEntries(answers);
 }
 
 function normalizeDpiaRisks(

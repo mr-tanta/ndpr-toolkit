@@ -130,31 +130,41 @@ function highestRiskLevel(risks: DPIARiskEvidence[]): RiskLevel {
   return risks.reduce<RiskLevel>((highest, risk) => rank[risk.level] > rank[highest] ? risk.level : highest, 'low');
 }
 
+function isSafeQuestionId(questionId: string): boolean {
+  return questionId.length > 0
+    && questionId.length <= 200
+    && questionId !== '__proto__'
+    && questionId !== 'prototype'
+    && !Object.prototype.hasOwnProperty.call(Object.prototype, questionId);
+}
+
 function normalizeAnswers(value: unknown): Validation<Record<string, AnswerValue>> {
   if (!isRecord(value) || Object.keys(value).length === 0 || Object.keys(value).length > 500) {
     return { ok: false, error: 'dpiaData.answers must be a non-empty object with at most 500 answers' };
   }
-  const answers: Record<string, AnswerValue> = {};
+  const answers = new Map<string, AnswerValue>();
   for (const [rawQuestionId, answer] of Object.entries(value)) {
     const questionId = rawQuestionId.trim();
-    if (!questionId) return { ok: false, error: 'dpiaData.answers cannot contain an empty question id' };
+    if (!questionId || !isSafeQuestionId(questionId)) {
+      return { ok: false, error: 'dpiaData.answers question ids must be non-reserved text with at most 200 characters' };
+    }
     if (typeof answer === 'string') {
       if (!answer.trim()) return { ok: false, error: `dpiaData.answers.${questionId} cannot be empty` };
-      answers[questionId] = answer.trim();
+      answers.set(questionId, answer.trim());
     } else if (typeof answer === 'number') {
       if (!Number.isFinite(answer)) return { ok: false, error: `dpiaData.answers.${questionId} must be finite` };
-      answers[questionId] = answer;
+      answers.set(questionId, answer);
     } else if (typeof answer === 'boolean') {
-      answers[questionId] = answer;
+      answers.set(questionId, answer);
     } else if (Array.isArray(answer)) {
       const normalized = nonEmptyStringArray(answer, `dpiaData.answers.${questionId}`);
       if (!normalized.ok) return normalized;
-      answers[questionId] = normalized.value;
+      answers.set(questionId, normalized.value);
     } else {
       return { ok: false, error: `dpiaData.answers.${questionId} must be text, a finite number, boolean, or a non-empty string array` };
     }
   }
-  return { ok: true, value: answers };
+  return { ok: true, value: Object.fromEntries(answers) };
 }
 
 function normalizeRisks(value: unknown, answers: Record<string, AnswerValue>, stored: boolean): Validation<DPIARiskEvidence[]> {

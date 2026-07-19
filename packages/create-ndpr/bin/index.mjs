@@ -189,7 +189,7 @@ function writeGenerated(relativePath, content, { neverOverwrite = false } = {}) 
     return false;
   }
   const directory = dirname(destination);
-  if (!existsSync(directory)) mkdirSync(directory, { recursive: true });
+  mkdirSync(directory, { recursive: true });
   try {
     writeFileSync(destination, content, { encoding: 'utf8', flag: FORCE && !neverOverwrite ? 'w' : 'wx' });
   } catch (error) {

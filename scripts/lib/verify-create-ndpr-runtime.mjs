@@ -254,6 +254,18 @@ async function verifyDPIARoute(harness, framework) {
     `${label} rejects inconsistent risk evidence`,
   );
 
+  const dangerous = createDPIAInput();
+  dangerous.dpiaData.answers = Object.fromEntries([
+    ['__proto__', 'attacker-controlled'],
+  ]);
+  dangerous.dpiaData.risks[0].relatedQuestionIds = ['__proto__'];
+  await assertRejectedMutation(
+    harness,
+    'post',
+    dangerous,
+    `${label} rejects dangerous answer identifiers`,
+  );
+
   const created = await harness.invoke('post', { body: input });
   assertEqual(created.statusCode, 201, `${label} create status`);
   assertTruthy(created.payload?.id, `${label} created ID`);

@@ -34,12 +34,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build toolkit package boundary
+        run: pnpm build:lib
+
+      - name: Render and verify scaffold fixtures
+        # Retains all 15 valid framework/layout/ORM outputs for CodeQL. Raw
+        # Handlebars-bearing templates are excluded by the config below because
+        # mutually exclusive branches are not valid TypeScript until rendered.
+        run: pnpm verify:create-ndpr:codeql
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4
         with:
           languages: ${{ matrix.language }}
-          # Custom config is light — built-in security-and-quality suite
-          # covers most of what a TypeScript codebase needs.
+          config-file: ./.github/codeql/codeql-config.yml
           queries: security-and-quality
 
       - name: Autobuild
