@@ -2,11 +2,40 @@
  * @jest-environment node
  */
 
-export {};
+import {
+  addTransactionMock,
+  installPrismaClientMock,
+  installRecipeContextMocks,
+  STAFF_CONTEXT,
+  type RecipeTestContext,
+} from './helpers/recipeRouteTestUtils';
 
 const nextListRoutePath = '../../packages/ndpr-recipes/src/nextjs/app-router/api/breach/route';
 const nextDetailRoutePath = '../../packages/ndpr-recipes/src/nextjs/app-router/api/breach/[id]/route';
 const expressRoutePath = '../../packages/ndpr-recipes/src/express/routes/breach';
+
+const DISCOVERED_AT = '2026-06-26T10:00:00.000Z';
+const DISCOVERED_MS = Date.parse(DISCOVERED_AT);
+const ASSESSMENT = {
+  id: 'assessment_1',
+  breachId: 'breach_1',
+  assessedAt: DISCOVERED_MS + 60_000,
+  assessor: {
+    name: STAFF_CONTEXT.actor?.displayName,
+    role: 'verified-ndpr-staff',
+    email: STAFF_CONTEXT.actor?.email,
+  },
+  confidentialityImpact: 4,
+  integrityImpact: 3,
+  availabilityImpact: 2,
+  harmLikelihood: 4,
+  harmSeverity: 4,
+  overallRiskScore: 16,
+  riskLevel: 'high',
+  risksToRightsAndFreedoms: true,
+  highRisksToRightsAndFreedoms: true,
+  justification: 'The exposed identifiers create a high phishing and fraud risk.',
+};
 
 type Handler = (req: any, res: any) => unknown | Promise<unknown>;
 interface MockExpressResponse {
@@ -16,10 +45,9 @@ interface MockExpressResponse {
   json: jest.Mock<MockExpressResponse, [unknown]>;
 }
 
-const DISCOVERED_AT = '2026-06-26T10:00:00.000Z';
-
 function breachRow(overrides: Record<string, unknown> = {}) {
   return {
+    tenantId: STAFF_CONTEXT.tenantId,
     id: 'breach_1',
     title: 'Customer export exposed',
     description: 'A customer export was uploaded to a public bucket.',
@@ -29,41 +57,53 @@ function breachRow(overrides: Record<string, unknown> = {}) {
     discoveredAt: new Date(DISCOVERED_AT),
     occurredAt: new Date('2026-06-26T09:00:00.000Z'),
     reportedAt: new Date(DISCOVERED_AT),
-    reporterName: 'Ada DPO',
-    reporterEmail: 'ada@example.test',
-    reporterDepartment: 'Privacy',
+    ndpcNotifiedAt: null,
+    reporterName: STAFF_CONTEXT.actor?.displayName,
+    reporterEmail: STAFF_CONTEXT.actor?.email,
+    reporterDepartment: STAFF_CONTEXT.actor?.department,
+    reporterPhone: null,
     affectedSystems: ['object-storage'],
     dataTypes: ['name', 'email'],
-    estimatedAffected: 220,
-    initialActions: 'Bucket access was disabled.',
+    involvesSensitiveData: false,
+    estimatedAffectedSubjects: 220,
+    approximateRecordCount: 300,
+    dataSubjectCategories: ['customers'],
+    likelyConsequences: 'Affected customers face phishing and account takeover risks.',
+    mitigationMeasures: 'Bucket access was disabled and credentials were rotated.',
+    isPhasedReport: false,
+    supplementsReportId: null,
+    dpoContact: { name: 'Ada DPO', email: 'ada@example.test' },
+    initialActions: 'Affected customers were given protective guidance.',
+    attachments: null,
+    assessments: [ASSESSMENT],
+    notifications: [],
     ndpcNotificationSent: false,
+    removedAt: null,
     ...overrides,
   };
 }
 
 function createPrismaMock() {
-  return {
+  return addTransactionMock({
     breachReport: {
-      findMany: jest.fn(),
-      findUnique: jest.fn().mockResolvedValue(breachRow()),
+      findMany: jest.fn().mockResolvedValue([breachRow()]),
+      findFirst: jest.fn().mockResolvedValue(breachRow()),
       create: jest.fn().mockResolvedValue(breachRow()),
-      update: jest.fn().mockResolvedValue(breachRow({ status: 'investigating' })),
+      update: jest.fn().mockResolvedValue(breachRow({ status: 'contained' })),
     },
     complianceAuditLog: {
       create: jest.fn().mockResolvedValue({ id: 'audit_1' }),
     },
-  };
+  });
 }
 
-async function loadNextBreachRoutes(prisma = createPrismaMock()) {
+async function loadNextBreachRoutes(
+  prisma = createPrismaMock(),
+  context: RecipeTestContext = STAFF_CONTEXT,
+) {
   jest.resetModules();
-  jest.doMock(
-    '@prisma/client',
-    () => ({
-      PrismaClient: jest.fn(() => prisma),
-    }),
-    { virtual: true },
-  );
+  installRecipeContextMocks(context);
+  installPrismaClientMock(prisma);
   jest.doMock(
     '@tantainnovative/ndpr-toolkit/server',
     () => jest.requireActual('../../packages/ndpr-toolkit/src/server'),
@@ -75,7 +115,10 @@ async function loadNextBreachRoutes(prisma = createPrismaMock()) {
   return { listRoute, detailRoute, prisma };
 }
 
-async function loadExpressBreachRouter(prisma = createPrismaMock()) {
+async function loadExpressBreachRouter(
+  prisma = createPrismaMock(),
+  context: RecipeTestContext = STAFF_CONTEXT,
+) {
   jest.resetModules();
   const handlers: Record<string, Handler> = {};
 
@@ -96,13 +139,8 @@ async function loadExpressBreachRouter(prisma = createPrismaMock()) {
     }),
     { virtual: true },
   );
-  jest.doMock(
-    '@prisma/client',
-    () => ({
-      PrismaClient: jest.fn(() => prisma),
-    }),
-    { virtual: true },
-  );
+  installRecipeContextMocks(context);
+  installPrismaClientMock(prisma);
   jest.doMock(
     '@tantainnovative/ndpr-toolkit/server',
     () => jest.requireActual('../../packages/ndpr-toolkit/src/server'),
@@ -144,13 +182,43 @@ function validBreachPayload() {
     category: 'unauthorized_access',
     discoveredAt: DISCOVERED_AT,
     occurredAt: '2026-06-26T09:00:00.000Z',
-    reporterName: 'Ada DPO',
-    reporterEmail: 'ada@example.test',
-    reporterDepartment: 'Privacy',
+    reporter: {
+      name: 'Client Supplied Actor',
+      email: 'attacker@example.test',
+      department: 'Untrusted',
+    },
     affectedSystems: ['object-storage'],
     dataTypes: ['name', 'email'],
-    estimatedAffected: 220,
-    initialActions: 'Bucket access was disabled.',
+    involvesSensitiveData: false,
+    estimatedAffectedSubjects: 220,
+    approximateRecordCount: 300,
+    dataSubjectCategories: ['customers'],
+    likelyConsequences: 'Affected customers face phishing and account takeover risks.',
+    mitigationMeasures: 'Bucket access was disabled and credentials were rotated.',
+    isPhasedReport: false,
+    dpoContact: { name: 'Ada DPO', email: 'ada@example.test' },
+    initialActions: 'Affected customers were given protective guidance.',
+    assessments: [{
+      id: ASSESSMENT.id,
+      assessedAt: ASSESSMENT.assessedAt,
+      assessor: {
+        name: 'Client Supplied Assessor',
+        role: 'administrator',
+        email: 'attacker@example.test',
+      },
+      confidentialityImpact: ASSESSMENT.confidentialityImpact,
+      integrityImpact: ASSESSMENT.integrityImpact,
+      availabilityImpact: ASSESSMENT.availabilityImpact,
+      harmLikelihood: ASSESSMENT.harmLikelihood,
+      harmSeverity: ASSESSMENT.harmSeverity,
+      overallRiskScore: ASSESSMENT.overallRiskScore,
+      riskLevel: ASSESSMENT.riskLevel,
+      risksToRightsAndFreedoms: true,
+      highRisksToRightsAndFreedoms: true,
+      justification: ASSESSMENT.justification,
+    }],
+    severity: 'critical',
+    ndpcNotificationSent: true,
   };
 }
 
@@ -158,7 +226,6 @@ function invalidBreachPayload() {
   return {
     ...validBreachPayload(),
     discoveredAt: 'not-a-date',
-    reporterEmail: 'not-an-email',
     affectedSystems: [],
     dataTypes: [],
   };
@@ -175,19 +242,16 @@ describe('ndpr-recipes breach routes', () => {
 
     expect(response.status).toBe(400);
     expect(body.error).toBe('Validation failed.');
-    expect(body.fields).toEqual(
-      expect.objectContaining({
-        discoveredAt: 'discoveredAt must be a valid ISO date.',
-        reporterEmail: 'reporterEmail must be a valid email address.',
-        affectedSystems: 'affectedSystems must include at least one affected system.',
-        dataTypes: 'dataTypes must include at least one data type.',
-      }),
-    );
+    expect(body.fields).toEqual(expect.objectContaining({
+      discoveredAt: 'discoveredAt must be a valid timestamp.',
+      affectedSystems: 'affectedSystems must contain at least one string.',
+      dataTypes: 'dataTypes must contain at least one string.',
+    }));
     expect(prisma.breachReport.create).not.toHaveBeenCalled();
     expect(prisma.complianceAuditLog.create).not.toHaveBeenCalled();
   });
 
-  it('returns NDPC readiness metadata when Next.js breach intake is persisted', async () => {
+  it('persists server-derived breach evidence and returns NDPC readiness metadata', async () => {
     const { listRoute, prisma } = await loadNextBreachRoutes();
 
     const response = await listRoute.POST(
@@ -196,27 +260,61 @@ describe('ndpr-recipes breach routes', () => {
     const body = await response.json();
 
     expect(response.status).toBe(201);
+    expect(prisma.$transaction).toHaveBeenCalledTimes(1);
     expect(prisma.breachReport.create).toHaveBeenCalledWith({
       data: expect.objectContaining({
+        tenantId: STAFF_CONTEXT.tenantId,
         category: 'unauthorized_access',
         severity: 'high',
         status: 'ongoing',
+        reporterName: STAFF_CONTEXT.actor?.displayName,
+        reporterEmail: STAFF_CONTEXT.actor?.email,
         affectedSystems: ['object-storage'],
         dataTypes: ['name', 'email'],
+        assessments: [expect.objectContaining({
+          breachId: 'test-cuid',
+          assessor: {
+            name: STAFF_CONTEXT.actor?.displayName,
+            role: 'verified-ndpr-staff',
+            email: STAFF_CONTEXT.actor?.email,
+          },
+          riskLevel: 'high',
+        })],
+        notifications: [],
+        ndpcNotificationSent: false,
+        removedAt: null,
       }),
     });
-    expect(body.ndpcReadiness).toEqual(
-      expect.objectContaining({
-        complete: expect.any(Boolean),
-        completeness: expect.any(Number),
-        missing: expect.any(Array),
+    expect(prisma.complianceAuditLog.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        tenantId: STAFF_CONTEXT.tenantId,
+        module: 'breach',
+        action: 'reported',
+        entityType: 'BreachReport',
+        performedBy: STAFF_CONTEXT.actorId,
+        changes: {
+          category: 'unauthorized_access',
+          status: 'ongoing',
+          assessmentCount: 1,
+          notificationEvidenceCount: 0,
+        },
+      }),
+    });
+    expect(body.ndpcReadiness).toEqual(expect.objectContaining({
+      complete: true,
+      ready: false,
+      valid: true,
+      notificationRequired: true,
+      dataSubjectCommunicationRequired: true,
+      timing: expect.objectContaining({
+        notified: false,
         hoursRemaining: expect.any(Number),
         overdue: expect.any(Boolean),
       }),
-    );
+    }));
   });
 
-  it('rejects invalid Next.js breach updates before writing to Prisma', async () => {
+  it('rejects invalid Next.js breach updates within a tenant-scoped transaction', async () => {
     const { detailRoute, prisma } = await loadNextBreachRoutes();
 
     const response = await detailRoute.PATCH(
@@ -224,15 +322,21 @@ describe('ndpr-recipes breach routes', () => {
         status: 'deleted',
         severity: 'severe',
       }),
-      { params: { id: 'breach_1' } },
+      { params: Promise.resolve({ id: 'breach_1' }) },
     );
     const body = await response.json();
 
     expect(response.status).toBe(400);
-    expect(body.error).toBe('Validation failed.');
-    expect(body.fields).toEqual({
-      status: 'status must be one of ongoing, investigating, resolved, or closed.',
-      severity: 'severity must be one of critical, high, medium, or low.',
+    expect(body).toEqual({
+      error: 'Validation failed.',
+      fields: { status: 'status must be ongoing, contained, or resolved.' },
+    });
+    expect(prisma.breachReport.findFirst).toHaveBeenCalledWith({
+      where: {
+        tenantId: STAFF_CONTEXT.tenantId,
+        id: 'breach_1',
+        removedAt: null,
+      },
     });
     expect(prisma.breachReport.update).not.toHaveBeenCalled();
     expect(prisma.complianceAuditLog.create).not.toHaveBeenCalled();
@@ -246,6 +350,7 @@ describe('ndpr-recipes breach routes', () => {
       {
         params: { id: 'breach_1' },
         body: { status: 'deleted', severity: 'severe' },
+        ip: '203.0.113.20',
       },
       res,
     );
@@ -253,10 +358,7 @@ describe('ndpr-recipes breach routes', () => {
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.body).toEqual({
       error: 'Validation failed.',
-      fields: {
-        status: 'status must be one of ongoing, investigating, resolved, or closed.',
-        severity: 'severity must be one of critical, high, medium, or low.',
-      },
+      fields: { status: 'status must be ongoing, contained, or resolved.' },
     });
     expect(prisma.breachReport.update).not.toHaveBeenCalled();
     expect(prisma.complianceAuditLog.create).not.toHaveBeenCalled();

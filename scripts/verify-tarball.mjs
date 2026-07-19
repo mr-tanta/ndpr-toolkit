@@ -32,6 +32,8 @@
  *   node scripts/verify-tarball.mjs            # full check (~60-90s)
  *   node scripts/verify-tarball.mjs --skip-build  # reuse existing dist/
  *   node scripts/verify-tarball.mjs --skip-ts     # skip the tsc step (~30s faster)
+ *   node scripts/verify-tarball.mjs --tarball /path/package.tgz
+ *     # verify an already-packed artifact without rebuilding, repacking, or deleting it
  */
 
 import { spawnSync } from "node:child_process";
@@ -46,7 +48,14 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 
 const PKG_NAME = "@tantainnovative/ndpr-toolkit";
-const SKIP_BUILD = process.argv.includes("--skip-build");
+const TARBALL_ARG_INDEX = process.argv.indexOf("--tarball");
+const PROVIDED_TARBALL = TARBALL_ARG_INDEX >= 0
+  ? process.argv[TARBALL_ARG_INDEX + 1]
+  : undefined;
+if (TARBALL_ARG_INDEX >= 0 && (!PROVIDED_TARBALL || PROVIDED_TARBALL.startsWith("--"))) {
+  fail("--tarball requires a path to an existing .tgz file");
+}
+const SKIP_BUILD = Boolean(PROVIDED_TARBALL) || process.argv.includes("--skip-build");
 const SKIP_TS = process.argv.includes("--skip-ts");
 
 /**
@@ -58,8 +67,8 @@ const SKIP_TS = process.argv.includes("--skip-ts");
  * a CSS file and has no JS export surface).
  */
 const PROBES = {
-  ".": ["ConsentBanner", "validateConsentStructured", "NDPRThemeProvider"],
-  "./core": ["NDPRProvider", "validateConsentStructured", "getComplianceScore"],
+  ".": ["ConsentBanner", "validateConsentStructured", "NDPRProvider", "NDPRThemeProvider"],
+  "./core": ["validateConsentStructured", "getComplianceScore", "defaultLocale"],
   "./server": ["validateConsentStructured", "generatePolicyText", "getComplianceScore"],
   "./hooks": ["useConsent", "useDSR", "useDPIA"],
   "./headless": ["useConsent", "useDSR", "useDPIA"],
@@ -80,6 +89,11 @@ const PROBES = {
   "./ropa": ["ROPAManager"],
   "./ropa/lite": ["ROPAManagerLite"],
   "./unstyled": ["ConsentBanner"],
+};
+
+/** Client-only APIs that must not leak into server-safe entry points. */
+const FORBIDDEN_EXPORTS = {
+  "./core": ["NDPRProvider", "useNDPRConfig", "useNDPRLocale"],
 };
 
 function subpathToImport(sub) {
@@ -139,7 +153,9 @@ if (orphanedProbes.length) {
 console.log(`  ✓ ${exportKeys.length} exports keys, all have probes`);
 
 // ── 1. Build (optional) ────────────────────────────────────────────────────
-if (!SKIP_BUILD) {
+if (PROVIDED_TARBALL) {
+  step("1. pnpm build:lib (SKIPPED — verifying supplied tarball)");
+} else if (!SKIP_BUILD) {
   step("1. pnpm build:lib");
   run("pnpm", ["build:lib"]);
 } else {
@@ -149,12 +165,26 @@ if (!SKIP_BUILD) {
   }
 }
 
-// ── 2. Pack ────────────────────────────────────────────────────────────────
-step("2. npm pack");
-const packJson = run("npm", ["pack", "--json"], { capture: true });
-const tarFilename = JSON.parse(packJson)[0].filename;
-const tarPath = path.resolve(tarFilename);
-console.log(`  ✓ packed ${tarFilename}`);
+// ── 2. Select or pack the artifact ────────────────────────────────────────
+let tarPath;
+let tarFilename;
+let ownsTarball = false;
+if (PROVIDED_TARBALL) {
+  step("2. Use supplied npm tarball");
+  tarPath = path.resolve(PROVIDED_TARBALL);
+  tarFilename = path.basename(tarPath);
+  if (!tarFilename.endsWith(".tgz") || !existsSync(tarPath)) {
+    fail(`supplied tarball does not exist or is not a .tgz file: ${tarPath}`);
+  }
+  console.log(`  ✓ using ${tarPath}`);
+} else {
+  step("2. npm pack");
+  const packJson = run("npm", ["pack", "--json", "--ignore-scripts"], { capture: true });
+  tarFilename = JSON.parse(packJson)[0].filename;
+  tarPath = path.resolve(tarFilename);
+  ownsTarball = true;
+  console.log(`  ✓ packed ${tarFilename}`);
+}
 
 let sbox;
 let exitCode = 0;
@@ -197,10 +227,18 @@ try {
               `    if (typeof mod.${s} === 'undefined') fails.push('${pkg}: named export ${s} is undefined');`,
           )
           .join("\n");
+        const forbiddenChecks = (FORBIDDEN_EXPORTS[sub] ?? [])
+          .map(
+            (s) =>
+              `    if (typeof mod.${s} !== 'undefined') fails.push('${pkg}: forbidden client export ${s} is defined');`,
+          )
+          .join("\n");
         return (
           `  try {\n` +
           `    const mod = await import('${pkg}');\n` +
           symChecks +
+          `\n` +
+          forbiddenChecks +
           `\n` +
           `  } catch (e) {\n` +
           `    fails.push('${pkg}: ESM import failed — ' + e.message);\n` +
@@ -230,10 +268,18 @@ try {
               `  if (typeof mod.${s} === 'undefined') fails.push('${pkg}: named export ${s} is undefined in CJS');`,
           )
           .join("\n");
+        const forbiddenChecks = (FORBIDDEN_EXPORTS[sub] ?? [])
+          .map(
+            (s) =>
+              `  if (typeof mod.${s} !== 'undefined') fails.push('${pkg}: forbidden client export ${s} is defined in CJS');`,
+          )
+          .join("\n");
         return (
           `try {\n` +
           `  const mod = require('${pkg}');\n` +
           symChecks +
+          `\n` +
+          forbiddenChecks +
           `\n` +
           `} catch (e) {\n` +
           `  fails.push('${pkg}: CJS require failed — ' + e.message);\n` +
@@ -310,7 +356,20 @@ try {
         `void ${used};`,
       ];
     });
-    writeFileSync(path.join(sbox, "probe.ts"), tsLines.join("\n") + "\n");
+    const forbiddenTypeLines = Object.entries(FORBIDDEN_EXPORTS).flatMap(
+      ([sub, syms]) => {
+        const pkg = subpathToImport(sub);
+        return syms.map(
+          (symbol, index) =>
+            `// @ts-expect-error ${symbol} must not be exported from ${pkg}\n` +
+            `import { ${symbol} as forbidden_${index} } from '${pkg}';`,
+        );
+      },
+    );
+    writeFileSync(
+      path.join(sbox, "probe.ts"),
+      [...tsLines, ...forbiddenTypeLines].join("\n") + "\n",
+    );
 
     run("npx", ["--no-install", "tsc", "--noEmit", "-p", "tsconfig.json"], {
       cwd: sbox,
@@ -331,9 +390,10 @@ try {
   console.error(`\n✗ Verification crashed: ${err.message}`);
   exitCode = 1;
 } finally {
-  // Always clean up the tarball + sandbox.
+  // Always clean up the sandbox and any tarball created by this verifier.
+  // A caller-supplied release artifact remains available for the publish step.
   try {
-    if (existsSync(tarPath)) rmSync(tarPath);
+    if (ownsTarball && existsSync(tarPath)) rmSync(tarPath);
   } catch {}
   try {
     if (sbox && existsSync(sbox)) rmSync(sbox, { recursive: true, force: true });

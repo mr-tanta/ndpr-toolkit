@@ -352,7 +352,7 @@ export const yorubaLocale: NDPRLocale = {
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-6">
           <pre className="text-foreground"><code>{`'use client';
 
-import { useNDPRLocale } from '@tantainnovative/ndpr-toolkit/core';
+import { useNDPRLocale } from '@tantainnovative/ndpr-toolkit';
 
 export function CustomConsentBanner() {
   // Returns fully resolved locale — all keys present, no undefined
@@ -400,11 +400,13 @@ const nextLabel    = locale.dpia.next;         // "Next" or translated`}</code><
       </section>
 
       <section id="imports" className="mb-8">
-        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Available Imports from /core</h2>
+        <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Locale Utilities and Hook Imports</h2>
         <p className="mb-4 text-foreground">
-          All locale-related exports are available from the{' '}
+          Locale types, data, and pure merge helpers are available from the React-free{' '}
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">@tantainnovative/ndpr-toolkit/core</code>{' '}
-          entry point so you can import only what you need without pulling in React component code.
+          entry. Import <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useNDPRLocale</code>{' '}
+          and <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">useNDPRConfig</code>{' '}
+          from the package root because hooks require React and provider context.
         </p>
 
         <div className="overflow-x-auto mb-6">
@@ -436,12 +438,12 @@ const nextLabel    = locale.dpia.next;         // "Next" or translated`}</code><
               </tr>
               <tr className="border-b border-border bg-muted/30">
                 <td className="border border-border px-4 py-2 font-mono text-foreground">useNDPRLocale</td>
-                <td className="border border-border px-4 py-2 text-foreground">Hook</td>
+                <td className="border border-border px-4 py-2 text-foreground">Hook (package root)</td>
                 <td className="border border-border px-4 py-2 text-muted-foreground">Returns the fully resolved locale from the nearest NDPRProvider</td>
               </tr>
               <tr className="bg-muted/30">
                 <td className="border border-border px-4 py-2 font-mono text-foreground">useNDPRConfig</td>
-                <td className="border border-border px-4 py-2 text-foreground">Hook</td>
+                <td className="border border-border px-4 py-2 text-foreground">Hook (package root)</td>
                 <td className="border border-border px-4 py-2 text-muted-foreground">Returns the full NDPRConfig (including raw locale, org name, DPO email, theme)</td>
               </tr>
             </tbody>
@@ -450,8 +452,8 @@ const nextLabel    = locale.dpia.next;         // "Next" or translated`}</code><
 
         <div className="bg-card border border-border rounded-xl p-4 overflow-x-auto mb-4">
           <pre className="text-foreground"><code>{`import type { NDPRLocale } from '@tantainnovative/ndpr-toolkit/core';
-import { defaultLocale, mergeLocale, useNDPRLocale, useNDPRConfig }
-  from '@tantainnovative/ndpr-toolkit/core';`}</code></pre>
+import { defaultLocale, mergeLocale } from '@tantainnovative/ndpr-toolkit/core';
+import { useNDPRLocale, useNDPRConfig } from '@tantainnovative/ndpr-toolkit';`}</code></pre>
         </div>
       </section>
 

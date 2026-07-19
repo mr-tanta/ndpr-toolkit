@@ -12,11 +12,15 @@ const customJestConfig = {
   moduleNameMapper: {
     // Handle module aliases (if you have them in tsconfig.json)
     '^@/(.*)$': '<rootDir>/src/$1',
+    // @paralleldrive/cuid2 is ESM-only; recipe tests run in Jest's CJS runtime.
+    '^@paralleldrive/cuid2$': '<rootDir>/src/__tests__/mocks/cuid2.js',
   },
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
-    '<rootDir>/out/'
+    '<rootDir>/out/',
+    '<rootDir>/src/__tests__/helpers/',
+    '<rootDir>/src/__tests__/mocks/'
   ],
   transformIgnorePatterns: [
     '/node_modules/',

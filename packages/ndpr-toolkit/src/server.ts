@@ -123,7 +123,11 @@ export type {
   ROPAValidationResult,
 } from './utils/ropa';
 
-export type { ConsentAuditEntry } from './utils/consent-audit';
+export type {
+  ConsentAuditEntry,
+  ConsentAuditAppendResult,
+  ConsentAuditAppendFailureReason,
+} from './utils/consent-audit';
 
 // Cookie scanner — React-free and DOM-optional (pass a Cookie header string
 // server-side), so it lives in the server-safe entry too.
@@ -140,6 +144,12 @@ export type {
   ComplianceInput,
   ComplianceReport,
   ComplianceRating,
+  ComplianceModuleName,
+  ComplianceRuleset,
+  ComplianceRulesetOverrides,
+  ComplianceApplicability,
+  ComplianceScoreOptions,
+  ComplianceProvenance,
   ModuleScore,
   Recommendation,
   RegulatoryReference,
@@ -147,7 +157,20 @@ export type {
   EffortLevel,
 } from './utils/compliance-score';
 
-export type { StorageAdapter } from './adapters/types';
+export { StorageAdapterError } from './adapters/types';
+export type {
+  StorageAdapter,
+  StorageAdapterCapabilities,
+  StorageAdapterConcurrency,
+  StorageAdapterDurability,
+  StorageAdapterErrorContext,
+  StorageAdapterEvidenceSuitability,
+  StorageAdapterFailureOptions,
+  StorageAdapterIntegrity,
+  StorageAdapterMedium,
+  StorageAdapterMutationFailureMode,
+  StorageAdapterOperation,
+} from './adapters/types';
 
 // ---------------------------------------------------------------------------
 // Validators
@@ -199,6 +222,7 @@ export {
   createAuditEntry,
   getAuditLog,
   appendAuditEntry,
+  CLIENT_CONSENT_ACTIVITY_NOTICE,
 } from './utils/consent-audit';
 export { sanitizeInput } from './utils/sanitize';
 
@@ -244,18 +268,59 @@ export {
 // Compliance scoring
 // ---------------------------------------------------------------------------
 
-export { getComplianceScore } from './utils/compliance-score';
+export { getComplianceScore, DEFAULT_COMPLIANCE_RULESET } from './utils/compliance-score';
 
-// Aggregate NDPA compliance audit + GAID 2025 utilities (pure, server-safe)
-export { classifyDCPMI } from './utils/dcpmi';
-export type { DCPMITier, DCPMIInput, DCPMIClassificationOptions, DCPMIClassification } from './utils/dcpmi';
-export { generateComplianceAuditReturn } from './utils/car';
-export type { CARInput, CAROptions, ComplianceAuditReturn } from './utils/car';
-export { assessBreachNotification } from './utils/breach-notification';
-export type { BreachNotificationOptions, BreachNotificationAssessment } from './utils/breach-notification';
-export { runNdprAudit, formatNdprAuditReport } from './utils/audit';
+// Aggregate NDPA readiness audit + GAID 2025 utilities (pure, server-safe)
+export {
+  classifyDCPMI,
+  DEFAULT_DCPMI_THRESHOLDS,
+  DEFAULT_DCPMI_FEES_NGN,
+  DEFAULT_DCPMI_RULESET,
+} from './utils/dcpmi';
 export type {
-  NdprAuditInput, NdprAuditOptions, NdprAuditResult, AuditCheck, AuditCheckStatus, FormatAuditReportOptions,
+  DCPMITier,
+  DCPMIInput,
+  DCPMIThresholds,
+  DCPMIFees,
+  DCPMIClassificationOptions,
+  DCPMIClassification,
+} from './utils/dcpmi';
+export {
+  generateComplianceAuditReturn,
+  DEFAULT_CAR_RULESET,
+  DEFAULT_CAR_DEADLINE_OVERRIDES,
+} from './utils/car';
+export type {
+  CARInput,
+  CAROptions,
+  CARFilingEvidence,
+  CARAnnualFilingStatus,
+  ComplianceAuditReturn,
+} from './utils/car';
+export { assessBreachNotification } from './utils/breach-notification';
+export type {
+  BreachNotificationOptions,
+  BreachNotificationAssessment,
+  BreachNotificationTiming,
+  BreachNotificationItem,
+} from './utils/breach-notification';
+export {
+  runNdprAudit,
+  formatNdprAuditReport,
+  validateNdprAuditConfig,
+  DEFAULT_AUDIT_RULESET,
+} from './utils/audit';
+export type {
+  NdprAuditInput,
+  NdprAuditOptions,
+  NdprAuditScope,
+  NdprAuditResult,
+  BreachAuditEvidence,
+  AuditConfigValidationError,
+  AuditConfigValidationResult,
+  AuditCheck,
+  AuditCheckStatus,
+  FormatAuditReportOptions,
 } from './utils/audit';
 
 // ---------------------------------------------------------------------------

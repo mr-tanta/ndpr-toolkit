@@ -1,174 +1,155 @@
-/**
- * Drizzle adapter for the Cross-Border Data Transfer module.
- *
- * Implements StorageAdapter<CrossBorderTransfer[]> backed by the
- * `ndpr_cross_border_transfer_records` Drizzle table.
- *
- * Under NDPA Part VIII (Sections 41-43), personal data may only be transferred
- * outside Nigeria under specific conditions. This adapter tracks every
- * cross-border transfer, the mechanism relied upon, and NDPC approval status.
- *
- * Behaviour
- * ---------
- * - LOAD  → returns all cross-border transfer records, ordered newest first.
- * - SAVE  → upserts each CrossBorderTransfer by ID using Drizzle's
- *           `onConflictDoUpdate` pattern.
- * - REMOVE → soft-terminates all active transfers by setting their status
- *            columns (no hard deletes; the audit trail is preserved).
- *
- * Usage
- * -----
- * Copy this file into your project alongside your Drizzle client, then wire it
- * into the toolkit:
- *
- *   import { drizzle } from 'drizzle-orm/node-postgres';
- *   import { Pool } from 'pg';
- *   import { drizzleCrossBorderAdapter } from './adapters/drizzle-cross-border';
- *   import * as schema from './drizzle/schema';
- *
- *   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
- *   const db = drizzle(pool, { schema });
- *
- *   function CrossBorderPage() {
- *     const adapter = drizzleCrossBorderAdapter(db);
- *     // pass adapter to your cross-border hook or use it directly
- *   }
- *
- * Prerequisites
- * -------------
- * - The `ndpr_cross_border_transfer_records` table must exist (run your Drizzle migration).
- * - `drizzle-orm` must be installed in your project.
- * - `@tantainnovative/ndpr-toolkit` must be installed in your project.
- *
- * @module adapters/drizzle-cross-border
- */
+import { and, desc, eq, isNull, notInArray } from 'drizzle-orm';
+import type { CrossBorderTransfer, StorageAdapter } from '@tantainnovative/ndpr-toolkit';
+import {
+  crossBorderTransferRecords,
+  type NewCrossBorderTransferRecord,
+} from '../drizzle/schema';
+import {
+  assertTenantContext,
+  serverStorageCapabilities,
+  type TenantAdapterContext,
+} from './server-storage';
 
-import { eq, desc } from 'drizzle-orm';
-import type { StorageAdapter } from '@tantainnovative/ndpr-toolkit';
-import type { CrossBorderTransfer } from '@tantainnovative/ndpr-toolkit';
-import { crossBorderTransferRecords } from '../drizzle/schema';
-
-/**
- * Creates a Drizzle-backed StorageAdapter for CrossBorderTransfer[].
- *
- * @param db - Your Drizzle database instance (any driver — pg, neon, libsql, etc.)
- * @returns A StorageAdapter<CrossBorderTransfer[]> ready to use with the cross-border module.
- */
+/** Creates an atomic, tenant-scoped Drizzle cross-border transfer adapter. */
 export function drizzleCrossBorderAdapter(
   db: any,
+  context: TenantAdapterContext,
 ): StorageAdapter<CrossBorderTransfer[]> {
+  assertTenantContext(context);
+  const { tenantId } = context;
+
   return {
-    /**
-     * Load all cross-border transfer records, ordered newest first.
-     * Returns null if no records exist.
-     */
+    capabilities: serverStorageCapabilities,
+
     async load(): Promise<CrossBorderTransfer[] | null> {
-      const rows = await db
+      const rows: Array<typeof crossBorderTransferRecords.$inferSelect> = await db
         .select()
         .from(crossBorderTransferRecords)
+        .where(
+          and(
+            eq(crossBorderTransferRecords.tenantId, tenantId),
+            isNull(crossBorderTransferRecords.removedAt),
+          ),
+        )
         .orderBy(desc(crossBorderTransferRecords.createdAt));
-
-      if (rows.length === 0) return null;
-
-      return rows.map(mapRowToCrossBorderTransfer);
+      return rows.length === 0 ? null : rows.map(mapRowToCrossBorderTransfer);
     },
 
-    /**
-     * Persist the current list of cross-border transfers.
-     * Each transfer is upserted by ID so partial updates work.
-     */
     async save(transfers: CrossBorderTransfer[]): Promise<void> {
-      if (transfers.length === 0) return;
+      const retainedIds = transfers.map(({ id }) => id);
+      await db.transaction(async (transaction: typeof db) => {
+        await transaction
+          .update(crossBorderTransferRecords)
+          .set({ removedAt: new Date() })
+          .where(
+            retainedIds.length > 0
+              ? and(
+                  eq(crossBorderTransferRecords.tenantId, tenantId),
+                  isNull(crossBorderTransferRecords.removedAt),
+                  notInArray(crossBorderTransferRecords.id, retainedIds),
+                )
+              : and(
+                  eq(crossBorderTransferRecords.tenantId, tenantId),
+                  isNull(crossBorderTransferRecords.removedAt),
+                ),
+          );
 
-      await Promise.all(
-        transfers.map((transfer) => {
-          const row = mapCrossBorderTransferToRow(transfer);
-          return db
+        for (const transfer of transfers) {
+          const row = mapCrossBorderTransferToRow(transfer, tenantId);
+          await transaction
             .insert(crossBorderTransferRecords)
-            .values({ id: transfer.id, ...row })
+            .values(row)
             .onConflictDoUpdate({
-              target: crossBorderTransferRecords.id,
+              target: [crossBorderTransferRecords.tenantId, crossBorderTransferRecords.id],
               set: row,
             });
-        }),
-      );
+        }
+      });
     },
 
-    /**
-     * Soft-terminate all active cross-border transfers by updating their
-     * timestamp. Transfers are never hard-deleted so the NDPA Part VI
-     * compliance audit trail is preserved.
-     *
-     * Note: This updates all records. If you need to scope removal to a
-     * specific status, add a `status` column to the schema and filter on it.
-     */
     async remove(): Promise<void> {
       await db
         .update(crossBorderTransferRecords)
-        .set({ updatedAt: new Date() });
+        .set({ removedAt: new Date() })
+        .where(
+          and(
+            eq(crossBorderTransferRecords.tenantId, tenantId),
+            isNull(crossBorderTransferRecords.removedAt),
+          ),
+        );
     },
   };
 }
 
-// ---------------------------------------------------------------------------
-// Mapping helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Map a raw Drizzle row (from ndpr_cross_border_transfer_records) to the
- * toolkit's CrossBorderTransfer type. Some rich fields on the toolkit type
- * default to placeholder values — extend the schema if you need full
- * round-trip fidelity.
- */
-function mapRowToCrossBorderTransfer(row: any): CrossBorderTransfer {
+function mapRowToCrossBorderTransfer(
+  row: typeof crossBorderTransferRecords.$inferSelect,
+): CrossBorderTransfer {
+  if (!row.transferData) {
+    throw new Error(`Cross-border record ${row.id} is missing its lossless transferData snapshot`);
+  }
   return {
+    ...row.transferData,
     id: row.id,
     destinationCountry: row.destinationCountry,
-    adequacyStatus: row.adequacyStatus as CrossBorderTransfer['adequacyStatus'],
-    transferMechanism: row.transferMechanism as CrossBorderTransfer['transferMechanism'],
-    dataCategories: (row.dataCategories as string[]) ?? [],
-    includesSensitiveData: false,
+    destinationCountryCode: row.destinationCountryCode ?? undefined,
+    adequacyStatus: row.adequacyStatus,
+    transferMechanism: row.transferMechanism,
+    dataCategories: row.dataCategories,
+    includesSensitiveData:
+      row.includesSensitiveData ?? row.transferData.includesSensitiveData,
+    estimatedDataSubjects: row.estimatedDataSubjects ?? undefined,
     recipientOrganization: row.recipientName,
-    recipientContact: {
-      name: row.recipientName,
-      email: '',
-    },
-    purpose: '',
-    safeguards: row.safeguards ? [row.safeguards] : [],
-    riskAssessment: '',
-    riskLevel: row.riskLevel as CrossBorderTransfer['riskLevel'],
-    ndpcApproval: row.ndpcApprovalRequired
-      ? {
-          required: row.ndpcApprovalRequired,
-          applied: !!row.ndpcApprovalReference,
-          approved: !!row.ndpcApprovalReference,
-          referenceNumber: row.ndpcApprovalReference ?? undefined,
-        }
-      : undefined,
-    tiaCompleted: false,
-    frequency: 'continuous',
-    startDate: row.createdAt.getTime(),
-    status: 'active',
+    recipientContact: row.recipientContact ?? row.transferData.recipientContact,
+    purpose: row.purpose ?? row.transferData.purpose,
+    safeguards: row.safeguards,
+    riskAssessment: row.riskAssessment ?? row.transferData.riskAssessment,
+    riskLevel: row.riskLevel,
+    ndpcApproval: row.ndpcApproval ?? undefined,
+    tiaCompleted: row.tiaCompleted ?? row.transferData.tiaCompleted,
+    tiaReference: row.tiaReference ?? undefined,
+    frequency: row.frequency ?? row.transferData.frequency,
+    startDate: row.startDate?.getTime() ?? row.transferData.startDate,
+    endDate: row.endDate?.getTime(),
+    status: row.status,
     createdAt: row.createdAt.getTime(),
     updatedAt: row.updatedAt.getTime(),
+    reviewDate: row.reviewDate?.getTime(),
   };
 }
 
-/**
- * Map a toolkit CrossBorderTransfer to the Drizzle insert/update row shape.
- * Composite toolkit fields are flattened to match the simplified schema.
- */
-function mapCrossBorderTransferToRow(transfer: CrossBorderTransfer): Record<string, unknown> {
+function mapCrossBorderTransferToRow(
+  transfer: CrossBorderTransfer,
+  tenantId: string,
+): NewCrossBorderTransferRecord {
   return {
+    tenantId,
+    id: transfer.id,
     destinationCountry: transfer.destinationCountry,
+    destinationCountryCode: transfer.destinationCountryCode ?? null,
     recipientName: transfer.recipientOrganization,
+    recipientContact: transfer.recipientContact,
     transferMechanism: transfer.transferMechanism,
-    safeguards: transfer.safeguards.join('; '),
+    safeguards: transfer.safeguards,
     dataCategories: transfer.dataCategories,
+    includesSensitiveData: transfer.includesSensitiveData,
+    estimatedDataSubjects: transfer.estimatedDataSubjects ?? null,
+    purpose: transfer.purpose,
     adequacyStatus: transfer.adequacyStatus,
+    riskAssessment: transfer.riskAssessment,
+    riskLevel: transfer.riskLevel,
     ndpcApprovalRequired: transfer.ndpcApproval?.required ?? false,
     ndpcApprovalReference: transfer.ndpcApproval?.referenceNumber ?? null,
-    riskLevel: transfer.riskLevel,
-    updatedAt: new Date(),
+    ndpcApproval: transfer.ndpcApproval ?? null,
+    tiaCompleted: transfer.tiaCompleted,
+    tiaReference: transfer.tiaReference ?? null,
+    frequency: transfer.frequency,
+    status: transfer.status,
+    startDate: new Date(transfer.startDate),
+    endDate: transfer.endDate ? new Date(transfer.endDate) : null,
+    reviewDate: transfer.reviewDate ? new Date(transfer.reviewDate) : null,
+    transferData: transfer,
+    createdAt: new Date(transfer.createdAt),
+    updatedAt: new Date(transfer.updatedAt),
+    removedAt: null,
   };
 }

@@ -322,11 +322,11 @@ export default function NDPRDemosPage() {
 
       {/* ── Install CTA ──────────────────────────────────── */}
       <CTASection
-        badge="Ready to use in production"
+        badge="Production integration"
         badgeVariant="default"
-        title="Add NDPA compliance to your app"
+        title="Add NDPA implementation support to your app"
         gradientWord="today"
-        subtitle={`One package, ${siteConfig.moduleCount} modules, zero configuration required. Covers all major NDPA 2023 obligations out of the box.`}
+        subtitle={`One package and ${siteConfig.moduleCount} modules covering major NDPA workflows. Connect verified identity, persistence, governance, and current legal review before production reliance.`}
         actions={[
           { label: 'Read the Docs', href: '/docs' },
           {

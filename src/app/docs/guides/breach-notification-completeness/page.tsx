@@ -118,7 +118,9 @@ result.timing.requiresDelayJustification; // late filings must state the reason`
           becomes <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">true</code> and a second
           checklist (<code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">dataSubjectCommunication</code>)
           covers the Section 40(3) communication: nature and context, likely consequences, safeguards and measures, and
-          a contact point — all in plain, clear language. These items count toward{' '}
+          a contact point — all in plain, clear language. Missing, invalid, or mismatched assessment evidence is
+          fail-closed: the checker keeps this duty on until a complete assessment correlated to the same breach
+          establishes that high risk is false. These items count toward{' '}
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">complete</code> and{' '}
           <code className="bg-card border border-border px-1.5 py-0.5 rounded text-sm">completeness</code> when required.
         </p>

@@ -15,7 +15,7 @@ export const siteConfig = {
   moduleCount: 8,
 
   /** Number of passing tests */
-  testCount: 1249,
+  testCount: 1468,
 
   /** Number of customizable classNames sections */
   classNameSections: 194,
@@ -24,7 +24,7 @@ export const siteConfig = {
   componentCount: 19,
 
   /** Number of modular import paths */
-  importPaths: 11,
+  importPaths: 22,
 
   /** npm package name */
   packageName: '@tantainnovative/ndpr-toolkit',

@@ -1,58 +1,45 @@
-/**
- * Next.js App Router — DCPMI Registration & Compliance Audit Return Route
- *
- * Surfaces an organisation's NDPC GAID 2025 obligations:
- *   - DCPMI tier (UHL / EHL / OHL / listed / none) and annual registration fee,
- *     derived from the number of data subjects processed in a six-month window.
- *   - The Compliance Audit Return (CAR) schedule — initial-audit due date and the
- *     next annual filing deadline — for UHL/EHL controllers that must file.
- *
- * Both are pure computations from the toolkit's React-free `/server` entry, so
- * this route needs no database. Feed it numbers from your own org profile.
- *
- * Endpoints
- * ---------
- *   GET /api/registration?dataSubjects=6200&commencementDate=2025-01-15
- *       — classify the tier and (when applicable) compute the CAR schedule.
- *
- * How to use
- * ----------
- * Copy this file to `app/api/registration/route.ts`. Replace the query-param
- * inputs with values read from your settings/database as appropriate.
- *
- * @module registration/route
- */
-
-import { NextRequest, NextResponse } from 'next/server';
 import {
   classifyDCPMI,
   generateComplianceAuditReturn,
 } from '@tantainnovative/ndpr-toolkit/server';
+import { NextRequest, NextResponse } from 'next/server';
+import {
+  getNDPRContextProblem,
+  resolveNDPRRequestContext,
+} from '../../request-context';
 
-// GET /api/registration?dataSubjects=6200&commencementDate=2025-01-15&asOf=2026-06-01
-export async function GET(req: NextRequest) {
-  const sp = req.nextUrl.searchParams;
+/** Authenticated operational classification using staff-supplied inputs. */
+export async function GET(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
 
-  const dataSubjects = Number(sp.get('dataSubjects') ?? '0');
-  const isDesignated = sp.get('designated') === 'true';
-  const commencementDate = sp.get('commencementDate') ?? undefined;
-  const asOf = sp.get('asOf') ?? undefined;
+  const search = request.nextUrl.searchParams;
+  const dataSubjects = Number(search.get('dataSubjects') ?? '0');
+  const isDesignated = search.get('designated') === 'true';
+  const commencementDate = search.get('commencementDate') ?? undefined;
+  const asOf = search.get('asOf') ?? new Date().toISOString().slice(0, 10);
 
-  if (!Number.isFinite(dataSubjects) || dataSubjects < 0) {
+  if (!Number.isInteger(dataSubjects) || dataSubjects < 0) {
     return NextResponse.json(
-      { error: 'dataSubjects must be a non-negative number' },
+      { error: 'dataSubjects must be a non-negative integer' },
       { status: 400 },
     );
+  }
+  if (commencementDate && !isIsoDate(commencementDate)) {
+    return NextResponse.json(
+      { error: 'commencementDate must use YYYY-MM-DD' },
+      { status: 400 },
+    );
+  }
+  if (!isIsoDate(asOf)) {
+    return NextResponse.json({ error: 'asOf must use YYYY-MM-DD' }, { status: 400 });
   }
 
   const classification = classifyDCPMI({
     dataSubjectsInSixMonths: dataSubjects,
     isDesignated,
   });
-
-  // The CAR schedule only makes sense once we know when processing commenced.
-  // UHL/EHL controllers must file annually; OHL renews registration instead and
-  // non-DCPMIs have no CAR obligation — the toolkit reflects that in `applicable`.
   const auditReturn = commencementDate
     ? generateComplianceAuditReturn({
         commencementDate,
@@ -64,6 +51,26 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     classification,
     auditReturn,
-    asOf: asOf ?? new Date().toISOString().slice(0, 10),
+    asOf,
+    tenantScope: { tenantId: context.tenantId, source: 'server NDPR_TENANT_ID' },
+    provenance: {
+      inputSource: 'authenticated staff query; not persisted evidence',
+      dataSubjectsInSixMonths: dataSubjects,
+      isDesignated,
+      commencementDate: commencementDate ?? null,
+    },
+    advisoryNotice:
+      'Operational classification aid only; verify source data, applicability, and current NDPC requirements.',
   });
+}
+
+function isIsoDate(value: string): boolean {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return Number.isFinite(parsed.getTime())
+    && parsed.getUTCFullYear() === Number(match[1])
+    && parsed.getUTCMonth() + 1 === Number(match[2])
+    && parsed.getUTCDate() === Number(match[3]);
 }

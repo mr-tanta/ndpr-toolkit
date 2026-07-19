@@ -1,139 +1,91 @@
-/**
- * Drizzle adapter for the Breach Notification module.
- *
- * Implements StorageAdapter<BreachState> backed by the `ndpr_breach_reports`
- * Drizzle table, where BreachState is the shape managed by the useBreach() hook:
- *
- *   {
- *     reports: BreachReport[];
- *     assessments: RiskAssessment[];
- *     notifications: RegulatoryNotification[];
- *   }
- *
- * This adapter persists and loads BreachReport records. RiskAssessments and
- * RegulatoryNotifications are stored as JSON on the breach row — extend the
- * schema with additional columns if you need full relational queries.
- *
- * Behaviour
- * ---------
- * - LOAD  → loads all breach reports from the database, ordered newest first.
- * - SAVE  → upserts each report by ID using Drizzle's `onConflictDoUpdate`.
- * - REMOVE → marks all ongoing reports as 'resolved' (no hard deletes;
- *            NDPA Section 40 audit trail is preserved).
- *
- * Usage
- * -----
- * Copy this file into your project alongside your Drizzle client, then wire it
- * into the toolkit hook:
- *
- *   import { drizzle } from 'drizzle-orm/node-postgres';
- *   import { Pool } from 'pg';
- *   import { useBreach } from '@tantainnovative/ndpr-toolkit';
- *   import { drizzleBreachAdapter } from './adapters/drizzle-breach';
- *   import * as schema from './drizzle/schema';
- *
- *   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
- *   const db = drizzle(pool, { schema });
- *
- *   function BreachPage() {
- *     const adapter = drizzleBreachAdapter(db);
- *     const { reports, submitReport } = useBreach({ adapter });
- *     // ...
- *   }
- *
- * Prerequisites
- * -------------
- * - The `ndpr_breach_reports` table must exist (run your Drizzle migration).
- * - `drizzle-orm` must be installed in your project.
- * - `@tantainnovative/ndpr-toolkit` must be installed in your project.
- *
- * @module adapters/drizzle-breach
- */
+import { and, desc, eq, isNull, notInArray } from 'drizzle-orm';
+import type {
+  BreachReport,
+  RegulatoryNotification,
+  RiskAssessment,
+  StorageAdapter,
+} from '@tantainnovative/ndpr-toolkit';
+import { breachReports, type NewBreachReport } from '../drizzle/schema';
+import {
+  assertTenantContext,
+  serverStorageCapabilities,
+  type TenantAdapterContext,
+} from './server-storage';
 
-import { eq, desc } from 'drizzle-orm';
-import type { StorageAdapter } from '@tantainnovative/ndpr-toolkit';
-import type { BreachReport, RiskAssessment, RegulatoryNotification } from '@tantainnovative/ndpr-toolkit';
-import { breachReports } from '../drizzle/schema';
-
-/** The state shape managed by the useBreach() hook */
 export interface BreachState {
   reports: BreachReport[];
   assessments: RiskAssessment[];
   notifications: RegulatoryNotification[];
 }
 
-/**
- * Creates a Drizzle-backed StorageAdapter for the breach module's state.
- *
- * @param db - Your Drizzle database instance (any driver — pg, neon, libsql, etc.)
- * @returns A StorageAdapter<BreachState> ready to pass to useBreach().
- */
-export function drizzleBreachAdapter(db: any): StorageAdapter<BreachState> {
+/** Creates an atomic, tenant-scoped Drizzle adapter for complete breach state. */
+export function drizzleBreachAdapter(
+  db: any,
+  context: TenantAdapterContext,
+): StorageAdapter<BreachState> {
+  assertTenantContext(context);
+  const { tenantId } = context;
+
   return {
-    /**
-     * Load all breach reports from the database, ordered newest first.
-     * Assessments and notifications are returned as empty arrays — extend
-     * the schema if you need to persist them.
-     */
+    capabilities: serverStorageCapabilities,
+
     async load(): Promise<BreachState | null> {
-      const rows = await db
+      const rows: Array<typeof breachReports.$inferSelect> = await db
         .select()
         .from(breachReports)
+        .where(and(eq(breachReports.tenantId, tenantId), isNull(breachReports.removedAt)))
         .orderBy(desc(breachReports.reportedAt));
-
       if (rows.length === 0) return null;
 
       return {
         reports: rows.map(mapRowToBreachReport),
-        assessments: [],
-        notifications: [],
+        assessments: rows.flatMap(({ assessments }) => assessments),
+        notifications: rows.flatMap(({ notifications }) => notifications),
       };
     },
 
-    /**
-     * Persist the current breach state.
-     * Each report is upserted by ID using Drizzle's `onConflictDoUpdate`.
-     * Assessments and notifications are ignored unless you extend the schema.
-     */
     async save(state: BreachState): Promise<void> {
-      if (state.reports.length === 0) return;
+      assertRelatedRecords(state);
+      const retainedIds = state.reports.map(({ id }) => id);
+      await db.transaction(async (transaction: typeof db) => {
+        await transaction
+          .update(breachReports)
+          .set({ removedAt: new Date() })
+          .where(
+            retainedIds.length > 0
+              ? and(
+                  eq(breachReports.tenantId, tenantId),
+                  isNull(breachReports.removedAt),
+                  notInArray(breachReports.id, retainedIds),
+                )
+              : and(eq(breachReports.tenantId, tenantId), isNull(breachReports.removedAt)),
+          );
 
-      await Promise.all(
-        state.reports.map((report) => {
-          const row = mapBreachReportToRow(report);
-          return db
+        for (const report of state.reports) {
+          const assessments = state.assessments.filter(({ breachId }) => breachId === report.id);
+          const notifications = state.notifications.filter(({ breachId }) => breachId === report.id);
+          const row = mapBreachReportToRow(report, tenantId, assessments, notifications);
+          await transaction
             .insert(breachReports)
-            .values({ id: report.id, ...row })
+            .values(row)
             .onConflictDoUpdate({
-              target: breachReports.id,
+              target: [breachReports.tenantId, breachReports.id],
               set: row,
             });
-        }),
-      );
+        }
+      });
     },
 
-    /**
-     * Soft-close all ongoing breach reports by setting status to 'resolved'.
-     * Hard deletes are never performed to preserve the NDPA Section 40
-     * compliance audit trail.
-     */
     async remove(): Promise<void> {
       await db
         .update(breachReports)
-        .set({ status: 'resolved' })
-        .where(eq(breachReports.status, 'ongoing'));
+        .set({ removedAt: new Date() })
+        .where(and(eq(breachReports.tenantId, tenantId), isNull(breachReports.removedAt)));
     },
   };
 }
 
-// ---------------------------------------------------------------------------
-// Mapping helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Map a raw Drizzle row (from ndpr_breach_reports) to the toolkit's BreachReport type.
- */
-function mapRowToBreachReport(row: any): BreachReport {
+function mapRowToBreachReport(row: typeof breachReports.$inferSelect): BreachReport {
   return {
     id: row.id,
     title: row.title,
@@ -142,38 +94,95 @@ function mapRowToBreachReport(row: any): BreachReport {
     discoveredAt: row.discoveredAt.getTime(),
     occurredAt: row.occurredAt?.getTime(),
     reportedAt: row.reportedAt.getTime(),
-    status: row.status as BreachReport['status'],
     reporter: {
       name: row.reporterName,
       email: row.reporterEmail,
       department: row.reporterDepartment ?? '',
+      phone: row.reporterPhone ?? undefined,
     },
-    affectedSystems: (row.affectedSystems as string[]) ?? [],
-    dataTypes: (row.dataTypes as string[]) ?? [],
-    estimatedAffectedSubjects: row.estimatedAffected ?? undefined,
+    affectedSystems: row.affectedSystems,
+    dataTypes: row.dataTypes,
+    involvesSensitiveData: row.involvesSensitiveData ?? undefined,
+    estimatedAffectedSubjects: row.estimatedAffectedSubjects ?? undefined,
+    approximateRecordCount: row.approximateRecordCount ?? undefined,
+    dataSubjectCategories: row.dataSubjectCategories ?? undefined,
+    likelyConsequences: row.likelyConsequences ?? undefined,
+    mitigationMeasures: row.mitigationMeasures ?? undefined,
+    isPhasedReport: row.isPhasedReport ?? undefined,
+    supplementsReportId: row.supplementsReportId ?? undefined,
+    dpoContact: row.dpoContact ?? undefined,
+    status: row.status,
     initialActions: row.initialActions ?? undefined,
+    attachments: row.attachments ?? undefined,
   };
 }
 
-/**
- * Map a toolkit BreachReport to the Drizzle insert/update row shape.
- */
-function mapBreachReportToRow(report: BreachReport): Record<string, unknown> {
+function mapBreachReportToRow(
+  report: BreachReport,
+  tenantId: string,
+  assessments: RiskAssessment[],
+  notifications: RegulatoryNotification[],
+): NewBreachReport {
   return {
+    tenantId,
+    id: report.id,
     title: report.title,
     description: report.description,
     category: report.category,
-    severity: 'medium',
+    severity: highestRiskLevel(assessments),
     status: report.status,
     discoveredAt: new Date(report.discoveredAt),
     occurredAt: report.occurredAt ? new Date(report.occurredAt) : null,
     reportedAt: new Date(report.reportedAt),
+    ndpcNotifiedAt: notifications.length
+      ? new Date(Math.min(...notifications.map(({ sentAt }) => sentAt)))
+      : null,
     reporterName: report.reporter.name,
     reporterEmail: report.reporter.email,
-    reporterDepartment: report.reporter.department ?? null,
+    reporterDepartment: report.reporter.department || null,
+    reporterPhone: report.reporter.phone ?? null,
     affectedSystems: report.affectedSystems,
     dataTypes: report.dataTypes,
-    estimatedAffected: report.estimatedAffectedSubjects ?? null,
+    involvesSensitiveData: report.involvesSensitiveData ?? null,
+    estimatedAffectedSubjects: report.estimatedAffectedSubjects ?? null,
+    approximateRecordCount: report.approximateRecordCount ?? null,
+    dataSubjectCategories: report.dataSubjectCategories ?? null,
+    likelyConsequences: report.likelyConsequences ?? null,
+    mitigationMeasures: report.mitigationMeasures ?? null,
+    isPhasedReport: report.isPhasedReport ?? null,
+    supplementsReportId: report.supplementsReportId ?? null,
+    dpoContact: report.dpoContact ?? null,
     initialActions: report.initialActions ?? null,
+    attachments: report.attachments ?? null,
+    assessments,
+    notifications,
+    ndpcNotificationSent: notifications.length > 0,
+    removedAt: null,
   };
+}
+
+function highestRiskLevel(assessments: RiskAssessment[]): RiskAssessment['riskLevel'] | null {
+  const rank: Record<RiskAssessment['riskLevel'], number> = {
+    low: 0,
+    medium: 1,
+    high: 2,
+    critical: 3,
+  };
+  return assessments.reduce<RiskAssessment['riskLevel'] | null>(
+    (highest, assessment) =>
+      highest === null || rank[assessment.riskLevel] > rank[highest]
+        ? assessment.riskLevel
+        : highest,
+    null,
+  );
+}
+
+function assertRelatedRecords(state: BreachState): void {
+  const reportIds = new Set(state.reports.map(({ id }) => id));
+  const orphan = [...state.assessments, ...state.notifications].find(
+    ({ breachId }) => !reportIds.has(breachId),
+  );
+  if (orphan) {
+    throw new Error(`Breach child record ${orphan.id} references unknown report ${orphan.breachId}`);
+  }
 }

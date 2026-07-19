@@ -63,6 +63,10 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build library first
         run: pnpm run build:lib
+      - name: Generate backend recipe Prisma types
+        # Root tsc follows imports from maintained recipe regression tests even
+        # though package directories are excluded as initial source roots.
+        run: pnpm --filter @tantainnovative/ndpr-recipes prisma:generate
       - name: Typecheck docs site (PRs only)
         # The Next.js build below skips TS for speed; this step runs a real
         # tsc pass on PR builds so docs-site type errors surface at review

@@ -1,310 +1,233 @@
-/**
- * Next.js App Router — ROPA (Record of Processing Activities) Route
- *
- * Handles listing, creating, updating, and archiving processing activity records.
- * Under the NDPA accountability principle (analogous to GDPR Article 30), data
- * controllers with more than 250 employees — or that process sensitive data —
- * must maintain a Record of Processing Activities (ROPA).
- *
- * Endpoints
- * ---------
- *   GET    /api/ropa         — List all processing records (optional ?status= filter)
- *   POST   /api/ropa         — Create a new processing record
- *   PATCH  /api/ropa         — Update an existing processing record (body includes `id`)
- *   DELETE /api/ropa?id=xxx  — Archive a processing record (soft delete)
- *
- * How to use
- * ----------
- * Copy this file to `app/api/ropa/route.ts` in your Next.js project.
- *
- * @module ropa/route
- */
-
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
 import {
-  validateProcessingRecord,
-  type ProcessingRecord,
-} from '@tantainnovative/ndpr-toolkit/server';
+  getNDPRContextProblem,
+  resolveNDPRRequestContext,
+} from '../../request-context';
+import {
+  isRecord,
+  normalizeProcessingRecordInput,
+  processingRecordCreateData,
+  processingRecordFromRow,
+  runSerializableTransaction,
+  toInputJson,
+} from '../../../shared-contracts';
 
 const prisma = new PrismaClient();
+const STATUSES = new Set(['active', 'inactive', 'archived']);
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
+/** Staff-only, tenant-scoped list of lossless processing-record snapshots. */
+export async function GET(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
 
-function asString(value: unknown): string | undefined {
-  return typeof value === 'string' ? value : undefined;
-}
-
-function asStringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
-}
-
-function createValidationRecord(
-  body: Record<string, unknown>,
-  id = 'new-processing-record',
-): ProcessingRecord {
-  const purpose = asString(body.purpose) ?? '';
-  const dataSubjectCategories = asStringArray(body.dataSubjectCategories ?? body.dataSubjects);
-  const dpiaRequired = Boolean(body.dpiaRequired ?? body.dpiaConducted ?? false);
-
-  return {
-    id: asString(body.id) ?? id,
-    name: asString(body.name) ?? purpose,
-    description: asString(body.description) ?? purpose,
-    controllerDetails: body.controllerDetails as ProcessingRecord['controllerDetails'],
-    lawfulBasis: body.lawfulBasis as ProcessingRecord['lawfulBasis'],
-    lawfulBasisJustification: asString(body.lawfulBasisJustification) ?? '',
-    purposes: asStringArray(body.purposes).length > 0 ? asStringArray(body.purposes) : [purpose].filter(Boolean),
-    dataCategories: asStringArray(body.dataCategories),
-    sensitiveDataCategories: asStringArray(body.sensitiveDataCategories),
-    dataSubjectCategories,
-    recipients: asStringArray(body.recipients),
-    retentionPeriod: asString(body.retentionPeriod) ?? '',
-    retentionJustification: asString(body.retentionJustification),
-    securityMeasures: asStringArray(body.securityMeasures),
-    dataSource: (asString(body.dataSource) ?? 'data_subject') as ProcessingRecord['dataSource'],
-    thirdPartySourceDetails: asString(body.thirdPartySourceDetails),
-    dpiaRequired,
-    dpiaReference: asString(body.dpiaReference),
-    automatedDecisionMaking: Boolean(body.automatedDecisionMaking ?? false),
-    automatedDecisionMakingDetails: asString(body.automatedDecisionMakingDetails),
-    status: (asString(body.status) ?? 'active') as ProcessingRecord['status'],
-    department: asString(body.department),
-    systemsUsed: asStringArray(body.systemsUsed),
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  };
-}
-
-function validateRopaBody(body: unknown): { valid: true; body: Record<string, unknown> } | { valid: false; response: NextResponse } {
-  if (!isRecord(body)) {
-    return {
-      valid: false,
-      response: NextResponse.json(
-        { error: 'Validation failed.', fields: { body: 'Request body must be a JSON object.' } },
-        { status: 400 },
-      ),
-    };
+  const status = request.nextUrl.searchParams.get('status');
+  if (status && !STATUSES.has(status)) {
+    return NextResponse.json({ error: 'Unsupported processing-record status' }, { status: 400 });
   }
-
-  const result = validateProcessingRecord(createValidationRecord(body));
-  if (!result.valid) {
-    return {
-      valid: false,
-      response: NextResponse.json(
-        { error: 'Validation failed.', fields: { processingRecord: result.errors } },
-        { status: 400 },
-      ),
-    };
-  }
-
-  return { valid: true, body };
-}
-
-async function parseJson(req: NextRequest): Promise<unknown> {
+  const rows = await prisma.processingRecord.findMany({
+    where: {
+      tenantId: context.tenantId,
+      removedAt: null,
+      ...(status ? { status } : {}),
+    },
+    orderBy: { createdAt: 'asc' },
+  });
   try {
-    return await req.json();
+    return NextResponse.json(rows.map(processingRecordFromRow));
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: 'A processing record is missing its lossless snapshot.',
+        remediation: 'Run the reviewed schema migration/backfill before using this route.',
+      },
+      { status: 409 },
+    );
+  }
+}
+
+/** Create one complete processing activity and its audit event atomically. */
+export async function POST(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
+
+  const validation = normalizeProcessingRecordInput(await parseJson(request));
+  if (!validation.valid) return validationResponse(validation.fields);
+  const tenantId = context.tenantId;
+  const record = validation.data;
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+  const row = await prisma.$transaction(async (transaction) => {
+    const created = await transaction.processingRecord.create({
+      data: processingRecordCreateData(tenantId, record),
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'ropa',
+        action: 'created',
+        entityId: created.id,
+        entityType: 'ProcessingRecord',
+        changes: toInputJson({
+          status: record.status,
+          lawfulBasis: record.lawfulBasis,
+          snapshotStored: true,
+        }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return created;
+  });
+  return NextResponse.json(processingRecordFromRow(row), { status: 201 });
+}
+
+/** Update only the documented ProcessingRecord contract fields. */
+export async function PATCH(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
+
+  const parsed = await parseJson(request);
+  if (!isRecord(parsed) || typeof parsed.id !== 'string' || !parsed.id.trim()) {
+    return validationResponse({ id: 'id is required in the request body.' });
+  }
+  const id = parsed.id.trim();
+  const tenantId = context.tenantId;
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+  const transactionResult = await runSerializableTransaction(prisma, async (transaction) => {
+    const existing = await transaction.processingRecord.findFirst({
+      where: { tenantId, id, removedAt: null },
+    });
+    if (!existing) return { kind: 'missing' as const };
+
+    let current;
+    try {
+      current = processingRecordFromRow(existing);
+    } catch {
+      return { kind: 'snapshot-missing' as const };
+    }
+    const validation = normalizeProcessingRecordInput(parsed, current);
+    if (!validation.valid) return { kind: 'invalid' as const, fields: validation.fields };
+
+    const createData = processingRecordCreateData(tenantId, validation.data);
+    const { tenantId: _tenantId, id: _id, removedAt: _removedAt, ...updateData } = createData;
+    const updated = await transaction.processingRecord.update({
+      where: { tenantId_id: { tenantId, id } },
+      data: updateData,
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'ropa',
+        action: 'updated',
+        entityId: id,
+        entityType: 'ProcessingRecord',
+        changes: toInputJson({
+          status: validation.data.status,
+          lawfulBasis: validation.data.lawfulBasis,
+          snapshotStored: true,
+        }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return { kind: 'updated' as const, row: updated };
+  });
+
+  if (!transactionResult.committed) {
+    return NextResponse.json(
+      { error: 'Concurrent processing-record update conflict; retry the request.' },
+      { status: 409 },
+    );
+  }
+  const result = transactionResult.value;
+  if (result.kind === 'missing') {
+    return NextResponse.json({ error: 'Processing record not found' }, { status: 404 });
+  }
+  if (result.kind === 'snapshot-missing') {
+    return NextResponse.json(
+      { error: 'Processing record requires snapshot migration/backfill before update.' },
+      { status: 409 },
+    );
+  }
+  if (result.kind === 'invalid') return validationResponse(result.fields);
+  return NextResponse.json(processingRecordFromRow(result.row));
+}
+
+/** Archive a processing activity without deleting its evidence. */
+export async function DELETE(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
+
+  const id = request.nextUrl.searchParams.get('id');
+  if (!id) return validationResponse({ id: 'id query parameter is required.' });
+  const tenantId = context.tenantId;
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
+  const transactionResult = await runSerializableTransaction(prisma, async (transaction) => {
+    const existing = await transaction.processingRecord.findFirst({
+      where: { tenantId, id, removedAt: null },
+    });
+    if (!existing) return { kind: 'missing' as const };
+    let current;
+    try {
+      current = processingRecordFromRow(existing);
+    } catch {
+      return { kind: 'snapshot-missing' as const };
+    }
+    const archived = { ...current, status: 'archived' as const, updatedAt: Date.now() };
+    const updated = await transaction.processingRecord.update({
+      where: { tenantId_id: { tenantId, id } },
+      data: {
+        status: 'archived',
+        updatedAt: new Date(archived.updatedAt),
+        recordData: toInputJson(archived),
+      },
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'ropa',
+        action: 'archived',
+        entityId: id,
+        entityType: 'ProcessingRecord',
+        changes: toInputJson({ priorStatus: current.status }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return { kind: 'archived' as const, row: updated };
+  });
+
+  if (!transactionResult.committed) {
+    return NextResponse.json(
+      { error: 'Concurrent processing-record archive conflict; retry the request.' },
+      { status: 409 },
+    );
+  }
+  const result = transactionResult.value;
+  if (result.kind === 'missing') {
+    return NextResponse.json({ error: 'Processing record not found' }, { status: 404 });
+  }
+  if (result.kind === 'snapshot-missing') {
+    return NextResponse.json(
+      { error: 'Processing record requires snapshot migration/backfill before archive.' },
+      { status: 409 },
+    );
+  }
+  return NextResponse.json({ success: true, record: processingRecordFromRow(result.row) });
+}
+
+function validationResponse(fields: Record<string, string>) {
+  return NextResponse.json({ error: 'Validation failed.', fields }, { status: 400 });
+}
+
+async function parseJson(request: NextRequest): Promise<unknown> {
+  try {
+    return await request.json();
   } catch {
     return null;
   }
-}
-
-// ---------------------------------------------------------------------------
-// GET /api/ropa?status=active
-// ---------------------------------------------------------------------------
-
-/**
- * List all processing activity records.
- *
- * Returns records ordered by creation date ascending so the ROPA reads
- * chronologically. Filter by status to distinguish active from archived entries.
- *
- * Query params:
- *   status (optional) — active | archived (default: returns all)
- *
- * Returns 200 with an array of ProcessingRecord rows.
- */
-export async function GET(req: NextRequest) {
-  const status = req.nextUrl.searchParams.get('status');
-
-  const records = await prisma.processingRecord.findMany({
-    where: status ? { status } : undefined,
-    orderBy: { createdAt: 'asc' },
-  });
-
-  return NextResponse.json(records);
-}
-
-// ---------------------------------------------------------------------------
-// POST /api/ropa
-// ---------------------------------------------------------------------------
-
-/**
- * Create a new processing activity record.
- *
- * Each record documents a single processing activity — for example, "Customer
- * order processing" or "Marketing email campaigns". Together, all active records
- * form the organisation's ROPA as required under the NDPA accountability principle.
- *
- * Body (JSON):
- *   purpose             (required) — description of the processing activity
- *   lawfulBasis         (required) — consent | contract | legal_obligation | vital_interests
- *                                    | public_interest | legitimate_interests
- *   lawfulBasisJustification (required) — documented reason for the chosen lawful basis
- *   controllerDetails   (required) — { name, contact, address }
- *   dataCategories      (required) — array of data category labels (e.g. ['name', 'email'])
- *   dataSubjects        (required) — array of subject category labels (e.g. ['customers'])
- *   recipients          (required) — array of recipient labels (e.g. ['payment processor'])
- *   retentionPeriod     (required) — human-readable retention policy (e.g. '7 years')
- *   securityMeasures    (required) — array of security measures in place
- *   dataSource          (optional) — data_subject | third_party | public_source | other
- *   transferCountries   (optional) — array of countries receiving cross-border transfers
- *   transferMechanism   (optional) — legal mechanism for transfers (e.g. 'adequacy decision')
- *   dpiaRequired        (optional) — whether a DPIA is required (default false)
- *   dpiaReference       (required when dpiaRequired=true)
- *
- * Returns 201 with the newly created ProcessingRecord row.
- */
-export async function POST(req: NextRequest) {
-  const parsed = await parseJson(req);
-  const validation = validateRopaBody(parsed);
-  if (!validation.valid) return validation.response;
-
-  const body = validation.body;
-  const {
-    purpose,
-    lawfulBasis,
-    dataCategories,
-    dataSubjects,
-    recipients,
-    retentionPeriod,
-    securityMeasures,
-    transferCountries,
-    transferMechanism,
-    dpiaConducted,
-  } = body;
-
-  const record = await prisma.processingRecord.create({
-    data: {
-      purpose,
-      lawfulBasis,
-      dataCategories,
-      dataSubjects,
-      recipients,
-      retentionPeriod,
-      securityMeasures,
-      transferCountries: transferCountries ?? null,
-      transferMechanism: transferMechanism ?? null,
-      dpiaConducted: dpiaConducted ?? false,
-      status: 'active',
-    },
-  });
-
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'ropa',
-      action: 'created',
-      entityId: record.id,
-      entityType: 'ProcessingRecord',
-      changes: { purpose, lawfulBasis, status: 'active' },
-    },
-  });
-
-  return NextResponse.json(record, { status: 201 });
-}
-
-// ---------------------------------------------------------------------------
-// PATCH /api/ropa
-// ---------------------------------------------------------------------------
-
-/**
- * Update an existing processing activity record.
- *
- * Call this when a processing activity changes — e.g. a new data category
- * is added, the retention period changes, or a DPIA is conducted. Keeping
- * the ROPA up to date is part of the NDPA accountability obligation.
- *
- * Body (JSON):
- *   id   (required) — ID of the ProcessingRecord to update
- *   ...  (all other fields from POST are optional — only send what changed)
- *
- * Returns 200 with the updated ProcessingRecord row.
- */
-export async function PATCH(req: NextRequest) {
-  const body = await req.json();
-  const { id, ...fields } = body;
-
-  if (!id) {
-    return NextResponse.json({ error: 'id is required in the request body' }, { status: 400 });
-  }
-
-  const existing = await prisma.processingRecord.findUnique({ where: { id } });
-  if (!existing) {
-    return NextResponse.json({ error: 'Processing record not found' }, { status: 404 });
-  }
-
-  const updated = await prisma.processingRecord.update({
-    where: { id },
-    data: fields,
-  });
-
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'ropa',
-      action: 'updated',
-      entityId: id,
-      entityType: 'ProcessingRecord',
-      changes: fields,
-    },
-  });
-
-  return NextResponse.json(updated);
-}
-
-// ---------------------------------------------------------------------------
-// DELETE /api/ropa?id=xxx
-// ---------------------------------------------------------------------------
-
-/**
- * Archive a processing activity record (soft delete).
- *
- * Records are never hard-deleted — archiving sets status to 'archived' so
- * the historical ROPA remains available for regulatory review. This supports
- * the NDPA accountability principle requirement to demonstrate compliance
- * over time, not just in the present.
- *
- * Query params:
- *   id (required) — ID of the ProcessingRecord to archive
- *
- * Returns 200 `{ success: true }` when complete.
- */
-export async function DELETE(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get('id');
-
-  if (!id) {
-    return NextResponse.json({ error: 'id query parameter required' }, { status: 400 });
-  }
-
-  const existing = await prisma.processingRecord.findUnique({ where: { id } });
-  if (!existing) {
-    return NextResponse.json({ error: 'Processing record not found' }, { status: 404 });
-  }
-
-  await prisma.processingRecord.update({
-    where: { id },
-    data: { status: 'archived' },
-  });
-
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'ropa',
-      action: 'archived',
-      entityId: id,
-      entityType: 'ProcessingRecord',
-    },
-  });
-
-  return NextResponse.json({ success: true });
 }

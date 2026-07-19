@@ -1,12 +1,19 @@
 import { sessionStorageAdapter } from '../../adapters/session-storage';
+import { StorageAdapterError } from '../../adapters/types';
 
 const mockSessionStorage = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: jest.fn((key: string) => store[key] ?? null),
-    setItem: jest.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: jest.fn((key: string) => { delete store[key]; }),
-    clear: jest.fn(() => { store = {}; }),
+    setItem: jest.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: jest.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: jest.fn(() => {
+      store = {};
+    }),
   };
 })();
 
@@ -19,64 +26,73 @@ describe('sessionStorageAdapter', () => {
   });
 
   it('returns null when no data is stored', () => {
-    const adapter = sessionStorageAdapter('test_key');
-    expect(adapter.load()).toBeNull();
+    expect(sessionStorageAdapter('test_key').load()).toBeNull();
   });
 
-  it('saves and loads data', () => {
+  it('saves, loads, and removes data', () => {
     const adapter = sessionStorageAdapter<{ name: string }>('test_key');
     const data = { name: 'test' };
     adapter.save(data);
-    expect(mockSessionStorage.setItem).toHaveBeenCalledWith('test_key', JSON.stringify(data));
-    const loaded = adapter.load();
-    expect(loaded).toEqual(data);
-  });
-
-  it('removes data', () => {
-    const adapter = sessionStorageAdapter('test_key');
-    adapter.save({ value: 1 });
+    expect(adapter.load()).toEqual(data);
     adapter.remove();
     expect(mockSessionStorage.removeItem).toHaveBeenCalledWith('test_key');
     expect(adapter.load()).toBeNull();
   });
 
-  it('returns null on corrupted JSON', () => {
+  it('reports corrupted JSON and returns null', () => {
     mockSessionStorage.setItem('test_key', 'not-json');
-    const adapter = sessionStorageAdapter('test_key');
+    const onError = jest.fn();
+    const adapter = sessionStorageAdapter('test_key', { onError });
     expect(adapter.load()).toBeNull();
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        operation: 'load',
+        medium: 'session-storage',
+      }),
+    );
   });
 
-  it('does not throw on QuotaExceededError during save', () => {
+  it('throws on quota failure by default', () => {
     mockSessionStorage.setItem.mockImplementationOnce(() => {
       throw new DOMException('Storage quota exceeded', 'QuotaExceededError');
     });
-    const adapter = sessionStorageAdapter('test_key');
-    expect(() => adapter.save({ big: 'data' })).not.toThrow();
-  });
-
-  it('does not throw on SecurityError during save', () => {
-    mockSessionStorage.setItem.mockImplementationOnce(() => {
-      throw new DOMException('Access denied', 'SecurityError');
+    const adapter = sessionStorageAdapter('test_key', {
+      onError: jest.fn(),
     });
-    const adapter = sessionStorageAdapter('test_key');
-    expect(() => adapter.save({ secret: 'data' })).not.toThrow();
+    expect(() => adapter.save({ big: 'data' })).toThrow(StorageAdapterError);
   });
 
-  it('does not throw on SecurityError during remove', () => {
+  it('throws on security failure during remove by default', () => {
     mockSessionStorage.removeItem.mockImplementationOnce(() => {
       throw new DOMException('Access denied', 'SecurityError');
     });
-    const adapter = sessionStorageAdapter('test_key');
-    expect(() => adapter.remove()).not.toThrow();
+    const adapter = sessionStorageAdapter('test_key', {
+      onError: jest.fn(),
+    });
+    expect(() => adapter.remove()).toThrow(StorageAdapterError);
   });
 
-  it('writes data correctly when no error occurs', () => {
-    const adapter = sessionStorageAdapter<{ count: number; label: string }>('write_key');
-    const payload = { count: 42, label: 'hello' };
-    adapter.save(payload);
-    expect(mockSessionStorage.setItem).toHaveBeenCalledWith('write_key', JSON.stringify(payload));
-    const loaded = adapter.load();
-    expect(loaded).toEqual(payload);
+  it('supports explicitly graceful best-effort mutations', () => {
+    mockSessionStorage.setItem.mockImplementationOnce(() => {
+      throw new DOMException('Access denied', 'SecurityError');
+    });
+    const onError = jest.fn();
+    const adapter = sessionStorageAdapter('test_key', {
+      mutationFailureMode: 'graceful',
+      onError,
+    });
+    expect(() => adapter.save({ secret: 'data' })).not.toThrow();
+    expect(onError).toHaveBeenCalled();
+  });
+
+  it('declares session-scoped, client-state-only capabilities', () => {
+    expect(sessionStorageAdapter('test_key').capabilities).toEqual(
+      expect.objectContaining({
+        durability: 'session',
+        evidenceSuitability: 'ux-state-only',
+        serverReadable: false,
+      }),
+    );
   });
 
   it('returns safely when window is undefined (SSR)', () => {

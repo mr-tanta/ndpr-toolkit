@@ -14,107 +14,109 @@ Or with the short alias (once published to npm):
 npx create-ndpr
 ```
 
-Run this from the root of an existing project. The CLI detects your stack and generates the right files with no manual copy-pasting.
+Run the CLI from an existing project root. It detects the framework and ORM, asks which modules you need, and writes stack-specific integration files without overwriting an existing Prisma schema.
 
 ## What it does
 
-1. **Detects your project setup** — checks for `next.config.*`, `express` in `package.json`, an `app/` directory (App Router vs Pages Router), `prisma/schema.prisma`, and `drizzle.config.*`.
+1. Detects `next.config.*`, Express dependencies, App vs Pages Router directories, `prisma/schema.prisma`, and `drizzle.config.*`.
+2. Prompts for the organisation, DPO email, framework, ORM, and compliance modules.
+3. Generates tenant-scoped routes, a fail-closed authentication integration seam, persistence schemas, client wiring, and an `ndpr audit` CI gate.
 
-2. **Prompts for a few details:**
-   - Organisation name
-   - DPO (Data Protection Officer) email address
-   - Framework (auto-detected, can override)
-   - ORM: Prisma / Drizzle / None
-   - Which compliance modules to include
-
-3. **Generates files** tailored to your stack.
-
-## What it generates
+## Generated files
 
 | File | When |
 |------|------|
 | `.env.example` | Always |
-| `prisma/schema.prisma` | ORM = Prisma (skips if already exists) |
-| `src/drizzle/ndpr-schema.ts` | ORM = Drizzle |
-| `app/ndpr-layout.tsx` | Next.js App Router |
-| `app/api/consent/route.ts` | Next.js + consent module |
-| `app/api/dsr/route.ts` | Next.js + dsr module |
-| `app/api/breach/route.ts` | Next.js + breach module |
-| `pages/api/consent.ts` | Next.js Pages Router + consent |
-| `pages/api/dsr.ts` | Next.js Pages Router + dsr |
-| `pages/api/breach.ts` | Next.js Pages Router + breach |
-| `src/ndpr/index.ts` | Express (Prisma only) |
-| `src/ndpr/routes/consent.ts` | Express + consent module |
-| `ndpr.audit.json` | Always — config for the `ndpr audit` compliance gate |
-| `.github/workflows/ndpr-audit.yml` | Always — CI workflow that fails on a compliance regression |
+| `ndpr.audit.json` and `.github/workflows/ndpr-audit.yml` | Always |
+| `prisma/schema.prisma` | Prisma; skipped when a schema already exists so it can be merged manually |
+| `src/drizzle/ndpr-schema.ts` and `src/drizzle/index.ts` | Drizzle |
+| `ndpr/request-context.ts` or `src/ndpr/request-context.ts` | Next.js |
+| `app/ndpr-layout.tsx` or `pages/ndpr-provider.tsx` | Next.js + consent |
+| `app/api/<module>/route.ts` | Next.js App Router backend modules |
+| `pages/api/<module>.ts` | Next.js Pages Router backend modules |
+| `src/ndpr/request-context.ts`, `src/ndpr/index.ts` | Express |
+| `src/ndpr/routes/<module>.ts` | Express backend modules |
 
-All generated files use `{{ORG_NAME}}` and `{{DPO_EMAIL}}` substituted with your answers.
+Maintained persistence routes are generated for consent, DSR, breach, DPIA, lawful-basis, and cross-border modules. Policy and ROPA choices remain represented in the compliance-audit configuration but do not currently generate backend routes.
 
-The generated breach route (`app/api/breach/route.ts`) returns an `ndpcReadiness`
-summary on every report — which GAID 2025 Article 33(5) notification fields are
-still missing, and how many hours remain on the 72-hour clock — so you know what
-to collect before filing with the NDPC.
+The breach create route returns an `ndpcReadiness` summary showing missing GAID 2025 Article 33(5) notification evidence and the remaining time in the 72-hour window. Reporter identity is taken from the verified staff profile, never from request-body reporter fields.
+
+## Security contract
+
+Generated routes intentionally fail closed until you connect `resolveVerifiedNDPRActor` in the request-context file to verified server authentication:
+
+- `NDPR_TENANT_ID` is the server-controlled tenant boundary. Request bodies, query parameters, cookies, and arbitrary headers are not tenant authority.
+- A verified actor contains `id`, `displayName`, `email`, optional `department` and account `subjectId`, plus server-mapped roles.
+- Staff routes require exactly `ndpr:staff` or `ndpr:admin`; authentication without one of those roles returns 403.
+- Anonymous consent/DSR access accepts only an `anon_<UUID>` capability in `X-NDPR-Subject-Id`. It never grants staff access.
+- Account actor, profile, subject, and role values must come from a verified session—not client input.
+- Prisma and Drizzle business mutations write their accountability audit row in the same transaction.
+- Consent replacement is serializable, replay-aware, and protected by one-active-record uniqueness. Preserve the generated `timestamp` and `hasInteracted` fields and apply the generated unique index in your migration.
+- The no-ORM stores are development-only and are not durable compliance evidence.
 
 ## Modules
 
-| Module | NDPA reference | Description |
-|--------|---------------|-------------|
-| `consent` | §25–26 | Consent collection, storage, and withdrawal |
-| `dsr` | §34–38 | Data subject rights request intake and tracking |
-| `breach` | §40 | 72-hour breach notification workflow |
-| `policy` | — | Privacy policy scaffolding |
-| `dpia` | — | Data Protection Impact Assessment |
-| `lawful-basis` | §25 | Lawful basis register |
-| `cross-border` | §43 | Cross-border data transfer management |
-| `ropa` | Accountability | Record of Processing Activities |
+| Module | NDPA reference | Generated backend |
+|--------|----------------|:-----------------:|
+| `consent` | §25–26 | Yes |
+| `dsr` | §34–38 | Yes |
+| `breach` | §40 | Yes |
+| `dpia` | §28 | Yes |
+| `lawful-basis` | §25 | Yes |
+| `cross-border` | §41–43 | Yes |
+| `policy` | §27 | Audit config only |
+| `ropa` | §29 | Audit config only |
 
 ## After generation
 
-### With Prisma
+### Prisma
 
 ```bash
-# Copy .env.example → .env and set DATABASE_URL
 cp .env.example .env
-
-# Install dependencies
 pnpm add @prisma/client @tantainnovative/ndpr-toolkit
 pnpm add -D prisma
-
-# Run migrations
 pnpm prisma migrate dev --name ndpr-init
 ```
 
-### With Drizzle
+If the CLI skipped an existing `prisma/schema.prisma`, merge the generated models and indexes deliberately before migrating.
+
+### Drizzle
 
 ```bash
 cp .env.example .env
-
 pnpm add drizzle-orm @paralleldrive/cuid2 @tantainnovative/ndpr-toolkit
 pnpm add -D drizzle-kit
-
-pnpm drizzle-kit push
 ```
 
-### Next.js — wire up the layout
+Pass your existing Drizzle instance to the generated seam once during server startup, then run the migration command appropriate to your pinned Drizzle setup:
+
+```ts
+import { configureNDPRDatabase } from './src/drizzle';
+import { db } from './src/db';
+
+configureNDPRDatabase(db);
+```
+
+### Next.js App Router
 
 ```tsx
 // app/layout.tsx
-import NDPRLayout from '@/app/ndpr-layout';
+import NDPRClientProvider from './ndpr-layout';
 
-export default async function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <NDPRLayout>
-          {children}
-        </NDPRLayout>
+        <NDPRClientProvider>{children}</NDPRClientProvider>
       </body>
     </html>
   );
 }
 ```
 
-### Express — mount the router
+For Pages Router, wrap your page component with the generated provider from `pages/ndpr-provider.tsx` in `pages/_app.tsx`.
+
+### Express
 
 ```ts
 import express from 'express';
@@ -125,26 +127,20 @@ app.use(express.json());
 app.use('/api/ndpr', createNDPRRouter());
 ```
 
-### Compliance as code (GAID 2025)
+## Compliance as code
 
-Every scaffold ships an `ndpr.audit.json` config and a GitHub Actions workflow
-that runs the toolkit's `ndpr audit` CLI. The audit scores your compliance
-posture (consent, DSR, DPIA, breach, policy, lawful basis, cross-border, RoPA)
-plus your GAID 2025 DCPMI designation inputs, and **exits non-zero when the
-score drops below the threshold** — so a regression fails CI like a broken test.
+Every scaffold includes `ndpr.audit.json` and a GitHub Actions workflow that runs `ndpr audit`. Update the configuration to match the real implementation, then use a minimum score as a CI gate:
 
 ```bash
-# Run it locally any time:
 npx ndpr audit --min-score 70
 ```
 
-Edit `ndpr.audit.json` to reflect your real posture, then raise `--min-score` as
-you close gaps. See the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
+The audit is implementation support, not legal advice. Verify current NDPC requirements before relying on its output for a filing.
 
 ## Requirements
 
 - Node.js 18+
-- Zero external dependencies — works with `npx` out of the box
+- The CLI itself has zero runtime dependencies.
 
 ## Links
 

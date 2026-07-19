@@ -41,11 +41,30 @@ jobs:
         # fails fast instead of silently drifting.
         run: pnpm install --frozen-lockfile
 
+      - name: Build library package boundary
+        # Recipes resolve @tantainnovative/ndpr-toolkit through root package
+        # exports. Build fresh declarations before any root check can import
+        # recipe source through the stale published self-devDependency.
+        run: pnpm build:lib
+
+      - name: Type check backend recipes
+        # Generates the pinned Prisma client before root tsc follows imports
+        # from maintained recipe regression tests.
+        run: pnpm typecheck:recipes
+
       - name: Type check
         run: npx tsc --noEmit
 
+      - name: Verify generated create-ndpr scaffolds
+        # Render all Next App, Next Pages, and Express branches for Prisma,
+        # Drizzle, and no ORM; generate Prisma types; then run strict tsc.
+        run: pnpm verify:create-ndpr
+
       - name: Type check Storybook
         run: pnpm typecheck:storybook
+
+      # The library was built before recipe typechecking so all following
+      # artifact tests inspect the same fresh package boundary.
 
       - name: Run tests with coverage
         run: pnpm test:coverage
@@ -60,9 +79,6 @@ jobs:
           name: coverage-report
           path: coverage/
           retention-days: 14
-
-      - name: Build library
-        run: pnpm build:lib
 
       - name: Verify entry points
         # Entry list synced with publish.yml — both check 22 entries.

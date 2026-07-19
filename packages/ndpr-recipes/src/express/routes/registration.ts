@@ -1,61 +1,75 @@
-/**
- * Express — DCPMI Registration & Compliance Audit Return Router
- *
- * Surfaces an organisation's NDPC GAID 2025 obligations:
- *   - DCPMI tier (UHL / EHL / OHL / listed / none) and annual registration fee,
- *     derived from the number of data subjects processed in a six-month window.
- *   - The Compliance Audit Return (CAR) schedule — initial-audit due date and the
- *     next annual filing deadline — for UHL/EHL controllers that must file.
- *
- * Both are pure computations from the toolkit's React-free `/server` entry, so
- * this router needs no database.
- *
- * Routes
- * ------
- *   GET /registration?dataSubjects=6200&commencementDate=2025-01-15
- *       — classify the tier and (when applicable) compute the CAR schedule.
- *
- * How to use
- * ----------
- * Mounted automatically by `createNDPRRouter()` in `../index.ts`.
- *
- * @module express/routes/registration
- */
-
-import { Router } from 'express';
 import {
   classifyDCPMI,
   generateComplianceAuditReturn,
 } from '@tantainnovative/ndpr-toolkit/server';
+import { Router } from 'express';
+import {
+  getNDPRContextProblem,
+  resolveNDPRRequestContext,
+} from '../request-context';
 
 export const registrationRouter = Router();
 
-// GET /registration?dataSubjects=6200&commencementDate=2025-01-15&asOf=2026-06-01
-registrationRouter.get('/', (req, res) => {
-  const dataSubjects = Number(req.query.dataSubjects ?? 0);
-  const isDesignated = req.query.designated === 'true';
-  const commencementDate =
-    typeof req.query.commencementDate === 'string' ? req.query.commencementDate : undefined;
-  const asOf = typeof req.query.asOf === 'string' ? req.query.asOf : undefined;
+/** Authenticated operational classification using staff-supplied inputs. */
+registrationRouter.get('/', async (request, response) => {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return response.status(problem.status).json({ error: problem.error });
 
-  if (!Number.isFinite(dataSubjects) || dataSubjects < 0) {
-    return res.status(400).json({ error: 'dataSubjects must be a non-negative number' });
+  const dataSubjects = Number(request.query.dataSubjects ?? 0);
+  const isDesignated = request.query.designated === 'true';
+  const commencementDate = typeof request.query.commencementDate === 'string'
+    ? request.query.commencementDate
+    : undefined;
+  const asOf = typeof request.query.asOf === 'string'
+    ? request.query.asOf
+    : new Date().toISOString().slice(0, 10);
+
+  if (!Number.isInteger(dataSubjects) || dataSubjects < 0) {
+    return response.status(400).json({ error: 'dataSubjects must be a non-negative integer' });
+  }
+  if (commencementDate && !isIsoDate(commencementDate)) {
+    return response.status(400).json({ error: 'commencementDate must use YYYY-MM-DD' });
+  }
+  if (!isIsoDate(asOf)) {
+    return response.status(400).json({ error: 'asOf must use YYYY-MM-DD' });
   }
 
   const classification = classifyDCPMI({
     dataSubjectsInSixMonths: dataSubjects,
     isDesignated,
   });
-
-  // UHL/EHL controllers must file CAR annually; OHL renews registration instead
-  // and non-DCPMIs have no CAR obligation — reflected in `applicable`.
   const auditReturn = commencementDate
-    ? generateComplianceAuditReturn({ commencementDate, tier: classification.tier, asOf })
+    ? generateComplianceAuditReturn({
+        commencementDate,
+        tier: classification.tier,
+        asOf,
+      })
     : null;
 
-  return res.json({
+  return response.json({
     classification,
     auditReturn,
-    asOf: asOf ?? new Date().toISOString().slice(0, 10),
+    asOf,
+    tenantScope: { tenantId: context.tenantId, source: 'server NDPR_TENANT_ID' },
+    provenance: {
+      inputSource: 'authenticated staff query; not persisted evidence',
+      dataSubjectsInSixMonths: dataSubjects,
+      isDesignated,
+      commencementDate: commencementDate ?? null,
+    },
+    advisoryNotice:
+      'Operational classification aid only; verify source data, applicability, and current NDPC requirements.',
   });
 });
+
+function isIsoDate(value: string): boolean {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return Number.isFinite(parsed.getTime())
+    && parsed.getUTCFullYear() === Number(match[1])
+    && parsed.getUTCMonth() + 1 === Number(match[2])
+    && parsed.getUTCDate() === Number(match[3]);
+}

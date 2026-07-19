@@ -1,711 +1,340 @@
-/**
- * Drizzle ORM schema for NDPA compliance tables.
- *
- * This mirrors the Prisma schema in `prisma/schema.prisma` using Drizzle's
- * `pgTable` API. Copy this file into your project and use it with your Drizzle
- * database instance. It defines all five compliance tables required for
- * full NDPA coverage:
- *
- *   - ndpr_consent_records      — Immutable consent audit trail (NDPA §25–26)
- *   - ndpr_dsr_requests         — Data subject rights requests (NDPA Part IV)
- *   - ndpr_breach_reports       — Breach incident records (NDPA §40)
- *   - ndpr_processing_records   — Record of Processing Activities / ROPA
- *   - ndpr_audit_log            — General compliance audit log
- *
- * Prerequisites
- * -------------
- * - `drizzle-orm` must be installed in your project.
- * - `@paralleldrive/cuid2` must be installed (`pnpm add @paralleldrive/cuid2`).
- * - Run `drizzle-kit push` or generate migrations to apply the schema.
- *
- * @module drizzle/schema
- */
-
-import {
-  pgTable,
-  text,
-  timestamp,
-  json,
-  boolean,
-  integer,
-  index,
-} from 'drizzle-orm/pg-core';
+import type {
+  BreachReport as ToolkitBreachReport,
+  ConsentSettings,
+  CrossBorderTransfer,
+  DPIAResult,
+  DSRRequest as ToolkitDSRRequest,
+  ProcessingActivity,
+  ProcessingRecord as ToolkitProcessingRecord,
+  RecordOfProcessingActivities,
+  RegulatoryNotification,
+  RiskAssessment,
+} from '@tantainnovative/ndpr-toolkit';
 import { createId } from '@paralleldrive/cuid2';
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp as timestampColumn,
+  uniqueIndex,
+} from 'drizzle-orm/pg-core';
 
-// ---------------------------------------------------------------------------
-// ndpr_consent_records
-// ---------------------------------------------------------------------------
+const timestamp = <TName extends string>(name: TName) =>
+  timestampColumn(name, { precision: 3 });
 
-/**
- * Immutable consent audit trail.
- *
- * Records are NEVER deleted. Revocation sets `revokedAt` on the existing row.
- * At most one row per `subjectId` should have `revokedAt = NULL` at any time —
- * this invariant is maintained by the drizzleConsentAdapter.
- *
- * NDPA reference: Sections 25–26 (consent and consent withdrawal)
- */
 export const consentRecords = pgTable(
   'ndpr_consent_records',
   {
-    /** CUID2 primary key — collision-resistant, URL-safe, sortable */
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
-
-    /**
-     * Stable identifier for the data subject.
-     * Use your application's user ID, session ID, or hashed email address.
-     * Never store raw PII here if you can avoid it — a pseudonymous ID is preferred.
-     */
+    tenantId: text('tenant_id').notNull(),
+    id: text('id').notNull().$defaultFn(() => createId()),
     subjectId: text('subject_id').notNull(),
-
-    /**
-     * Map of consent category → boolean.
-     * Stored as JSON so the schema does not need to change when new
-     * consent categories are added to the toolkit.
-     *
-     * Example: { "analytics": true, "marketing": false, "functional": true }
-     */
-    consents: json('consents').notNull(),
-
-    /** The consent policy version the subject agreed to (e.g. "1.0", "2024-01"). */
+    activeSubjectKey: text('active_subject_key'),
+    consents: jsonb('consents').$type<ConsentSettings['consents']>().notNull(),
     version: text('version').notNull(),
-
-    /** How consent was captured: "banner", "api", "form", "import", etc. */
     method: text('method').notNull(),
-
-    /**
-     * NDPA lawful basis for processing.
-     * One of: "consent" | "contract" | "legal_obligation" | "vital_interests" |
-     *         "public_task" | "legitimate_interest"
-     */
-    lawfulBasis: text('lawful_basis'),
-
-    /** IP address at the time of consent — retained as evidence for regulators. */
+    hasInteracted: boolean('has_interacted').notNull(),
+    lawfulBasis: text('lawful_basis').$type<ConsentSettings['lawfulBasis']>(),
     ipAddress: text('ip_address'),
-
-    /** User-agent string at the time of consent — provides device/browser context. */
     userAgent: text('user_agent'),
-
-    /** Timestamp when the consent record was created. */
+    clientTimestamp: timestamp('client_timestamp'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-
-    /**
-     * Timestamp when the consent was revoked.
-     * NULL means the record is currently active. Non-NULL means it has been
-     * superseded or explicitly withdrawn by the data subject.
-     */
     revokedAt: timestamp('revoked_at'),
   },
-  (table) => ({
-    /** Index on subjectId to make per-subject queries fast. */
-    subjectIdIdx: index('consent_subject_id_idx').on(table.subjectId),
-  }),
+  (table) => [
+    primaryKey({ name: 'ndpr_consent_records_pkey', columns: [table.tenantId, table.id] }),
+    uniqueIndex('consent_active_subject_key').on(table.activeSubjectKey),
+    index('consent_tenant_subject_active_idx').on(
+      table.tenantId,
+      table.subjectId,
+      table.revokedAt,
+    ),
+  ],
 );
 
-// ---------------------------------------------------------------------------
-// ndpr_dsr_requests
-// ---------------------------------------------------------------------------
-
-/**
- * Data Subject Rights (DSR) request tracking.
- *
- * Records every DSR request submitted by a data subject. Status transitions
- * follow the NDPA 30-day response window (NDPA Sections 34–38):
- *
- *   pending → in_progress → completed
- *                         → rejected
- *
- * NDPA reference: Part VI, Sections 34–38
- */
 export const dsrRequests = pgTable(
   'ndpr_dsr_requests',
   {
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
-
-    /**
-     * DSR type — one of:
-     *   "access" | "erasure" | "portability" | "rectification" |
-     *   "restriction" | "objection" | "automated_decision"
-     */
-    type: text('type').notNull(),
-
-    /**
-     * Processing status.
-     * Default is "pending" when a new request comes in.
-     */
-    status: text('status').notNull().default('pending'),
-
-    /** Full name of the data subject making the request. */
+    tenantId: text('tenant_id').notNull(),
+    id: text('id').notNull().$defaultFn(() => createId()),
+    subjectId: text('subject_id').notNull(),
+    type: text('type').$type<ToolkitDSRRequest['type']>().notNull(),
+    status: text('status').$type<ToolkitDSRRequest['status']>().notNull().default('pending'),
     subjectName: text('subject_name').notNull(),
-
-    /** Email address of the data subject — used to communicate outcomes. */
     subjectEmail: text('subject_email').notNull(),
-
-    /** Optional phone number for the data subject. */
     subjectPhone: text('subject_phone'),
-
-    /**
-     * Type of identifier used to locate the subject's data in your systems.
-     * E.g. "email", "account_id", "national_id".
-     */
-    identifierType: text('identifier_type').notNull(),
-
-    /** The actual identifier value corresponding to `identifierType`. */
-    identifierValue: text('identifier_value').notNull(),
-
-    /** Optional free-text description / reason provided by the subject. */
+    identifierType: text('identifier_type'),
+    identifierValue: text('identifier_value'),
     description: text('description'),
-
-    /** Internal staff notes — never expose these to the data subject. */
-    internalNotes: text('internal_notes'),
-
-    /** Email of the staff member assigned to handle this request. */
+    lawfulBasis: text('lawful_basis'),
+    additionalInfo: jsonb('additional_info').$type<ToolkitDSRRequest['additionalInfo']>(),
+    internalNotes: jsonb('internal_notes').$type<ToolkitDSRRequest['internalNotes']>(),
+    verification: jsonb('verification').$type<ToolkitDSRRequest['verification']>(),
+    rejectionReason: text('rejection_reason'),
+    attachments: jsonb('attachments').$type<ToolkitDSRRequest['attachments']>(),
+    extensionRequested: boolean('extension_requested'),
+    extensionReason: text('extension_reason'),
     assignedTo: text('assigned_to'),
-
-    /** When the request was submitted. */
     submittedAt: timestamp('submitted_at').defaultNow().notNull(),
-
-    /** When the request was acknowledged to the subject. */
-    acknowledgedAt: timestamp('acknowledged_at'),
-
-    /** When the request was fully completed. */
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    verifiedAt: timestamp('verified_at'),
     completedAt: timestamp('completed_at'),
-
-    /**
-     * NDPA mandates a 30-day response window from submission.
-     * This should be set to `submittedAt + 30 days` on creation.
-     */
-    dueAt: timestamp('due_at').notNull(),
+    dueAt: timestamp('due_at'),
+    removedAt: timestamp('adapter_removed_at'),
   },
-  (table) => ({
-    statusIdx: index('dsr_status_idx').on(table.status),
-    subjectEmailIdx: index('dsr_subject_email_idx').on(table.subjectEmail),
-  }),
+  (table) => [
+    primaryKey({
+      name: 'ndpr_dsr_requests_pkey',
+      columns: [table.tenantId, table.subjectId, table.id],
+    }),
+    uniqueIndex('dsr_tenant_id_unique').on(table.tenantId, table.id),
+    index('dsr_tenant_subject_active_idx').on(
+      table.tenantId,
+      table.subjectId,
+      table.removedAt,
+      table.submittedAt,
+    ),
+    index('dsr_tenant_status_idx').on(table.tenantId, table.status),
+  ],
 );
 
-// ---------------------------------------------------------------------------
-// ndpr_breach_reports
-// ---------------------------------------------------------------------------
-
-/**
- * Personal data breach incident reports.
- *
- * Under NDPA Section 40, data controllers must notify the NDPC within 72 hours
- * of becoming aware of a breach. This table tracks every breach incident and
- * its notification status.
- *
- * Records are never deleted — status transitions from "ongoing" to "resolved"
- * once the incident is closed.
- *
- * NDPA reference: Section 40 (breach notification to NDPC)
- */
 export const breachReports = pgTable(
   'ndpr_breach_reports',
   {
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
-
-    /** Short title describing the breach (e.g. "Customer database exposed"). */
+    tenantId: text('tenant_id').notNull(),
+    id: text('id').notNull().$defaultFn(() => createId()),
     title: text('title').notNull(),
-
-    /** Detailed description of what happened, how, and what data was affected. */
     description: text('description').notNull(),
-
-    /**
-     * Breach category — classifies the type of incident:
-     *   "confidentiality" | "integrity" | "availability" | "combined"
-     */
     category: text('category').notNull(),
-
-    /**
-     * Risk severity level.
-     * One of: "low" | "medium" | "high" | "critical"
-     */
-    severity: text('severity').notNull(),
-
-    /**
-     * Current status of the incident.
-     * One of: "ongoing" | "contained" | "resolved"
-     */
-    status: text('status').notNull().default('ongoing'),
-
-    /** When the breach was first discovered by your organisation. */
+    severity: text('severity').$type<RiskAssessment['riskLevel']>(),
+    status: text('status').$type<ToolkitBreachReport['status']>().notNull().default('ongoing'),
     discoveredAt: timestamp('discovered_at').notNull(),
-
-    /** When the breach actually occurred (may differ from discoveredAt). */
     occurredAt: timestamp('occurred_at'),
-
-    /** When the breach was formally logged in this system. */
     reportedAt: timestamp('reported_at').defaultNow().notNull(),
-
-    /**
-     * When the NDPC was notified.
-     * NULL means notification has not yet been sent.
-     * The 72-hour window starts from `discoveredAt`.
-     */
     ndpcNotifiedAt: timestamp('ndpc_notified_at'),
-
-    /** Full name of the person who reported the breach internally. */
     reporterName: text('reporter_name').notNull(),
-
-    /** Email address of the breach reporter. */
     reporterEmail: text('reporter_email').notNull(),
-
-    /** Department or business unit of the reporter. */
     reporterDepartment: text('reporter_department'),
-
-    /**
-     * List of systems or services that were affected.
-     * Stored as a JSON array of strings.
-     * Example: ["user-auth-service", "payments-db"]
-     */
-    affectedSystems: json('affected_systems').notNull(),
-
-    /**
-     * Categories of personal data involved in the breach.
-     * Stored as a JSON array of strings.
-     * Example: ["email", "national_id", "financial_data"]
-     */
-    dataTypes: json('data_types').notNull(),
-
-    /** Estimated number of data subjects affected. */
-    estimatedAffected: integer('estimated_affected'),
-
-    /** Description of any immediate containment actions taken. */
+    reporterPhone: text('reporter_phone'),
+    affectedSystems: jsonb('affected_systems').$type<string[]>().notNull(),
+    dataTypes: jsonb('data_types').$type<string[]>().notNull(),
+    involvesSensitiveData: boolean('involves_sensitive_data'),
+    estimatedAffectedSubjects: integer('estimated_affected_subjects'),
+    approximateRecordCount: integer('approximate_record_count'),
+    dataSubjectCategories: jsonb('data_subject_categories').$type<string[]>(),
+    likelyConsequences: text('likely_consequences'),
+    mitigationMeasures: text('mitigation_measures'),
+    isPhasedReport: boolean('is_phased_report'),
+    supplementsReportId: text('supplements_report_id'),
+    dpoContact: jsonb('dpo_contact').$type<ToolkitBreachReport['dpoContact']>(),
     initialActions: text('initial_actions'),
-
-    /**
-     * Whether the mandatory NDPC notification has been sent.
-     * Use `ndpcNotifiedAt` for the exact timestamp.
-     */
+    attachments: jsonb('attachments').$type<ToolkitBreachReport['attachments']>(),
+    assessments: jsonb('assessments').$type<RiskAssessment[]>().notNull().default([]),
+    notifications: jsonb('notifications').$type<RegulatoryNotification[]>().notNull().default([]),
     ndpcNotificationSent: boolean('ndpc_notification_sent').notNull().default(false),
+    removedAt: timestamp('adapter_removed_at'),
   },
-  (table) => ({
-    statusIdx: index('breach_status_idx').on(table.status),
-    severityIdx: index('breach_severity_idx').on(table.severity),
-  }),
+  (table) => [
+    primaryKey({ name: 'ndpr_breach_reports_pkey', columns: [table.tenantId, table.id] }),
+    index('breach_tenant_active_status_idx').on(table.tenantId, table.removedAt, table.status),
+    index('breach_tenant_severity_idx').on(table.tenantId, table.severity),
+  ],
 );
 
-// ---------------------------------------------------------------------------
-// ndpr_processing_records
-// ---------------------------------------------------------------------------
-
-/**
- * Record of Processing Activities (ROPA).
- *
- * Data controllers are required under the NDPA accountability principle to
- * maintain a register of all personal data processing activities. Each row
- * represents one distinct processing activity (e.g. "Email marketing",
- * "HR payroll processing", "Website analytics").
- *
- * Records are never deleted — inactive activities are archived by setting
- * `status = 'archived'`.
- *
- * NDPA reference: Accountability principle; Schedule 1, Part 1
- */
 export const processingRecords = pgTable(
   'ndpr_processing_records',
   {
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
-
-    /** The primary purpose of this processing activity. */
+    tenantId: text('tenant_id').notNull(),
+    id: text('id').notNull().$defaultFn(() => createId()),
     purpose: text('purpose').notNull(),
-
-    /**
-     * NDPA lawful basis for this processing activity.
-     * One of: "consent" | "contract" | "legal_obligation" | "vital_interests" |
-     *         "public_task" | "legitimate_interest"
-     */
-    lawfulBasis: text('lawful_basis').notNull(),
-
-    /**
-     * Categories of personal data processed.
-     * Stored as a JSON array of strings.
-     * Example: ["name", "email", "purchase_history"]
-     */
-    dataCategories: json('data_categories').notNull(),
-
-    /**
-     * Categories of data subjects whose data is processed.
-     * Stored as a JSON array of strings.
-     * Example: ["customers", "employees", "website_visitors"]
-     */
-    dataSubjects: json('data_subjects').notNull(),
-
-    /**
-     * Third parties to whom data is disclosed.
-     * Stored as a JSON array of strings.
-     * Example: ["Mailchimp", "Stripe", "Google Analytics"]
-     */
-    recipients: json('recipients').notNull(),
-
-    /**
-     * How long data is retained for this activity.
-     * Use a human-readable string: "2 years", "Until account deletion", etc.
-     */
+    lawfulBasis: text('lawful_basis').$type<ToolkitProcessingRecord['lawfulBasis']>().notNull(),
+    dataCategories: jsonb('data_categories').$type<string[]>().notNull(),
+    dataSubjects: jsonb('data_subjects').$type<string[]>().notNull(),
+    recipients: jsonb('recipients').$type<string[]>().notNull(),
     retentionPeriod: text('retention_period').notNull(),
-
-    /**
-     * Technical and organisational security measures in place.
-     * Stored as a JSON array of strings.
-     * Example: ["encryption_at_rest", "access_controls", "audit_logging"]
-     */
-    securityMeasures: json('security_measures').notNull(),
-
-    /**
-     * Countries to which data is transferred outside Nigeria.
-     * Stored as a JSON array of country codes/names, or null if no transfers.
-     */
-    transferCountries: json('transfer_countries'),
-
-    /**
-     * Legal mechanism used for the cross-border transfer.
-     * E.g. "adequacy_decision", "standard_contractual_clauses", "consent".
-     */
+    securityMeasures: jsonb('security_measures').$type<string[]>().notNull(),
+    transferCountries: jsonb('transfer_countries').$type<string[]>(),
     transferMechanism: text('transfer_mechanism'),
-
-    /**
-     * Whether a Data Protection Impact Assessment (DPIA) was conducted.
-     * Required for high-risk processing activities.
-     */
     dpiaConducted: boolean('dpia_conducted').notNull().default(false),
-
-    /**
-     * Current status of this processing activity.
-     * One of: "active" | "archived"
-     */
-    status: text('status').notNull().default('active'),
-
-    /** When this processing record was first created. */
+    recordData: jsonb('record_data').$type<ToolkitProcessingRecord>(),
+    status: text('status').$type<ToolkitProcessingRecord['status']>().notNull().default('active'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-
-    /** When this processing record was last updated. */
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    removedAt: timestamp('adapter_removed_at'),
   },
+  (table) => [
+    primaryKey({ name: 'ndpr_processing_records_pkey', columns: [table.tenantId, table.id] }),
+    index('processing_tenant_active_status_idx').on(
+      table.tenantId,
+      table.removedAt,
+      table.status,
+    ),
+    index('processing_tenant_basis_idx').on(table.tenantId, table.lawfulBasis),
+  ],
 );
 
-// ---------------------------------------------------------------------------
-// ndpr_dpia_records
-// ---------------------------------------------------------------------------
+export const ropaRegisters = pgTable(
+  'ndpr_ropa_registers',
+  {
+    tenantId: text('tenant_id').primaryKey(),
+    metadata: jsonb('metadata').$type<Omit<RecordOfProcessingActivities, 'records'>>().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    removedAt: timestamp('adapter_removed_at'),
+  },
+  (table) => [index('ropa_register_tenant_active_idx').on(table.tenantId, table.removedAt)],
+);
 
-/**
- * Data Protection Impact Assessment (DPIA) records.
- *
- * Under NDPA Section 28, a DPIA is required when processing is likely to
- * result in high risk to data subjects. This table stores the assessment results,
- * risk scores, and approval status.
- *
- * Records are never deleted — draft assessments are superseded by newer versions,
- * and completed assessments are retained for the audit trail.
- *
- * NDPA reference: Section 28 (DPIA, including Section 28(2) prior consultation)
- */
 export const dpiaRecords = pgTable(
   'ndpr_dpia_records',
   {
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
-
-    /** Name of the project or processing activity being assessed. */
+    tenantId: text('tenant_id').notNull(),
+    id: text('id').notNull().$defaultFn(() => createId()),
     projectName: text('project_name').notNull(),
-
-    /** Detailed description of the processing activity. */
     description: text('description').notNull(),
-
-    /**
-     * Full DPIA data including answers, risks, and recommendations.
-     * Stored as JSON to accommodate the flexible DPIAResult structure.
-     */
-    dpiaData: json('dpia_data').notNull(),
-
-    /**
-     * Overall risk level determined by the assessment.
-     * One of: "low" | "medium" | "high" | "critical"
-     */
-    overallRisk: text('overall_risk').notNull(),
-
-    /** Numeric risk score for sorting and filtering. */
+    dpiaData: jsonb('dpia_data').$type<DPIAResult>().notNull(),
+    overallRisk: text('overall_risk').$type<DPIAResult['overallRiskLevel']>().notNull(),
     score: integer('score').notNull(),
-
-    /**
-     * Current status of the DPIA.
-     * One of: "draft" | "in_progress" | "completed" | "approved" | "rejected"
-     */
     status: text('status').notNull().default('draft'),
-
-    /** Email or name of the person who conducted the assessment. */
     conductedBy: text('conducted_by').notNull(),
-
-    /** Email or name of the person who approved the DPIA (if approved). */
     approvedBy: text('approved_by'),
-
-    /** When this DPIA record was first created. */
     createdAt: timestamp('created_at').defaultNow().notNull(),
-
-    /** When this DPIA record was last updated. */
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    removedAt: timestamp('adapter_removed_at'),
   },
-  (table) => ({
-    statusIdx: index('dpia_status_idx').on(table.status),
-    conductedByIdx: index('dpia_conducted_by_idx').on(table.conductedBy),
-  }),
+  (table) => [
+    primaryKey({ name: 'ndpr_dpia_records_pkey', columns: [table.tenantId, table.id] }),
+    index('dpia_tenant_active_status_idx').on(table.tenantId, table.removedAt, table.status),
+    index('dpia_tenant_conductor_idx').on(table.tenantId, table.conductedBy),
+  ],
 );
 
-// ---------------------------------------------------------------------------
-// ndpr_lawful_basis_records
-// ---------------------------------------------------------------------------
-
-/**
- * Lawful Basis determination records.
- *
- * Every processing activity must have a documented lawful basis under NDPA
- * Part III (Sections 24-28). This table stores the assessment of which lawful
- * basis applies, along with the justification, data categories, and review dates.
- *
- * Records are never deleted — superseded assessments are retained for the
- * compliance audit trail.
- *
- * NDPA reference: Part III, Sections 24–28
- */
 export const lawfulBasisRecords = pgTable(
   'ndpr_lawful_basis_records',
   {
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
-
-    /** Name of the processing activity being assessed. */
+    tenantId: text('tenant_id').notNull(),
+    id: text('id').notNull().$defaultFn(() => createId()),
     activityName: text('activity_name').notNull(),
-
-    /**
-     * The determined lawful basis.
-     * One of: "consent" | "contract" | "legal_obligation" | "vital_interests" |
-     *         "public_interest" | "legitimate_interests"
-     */
-    lawfulBasis: text('lawful_basis').notNull(),
-
-    /** Written justification for why this lawful basis applies. */
+    description: text('description'),
+    lawfulBasis: text('lawful_basis').$type<ProcessingActivity['lawfulBasis']>().notNull(),
     justification: text('justification').notNull(),
-
-    /**
-     * Categories of personal data involved.
-     * Stored as a JSON array of strings.
-     */
-    dataCategories: json('data_categories').notNull(),
-
-    /**
-     * Purposes for the processing activity.
-     * Stored as a JSON array of strings.
-     */
-    purposes: json('purposes').notNull(),
-
-    /** Email or name of the person who assessed the lawful basis. */
+    dataCategories: jsonb('data_categories').$type<string[]>().notNull(),
+    involvesSensitiveData: boolean('involves_sensitive_data'),
+    sensitiveDataCondition: text('sensitive_data_condition').$type<ProcessingActivity['sensitiveDataCondition']>(),
+    dataSubjectCategories: jsonb('data_subject_categories').$type<string[]>(),
+    purposes: jsonb('purposes').$type<string[]>().notNull(),
+    retentionPeriod: text('retention_period'),
+    retentionJustification: text('retention_justification'),
+    recipients: jsonb('recipients').$type<string[]>(),
+    crossBorderTransfer: boolean('cross_border_transfer'),
+    status: text('status').$type<ProcessingActivity['status']>().notNull().default('active'),
+    dpoApproval: jsonb('dpo_approval').$type<ProcessingActivity['dpoApproval']>(),
+    activityData: jsonb('activity_data').$type<ProcessingActivity>(),
     assessedBy: text('assessed_by').notNull(),
-
-    /** When the assessment was performed. */
     assessedAt: timestamp('assessed_at').defaultNow().notNull(),
-
-    /** When the lawful basis determination should be reviewed. */
     reviewDate: timestamp('review_date'),
-
-    /** When this record was first created. */
     createdAt: timestamp('created_at').defaultNow().notNull(),
-
-    /** When this record was last updated. */
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    removedAt: timestamp('adapter_removed_at'),
   },
-  (table) => ({
-    lawfulBasisIdx: index('lawful_basis_idx').on(table.lawfulBasis),
-    assessedByIdx: index('lawful_basis_assessed_by_idx').on(table.assessedBy),
-  }),
+  (table) => [
+    primaryKey({ name: 'ndpr_lawful_basis_records_pkey', columns: [table.tenantId, table.id] }),
+    index('lawful_basis_tenant_basis_idx').on(table.tenantId, table.lawfulBasis),
+    index('lawful_basis_tenant_assessor_idx').on(table.tenantId, table.assessedBy),
+    index('lawful_basis_tenant_active_status_idx').on(
+      table.tenantId,
+      table.removedAt,
+      table.status,
+    ),
+  ],
 );
 
-// ---------------------------------------------------------------------------
-// ndpr_cross_border_transfer_records
-// ---------------------------------------------------------------------------
-
-/**
- * Cross-border data transfer records.
- *
- * Under NDPA Part VIII (Sections 41-43), personal data may only be transferred
- * outside Nigeria under specific conditions. This table tracks every cross-border
- * transfer, the mechanism relied upon, NDPC approval status, and risk assessment.
- *
- * Records are never deleted — terminated transfers are retained for the audit trail.
- *
- * NDPA reference: Part VIII, Sections 41–43
- */
 export const crossBorderTransferRecords = pgTable(
   'ndpr_cross_border_transfer_records',
   {
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
-
-    /** Destination country or territory. */
+    tenantId: text('tenant_id').notNull(),
+    id: text('id').notNull().$defaultFn(() => createId()),
     destinationCountry: text('destination_country').notNull(),
-
-    /** Name of the recipient organisation. */
+    destinationCountryCode: text('destination_country_code'),
     recipientName: text('recipient_name').notNull(),
-
-    /**
-     * Transfer mechanism relied upon.
-     * One of: "adequacy_decision" | "standard_clauses" | "binding_corporate_rules" |
-     *         "ndpc_authorization" | "explicit_consent" | "contract_performance" |
-     *         "public_interest" | "legal_claims" | "vital_interests"
-     */
-    transferMechanism: text('transfer_mechanism').notNull(),
-
-    /** Description of safeguards in place to protect the transferred data. */
-    safeguards: text('safeguards').notNull(),
-
-    /**
-     * Categories of personal data being transferred.
-     * Stored as a JSON array of strings.
-     */
-    dataCategories: json('data_categories').notNull(),
-
-    /**
-     * Adequacy status of the destination country.
-     * One of: "adequate" | "inadequate" | "pending_review" | "unknown"
-     */
-    adequacyStatus: text('adequacy_status').notNull(),
-
-    /** Whether NDPC approval is required for this transfer mechanism. */
+    recipientContact: jsonb('recipient_contact').$type<CrossBorderTransfer['recipientContact']>(),
+    transferMechanism: text('transfer_mechanism').$type<CrossBorderTransfer['transferMechanism']>().notNull(),
+    safeguards: jsonb('safeguards').$type<string[]>().notNull(),
+    dataCategories: jsonb('data_categories').$type<string[]>().notNull(),
+    includesSensitiveData: boolean('includes_sensitive_data'),
+    estimatedDataSubjects: integer('estimated_data_subjects'),
+    purpose: text('purpose'),
+    adequacyStatus: text('adequacy_status').$type<CrossBorderTransfer['adequacyStatus']>().notNull(),
+    riskAssessment: text('risk_assessment'),
+    riskLevel: text('risk_level').$type<CrossBorderTransfer['riskLevel']>().notNull(),
     ndpcApprovalRequired: boolean('ndpc_approval_required').notNull().default(false),
-
-    /** NDPC approval reference number (if approval was obtained). */
     ndpcApprovalReference: text('ndpc_approval_reference'),
-
-    /**
-     * Risk level of the transfer.
-     * One of: "low" | "medium" | "high"
-     */
-    riskLevel: text('risk_level').notNull(),
-
-    /** When this record was first created. */
+    ndpcApproval: jsonb('ndpc_approval').$type<CrossBorderTransfer['ndpcApproval']>(),
+    tiaCompleted: boolean('tia_completed'),
+    tiaReference: text('tia_reference'),
+    frequency: text('frequency').$type<CrossBorderTransfer['frequency']>(),
+    status: text('status').$type<CrossBorderTransfer['status']>().notNull().default('active'),
+    startDate: timestamp('start_date'),
+    endDate: timestamp('end_date'),
+    reviewDate: timestamp('review_date'),
+    transferData: jsonb('transfer_data').$type<CrossBorderTransfer>(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-
-    /** When this record was last updated. */
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    removedAt: timestamp('adapter_removed_at'),
   },
-  (table) => ({
-    destinationCountryIdx: index('cross_border_destination_idx').on(table.destinationCountry),
-    riskLevelIdx: index('cross_border_risk_level_idx').on(table.riskLevel),
-  }),
+  (table) => [
+    primaryKey({
+      name: 'ndpr_cross_border_transfer_records_pkey',
+      columns: [table.tenantId, table.id],
+    }),
+    index('cross_border_tenant_destination_idx').on(table.tenantId, table.destinationCountry),
+    index('cross_border_tenant_risk_idx').on(table.tenantId, table.riskLevel),
+    index('cross_border_tenant_active_status_idx').on(
+      table.tenantId,
+      table.removedAt,
+      table.status,
+    ),
+  ],
 );
 
-// ---------------------------------------------------------------------------
-// ndpr_audit_log
-// ---------------------------------------------------------------------------
-
-/**
- * General compliance audit log.
- *
- * Records every significant compliance action across all modules. The audit
- * log is append-only — rows are never updated or deleted. It provides an
- * authoritative trail for regulatory inspection under the NDPA accountability
- * principle.
- *
- * NDPA reference: Section 44 (accountability); Schedule 1, Part 1
- */
-export const auditLog = pgTable(
+export const complianceAuditLog = pgTable(
   'ndpr_audit_log',
   {
-    id: text('id')
-      .primaryKey()
-      .$defaultFn(() => createId()),
-
-    /**
-     * Which compliance module generated this entry.
-     * One of: "consent" | "dsr" | "breach" | "ropa" | "system"
-     */
-    module: text('module').notNull(),
-
-    /**
-     * The action that occurred.
-     * E.g. "created", "updated", "revoked", "deleted", "notified"
-     */
+    tenantId: text('tenant_id').notNull(),
+    id: text('id').notNull().$defaultFn(() => createId()),
     action: text('action').notNull(),
-
-    /** ID of the entity that was acted upon. */
+    module: text('module').notNull(),
     entityId: text('entity_id').notNull(),
-
-    /**
-     * Type/model of the entity.
-     * E.g. "ConsentRecord", "DSRRequest", "BreachReport"
-     */
     entityType: text('entity_type').notNull(),
-
-    /**
-     * Snapshot of what changed.
-     * Stored as JSON. The exact shape depends on the module and action.
-     */
-    changes: json('changes'),
-
-    /**
-     * Who performed the action.
-     * May be a user ID, email address, or system identifier.
-     * NULL indicates an automated/system action.
-     */
+    changes: jsonb('changes').$type<Record<string, unknown>>(),
     performedBy: text('performed_by'),
-
-    /** Exact timestamp when the audit event occurred. */
+    ipAddress: text('ip_address'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
-  (table) => ({
-    moduleEntityIdx: index('audit_module_entity_idx').on(table.module, table.entityId),
-  }),
+  (table) => [
+    primaryKey({ name: 'ndpr_audit_log_pkey', columns: [table.tenantId, table.id] }),
+    index('audit_tenant_module_entity_idx').on(table.tenantId, table.module, table.entityId),
+    index('audit_tenant_actor_idx').on(table.tenantId, table.performedBy),
+  ],
 );
 
-// ---------------------------------------------------------------------------
-// Type exports — infer table row types for use throughout your application
-// ---------------------------------------------------------------------------
-
-/** Row type for ndpr_consent_records */
 export type ConsentRecord = typeof consentRecords.$inferSelect;
-/** Insert type for ndpr_consent_records */
 export type NewConsentRecord = typeof consentRecords.$inferInsert;
-
-/** Row type for ndpr_dsr_requests */
 export type DSRRequest = typeof dsrRequests.$inferSelect;
-/** Insert type for ndpr_dsr_requests */
 export type NewDSRRequest = typeof dsrRequests.$inferInsert;
-
-/** Row type for ndpr_breach_reports */
 export type BreachReport = typeof breachReports.$inferSelect;
-/** Insert type for ndpr_breach_reports */
 export type NewBreachReport = typeof breachReports.$inferInsert;
-
-/** Row type for ndpr_processing_records */
 export type ProcessingRecord = typeof processingRecords.$inferSelect;
-/** Insert type for ndpr_processing_records */
 export type NewProcessingRecord = typeof processingRecords.$inferInsert;
-
-/** Row type for ndpr_dpia_records */
+export type RopaRegister = typeof ropaRegisters.$inferSelect;
+export type NewRopaRegister = typeof ropaRegisters.$inferInsert;
 export type DPIARecord = typeof dpiaRecords.$inferSelect;
-/** Insert type for ndpr_dpia_records */
 export type NewDPIARecord = typeof dpiaRecords.$inferInsert;
-
-/** Row type for ndpr_lawful_basis_records */
 export type LawfulBasisRecord = typeof lawfulBasisRecords.$inferSelect;
-/** Insert type for ndpr_lawful_basis_records */
 export type NewLawfulBasisRecord = typeof lawfulBasisRecords.$inferInsert;
-
-/** Row type for ndpr_cross_border_transfer_records */
 export type CrossBorderTransferRecord = typeof crossBorderTransferRecords.$inferSelect;
-/** Insert type for ndpr_cross_border_transfer_records */
 export type NewCrossBorderTransferRecord = typeof crossBorderTransferRecords.$inferInsert;
-
-/** Row type for ndpr_audit_log */
-export type AuditLogEntry = typeof auditLog.$inferSelect;
-/** Insert type for ndpr_audit_log */
-export type NewAuditLogEntry = typeof auditLog.$inferInsert;
+export type ComplianceAuditLog = typeof complianceAuditLog.$inferSelect;
+export type NewComplianceAuditLog = typeof complianceAuditLog.$inferInsert;

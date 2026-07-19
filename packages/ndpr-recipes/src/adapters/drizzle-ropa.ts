@@ -1,203 +1,154 @@
-/**
- * Drizzle adapter for the ROPA (Record of Processing Activities) module.
- *
- * Implements StorageAdapter<RecordOfProcessingActivities> backed by the
- * `ndpr_processing_records` Drizzle table.
- *
- * The toolkit's useROPA() hook stores a single RecordOfProcessingActivities
- * object that wraps an array of ProcessingRecord entries plus organisation
- * metadata. This adapter maps between that object and the flat Drizzle table.
- *
- * Behaviour
- * ---------
- * - LOAD  → reads all ProcessingRecord rows and assembles them into a
- *           RecordOfProcessingActivities using the org metadata you provide.
- * - SAVE  → upserts each ProcessingRecord individually by ID using Drizzle's
- *           `onConflictDoUpdate` pattern.
- * - REMOVE → marks all active records as 'archived' (no hard deletes).
- *
- * Organisation metadata
- * ---------------------
- * Because the ROPA object includes organisation-level fields (name, contact,
- * address, DPO details) that are not stored in the processing records table,
- * you must supply them when creating the adapter.
- *
- * Usage
- * -----
- * Copy this file into your project alongside your Drizzle client, then wire it
- * into the toolkit hook:
- *
- *   import { drizzle } from 'drizzle-orm/node-postgres';
- *   import { Pool } from 'pg';
- *   import { useROPA } from '@tantainnovative/ndpr-toolkit';
- *   import { drizzleROPAAdapter } from './adapters/drizzle-ropa';
- *   import * as schema from './drizzle/schema';
- *
- *   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
- *   const db = drizzle(pool, { schema });
- *
- *   function ROPAPage() {
- *     const adapter = drizzleROPAAdapter(db, {
- *       organizationName: process.env.ORG_NAME!,
- *       organizationContact: process.env.DPO_EMAIL!,
- *       organizationAddress: process.env.ORG_ADDRESS!,
- *     });
- *     const { ropa, addRecord } = useROPA({ adapter });
- *     // ...
- *   }
- *
- * Prerequisites
- * -------------
- * - The `ndpr_processing_records` table must exist (run your Drizzle migration).
- * - `drizzle-orm` must be installed in your project.
- * - `@tantainnovative/ndpr-toolkit` must be installed in your project.
- *
- * @module adapters/drizzle-ropa
- */
+import { and, asc, eq, isNull, notInArray } from 'drizzle-orm';
+import type {
+  ProcessingRecord,
+  RecordOfProcessingActivities,
+  StorageAdapter,
+} from '@tantainnovative/ndpr-toolkit';
+import {
+  processingRecords,
+  ropaRegisters,
+  type NewProcessingRecord,
+} from '../drizzle/schema';
+import {
+  assertTenantContext,
+  serverStorageCapabilities,
+  type TenantAdapterContext,
+} from './server-storage';
 
-import { eq, desc } from 'drizzle-orm';
-import type { StorageAdapter } from '@tantainnovative/ndpr-toolkit';
-import type { RecordOfProcessingActivities, ProcessingRecord } from '@tantainnovative/ndpr-toolkit';
-import { processingRecords } from '../drizzle/schema';
-
-/** Organisation metadata required to construct the ROPA envelope */
 export interface ROPAOrgMetadata {
+  id?: string;
   organizationName: string;
   organizationContact: string;
   organizationAddress: string;
-  dpoDetails?: {
-    name: string;
-    email: string;
-    phone?: string;
-  };
+  dpoDetails?: RecordOfProcessingActivities['dpoDetails'];
   ndpcRegistrationNumber?: string;
+  version?: string;
+  exportFormats?: RecordOfProcessingActivities['exportFormats'];
 }
 
-/**
- * Creates a Drizzle-backed StorageAdapter for RecordOfProcessingActivities.
- *
- * @param db       - Your Drizzle database instance (any driver — pg, neon, libsql, etc.)
- * @param orgMeta  - Organisation-level metadata used to build the ROPA envelope.
- * @returns A StorageAdapter<RecordOfProcessingActivities> ready to pass to useROPA().
- */
+type ROPAMetadata = Omit<RecordOfProcessingActivities, 'records'>;
+
+/** Creates an atomic, tenant-scoped Drizzle ROPA adapter. */
 export function drizzleROPAAdapter(
   db: any,
+  context: TenantAdapterContext,
   orgMeta: ROPAOrgMetadata,
 ): StorageAdapter<RecordOfProcessingActivities> {
+  assertTenantContext(context);
+  const { tenantId } = context;
+
   return {
-    /**
-     * Load all processing records and wrap them in a RecordOfProcessingActivities.
-     * Returns null if no records exist yet so the hook renders an empty ROPA.
-     */
+    capabilities: serverStorageCapabilities,
+
     async load(): Promise<RecordOfProcessingActivities | null> {
-      const rows = await db
+      const registerRows: Array<typeof ropaRegisters.$inferSelect> = await db
+        .select()
+        .from(ropaRegisters)
+        .where(and(eq(ropaRegisters.tenantId, tenantId), isNull(ropaRegisters.removedAt)))
+        .limit(1);
+      const rows: Array<typeof processingRecords.$inferSelect> = await db
         .select()
         .from(processingRecords)
-        .orderBy(desc(processingRecords.createdAt));
+        .where(
+          and(eq(processingRecords.tenantId, tenantId), isNull(processingRecords.removedAt)),
+        )
+        .orderBy(asc(processingRecords.createdAt));
+      const register = registerRows[0];
+      if (!register && rows.length === 0) return null;
 
-      if (rows.length === 0) return null;
-
-      const records: ProcessingRecord[] = rows.map(mapRowToProcessingRecord);
-      const lastUpdated = Math.max(...rows.map((r: any) => r.updatedAt.getTime()));
-
+      const records = rows.map(mapRowToProcessingRecord);
+      const latestRecordUpdate = records.reduce(
+        (latest, record) => Math.max(latest, record.updatedAt),
+        0,
+      );
+      const metadata =
+        register?.metadata ?? metadataFromContext(orgMeta, tenantId, latestRecordUpdate);
       return {
-        id: 'ropa-' + orgMeta.organizationName.toLowerCase().replace(/\s+/g, '-'),
-        organizationName: orgMeta.organizationName,
-        organizationContact: orgMeta.organizationContact,
-        organizationAddress: orgMeta.organizationAddress,
-        dpoDetails: orgMeta.dpoDetails,
-        ndpcRegistrationNumber: orgMeta.ndpcRegistrationNumber,
+        ...metadata,
         records,
-        lastUpdated,
-        version: '1.0',
+        lastUpdated: Math.max(metadata.lastUpdated, latestRecordUpdate),
       };
     },
 
-    /**
-     * Persist the ROPA by upserting each ProcessingRecord individually.
-     * The organisation envelope fields are not stored in the database — they
-     * come from orgMeta on every load.
-     */
     async save(ropa: RecordOfProcessingActivities): Promise<void> {
-      if (ropa.records.length === 0) return;
+      const { records: _records, ...metadata } = ropa;
+      const retainedIds = ropa.records.map(({ id }) => id);
+      await db.transaction(async (transaction: typeof db) => {
+        await transaction
+          .insert(ropaRegisters)
+          .values({ tenantId, metadata, removedAt: null, updatedAt: new Date() })
+          .onConflictDoUpdate({
+            target: ropaRegisters.tenantId,
+            set: { metadata, removedAt: null, updatedAt: new Date() },
+          });
+        await transaction
+          .update(processingRecords)
+          .set({ removedAt: new Date() })
+          .where(
+            retainedIds.length > 0
+              ? and(
+                  eq(processingRecords.tenantId, tenantId),
+                  isNull(processingRecords.removedAt),
+                  notInArray(processingRecords.id, retainedIds),
+                )
+              : and(
+                  eq(processingRecords.tenantId, tenantId),
+                  isNull(processingRecords.removedAt),
+                ),
+          );
 
-      await Promise.all(
-        ropa.records.map((record) => {
-          const row = mapProcessingRecordToRow(record);
-          return db
+        for (const record of ropa.records) {
+          const row = mapProcessingRecordToRow(record, tenantId);
+          await transaction
             .insert(processingRecords)
-            .values({ id: record.id, ...row })
+            .values(row)
             .onConflictDoUpdate({
-              target: processingRecords.id,
+              target: [processingRecords.tenantId, processingRecords.id],
               set: row,
             });
-        }),
-      );
+        }
+      });
     },
 
-    /**
-     * Archive all active processing records without deleting them.
-     * Archived records are excluded from active ROPA reports but are retained
-     * for audit purposes as required by the NDPA accountability principle.
-     */
     async remove(): Promise<void> {
-      await db
-        .update(processingRecords)
-        .set({ status: 'archived' })
-        .where(eq(processingRecords.status, 'active'));
+      const removedAt = new Date();
+      await db.transaction(async (transaction: typeof db) => {
+        await transaction
+          .update(processingRecords)
+          .set({ removedAt })
+          .where(
+            and(eq(processingRecords.tenantId, tenantId), isNull(processingRecords.removedAt)),
+          );
+        await transaction
+          .update(ropaRegisters)
+          .set({ removedAt, updatedAt: removedAt })
+          .where(and(eq(ropaRegisters.tenantId, tenantId), isNull(ropaRegisters.removedAt)));
+      });
     },
   };
 }
 
-// ---------------------------------------------------------------------------
-// Mapping helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Map a raw Drizzle row (from ndpr_processing_records) to the toolkit's
- * ProcessingRecord type. Several rich fields on the toolkit type default to
- * placeholder values — extend the schema if you need full round-trip fidelity.
- */
-function mapRowToProcessingRecord(row: any): ProcessingRecord {
+function mapRowToProcessingRecord(row: typeof processingRecords.$inferSelect): ProcessingRecord {
+  if (!row.recordData) {
+    throw new Error(`Processing record ${row.id} is missing its lossless recordData snapshot`);
+  }
   return {
+    ...row.recordData,
     id: row.id,
-    name: row.purpose,
-    description: row.purpose,
-    controllerDetails: {
-      name: '',
-      contact: '',
-      address: '',
-    },
-    lawfulBasis: row.lawfulBasis as ProcessingRecord['lawfulBasis'],
-    lawfulBasisJustification: '',
-    purposes: [row.purpose],
-    dataCategories: (row.dataCategories as string[]) ?? [],
-    dataSubjectCategories: (row.dataSubjects as string[]) ?? [],
-    recipients: (row.recipients as string[]) ?? [],
-    crossBorderTransfers: row.transferCountries
-      ? (row.transferCountries as string[]).map((country: string) => ({
-          destinationCountry: country,
-          safeguards: '',
-          transferMechanism: row.transferMechanism ?? '',
-        }))
-      : undefined,
-    retentionPeriod: row.retentionPeriod,
-    securityMeasures: (row.securityMeasures as string[]) ?? [],
-    dataSource: 'data_subject',
-    dpiaRequired: row.dpiaConducted,
-    automatedDecisionMaking: false,
-    status: row.status as ProcessingRecord['status'],
+    lawfulBasis: row.lawfulBasis,
+    status: row.status,
     createdAt: row.createdAt.getTime(),
     updatedAt: row.updatedAt.getTime(),
   };
 }
 
-/**
- * Map a toolkit ProcessingRecord to the Drizzle insert/update row shape.
- * Composite toolkit fields are flattened to match the simplified schema.
- */
-function mapProcessingRecordToRow(record: ProcessingRecord): Record<string, unknown> {
+function mapProcessingRecordToRow(
+  record: ProcessingRecord,
+  tenantId: string,
+): NewProcessingRecord {
   return {
+    tenantId,
+    id: record.id,
     purpose: record.purposes[0] ?? record.name,
     lawfulBasis: record.lawfulBasis,
     dataCategories: record.dataCategories,
@@ -205,10 +156,32 @@ function mapProcessingRecordToRow(record: ProcessingRecord): Record<string, unkn
     recipients: record.recipients,
     retentionPeriod: record.retentionPeriod,
     securityMeasures: record.securityMeasures,
-    transferCountries: record.crossBorderTransfers?.map((t) => t.destinationCountry) ?? null,
+    transferCountries:
+      record.crossBorderTransfers?.map(({ destinationCountry }) => destinationCountry) ?? null,
     transferMechanism: record.crossBorderTransfers?.[0]?.transferMechanism ?? null,
     dpiaConducted: record.dpiaRequired,
+    recordData: record,
     status: record.status,
-    updatedAt: new Date(),
+    createdAt: new Date(record.createdAt),
+    updatedAt: new Date(record.updatedAt),
+    removedAt: null,
+  };
+}
+
+function metadataFromContext(
+  orgMeta: ROPAOrgMetadata,
+  tenantId: string,
+  lastUpdated: number,
+): ROPAMetadata {
+  return {
+    id: orgMeta.id ?? `ropa-${tenantId}`,
+    organizationName: orgMeta.organizationName,
+    organizationContact: orgMeta.organizationContact,
+    organizationAddress: orgMeta.organizationAddress,
+    dpoDetails: orgMeta.dpoDetails,
+    ndpcRegistrationNumber: orgMeta.ndpcRegistrationNumber,
+    lastUpdated,
+    version: orgMeta.version ?? '1.0',
+    exportFormats: orgMeta.exportFormats,
   };
 }

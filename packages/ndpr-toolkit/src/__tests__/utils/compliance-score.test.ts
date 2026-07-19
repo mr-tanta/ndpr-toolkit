@@ -65,16 +65,15 @@ describe('getComplianceScore', () => {
     expect(report.score).toBeLessThanOrEqual(25);
   });
 
-  it('treats a future lastUpdated date as 0 months old (passes recency check)', () => {
+  it('rejects a future lastUpdated date as non-evidence', () => {
     const futureDate = new Date();
     futureDate.setFullYear(futureDate.getFullYear() + 1);
     const report = getComplianceScore({
       ...fullInput,
       policy: { ...fullInput.policy, lastUpdated: futureDate.toISOString().split('T')[0] },
     });
-    // The policy recency check (<=13 months) should pass because monthsDiff clamps to 0
-    expect(report.modules.policy.score).toBe(100);
-    expect(report.modules.policy.gaps).not.toContain('Privacy policy reviewed within 13 months');
+    expect(report.modules.policy.score).toBeLessThan(100);
+    expect(report.modules.policy.gaps).toContain('Privacy policy reviewed within 13 months');
   });
 
   it('treats an invalid (empty string) lastUpdated as infinitely old (fails recency check)', () => {
@@ -97,15 +96,14 @@ describe('getComplianceScore', () => {
     expect(report.modules.ropa.score).toBeLessThan(100);
   });
 
-  it('treats a future lastReviewed date as 0 months old (passes recency check)', () => {
+  it('rejects a future lastReviewed date as non-evidence', () => {
     const futureDate = new Date();
     futureDate.setFullYear(futureDate.getFullYear() + 1);
     const report = getComplianceScore({
       ...fullInput,
       ropa: { ...fullInput.ropa, lastReviewed: futureDate.toISOString().split('T')[0] },
     });
-    // The ROPA recency check (<=6 months) should pass because monthsDiff clamps to 0
-    expect(report.modules.ropa.score).toBe(100);
-    expect(report.modules.ropa.gaps).not.toContain('ROPA reviewed within 6 months');
+    expect(report.modules.ropa.score).toBeLessThan(100);
+    expect(report.modules.ropa.gaps).toContain('ROPA reviewed within 6 months');
   });
 });

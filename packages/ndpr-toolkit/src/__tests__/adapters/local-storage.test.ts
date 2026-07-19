@@ -1,12 +1,19 @@
 import { localStorageAdapter } from '../../adapters/local-storage';
+import { StorageAdapterError } from '../../adapters/types';
 
 const mockLocalStorage = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: jest.fn((key: string) => store[key] ?? null),
-    setItem: jest.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: jest.fn((key: string) => { delete store[key]; }),
-    clear: jest.fn(() => { store = {}; }),
+    setItem: jest.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: jest.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: jest.fn(() => {
+      store = {};
+    }),
   };
 })();
 
@@ -19,17 +26,18 @@ describe('localStorageAdapter', () => {
   });
 
   it('returns null when no data is stored', () => {
-    const adapter = localStorageAdapter('test_key');
-    expect(adapter.load()).toBeNull();
+    expect(localStorageAdapter('test_key').load()).toBeNull();
   });
 
   it('saves and loads data', () => {
     const adapter = localStorageAdapter<{ name: string }>('test_key');
     const data = { name: 'test' };
     adapter.save(data);
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith('test_key', JSON.stringify(data));
-    const loaded = adapter.load();
-    expect(loaded).toEqual(data);
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+      'test_key',
+      JSON.stringify(data),
+    );
+    expect(adapter.load()).toEqual(data);
   });
 
   it('removes data', () => {
@@ -40,43 +48,57 @@ describe('localStorageAdapter', () => {
     expect(adapter.load()).toBeNull();
   });
 
-  it('returns null on corrupted JSON', () => {
+  it('reports corrupted JSON and returns null', () => {
     mockLocalStorage.setItem('test_key', 'not-json');
-    const adapter = localStorageAdapter('test_key');
+    const onError = jest.fn();
+    const adapter = localStorageAdapter('test_key', { onError });
     expect(adapter.load()).toBeNull();
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({ operation: 'load', medium: 'local-storage' }),
+    );
   });
 
-  it('does not throw on QuotaExceededError during save', () => {
+  it('throws an observable error on quota failure by default', () => {
     mockLocalStorage.setItem.mockImplementationOnce(() => {
       throw new DOMException('Storage quota exceeded', 'QuotaExceededError');
     });
-    const adapter = localStorageAdapter('test_key');
-    expect(() => adapter.save({ big: 'data' })).not.toThrow();
+    const onError = jest.fn();
+    const adapter = localStorageAdapter('test_key', { onError });
+    expect(() => adapter.save({ big: 'data' })).toThrow(StorageAdapterError);
+    expect(onError).toHaveBeenCalledWith(
+      expect.objectContaining({ operation: 'save', key: 'test_key' }),
+    );
   });
 
-  it('does not throw on SecurityError during save', () => {
-    mockLocalStorage.setItem.mockImplementationOnce(() => {
-      throw new DOMException('Access denied', 'SecurityError');
-    });
-    const adapter = localStorageAdapter('test_key');
-    expect(() => adapter.save({ secret: 'data' })).not.toThrow();
-  });
-
-  it('does not throw on SecurityError during remove', () => {
+  it('throws an observable error on security failure during remove', () => {
     mockLocalStorage.removeItem.mockImplementationOnce(() => {
       throw new DOMException('Access denied', 'SecurityError');
     });
-    const adapter = localStorageAdapter('test_key');
-    expect(() => adapter.remove()).not.toThrow();
+    const adapter = localStorageAdapter('test_key', { onError: jest.fn() });
+    expect(() => adapter.remove()).toThrow(StorageAdapterError);
   });
 
-  it('writes data correctly when no error occurs', () => {
-    const adapter = localStorageAdapter<{ count: number; label: string }>('write_key');
-    const payload = { count: 42, label: 'hello' };
-    adapter.save(payload);
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith('write_key', JSON.stringify(payload));
-    const loaded = adapter.load();
-    expect(loaded).toEqual(payload);
+  it('supports explicitly graceful best-effort mutations', () => {
+    mockLocalStorage.setItem.mockImplementationOnce(() => {
+      throw new DOMException('Access denied', 'SecurityError');
+    });
+    const onError = jest.fn();
+    const adapter = localStorageAdapter('test_key', {
+      mutationFailureMode: 'graceful',
+      onError,
+    });
+    expect(() => adapter.save({ secret: 'data' })).not.toThrow();
+    expect(onError).toHaveBeenCalled();
+  });
+
+  it('declares client-state-only capabilities', () => {
+    expect(localStorageAdapter('test_key').capabilities).toEqual(
+      expect.objectContaining({
+        durability: 'best-effort',
+        evidenceSuitability: 'ux-state-only',
+        serverReadable: false,
+      }),
+    );
   });
 
   it('returns safely when window is undefined (SSR)', () => {

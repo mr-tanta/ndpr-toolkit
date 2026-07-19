@@ -218,8 +218,12 @@ describe('appendAuditEntry', () => {
     Object.defineProperty(globalThis, 'localStorage', {
       value: {
         getItem: jest.fn((key: string) => storage[key] ?? null),
-        setItem: jest.fn((key: string, value: string) => { storage[key] = value; }),
-        removeItem: jest.fn((key: string) => { delete storage[key]; }),
+        setItem: jest.fn((key: string, value: string) => {
+          storage[key] = value;
+        }),
+        removeItem: jest.fn((key: string) => {
+          delete storage[key];
+        }),
       },
       writable: true,
       configurable: true,
@@ -235,60 +239,73 @@ describe('appendAuditEntry', () => {
     }
   });
 
-  it('adds entry to existing log', () => {
-    const existing: ConsentAuditEntry[] = [
-      {
-        action: 'consent_given',
-        timestamp: 1699999999999,
-        version: '1.0',
-        categories: { necessary: true },
-        method: 'banner',
-      },
-    ];
-    storage['ndpr_consent_audit'] = JSON.stringify(existing);
+  it('adds an entry and reports client-state-only persistence', () => {
+    storage['ndpr_consent_audit'] = JSON.stringify([sampleEntry]);
+    const result = appendAuditEntry(sampleEntry);
 
-    appendAuditEntry(sampleEntry);
-
-    const stored = JSON.parse(storage['ndpr_consent_audit']);
-    expect(stored).toHaveLength(2);
-    expect(stored[1]).toEqual(sampleEntry);
+    expect(JSON.parse(storage['ndpr_consent_audit'])).toHaveLength(2);
+    expect(result).toEqual(
+      expect.objectContaining({
+        persisted: true,
+        medium: 'local-storage',
+        evidenceSuitability: 'ux-state-only',
+      }),
+    );
   });
 
-  it('creates new log when none exists', () => {
-    appendAuditEntry(sampleEntry);
-
-    const stored = JSON.parse(storage['ndpr_consent_audit']);
-    expect(stored).toHaveLength(1);
-    expect(stored[0]).toEqual(sampleEntry);
+  it('creates a new log under a custom key', () => {
+    const result = appendAuditEntry(sampleEntry, 'custom_key');
+    expect(result.persisted).toBe(true);
+    expect(JSON.parse(storage['custom_key_audit'])).toEqual([sampleEntry]);
   });
 
-  it('handles SSR (no window) gracefully', () => {
-    // @ts-expect-error simulating SSR
-    delete globalThis.window;
-
-    // Should not throw
-    expect(() => appendAuditEntry(sampleEntry)).not.toThrow();
+  it('reports unavailable storage when browser storage is unavailable', () => {
+    const descriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'localStorage',
+    );
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    });
+    try {
+      expect(appendAuditEntry(sampleEntry)).toEqual(
+        expect.objectContaining({
+          persisted: false,
+          failureReason: 'storage-unavailable',
+        }),
+      );
+    } finally {
+      if (descriptor) {
+        Object.defineProperty(globalThis, 'localStorage', descriptor);
+      }
+    }
   });
 
-  it('uses custom storage key', () => {
-    appendAuditEntry(sampleEntry, 'custom_key');
-
-    const stored = JSON.parse(storage['custom_key_audit']);
-    expect(stored).toHaveLength(1);
-    expect(stored[0]).toEqual(sampleEntry);
+  it('does not overwrite an invalid existing log', () => {
+    storage['ndpr_consent_audit'] = '{not valid json';
+    const result = appendAuditEntry(sampleEntry);
+    expect(result.persisted).toBe(false);
+    expect(result.failureReason).toBe('invalid-existing-log');
+    expect(storage['ndpr_consent_audit']).toBe('{not valid json');
   });
 
-  it('handles localStorage errors gracefully', () => {
+  it('makes localStorage write failures observable', () => {
     Object.defineProperty(globalThis, 'localStorage', {
       value: {
         getItem: jest.fn(() => null),
-        setItem: jest.fn(() => { throw new Error('QuotaExceededError'); }),
+        setItem: jest.fn(() => {
+          throw new Error('QuotaExceededError');
+        }),
       },
       writable: true,
       configurable: true,
     });
 
-    // Should not throw even when setItem fails
-    expect(() => appendAuditEntry(sampleEntry)).not.toThrow();
+    const result = appendAuditEntry(sampleEntry);
+    expect(result.persisted).toBe(false);
+    expect(result.failureReason).toBe('write-failed');
+    expect(result.error).toBeInstanceOf(Error);
   });
 });

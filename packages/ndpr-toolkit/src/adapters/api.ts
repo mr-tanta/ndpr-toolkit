@@ -1,171 +1,128 @@
-import type { StorageAdapter } from './types';
+import type {
+  StorageAdapter,
+  StorageAdapterCapabilities,
+  StorageAdapterMutationFailureMode,
+} from './types';
 
 export type ApiAdapterMethod = 'load' | 'save' | 'remove';
 
 export interface ApiAdapterErrorContext<T = unknown> {
-  /** Which adapter operation triggered this — `load`, `save`, or `remove`. */
   method: ApiAdapterMethod;
-  /** The endpoint URL that failed. */
   endpoint: string;
-  /** Underlying error (for network failures / parse errors). */
   error?: unknown;
-  /** Response object, if a response was received. */
   response?: Response;
-  /** HTTP status code, if available. */
   status?: number;
-  /** For `save`, the payload that failed to send. */
   payload?: T;
-  /** Which retry attempt this is (0 = first try). Capped at `retry.attempts`. */
+  /** Zero-based request attempt. */
   attempt: number;
+  /** True when this adapter's timeout aborted the request. */
+  timedOut?: boolean;
 }
 
 export interface ApiAdapterSuccessContext<T = unknown> {
-  /** Which adapter operation succeeded — `load`, `save`, or `remove`. */
   method: ApiAdapterMethod;
-  /** The endpoint URL. */
   endpoint: string;
-  /** Response object. */
   response: Response;
-  /** For `load` operations, the parsed (and optionally unwrapped) data. */
   data?: T;
-  /** For `save` operations, the payload that was sent. */
   payload?: T;
 }
 
 export interface ApiAdapterRetryConfig {
-  /**
-   * Number of additional attempts after the initial request. Defaults to 0
-   * (no retries). e.g. `attempts: 2` means up to 3 total requests.
-   */
+  /** Number of additional requests after the first. Defaults to 0. */
   attempts?: number;
-  /**
-   * Base delay in ms between attempts. Defaults to 250ms. The actual delay
-   * uses exponential backoff: `baseDelayMs * 2^attempt`.
-   */
+  /** Exponential-backoff base delay in milliseconds. Defaults to 250. */
   baseDelayMs?: number;
-  /**
-   * Predicate that decides whether to retry given the failure context. By
-   * default we retry on network errors and 5xx responses, but not on 4xx
-   * (those are client errors that won't fix themselves).
-   */
-  shouldRetry?: (ctx: ApiAdapterErrorContext<unknown>) => boolean;
+  /** Defaults to retrying network failures and 5xx responses. */
+  shouldRetry?: (context: ApiAdapterErrorContext<unknown>) => boolean;
+}
+
+export interface ApiAdapterIdempotencyContext<T = unknown> {
+  method: 'save' | 'remove';
+  endpoint: string;
+  payload?: T;
 }
 
 export interface ApiAdapterOptions<T = unknown> {
-  /**
-   * Extra HTTP headers to send with every request. Useful for `Authorization`,
-   * `X-CSRF-Token`, `X-Requested-With`, etc.
-   *
-   * Can also be a function that returns headers, which lets you read a CSRF
-   * token from the DOM/cookie at request time rather than at adapter
-   * construction time.
-   */
   headers?: Record<string, string> | (() => Record<string, string>);
-
-  /**
-   * Forwarded to fetch's `credentials` option. Defaults to `'same-origin'`
-   * (the browser default). Set to `'include'` for cross-origin endpoints
-   * that need cookies / auth.
-   */
   credentials?: RequestCredentials;
-
-  /**
-   * HTTP method override for the load operation. Defaults to `'GET'`.
-   */
   loadMethod?: 'GET' | 'POST';
-
-  /**
-   * HTTP method override for the save operation. Defaults to `'POST'`. Some
-   * REST APIs prefer `'PUT'` for upsert semantics.
-   */
   saveMethod?: 'POST' | 'PUT' | 'PATCH';
-
-  /**
-   * Transform the raw JSON response into the expected `T`. Useful for APIs
-   * that wrap responses in `{ data: ... }` or similar envelopes. Called
-   * after `res.json()`. If omitted, the parsed JSON is used as-is.
-   */
   unwrap?: (raw: unknown) => T | null;
-
-  /**
-   * Retry policy for failed requests. Defaults to no retries (preserves the
-   * pre-3.6.0 behaviour). When configured, applies to all three operations.
-   */
   retry?: ApiAdapterRetryConfig;
-
+  onError?: (context: ApiAdapterErrorContext<T>) => void;
+  onSuccess?: (context: ApiAdapterSuccessContext<T>) => void;
+  fetchInit?: Omit<
+    RequestInit,
+    'method' | 'headers' | 'body' | 'credentials' | 'signal'
+  > & { signal?: AbortSignal };
+  /** Request timeout in milliseconds. Defaults to 15000; set to 0 to disable. */
+  timeoutMs?: number;
   /**
-   * Called when a request fails (after all retries exhausted). The adapter
-   * still returns a graceful null/void result so the consuming hook
-   * doesn't crash — this hook is for telemetry, toasts, or audit logging.
+   * Key used for retry-safe mutation requests. A function is recommended so
+   * independent logical mutations receive different keys while retries of
+   * one mutation reuse the same key.
    */
-  onError?: (ctx: ApiAdapterErrorContext<T>) => void;
-
-  /**
-   * Called when a request succeeds. Useful for cache invalidation,
-   * analytics, or syncing other state.
-   */
-  onSuccess?: (ctx: ApiAdapterSuccessContext<T>) => void;
-
-  /**
-   * Per-request fetch options to merge into every request. Use this for
-   * things `fetch` itself supports that aren't directly modelled above —
-   * `signal`, `mode`, `cache`, `redirect`, etc.
-   */
-  fetchInit?: Omit<RequestInit, 'method' | 'headers' | 'body' | 'credentials'>;
+  idempotencyKey?:
+    | string
+    | ((context: ApiAdapterIdempotencyContext<T>) => string | undefined);
+  /** Header carrying the idempotency key. Defaults to `Idempotency-Key`. */
+  idempotencyHeader?: string;
+  /** Failed save/remove operations reject by default. */
+  mutationFailureMode?: StorageAdapterMutationFailureMode;
+  /** Failed loads return null by default; use `throw` for strict callers. */
+  loadFailureMode?: StorageAdapterMutationFailureMode;
 }
 
-function defaultShouldRetry(ctx: ApiAdapterErrorContext<unknown>): boolean {
-  // Retry on network errors (no response) and 5xx server errors. Skip 4xx
-  // (client errors are not going to fix themselves) and skip 2xx + 3xx
-  // (success / redirect — shouldn't reach the retry path anyway).
-  if (!ctx.response) return true;
-  return ctx.response.status >= 500;
+export class ApiAdapterError<T = unknown> extends Error {
+  readonly context: ApiAdapterErrorContext<T>;
+
+  constructor(context: ApiAdapterErrorContext<T>) {
+    const status = context.status === undefined ? '' : ` (${context.status})`;
+    super(
+      `[ndpr-toolkit] API adapter ${context.method} failed for ${context.endpoint}${status}`,
+    );
+    this.name = 'ApiAdapterError';
+    this.context = context;
+  }
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+const CAPABILITIES: Readonly<StorageAdapterCapabilities> = Object.freeze({
+  medium: 'remote-api',
+  durability: 'server-acknowledged',
+  integrity: 'application-defined',
+  concurrency: 'application-defined',
+  evidenceSuitability: 'application-defined',
+  serverReadable: true,
+});
+
+function defaultShouldRetry(
+  context: ApiAdapterErrorContext<unknown>,
+): boolean {
+  return !context.response || context.response.status >= 500;
+}
+
+function sleep(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 function resolveHeaders(
   headers: ApiAdapterOptions['headers'],
 ): Record<string, string> {
   if (!headers) return {};
-  if (typeof headers === 'function') return headers();
-  return headers;
+  return typeof headers === 'function' ? headers() : headers;
 }
 
-/**
- * Production-ready API storage adapter.
- *
- * Backward-compatible with the 3.5.x signature — `apiAdapter('/api/x')`
- * still works exactly as before. New options are all opt-in.
- *
- * @example basic
- *   const adapter = apiAdapter<ConsentSettings>('/api/consent');
- *
- * @example with credentials and CSRF
- *   const adapter = apiAdapter<ConsentSettings>('/api/consent', {
- *     credentials: 'include',
- *     headers: () => ({
- *       'X-CSRF-Token': document.querySelector<HTMLMetaElement>(
- *         'meta[name="csrf-token"]'
- *       )?.content ?? '',
- *     }),
- *   });
- *
- * @example with retry + telemetry
- *   const adapter = apiAdapter<ConsentSettings>('/api/consent', {
- *     retry: { attempts: 2, baseDelayMs: 300 },
- *     onError: (ctx) => Sentry.captureException(ctx.error, { extra: ctx }),
- *     onSuccess: (ctx) => analytics.track('consent_saved', { method: ctx.method }),
- *   });
- *
- * @example with response unwrap
- *   const adapter = apiAdapter<ConsentSettings>('/api/consent', {
- *     // API returns { data: ConsentSettings, ok: true }
- *     unwrap: (raw) => (raw as { data: ConsentSettings }).data,
- *   });
- */
+function isRetrySafe(
+  method: ApiAdapterMethod,
+  loadMethod: 'GET' | 'POST',
+  saveMethod: 'POST' | 'PUT' | 'PATCH',
+  idempotencyKey: string | undefined,
+): boolean {
+  if (method === 'load') return loadMethod === 'GET' || Boolean(idempotencyKey);
+  if (method === 'save') return saveMethod === 'PUT' || Boolean(idempotencyKey);
+  return true;
+}
+
 export function apiAdapter<T = unknown>(
   endpoint: string,
   options: ApiAdapterOptions<T> = {},
@@ -180,175 +137,255 @@ export function apiAdapter<T = unknown>(
     onError,
     onSuccess,
     fetchInit,
+    timeoutMs = 15_000,
+    idempotencyKey,
+    idempotencyHeader = 'Idempotency-Key',
+    mutationFailureMode = 'throw',
+    loadFailureMode = 'graceful',
   } = options;
 
   const retryAttempts = retry?.attempts ?? 0;
   const retryBaseDelay = retry?.baseDelayMs ?? 250;
   const shouldRetry = retry?.shouldRetry ?? defaultShouldRetry;
 
-  // Backward-compat: if no onError handler is configured, fall back to the
-  // pre-3.6.0 console.warn behavior so existing telemetry-free deployments
-  // still surface failures in the dev console.
-  //
-  // Since 3.10.5: also surface the response body (capped 256 chars). The
-  // previous behaviour swallowed it, so a 400 from the server saying
-  // `{"error":"Validation failed","fields":{...}}` showed up as just
-  // "Failed to save to /api/x: 400" with no clue why. Best-effort clone
-  // + text; if the body can't be read, fall back to the status-only line.
-  const handleError = onError ?? ((ctx: ApiAdapterErrorContext<T>) => {
-    if (ctx.method === 'load') return; // load failures already return null silently
-    const verb = ctx.method === 'save' ? 'save to' : 'delete from';
-    if (ctx.response) {
-      // Always emit the status-only line synchronously so tests + dev
-      // consoles see SOMETHING even if reading the body fails (the mock
-      // Response objects in our test suite are plain `{ok, status}` and
-      // don't carry a real `.clone()`).
-      console.warn(
-        `[ndpr-toolkit] Failed to ${verb} ${ctx.endpoint}: ${ctx.response.status}`,
-      );
-      // Best-effort: also surface the response body (capped 256 chars) so
-      // the developer can see what the server actually said. Cloned first
-      // so the consumer's `await response.text()` (if any) still works.
-      try {
-        const clone = typeof ctx.response.clone === 'function' ? ctx.response.clone() : null;
-        if (clone && typeof clone.text === 'function') {
-          void clone
-            .text()
-            .then((body) => {
-              const snippet = body.length > 256 ? `${body.slice(0, 256)}…` : body;
-              if (snippet.trim()) {
-                console.warn(
-                  `[ndpr-toolkit] ${verb} ${ctx.endpoint} response body: ${snippet}`,
-                );
-              }
-            })
-            .catch(() => {
-              /* body unreadable — status-only line above already emitted */
-            });
-        }
-      } catch {
-        /* clone() unsupported — status-only line above already emitted */
-      }
-    } else {
-      console.warn(
-        `[ndpr-toolkit] Failed to ${verb} ${ctx.endpoint}`,
-      );
+  if (!Number.isInteger(retryAttempts) || retryAttempts < 0) {
+    throw new RangeError('retry.attempts must be a non-negative integer');
+  }
+  if (!Number.isFinite(retryBaseDelay) || retryBaseDelay < 0) {
+    throw new RangeError('retry.baseDelayMs must be a non-negative finite number');
+  }
+  if (!Number.isFinite(timeoutMs) || timeoutMs < 0) {
+    throw new RangeError('timeoutMs must be a non-negative finite number');
+  }
+
+  function report(context: ApiAdapterErrorContext<T>): void {
+    if (onError) {
+      onError(context);
+      return;
     }
-  });
+    if (context.method === 'load') return;
+    const verb = context.method === 'save' ? 'save to' : 'delete from';
+    const status = context.status === undefined ? '' : `: ${context.status}`;
+    // Deliberately exclude response bodies and payloads: either may contain
+    // personal data. Consumers can inspect them in an explicit onError hook.
+    console.warn(`[ndpr-toolkit] Failed to ${verb} ${endpoint}${status}`);
+  }
+
+  function resolveIdempotencyKey(
+    method: 'save' | 'remove',
+    payload?: T,
+  ): string | undefined {
+    if (!idempotencyKey) return undefined;
+    return typeof idempotencyKey === 'function'
+      ? idempotencyKey({ method, endpoint, payload })
+      : idempotencyKey;
+  }
+
+  async function fetchAttempt(
+    init: RequestInit,
+  ): Promise<{ response?: Response; error?: unknown; timedOut: boolean }> {
+    const controller = new AbortController();
+    const externalSignal = fetchInit?.signal;
+    let timedOut = false;
+    const abortFromExternal = () => controller.abort();
+    externalSignal?.addEventListener('abort', abortFromExternal, { once: true });
+    if (externalSignal?.aborted) controller.abort();
+
+    const timeout =
+      timeoutMs > 0
+        ? setTimeout(() => {
+            timedOut = true;
+            controller.abort();
+          }, timeoutMs)
+        : undefined;
+
+    try {
+      const response = await fetch(endpoint, {
+        ...fetchInit,
+        ...init,
+        headers: {
+          ...resolveHeaders(headers),
+          ...(init.headers as Record<string, string> | undefined),
+        },
+        credentials,
+        signal: controller.signal,
+      });
+      return { response, timedOut };
+    } catch (error) {
+      return { error, timedOut };
+    } finally {
+      if (timeout !== undefined) clearTimeout(timeout);
+      externalSignal?.removeEventListener('abort', abortFromExternal);
+    }
+  }
 
   async function attempt(
     method: ApiAdapterMethod,
     init: RequestInit,
     payload?: T,
-  ): Promise<{ ok: true; response: Response } | { ok: false }> {
-    for (let i = 0; i <= retryAttempts; i++) {
-      let response: Response | undefined;
-      let error: unknown;
-      try {
-        response = await fetch(endpoint, {
-          ...fetchInit,
-          ...init,
-          headers: {
-            ...resolveHeaders(headers),
-            ...(init.headers as Record<string, string>),
-          },
-          credentials,
-        });
-      } catch (e) {
-        error = e;
+    operationIdempotencyKey?: string,
+  ): Promise<
+    | { ok: true; response: Response }
+    | { ok: false; context: ApiAdapterErrorContext<T> }
+  > {
+    for (let attemptIndex = 0; attemptIndex <= retryAttempts; attemptIndex += 1) {
+      const requestHeaders: Record<string, string> = {
+        ...(init.headers as Record<string, string> | undefined),
+      };
+      if (operationIdempotencyKey) {
+        requestHeaders[idempotencyHeader] = operationIdempotencyKey;
       }
 
-      if (response && response.ok) {
-        return { ok: true, response };
-      }
+      const { response, error, timedOut } = await fetchAttempt({
+        ...init,
+        headers: requestHeaders,
+      });
+      if (response?.ok) return { ok: true, response };
 
-      // Either no response (network error) or a non-2xx response
-      const ctx: ApiAdapterErrorContext<T> = {
+      const context: ApiAdapterErrorContext<T> = {
         method,
         endpoint,
         error,
         response,
         status: response?.status,
         payload,
-        attempt: i,
+        attempt: attemptIndex,
+        timedOut,
       };
-
-      const isLastAttempt = i === retryAttempts;
-      if (isLastAttempt || !shouldRetry(ctx as ApiAdapterErrorContext<unknown>)) {
-        handleError(ctx);
-        return { ok: false };
+      const lastAttempt = attemptIndex === retryAttempts;
+      const retrySafe = isRetrySafe(
+        method,
+        loadMethod,
+        saveMethod,
+        operationIdempotencyKey,
+      );
+      if (
+        lastAttempt ||
+        !retrySafe ||
+        !shouldRetry(context as ApiAdapterErrorContext<unknown>)
+      ) {
+        report(context);
+        return { ok: false, context };
       }
 
-      // Exponential backoff before the next attempt
-      await sleep(retryBaseDelay * Math.pow(2, i));
+      await sleep(retryBaseDelay * 2 ** attemptIndex);
     }
-    return { ok: false };
+
+    throw new Error('Unreachable API adapter retry state');
   }
 
   return {
+    capabilities: CAPABILITIES,
     async load(): Promise<T | null> {
-      const result = await attempt(
-        'load',
-        { method: loadMethod, headers: {} },
-      );
-      if (!result.ok) return null;
+      const result = await attempt('load', {
+        method: loadMethod,
+        headers: {},
+      });
+      if (!result.ok) {
+        if (loadFailureMode === 'throw') throw new ApiAdapterError(result.context);
+        return null;
+      }
+
       try {
         const raw = (await result.response.json()) as unknown;
         const data = unwrap ? unwrap(raw) : (raw as T);
-        if (onSuccess) {
-          onSuccess({
-            method: 'load',
-            endpoint,
-            response: result.response,
-            data: data ?? undefined,
-          });
-        }
+        onSuccess?.({
+          method: 'load',
+          endpoint,
+          response: result.response,
+          data: data ?? undefined,
+        });
         return data;
       } catch (error) {
-        handleError({
+        const context: ApiAdapterErrorContext<T> = {
           method: 'load',
           endpoint,
           error,
           response: result.response,
           status: result.response.status,
-          attempt: retryAttempts,
-        });
+          attempt: 0,
+        };
+        report(context);
+        if (loadFailureMode === 'throw') throw new ApiAdapterError(context);
         return null;
       }
     },
 
     async save(data: T): Promise<void> {
+      let body: string;
+      let operationIdempotencyKey: string | undefined;
+      try {
+        body = JSON.stringify(data);
+        if (typeof body !== 'string') {
+          throw new TypeError('Value is not JSON-serializable');
+        }
+        operationIdempotencyKey = resolveIdempotencyKey('save', data);
+      } catch (error) {
+        const context: ApiAdapterErrorContext<T> = {
+          method: 'save',
+          endpoint,
+          error,
+          payload: data,
+          attempt: 0,
+        };
+        report(context);
+        if (mutationFailureMode === 'throw') throw new ApiAdapterError(context);
+        return;
+      }
+
       const result = await attempt(
         'save',
         {
           method: saveMethod,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+          body,
         },
         data,
+        operationIdempotencyKey,
       );
-      if (result.ok && onSuccess) {
-        onSuccess({
-          method: 'save',
-          endpoint,
-          response: result.response,
-          payload: data,
-        });
+      if (!result.ok) {
+        if (mutationFailureMode === 'throw') throw new ApiAdapterError(result.context);
+        return;
       }
+      onSuccess?.({
+        method: 'save',
+        endpoint,
+        response: result.response,
+        payload: data,
+      });
     },
 
     async remove(): Promise<void> {
+      let operationIdempotencyKey: string | undefined;
+      try {
+        operationIdempotencyKey = resolveIdempotencyKey('remove');
+      } catch (error) {
+        const context: ApiAdapterErrorContext<T> = {
+          method: 'remove',
+          endpoint,
+          error,
+          attempt: 0,
+        };
+        report(context);
+        if (mutationFailureMode === 'throw') throw new ApiAdapterError(context);
+        return;
+      }
+
       const result = await attempt(
         'remove',
         { method: 'DELETE', headers: {} },
+        undefined,
+        operationIdempotencyKey,
       );
-      if (result.ok && onSuccess) {
-        onSuccess({
-          method: 'remove',
-          endpoint,
-          response: result.response,
-        });
+      if (!result.ok) {
+        if (mutationFailureMode === 'throw') throw new ApiAdapterError(result.context);
+        return;
       }
+      onSuccess?.({
+        method: 'remove',
+        endpoint,
+        response: result.response,
+      });
     },
   };
 }

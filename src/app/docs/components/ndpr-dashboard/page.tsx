@@ -45,7 +45,7 @@ export default function NDPRDashboardDocs() {
           {
             packagePath: '@tantainnovative/ndpr-recipes',
             exports: 'src/nextjs/app-router/api/compliance/route.ts',
-            useCase: 'Reference route for computing compliance scores from production records.',
+            useCase: 'Reference route for tenant-scoped operational counts, evidence rates, and explicit not-observed states.',
           },
         ]}
         checklist={[
@@ -56,7 +56,7 @@ export default function NDPRDashboardDocs() {
           'Document how each compliance input maps to consent, DSR, DPIA, breach, policy, lawful basis, transfer, and ROPA evidence.',
         ]}
         backendNotes={[
-          'Use the recipes compliance route as the starting point for collecting module status from backend tables.',
+          'Use the recipes compliance route for tenant-scoped operational evidence; map reviewed indicators into ComplianceInput separately before scoring.',
           'Run getComplianceScore server-side for scheduled snapshots and executive reporting.',
           'Store historical scores so improvements and regressions can be explained over time.',
           'Avoid letting client-side users override raw inputs unless the change is reviewed and persisted.',

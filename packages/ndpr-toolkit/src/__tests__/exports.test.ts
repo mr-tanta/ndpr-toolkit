@@ -45,9 +45,6 @@ describe('Entry point: core', () => {
   const mod = require('../../src/core');
 
   it.each([
-    'NDPRProvider',
-    'useNDPRConfig',
-    'useNDPRLocale',
     'defaultLocale',
     'mergeLocale',
     'validateConsentStructured',

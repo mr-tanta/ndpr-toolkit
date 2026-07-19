@@ -1,148 +1,151 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ConsentOption, ConsentSettings, ConsentStorageOptions } from '../types/consent';
+import type {
+  ConsentOption,
+  ConsentSettings,
+  ConsentStorageOptions,
+} from '../types/consent';
 import { validateConsentStructured } from '../utils/consent';
 import type { StructuredValidationError } from '../utils/consent';
-import type { StorageAdapter } from '../adapters/types';
+import type {
+  StorageAdapter,
+  StorageAdapterCapabilities,
+} from '../adapters/types';
 import { localStorageAdapter } from '../adapters/local-storage';
 import { sessionStorageAdapter } from '../adapters/session-storage';
 import { cookieAdapter } from '../adapters/cookie';
 
 export interface UseConsentOptions {
-  /**
-   * Consent options to present to the user
-   */
+  /** Consent options to present to the user. */
   options: ConsentOption[];
-
-  /**
-   * Pluggable storage adapter. When provided, takes precedence over storageOptions.
-   */
+  /** Pluggable storage adapter. Takes precedence over storageOptions. */
   adapter?: StorageAdapter<ConsentSettings>;
-
-  /**
-   * Storage options for consent settings
-   * @deprecated Use adapter instead
-   */
+  /** @deprecated Use adapter instead. */
   storageOptions?: ConsentStorageOptions;
-
-  /**
-   * Version of the consent form
-   * @default "1.0"
-   */
+  /** @default "1.0" */
   version?: string;
-
-  /**
-   * Callback function called when consent settings change
-   */
+  /** Called after a valid local choice is installed. */
   onChange?: (settings: ConsentSettings) => void;
 }
 
-export interface UseConsentReturn {
-  /**
-   * Current consent settings
-   */
-  settings: ConsentSettings | null;
+export type ConsentPersistenceOperation = 'load' | 'save' | 'remove';
 
-  /**
-   * Whether consent has been given for a specific option
-   */
-  hasConsent: (optionId: string) => boolean;
+export class ConsentPersistenceError extends Error {
+  readonly operation: ConsentPersistenceOperation;
+  readonly originalError: unknown;
 
-  /**
-   * Update consent settings
-   */
-  updateConsent: (consents: Record<string, boolean>) => void;
-
-  /**
-   * Accept all consent options
-   */
-  acceptAll: () => void;
-
-  /**
-   * Reject all non-required consent options
-   */
-  rejectAll: () => void;
-
-  /**
-   * Whether the consent banner should be shown
-   */
-  shouldShowBanner: boolean;
-
-  /**
-   * Whether consent settings are valid
-   */
-  isValid: boolean;
-
-  /**
-   * Validation errors (if any). Each entry is a structured `{ field, code,
-   * message }` so consumers can switch on `code` across locales.
-   */
-  validationErrors: StructuredValidationError[];
-
-  /**
-   * Reset consent settings (clear from storage)
-   */
-  resetConsent: () => void;
-
-  /**
-   * Whether the adapter is still loading data (relevant for async adapters)
-   */
-  isLoading: boolean;
+  constructor(operation: ConsentPersistenceOperation, originalError: unknown) {
+    super(`[ndpr-toolkit] Consent ${operation} persistence failed`);
+    this.name = 'ConsentPersistenceError';
+    this.operation = operation;
+    this.originalError = originalError;
+  }
 }
 
-function resolveAdapter(storageOptions?: ConsentStorageOptions): StorageAdapter<ConsentSettings> {
-  if (!storageOptions) return localStorageAdapter<ConsentSettings>('ndpr_consent');
-  const { storageKey = 'ndpr_consent', storageType = 'localStorage' } = storageOptions;
-  if (storageType === 'sessionStorage') return sessionStorageAdapter<ConsentSettings>(storageKey);
-  if (storageType === 'cookie') return cookieAdapter<ConsentSettings>(storageKey, storageOptions.cookieOptions);
+export interface UseConsentReturn {
+  settings: ConsentSettings | null;
+  hasConsent: (optionId: string) => boolean;
+  updateConsent: (
+    consents: Record<string, boolean>,
+  ) => void | Promise<void>;
+  acceptAll: () => void | Promise<void>;
+  rejectAll: () => void | Promise<void>;
+  shouldShowBanner: boolean;
+  isValid: boolean;
+  validationErrors: StructuredValidationError[];
+  resetConsent: () => void | Promise<void>;
+  /** Whether initial adapter hydration is still pending. */
+  isLoading: boolean;
+  /** Whether the latest save/remove operation is still pending. */
+  isPersisting: boolean;
+  /** Latest load/save/remove failure, cleared on the next operation. */
+  persistenceError: ConsentPersistenceError | null;
+  clearPersistenceError: () => void;
+  /** Declared guarantees of the active adapter, when supplied. */
+  storageCapabilities?: Readonly<StorageAdapterCapabilities>;
+}
+
+function resolveAdapter(
+  storageOptions?: ConsentStorageOptions,
+): StorageAdapter<ConsentSettings> {
+  if (!storageOptions) {
+    return localStorageAdapter<ConsentSettings>('ndpr_consent');
+  }
+  const {
+    storageKey = 'ndpr_consent',
+    storageType = 'localStorage',
+  } = storageOptions;
+  if (storageType === 'sessionStorage') {
+    return sessionStorageAdapter<ConsentSettings>(storageKey);
+  }
+  if (storageType === 'cookie') {
+    return cookieAdapter<ConsentSettings>(
+      storageKey,
+      storageOptions.cookieOptions,
+    );
+  }
   return localStorageAdapter<ConsentSettings>(storageKey);
+}
+
+function isPromiseLike<T>(value: unknown): value is PromiseLike<T> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'then' in value &&
+    typeof (value as { then?: unknown }).then === 'function'
+  );
+}
+
+interface LoadedStateSetters {
+  setSettings: (settings: ConsentSettings | null) => void;
+  setIsValid: (valid: boolean) => void;
+  setValidationErrors: (errors: StructuredValidationError[]) => void;
+  setShouldShowBanner: (show: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
 }
 
 function applyLoaded(
   loaded: ConsentSettings | null,
   version: string,
-  setSettings: (s: ConsentSettings | null) => void,
-  setIsValid: (v: boolean) => void,
-  setValidationErrors: (e: StructuredValidationError[]) => void,
-  setShouldShowBanner: (v: boolean) => void,
-  setIsLoading: (v: boolean) => void,
-) {
-  if (loaded) {
-    setSettings(loaded);
-    const { valid, errors } = validateConsentStructured(loaded);
-    setIsValid(valid);
-    setValidationErrors(errors);
-    setShouldShowBanner(!(valid && loaded.version === version));
-  } else {
+  setters: LoadedStateSetters,
+): void {
+  const {
+    setSettings,
+    setIsValid,
+    setValidationErrors,
+    setShouldShowBanner,
+    setIsLoading,
+  } = setters;
+
+  if (!loaded) {
+    setSettings(null);
+    setIsValid(false);
+    setValidationErrors([]);
     setShouldShowBanner(true);
+    setIsLoading(false);
+    return;
   }
+
+  const { valid, errors } = validateConsentStructured(loaded);
+  if (!valid) {
+    // Never expose malformed persisted data through settings/hasConsent.
+    setSettings(null);
+    setIsValid(false);
+    setValidationErrors(errors);
+    setShouldShowBanner(true);
+    setIsLoading(false);
+    return;
+  }
+
+  setSettings(loaded);
+  setIsValid(true);
+  setValidationErrors([]);
+  setShouldShowBanner(
+    loaded.version !== version || loaded.hasInteracted !== true,
+  );
   setIsLoading(false);
 }
 
-/**
- * Hook for managing user consent in compliance with the NDPA.
- *
- * @example
- * ```tsx
- * import { useConsent } from '@tantainnovative/ndpr-toolkit/hooks';
- *
- * function App() {
- *   const { hasConsent, acceptAll, rejectAll, shouldShowBanner } = useConsent({
- *     options: [
- *       { id: 'necessary', label: 'Necessary', required: true },
- *       { id: 'analytics', label: 'Analytics' },
- *     ],
- *   });
- *   if (!shouldShowBanner) return null;
- *   return (
- *     <div role="dialog">
- *       <button onClick={acceptAll}>Accept all</button>
- *       <button onClick={rejectAll}>Reject non-essential</button>
- *       {hasConsent('analytics') && <AnalyticsScripts />}
- *     </div>
- *   );
- * }
- * ```
- */
+/** Manage an explicit consent choice and its persistence state. */
 export function useConsent({
   options,
   adapter,
@@ -155,65 +158,115 @@ export function useConsent({
   adapterRef.current = resolvedAdapter;
 
   const [settings, setSettings] = useState<ConsentSettings | null>(null);
-  const [shouldShowBanner, setShouldShowBanner] = useState<boolean>(false);
-  const [isValid, setIsValid] = useState<boolean>(false);
-  const [validationErrors, setValidationErrors] = useState<StructuredValidationError[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [shouldShowBanner, setShouldShowBanner] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<
+    StructuredValidationError[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isPersisting, setIsPersisting] = useState(false);
+  const [persistenceError, setPersistenceError] =
+    useState<ConsentPersistenceError | null>(null);
+  const persistenceSequenceRef = useRef(0);
+  const mountedRef = useRef(true);
 
-  // Load consent settings from storage on mount
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
+    const sequenceAtLoad = persistenceSequenceRef.current;
+    const setters: LoadedStateSetters = {
+      setSettings,
+      setIsValid,
+      setValidationErrors,
+      setShouldShowBanner,
+      setIsLoading,
+    };
+
+    const finishLoad = (loaded: ConsentSettings | null) => {
+      if (cancelled) return;
+      // A user mutation made while an async load was pending wins.
+      if (sequenceAtLoad !== persistenceSequenceRef.current) {
+        setIsLoading(false);
+        return;
+      }
+      applyLoaded(loaded, version, setters);
+    };
+
+    const failLoad = (error: unknown) => {
+      if (cancelled) return;
+      setSettings(null);
+      setIsValid(false);
+      setValidationErrors([]);
+      setShouldShowBanner(true);
+      setPersistenceError(new ConsentPersistenceError('load', error));
+      setIsLoading(false);
+    };
 
     try {
       const result = adapterRef.current.load();
-
-      if (result instanceof Promise) {
-        // Async adapter path
-        result.then(
-          (loaded) => {
-            if (cancelled) return;
-            applyLoaded(loaded, version, setSettings, setIsValid, setValidationErrors, setShouldShowBanner, setIsLoading);
-          },
-          () => {
-            if (!cancelled) {
-              setShouldShowBanner(true);
-              setIsLoading(false);
-            }
-          }
-        );
+      if (isPromiseLike<ConsentSettings | null>(result)) {
+        void Promise.resolve(result).then(finishLoad, failLoad);
       } else {
-        // Sync adapter path — apply immediately, no async batching issues
-        applyLoaded(result, version, setSettings, setIsValid, setValidationErrors, setShouldShowBanner, setIsLoading);
+        finishLoad(result);
       }
-    } catch {
-      if (!cancelled) {
-        setShouldShowBanner(true);
-        setIsLoading(false);
-      }
+    } catch (error) {
+      failLoad(error);
     }
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [version]);
 
-  // Save settings to storage — state updates are synchronous, persistence is fire-and-forget async
-  const saveSettings = useCallback(
-    (newSettings: ConsentSettings) => {
-      // Update state synchronously first
-      const { valid, errors } = validateConsentStructured(newSettings);
-      setIsValid(valid);
-      setValidationErrors(errors);
-      onChange?.(newSettings);
-      // Persist asynchronously (fire-and-forget)
-      Promise.resolve(adapterRef.current.save(newSettings)).catch((err) => {
-        console.warn('[ndpr-toolkit] Failed to save consent:', err);
-      });
+  const persist = useCallback(
+    (
+      operation: 'save' | 'remove',
+      invoke: () => void | Promise<void>,
+      onSuccess?: () => void,
+    ): void | Promise<void> => {
+      const sequence = ++persistenceSequenceRef.current;
+      setPersistenceError(null);
+      setIsPersisting(true);
+
+      const succeed = () => {
+        if (!mountedRef.current || sequence !== persistenceSequenceRef.current) {
+          return;
+        }
+        setIsPersisting(false);
+        onSuccess?.();
+      };
+      const fail = (error: unknown) => {
+        if (!mountedRef.current || sequence !== persistenceSequenceRef.current) {
+          return;
+        }
+        setIsPersisting(false);
+        setPersistenceError(new ConsentPersistenceError(operation, error));
+        setShouldShowBanner(true);
+      };
+
+      try {
+        const result = invoke();
+        if (isPromiseLike<void>(result)) {
+          // Convert rejection into observable hook state rather than leaving an
+          // unhandled promise rejection in a React event handler.
+          return Promise.resolve(result).then(succeed, fail);
+        }
+        succeed();
+      } catch (error) {
+        fail(error);
+      }
     },
-    [onChange]
+    [],
   );
 
-  // Update consent settings
   const updateConsent = useCallback(
-    (consents: Record<string, boolean>) => {
+    (consents: Record<string, boolean>): void | Promise<void> => {
       const newSettings: ConsentSettings = {
         consents,
         timestamp: Date.now(),
@@ -221,44 +274,62 @@ export function useConsent({
         method: 'explicit',
         hasInteracted: true,
       };
+      const { valid, errors } = validateConsentStructured(newSettings);
+      if (!valid) {
+        setIsValid(false);
+        setValidationErrors(errors);
+        setShouldShowBanner(true);
+        return;
+      }
+
       setSettings(newSettings);
-      saveSettings(newSettings);
-      setShouldShowBanner(false);
+      setIsValid(true);
+      setValidationErrors([]);
+      onChange?.(newSettings);
+      return persist(
+        'save',
+        () => adapterRef.current.save(newSettings),
+        () => setShouldShowBanner(false),
+      );
     },
-    [version, saveSettings]
+    [onChange, persist, version],
   );
 
-  // Accept all consent options
-  const acceptAll = useCallback(() => {
+  const acceptAll = useCallback((): void | Promise<void> => {
     const allConsents: Record<string, boolean> = {};
-    options.forEach(opt => { allConsents[opt.id] = true; });
-    updateConsent(allConsents);
+    options.forEach((option) => {
+      allConsents[option.id] = true;
+    });
+    return updateConsent(allConsents);
   }, [options, updateConsent]);
 
-  // Reject all non-required consent options
-  const rejectAll = useCallback(() => {
+  const rejectAll = useCallback((): void | Promise<void> => {
     const rejected: Record<string, boolean> = {};
-    options.forEach(opt => { rejected[opt.id] = opt.required || false; });
-    updateConsent(rejected);
+    options.forEach((option) => {
+      rejected[option.id] = option.required || false;
+    });
+    return updateConsent(rejected);
   }, [options, updateConsent]);
 
-  // Check if consent has been given for a specific option
   const hasConsent = useCallback(
-    (optionId: string): boolean => !!settings?.consents[optionId],
-    [settings]
+    (optionId: string): boolean =>
+      isValid &&
+      settings?.version === version &&
+      settings.hasInteracted === true &&
+      settings.consents[optionId] === true,
+    [isValid, settings, version],
   );
 
-  // Reset consent settings
-  const resetConsent = useCallback(() => {
-    // Update state synchronously
+  const resetConsent = useCallback((): void | Promise<void> => {
     setSettings(null);
     setShouldShowBanner(true);
     setIsValid(false);
     setValidationErrors([]);
-    // Persist removal asynchronously (fire-and-forget)
-    Promise.resolve(adapterRef.current.remove()).catch((err) => {
-      console.warn('[ndpr-toolkit] Failed to remove consent:', err);
-    });
+    return persist('remove', () => adapterRef.current.remove());
+  }, [persist]);
+
+  const clearPersistenceError = useCallback(() => {
+    setPersistenceError(null);
   }, []);
 
   return {
@@ -272,5 +343,9 @@ export function useConsent({
     validationErrors,
     resetConsent,
     isLoading,
+    isPersisting,
+    persistenceError,
+    clearPersistenceError,
+    storageCapabilities: resolvedAdapter.capabilities,
   };
 }

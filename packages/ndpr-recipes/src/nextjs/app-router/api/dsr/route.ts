@@ -1,128 +1,185 @@
-/**
- * Next.js App Router — DSR (Data Subject Rights) List/Create Route
- *
- * Handles listing and creating Data Subject Rights requests as required by
- * NDPA Sections 34–38 (rights to access, rectification, erasure, portability,
- * and objection). All requests must be acknowledged within 72 hours and
- * fulfilled within 30 days under the Act.
- *
- * Endpoints
- * ---------
- *   GET  /api/dsr          — List DSR requests (optional ?status= filter)
- *   POST /api/dsr          — Submit a new DSR request
- *
- * How to use
- * ----------
- * Copy this file to `app/api/dsr/route.ts` in your Next.js project.
- * For single-request operations see `app/api/dsr/[id]/route.ts`.
- *
- * @module dsr/route
- */
-
-import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import {
+  validateDsrSubmissionStructured,
+  type DsrSubmissionPayload,
+} from '@tantainnovative/ndpr-toolkit/server';
+import { NextRequest, NextResponse } from 'next/server';
+import {
+  getNDPRContextProblem,
+  resolveNDPRRequestContext,
+} from '../../request-context';
+import {
+  addOperationalDays,
+  DSR_OPERATIONAL_TARGET_NOTICE,
+  getDsrOperationalTargetDays,
+  isRecord,
+  jsonOrDbNull,
+  normalizeDsrStatus,
+  toInputJson,
+} from '../../../shared-contracts';
 
 const prisma = new PrismaClient();
+const ALLOWED_TYPES = [
+  'information',
+  'access',
+  'rectification',
+  'erasure',
+  'restriction',
+  'portability',
+  'objection',
+  'automated_decision_making',
+  'withdraw_consent',
+];
+const ALLOWED_STATUSES = new Set([
+  'pending',
+  'awaitingVerification',
+  'inProgress',
+  'in_progress',
+  'completed',
+  'rejected',
+]);
 
-// ---------------------------------------------------------------------------
-// GET /api/dsr?status=pending
-// ---------------------------------------------------------------------------
+/** Staff-only tenant list. Data subjects use the tenant/subject-scoped ID route. */
+export async function GET(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'staff');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
 
-/**
- * List all DSR requests, optionally filtered by status.
- *
- * Supports the admin/DPO dashboard — returns requests ordered newest-first
- * so overdue items surface quickly. The optional `status` query parameter
- * lets you display only pending, in-progress, or completed requests.
- *
- * Query params:
- *   status (optional) — filter by request status: pending | in_progress | completed | rejected
- *
- * Returns 200 with an array of DSRRequest rows.
- */
-export async function GET(req: NextRequest) {
-  const status = req.nextUrl.searchParams.get('status');
-
+  const requestedStatus = request.nextUrl.searchParams.get('status');
+  if (requestedStatus && !ALLOWED_STATUSES.has(requestedStatus)) {
+    return NextResponse.json({ error: 'Unsupported DSR status' }, { status: 400 });
+  }
+  const statuses = requestedStatus === 'in_progress' || requestedStatus === 'inProgress'
+    ? ['inProgress', 'in_progress']
+    : requestedStatus
+      ? [requestedStatus]
+      : undefined;
   const requests = await prisma.dSRRequest.findMany({
-    where: status ? { status } : undefined,
+    where: {
+      tenantId: context.tenantId,
+      removedAt: null,
+      ...(statuses ? { status: { in: statuses } } : {}),
+    },
     orderBy: { submittedAt: 'desc' },
   });
-
-  return NextResponse.json(requests);
+  return NextResponse.json(
+    requests.map((item) => ({ ...item, status: normalizeDsrStatus(item.status) })),
+  );
 }
 
-// ---------------------------------------------------------------------------
-// POST /api/dsr
-// ---------------------------------------------------------------------------
+/** Submit a DSR for the verified subject capability/account. */
+export async function POST(request: NextRequest) {
+  const context = await resolveNDPRRequestContext(request);
+  const problem = getNDPRContextProblem(context, 'subject');
+  if (problem) return NextResponse.json({ error: problem.error }, { status: problem.status });
 
-/**
- * Submit a new Data Subject Rights request.
- *
- * The NDPA requires organisations to provide a clear mechanism for data
- * subjects to exercise their rights (Section 34). This route:
- *   1. Validates required fields.
- *   2. Calculates the statutory 30-day deadline (dueAt).
- *   3. Persists the request with status 'pending'.
- *   4. Writes an audit log entry for accountability.
- *
- * Body (JSON):
- *   type             (required) — access | rectification | erasure | portability | objection
- *   subjectName      (required) — full name of the data subject
- *   subjectEmail     (required) — email address of the data subject
- *   identifierType   (required) — how the subject is identified (e.g. 'email', 'account_id')
- *   identifierValue  (required) — the subject's identifier value
- *   subjectPhone     (optional) — phone number
- *   description      (optional) — additional context from the subject
- *
- * Returns 201 with the newly created DSRRequest row.
- */
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const {
-    type,
-    subjectName,
-    subjectEmail,
-    subjectPhone,
-    identifierType,
-    identifierValue,
-    description,
-  } = body;
-
-  if (!type || !subjectName || !subjectEmail || !identifierType || !identifierValue) {
+  const parsed = await parseJson(request);
+  const submittedAt = Date.now();
+  const validation = validateDsrSubmissionStructured(
+    normalizeSubmission(parsed, submittedAt),
+    { requireIdentityVerification: true, allowedRequestTypes: ALLOWED_TYPES },
+  );
+  if (!validation.valid || !validation.data) {
     return NextResponse.json(
-      { error: 'type, subjectName, subjectEmail, identifierType, and identifierValue are required' },
+      {
+        error: 'Validation failed.',
+        fields: Object.fromEntries(
+          validation.errors.map((error) => [error.field, error.message]),
+        ),
+      },
       { status: 400 },
     );
   }
 
-  // NDPA mandates a 30-day response window from the date of submission.
-  const dueAt = new Date();
-  dueAt.setDate(dueAt.getDate() + 30);
+  const data = validation.data;
+  const description = isRecord(parsed) && typeof parsed.description === 'string'
+    ? parsed.description.trim() || null
+    : null;
+  const tenantId = context.tenantId;
+  const subjectId = context.subjectId as string;
+  const targetDays = getDsrOperationalTargetDays();
+  const submittedDate = new Date(submittedAt);
+  const dueAt = addOperationalDays(submittedDate, targetDays);
+  const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null;
 
-  const request = await prisma.dSRRequest.create({
-    data: {
-      type,
-      subjectName,
-      subjectEmail,
-      subjectPhone: subjectPhone ?? null,
-      identifierType,
-      identifierValue,
-      description: description ?? null,
-      status: 'pending',
-      dueAt,
-    },
+  const created = await prisma.$transaction(async (transaction) => {
+    const row = await transaction.dSRRequest.create({
+      data: {
+        tenantId,
+        subjectId,
+        type: data.requestType,
+        status: 'pending',
+        subjectName: data.dataSubject.fullName,
+        subjectEmail: data.dataSubject.email,
+        subjectPhone: data.dataSubject.phone ?? null,
+        identifierType: data.dataSubject.identifierType,
+        identifierValue: data.dataSubject.identifierValue,
+        description,
+        additionalInfo: jsonOrDbNull(data.additionalInfo),
+        submittedAt: submittedDate,
+        updatedAt: submittedDate,
+        dueAt,
+      },
+    });
+    await transaction.complianceAuditLog.create({
+      data: {
+        tenantId,
+        module: 'dsr',
+        action: 'submitted',
+        entityId: row.id,
+        entityType: 'DSRRequest',
+        changes: toInputJson({
+          type: data.requestType,
+          status: 'pending',
+          operationalTargetDays: targetDays,
+          subjectId,
+          subjectIdentitySource: context.subjectSource,
+        }),
+        performedBy: context.actorId,
+        ipAddress,
+      },
+    });
+    return row;
   });
 
-  // Audit log for NDPA Section 44 accountability principle.
-  await prisma.complianceAuditLog.create({
-    data: {
-      module: 'dsr',
-      action: 'submitted',
-      entityId: request.id,
-      entityType: 'DSRRequest',
-      changes: { type, subjectEmail, status: 'pending' },
+  return NextResponse.json(
+    {
+      ...created,
+      operationalTarget: {
+        days: targetDays,
+        source: 'NDPR_DSR_TARGET_DAYS',
+        notice: DSR_OPERATIONAL_TARGET_NOTICE,
+      },
     },
-  });
+    { status: 201 },
+  );
+}
 
-  return NextResponse.json(request, { status: 201 });
+function normalizeSubmission(
+  value: unknown,
+  submittedAt: number,
+): DsrSubmissionPayload | unknown {
+  if (!isRecord(value)) return value;
+  const nested = isRecord(value.dataSubject) ? value.dataSubject : {};
+  return {
+    requestType: value.requestType ?? value.type,
+    dataSubject: {
+      fullName: nested.fullName ?? value.subjectName,
+      email: nested.email ?? value.subjectEmail,
+      phone: nested.phone ?? value.subjectPhone,
+      identifierType: nested.identifierType ?? value.identifierType,
+      identifierValue: nested.identifierValue ?? value.identifierValue,
+    },
+    additionalInfo: value.additionalInfo,
+    // Server receipt time is authoritative; client submittedAt is not evidence.
+    submittedAt,
+  };
+}
+
+async function parseJson(request: NextRequest): Promise<unknown> {
+  try {
+    return await request.json();
+  } catch {
+    return null;
+  }
 }

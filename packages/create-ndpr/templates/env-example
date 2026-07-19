@@ -1,4 +1,7 @@
-# NDPA Compliance Database
-# Organisation: {{ORG_NAME}}
-# DPO: {{DPO_EMAIL}}
+# NDPA compliance persistence — generated for {{ORG_NAME_COMMENT}}
 DATABASE_URL="postgresql://user:password@localhost:5432/myapp_dev"
+
+# Server-controlled tenant boundary. Never accept this value from clients.
+# Multi-tenant applications should replace the generated request-context
+# resolver with one that derives tenantId from a verified session.
+NDPR_TENANT_ID="{{TENANT_ID}}"
