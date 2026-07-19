@@ -184,17 +184,22 @@ function skip(relativePath, reason) {
 }
 function writeGenerated(relativePath, content, { neverOverwrite = false } = {}) {
   const destination = join(CWD, relativePath);
-  if (existsSync(destination) && (neverOverwrite || !FORCE)) {
-    skip(relativePath, neverOverwrite ? 'existing file must be merged manually' : 'already exists; pass --force to replace');
-    return false;
-  }
+  const shouldOverwrite = FORCE && !neverOverwrite;
   const directory = dirname(destination);
   mkdirSync(directory, { recursive: true });
   try {
-    writeFileSync(destination, content, { encoding: 'utf8', flag: FORCE && !neverOverwrite ? 'w' : 'wx' });
+    writeFileSync(destination, content, {
+      encoding: 'utf8',
+      flag: shouldOverwrite ? 'w' : 'wx',
+    });
   } catch (error) {
     if (error && error.code === 'EEXIST') {
-      skip(relativePath, 'created concurrently; left unchanged');
+      skip(
+        relativePath,
+        neverOverwrite
+          ? 'existing file must be merged manually'
+          : 'already exists; pass --force to replace',
+      );
       return false;
     }
     throw error;
