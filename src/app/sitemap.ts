@@ -373,6 +373,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
+      url: `${baseUrl}/docs/guides/migrating-5-7-to-6-0`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/docs/guides/upgrading-from-3-3`,
       lastModified: now,
       changeFrequency: 'monthly',
