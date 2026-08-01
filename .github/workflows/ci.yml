@@ -42,9 +42,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build library package boundary
-        # Recipes resolve @tantainnovative/ndpr-toolkit through root package
-        # exports. Build fresh declarations before any root check can import
-        # recipe source through the stale published self-devDependency.
+        # Recipes and the docs site both resolve @tantainnovative/ndpr-toolkit
+        # through the root package's own exports map (Node/webpack
+        # self-reference), which points at ./dist. Build it first so every
+        # later check reads fresh declarations instead of stale output that
+        # could hide a package-boundary error.
         run: pnpm build:lib
 
       - name: Type check backend recipes
