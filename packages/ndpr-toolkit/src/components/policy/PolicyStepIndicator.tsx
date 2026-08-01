@@ -28,7 +28,6 @@ export const PolicyStepIndicator: React.FC<PolicyStepIndicatorProps> = ({
         const stepNumber = index + 1;
         const isCompleted = stepNumber < currentStep;
         const isCurrent = stepNumber === currentStep;
-        const isUpcoming = stepNumber > currentStep;
         const isLast = index === STEPS.length - 1;
 
         return (

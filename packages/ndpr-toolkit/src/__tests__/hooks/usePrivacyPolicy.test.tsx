@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { usePrivacyPolicy } from '../../hooks/usePrivacyPolicy';
 import { memoryAdapter } from '../../adapters/memory';

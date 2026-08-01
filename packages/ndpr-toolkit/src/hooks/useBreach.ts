@@ -194,7 +194,9 @@ export interface UseBreachReturn {
  * ```
  */
 export function useBreach({
-  categories,
+  // `categories` is accepted by UseBreachOptions (and shown in the example
+  // above) but is not consumed by this hook. Left out of the destructure
+  // rather than bound and ignored; callers are unaffected.
   initialReports = [],
   adapter,
   storageKey = 'ndpr_breach_data',

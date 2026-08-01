@@ -4,7 +4,7 @@
  * and export functionality — all aligned with the NDPA 2023.
  */
 
-import type { OrganizationInfo, PolicySection, PrivacyPolicy } from './privacy';
+import type { OrganizationInfo } from './privacy';
 
 // ---------------------------------------------------------------------------
 // Enums & unions

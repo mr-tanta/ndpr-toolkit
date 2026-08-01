@@ -1,8 +1,7 @@
-import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useBreach } from '../../hooks/useBreach';
 import { memoryAdapter } from '../../adapters/memory';
-import type { BreachCategory, RiskAssessment, RegulatoryNotification } from '../../types/breach';
+import type { BreachCategory } from '../../types/breach';
 
 // ---------------------------------------------------------------------------
 // Shared fixtures

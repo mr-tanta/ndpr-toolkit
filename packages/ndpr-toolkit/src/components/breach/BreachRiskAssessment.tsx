@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BreachReport, RiskAssessment } from '../../types/breach';
-import { calculateBreachSeverity } from '../../utils/breach';
 import { resolveClass } from '../../utils/styling';
 import { useNDPRLocale } from '../NDPRProvider';
 

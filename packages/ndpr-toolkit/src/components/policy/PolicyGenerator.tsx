@@ -115,7 +115,9 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   className = "",
   buttonClassName = "",
   generateButtonText,
-  showPreview = true,
+  // showPreview is accepted by PolicyGeneratorProps but not currently applied by
+  // this component. Left out of the destructure rather than bound and ignored;
+  // callers are unaffected because the prop stays on the type.
   allowEditing = true,
   classNames,
   unstyled = false
@@ -132,7 +134,9 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   const [activeStep, setActiveStep] = useState<'sections' | 'variables' | 'preview'>('sections');
   const [generatedPolicy, setGeneratedPolicy] = useState<string>('');
   const [editedPolicy, setEditedPolicy] = useState<string>('');
-  const [isGenerated, setIsGenerated] = useState<boolean>(false);
+  // Only the setter is used; the flag itself is never read, but setting it
+  // still drives the re-render callers depend on after generation.
+  const [, setIsGenerated] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   // Update sections when initialSections changes

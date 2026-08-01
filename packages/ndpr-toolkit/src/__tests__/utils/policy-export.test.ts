@@ -289,6 +289,65 @@ describe('exportHTML', () => {
     expect(result).toContain('body { color: red; }');
   });
 
+  describe('customCSS cannot break out of the <style> block', () => {
+    // `<style>` is a raw-text element, so the parser ends it at the first
+    // `</style` followed by whitespace, `/`, or `>`. Filtering only the literal
+    // `</style>` left every other terminator working.
+    it.each([
+      ['exact end tag', '</style><img src=x onerror=alert(1)>'],
+      ['whitespace before >', '</style ><img src=x onerror=alert(1)>'],
+      ['newline before >', '</style\n><img src=x onerror=alert(1)>'],
+      ['self-closing slash', '</style/><img src=x onerror=alert(1)>'],
+      ['tab before >', '</style\t><img src=x onerror=alert(1)>'],
+      ['uppercase', '</STYLE><img src=x onerror=alert(1)>'],
+      ['mixed case', '</StYlE><img src=x onerror=alert(1)>'],
+      // A single-pass delete of the `</style` token would reassemble this into
+      // a working terminator from the surviving fragments.
+      ['fragment reassembly', '</st</styleyle><img src=x onerror=alert(1)>'],
+    ])('neutralizes %s', (_label, hostileCss) => {
+      const result = exportHTML(makePolicy(), { customCSS: hostileCss });
+
+      // No `<` from the injected CSS survives, so no tag can be opened.
+      const styleBody = result.slice(
+        result.indexOf('<style>') + '<style>'.length,
+        result.lastIndexOf('</style>'),
+      );
+      expect(styleBody).not.toMatch(/</);
+      expect(styleBody).toContain('\\3C ');
+      // And the payload never becomes live markup anywhere in the document.
+      expect(result).not.toContain('<img src=x');
+    });
+
+    it('leaves the child combinator and ordinary CSS intact', () => {
+      const result = exportHTML(makePolicy(), {
+        customCSS: '.a > .b { color: red; } .c>.d { color: blue; }',
+      });
+      expect(result).toContain('.a > .b { color: red; }');
+      expect(result).toContain('.c>.d { color: blue; }');
+    });
+
+    it('applies the same neutralization when includeStyles is false', () => {
+      const result = exportHTML(makePolicy(), {
+        includeStyles: false,
+        customCSS: '</style ><img src=x onerror=alert(1)>',
+      });
+      expect(result).not.toContain('<img src=x');
+    });
+  });
+
+  describe('template substitution is not quadratic in brace runs', () => {
+    // js/polynomial-redos: `[^}]+` / `[^}\s]+` would consume a long run of `{`
+    // before failing to find the closing `}}`, once per starting offset.
+    it('exports a pathological brace run in linear time', () => {
+      const policy = makePolicy();
+      policy.sections[0].template = '{'.repeat(60000);
+
+      const started = Date.now();
+      expect(() => exportHTML(policy)).not.toThrow();
+      expect(Date.now() - started).toBeLessThan(2000);
+    });
+  });
+
   it('wraps content in an <article> element', () => {
     const result = exportHTML(makePolicy());
     expect(result).toContain('<article');
@@ -510,7 +569,9 @@ describe('exportPDF', () => {
   it('throws a helpful error when jspdf is not available', async () => {
     // Temporarily override the mock to reject the dynamic import
     jest.resetModules();
-    const { exportPDF: exportPDFFresh } = await import('../../utils/policy-export/pdf');
+    // Imported for the module-registry reset side effect; the binding itself
+    // is not exercised here (see the comment below).
+    await import('../../utils/policy-export/pdf');
 
     // Because Jest's module registry is isolated per test, the above import
     // will still use the virtual mock. We verify the error-throwing path by

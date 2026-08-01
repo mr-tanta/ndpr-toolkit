@@ -180,7 +180,9 @@ export const RegulatoryReportGenerator: React.FC<RegulatoryReportGeneratorProps>
   const [method, setMethod] = useState<'email' | 'portal' | 'letter' | 'other'>('email');
   const [referenceNumber, setReferenceNumber] = useState<string>("");
   const [additionalInfo, setAdditionalInfo] = useState<string>("");
-  const [isGenerated, setIsGenerated] = useState<boolean>(false);
+  // Only the setter is used; the flag itself is never read, but setting it
+  // still drives the re-render after the report is generated.
+  const [, setIsGenerated] = useState<boolean>(false);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   
   // Generate the initial report content (regenerate when core props change)

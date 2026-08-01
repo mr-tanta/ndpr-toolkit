@@ -120,8 +120,9 @@ export interface PolicyPreviewProps {
 
 export const PolicyPreview: React.FC<PolicyPreviewProps> = ({
   content,
-  sections,
-  variables,
+  // sections and variables are accepted by PolicyPreviewProps but this
+  // component renders from `content` alone. Left out of the destructure rather
+  // than bound and ignored; callers are unaffected.
   onExport,
   onEdit,
   // i18n: explicit prop > provider locale > English default.

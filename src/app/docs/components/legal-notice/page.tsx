@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { DocLayout } from '@/components/docs/DocLayout';
 
 export default function LegalNoticeDocs() {

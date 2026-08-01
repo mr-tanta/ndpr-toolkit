@@ -8,7 +8,6 @@ import {
   Section,
   GradientText,
   FeatureCard,
-  Grid,
   CTASection,
 } from '@/components/site/ui';
 import { siteConfig } from '@/lib/site-config';

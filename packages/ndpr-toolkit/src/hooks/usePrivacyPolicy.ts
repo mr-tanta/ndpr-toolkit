@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { PolicySection, PolicyTemplate, OrganizationInfo, PrivacyPolicy } from '../types/privacy';
+import { PolicyTemplate, OrganizationInfo, PrivacyPolicy } from '../types/privacy';
 import { generatePolicyText } from '../utils/privacy';
 import type { StorageAdapter } from '../adapters/types';
 import { localStorageAdapter } from '../adapters/local-storage';

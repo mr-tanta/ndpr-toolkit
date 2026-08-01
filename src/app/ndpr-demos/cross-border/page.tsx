@@ -11,7 +11,6 @@ import { Badge } from '@/components/ui/Badge';
 // Local types matching what the demo actually uses
 type TransferMechanism = 'adequacy_decision' | 'standard_contractual_clauses' | 'binding_corporate_rules' | 'ndpc_authorization' | 'derogation' | 'other';
 type TransferStatus = 'pending' | 'approved' | 'rejected' | 'under_review';
-type AdequacyStatus = 'adequate' | 'inadequate' | 'pending_review' | 'unknown';
 
 interface CrossBorderTransfer {
   id: string;

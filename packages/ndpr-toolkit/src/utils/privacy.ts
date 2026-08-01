@@ -1,4 +1,4 @@
-import { PolicySection, OrganizationInfo, PolicyVariable } from '../types/privacy';
+import { PolicySection, OrganizationInfo } from '../types/privacy';
 import { UNFILLED_PREFIX, UNFILLED_SUFFIX } from './policy-sections';
 
 /**
@@ -54,7 +54,13 @@ export function findUnfilledTokens(rendered: string): string[] {
   }
 
   // Mustache tokens that survived substitution: {{fieldName}}
-  const mustacheRe = /\{\{\s*([^}\s]+)\s*\}\}/g;
+  // `[^{}\s]` excludes `{` as well as `}`. Excluding only `}` lets the class
+  // consume a long run of braces before failing to find the closing `}}`, and
+  // because the leading `\{\{` can start at every offset in that run the work
+  // is quadratic in input length (CodeQL js/polynomial-redos). A token name
+  // never legitimately contains a brace, so refusing to cross one costs
+  // nothing and makes `{{{{{{…` fail at the first character instead.
+  const mustacheRe = /\{\{\s*([^{}\s]+)\s*\}\}/g;
   while ((match = mustacheRe.exec(rendered)) !== null) {
     found.add(match[1].trim());
   }
@@ -83,7 +89,9 @@ export function generatePolicyText(
     
     // Replace variables in the template
     let result = template;
-    const variableRegex = /\{\{([^}]+)\}\}/g;
+    // `[^{}]` not `[^}]` — see findUnfilledTokens. Excluding only `}` makes a
+    // run of `{` quadratic to scan (CodeQL js/polynomial-redos).
+    const variableRegex = /\{\{([^{}]+)\}\}/g;
     let match;
     
     // Find and replace all variables in the content
@@ -116,7 +124,8 @@ export function generatePolicyText(
         let content = section.template || section.customContent || section.defaultContent || '';
         
         // Replace variables in the content
-        const variableRegex = /\{\{([^}]+)\}\}/g;
+        // `[^{}]` not `[^}]` — see findUnfilledTokens (js/polynomial-redos).
+        const variableRegex = /\{\{([^{}]+)\}\}/g;
         let match;
         
         // Find all variables in the content

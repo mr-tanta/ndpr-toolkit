@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { DPIASection, DPIAQuestion } from '../../types/dpia';
 import { resolveClass } from '../../utils/styling';
 import { useNDPRLocale } from '../NDPRProvider';

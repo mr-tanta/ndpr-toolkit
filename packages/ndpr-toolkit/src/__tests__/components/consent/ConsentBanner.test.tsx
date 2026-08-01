@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ConsentBanner } from '../../../components/consent/ConsentBanner';
 import { ConsentOption } from '../../../types/consent';
 

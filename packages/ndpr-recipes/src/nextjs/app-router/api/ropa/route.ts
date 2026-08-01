@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
   });
   try {
     return NextResponse.json(rows.map(processingRecordFromRow));
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         error: 'A processing record is missing its lossless snapshot.',

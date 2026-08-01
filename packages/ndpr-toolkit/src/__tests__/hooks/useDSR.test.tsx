@@ -1,6 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
 import { useDSR } from '../../hooks/useDSR';
-import React from 'react';
 import { DSRRequest, RequestType } from '../../types/dsr';
 
 // Mock localStorage

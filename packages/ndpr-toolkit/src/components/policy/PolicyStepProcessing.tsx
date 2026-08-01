@@ -187,7 +187,7 @@ export const PolicyStepProcessing: React.FC<PolicyStepProcessingProps> = ({
             onChange={(val) => {
               if (!val) {
                 // Remove all processors
-                context.thirdPartyProcessors.forEach((_, i) => onRemoveProcessor(0));
+                context.thirdPartyProcessors.forEach(() => onRemoveProcessor(0));
                 setShowProcessorForm(false);
               } else {
                 setShowProcessorForm(true);

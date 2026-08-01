@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/Input';
 import { TextArea } from '@/components/ui/TextArea';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { cn } from '@/lib/utils';
 
 interface OrganizationInfoStepProps {
   formData: {

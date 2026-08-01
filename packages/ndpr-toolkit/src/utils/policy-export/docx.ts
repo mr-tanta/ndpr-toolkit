@@ -43,7 +43,6 @@ export async function exportDOCX(
     PageNumber,
     AlignmentType,
     BorderStyle,
-    ShadingType,
     TableOfContents,
   } = docxLib;
 

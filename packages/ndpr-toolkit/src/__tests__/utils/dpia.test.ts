@@ -1,5 +1,5 @@
 import { assessDPIARisk } from '../../utils/dpia';
-import { DPIAResult, DPIARisk } from '../../types/dpia';
+import { DPIAResult } from '../../types/dpia';
 
 describe('assessDPIARisk (NDPA Section 28(2) - NDPC Consultation)', () => {
   it('should correctly assess high risk data and require NDPC consultation per NDPA Section 28(2)', () => {

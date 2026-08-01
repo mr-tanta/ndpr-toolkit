@@ -486,8 +486,17 @@ export default function PolicyGenerator({
           .replace(/<br\s*\/?>/g, "\n")
           .replace(/&nbsp;/g, " ");
 
-        // Remove any remaining HTML tags
-        md = md.replace(/<[^>]*>/g, "");
+        // Strip any remaining tags. This has to repeat until stable: a single
+        // pass is not a fixed point, because removing one match can splice its
+        // neighbours into a fresh tag ("<<p>p>" collapses to "<p>"). The input
+        // here is already built by generateSafeHTMLFromFormData, which escapes
+        // every form field, so this is defense in depth rather than the only
+        // barrier — but a lone replace is the exact idiom that fails.
+        let previous: string;
+        do {
+          previous = md;
+          md = md.replace(/<[^>]*>/g, "");
+        } while (md !== previous);
 
         return md;
       };
@@ -517,8 +526,10 @@ export default function PolicyGenerator({
             pdf.text(textLines, 20, 30);
 
             // Get PDF as blob
+            // pdf.output("blob") already carries the application/pdf type, and
+            // the shared download path below reads only `blob` and
+            // `fileExtension` — so setting mimeType here would never be read.
             blob = pdf.output("blob");
-            mimeType = "application/pdf";
             fileExtension = "pdf";
             break;
 

@@ -125,7 +125,8 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('createdAt');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  // No UI toggles direction, so the setter is intentionally not bound.
+  const [sortDirection] = useState<'asc' | 'desc'>('desc');
   const [assignee, setAssignee] = useState<string>('');
   
   // Update filtered requests when filters change

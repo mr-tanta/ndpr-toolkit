@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { DPIAResult, DPIASection, DPIARisk } from '../../types/dpia';
+import { DPIAResult, DPIASection } from '../../types/dpia';
 import { resolveClass } from '../../utils/styling';
 import { LEGAL_DISCLAIMER_SHORT } from '../../utils/legal-notice';
 import { useNDPRLocale } from '../NDPRProvider';
@@ -119,26 +119,6 @@ export const DPIAReport: React.FC<DPIAReportProps> = ({
       month: 'long',
       year: 'numeric'
     });
-  };
-
-  // Get the section title by ID
-  const getSectionTitle = (sectionId: string): string => {
-    const section = sections.find(s => s.id === sectionId);
-    return section?.title || 'Unknown Section';
-  };
-
-  // Get the question text by ID
-  const getQuestionText = (questionId: string): string => {
-    let questionText = 'Unknown Question';
-
-    sections.forEach(section => {
-      const question = section.questions.find(q => q.id === questionId);
-      if (question) {
-        questionText = question.text;
-      }
-    });
-
-    return questionText;
   };
 
   // Get the answer text for a question
