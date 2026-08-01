@@ -6,3 +6,12 @@ name: NDPR Toolkit CodeQL configuration
 # CodeQL analyzes instead of reporting impossible cross-branch assignments.
 paths-ignore:
   - packages/create-ndpr/templates/**
+  # Build output, not source. The workflow runs `pnpm build:lib` before
+  # initializing CodeQL so recipes and the docs site can resolve the package
+  # boundary, which leaves bundled and minified chunks in dist/ for the scan to
+  # find. Analyzing generated bundles only yields artifacts of the bundler —
+  # js/automatic-semicolon-insertion and js/whitespace-contradicts-precedence on
+  # tsup output — for code no human edits. dist/ is gitignored; the same code is
+  # already analyzed as source under packages/ndpr-toolkit/src.
+  - dist/**
+  - packages/*/dist/**
