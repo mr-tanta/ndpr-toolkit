@@ -61,6 +61,29 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "off",
     },
   },
+  // Plain-JS tooling: scripts/, bin/, hooks and config helpers. The TS block
+  // above only matches **/*.{ts,tsx}, so .mjs/.js files were linted with no
+  // rules at all — which is how an unused import in scripts/verify-examples.mjs
+  // reached main and got reported by CodeQL instead of by lint.
+  {
+    files: ["**/*.{js,mjs,cjs}"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+    },
+    plugins: { "@typescript-eslint": tsPlugin },
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
+    },
+  },
   // tests exercise the CJS entry points and jest mocks via require()
   {
     files: ["**/__tests__/**", "**/*.test.{ts,tsx}"],
