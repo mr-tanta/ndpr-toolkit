@@ -73,10 +73,40 @@ function substituteVariables(
     if (typeof value === 'string' && value) vars[key] = value;
   }
 
-  return text.replace(/\{\{\s*([^}\s]+)\s*\}\}/g, (whole, rawKey: string) => {
+  // `[^{}\s]` excludes `{` as well as `}`. Excluding only `}` lets the class
+  // consume a long run of braces before failing to find `}}`, and since the
+  // leading `\{\{` can start at every offset in that run the scan is quadratic
+  // in input length (CodeQL js/polynomial-redos). Section templates are library
+  // input, so a hostile or merely malformed template shouldn't be able to stall
+  // an export. A token name never contains a brace, so nothing is lost.
+  return text.replace(/\{\{\s*([^{}\s]+)\s*\}\}/g, (whole, rawKey: string) => {
     const key = String(rawKey).trim();
     return Object.prototype.hasOwnProperty.call(vars, key) ? vars[key] : whole;
   });
+}
+
+/**
+ * Neutralize consumer-supplied CSS so it cannot break out of the `<style>` block.
+ *
+ * `<style>` is a raw-text element: the parser ends it at the first `</style`
+ * followed by whitespace, `/`, or `>`. The previous filter removed only the
+ * literal `</style>`, which missed `</style >`, `</style/`, and `</style\n>` —
+ * each of which closes the element early and lets everything after it be
+ * parsed as markup (CodeQL js/bad-tag-filter, js/html-constructed-from-input).
+ *
+ * Deleting the `</style` token instead is still not sound, because one pass can
+ * assemble the token out of fragments: `</st</styleyle` loses its middle match
+ * and collapses into a working `</styleyle`.
+ *
+ * So escape every `<` as the CSS character escape `\3C` instead. CSS has no
+ * syntactic use for `<` anywhere outside a string, comment, or url(), and the
+ * child combinator is `>`, which is left untouched. Inside a string the escape
+ * still renders as `<`; elsewhere it replaces one construct CSS could not parse
+ * with another. Nothing legitimate is lost, the replacement introduces no new
+ * `<`, and with no `<` surviving no tag of any kind can be opened.
+ */
+function neutralizeCssTagEscapes(css: string): string {
+  return css.replace(/</g, '\\3C ');
 }
 
 /** Convert a section title to a URL-safe anchor slug. */
@@ -479,7 +509,7 @@ export function exportHTML(policy: PrivacyPolicy, options?: HTMLExportOptions): 
 
   // ── Table of Contents ────────────────────────────────────────────────────
   const tocItems = includedSections
-    .map((section, i) => {
+    .map((section) => {
       const anchor = slugify(section.title);
       return `      <li><a href="#${anchor}">${escapeHtml(section.title)}</a></li>`;
     })
@@ -518,7 +548,7 @@ ${tocItems}
     .join('\n\n');
 
   // ── Style block ──────────────────────────────────────────────────────────
-  const safeCSS = customCSS ? customCSS.replace(/<\/style>/gi, '') : '';
+  const safeCSS = customCSS ? neutralizeCssTagEscapes(customCSS) : '';
   const styleBlock = includeStyles
     ? `<style>
 ${buildBaseStyles(theme)}

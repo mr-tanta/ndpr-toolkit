@@ -3,9 +3,7 @@ import type { LawfulBasis } from '../../types/lawful-basis';
 import type {
   ProcessingRecord,
   RecordOfProcessingActivities,
-  ROPASummary,
 } from '../../types/ropa';
-import type { ROPAComplianceGap } from '../../utils/ropa';
 import {
   validateProcessingRecord,
   generateROPASummary,

@@ -43,7 +43,19 @@ const eslintConfig = [
       ...tsPlugin.configs.recommended.rules,
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
-      "@typescript-eslint/no-unused-vars": "off",
+      // Was "off", which let 45 unused imports and locals accumulate that CodeQL
+      // then reported as js/unused-local-variable. Enabled so lint is the gate
+      // and the alerts can't come back. `_`-prefixed names stay allowed for
+      // deliberately-unused positional args and destructuring holes.
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
       "@typescript-eslint/no-empty-object-type": "off",
       "react/no-unescaped-entities": "off",
       "@typescript-eslint/no-explicit-any": "off",
@@ -55,6 +67,18 @@ const eslintConfig = [
     rules: {
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-unsafe-function-type": "off",
+    },
+  },
+  // Raw create-ndpr templates are Handlebars sources, not ordinary modules: a
+  // declaration can be referenced only from inside a {{#if}} branch that a
+  // given render strips, so "unused" here is not a reliable signal. The CodeQL
+  // config excludes these same paths for the related reason that mutually
+  // exclusive branches aren't valid TypeScript until rendered. The rendered
+  // output is what gets linted and strictly typechecked, by verify:create-ndpr.
+  {
+    files: ["packages/create-ndpr/templates/**"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 ];

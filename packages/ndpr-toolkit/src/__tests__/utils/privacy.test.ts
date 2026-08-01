@@ -189,6 +189,26 @@ describe('findUnfilledTokens', () => {
   it('returns [] for fully-rendered text', () => {
     expect(findUnfilledTokens('All variables resolved cleanly.')).toEqual([]);
   });
+
+  // js/polynomial-redos: with `[^}\s]+` the class consumed a whole run of `{`
+  // before failing to find `}}`, and `\{\{` retried at every offset in the run,
+  // making the scan quadratic. `[^{}\s]+` stops at the first brace instead.
+  it('scans a pathological brace run in linear time', () => {
+    const hostile = '{'.repeat(100000);
+    const started = Date.now();
+    expect(findUnfilledTokens(hostile)).toEqual([]);
+    expect(Date.now() - started).toBeLessThan(1000);
+  });
+
+  it('still finds real tokens adjacent to brace runs', () => {
+    expect(findUnfilledTokens(`${'{'.repeat(5000)} {{orgName}}`)).toEqual(['orgName']);
+  });
+
+  it('reads the inner token of a triple-brace form', () => {
+    // `{{{orgName}}}` matches from the second brace, so the captured name is
+    // clean rather than carrying a leading `{`.
+    expect(findUnfilledTokens('{{{orgName}}}')).toEqual(['orgName']);
+  });
 });
 
 describe('assemblePolicy: canonical fixture renders without unfilled tokens', () => {

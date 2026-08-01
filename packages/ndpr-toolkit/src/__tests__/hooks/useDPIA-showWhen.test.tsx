@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useDPIA } from '../../hooks/useDPIA';
 import { memoryAdapter } from '../../adapters/memory';

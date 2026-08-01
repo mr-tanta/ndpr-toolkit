@@ -46,13 +46,6 @@ function selectedCategories(cats: DataCategory[]): DataCategory[] {
   return cats.filter((c) => c.selected);
 }
 
-function categoriesByGroup(
-  cats: DataCategory[],
-  group: DataCategory['group'],
-): DataCategory[] {
-  return selectedCategories(cats).filter((c) => c.group === group);
-}
-
 function purposeLabel(p: ProcessingPurpose): string {
   const map: Record<ProcessingPurpose, string> = {
     service_delivery:

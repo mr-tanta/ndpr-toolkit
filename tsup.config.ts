@@ -127,9 +127,23 @@ export default defineConfig({
     // published bundle we strip it (idempotent) then re-inject ONLY for
     // client entries, post-minify.
 
+    // Both helpers read directly and tolerate ENOENT instead of calling
+    // existsSync first. A separate existence check is a TOCTOU pattern
+    // (CodeQL js/file-system-race) and buys nothing here: the read can fail
+    // whether or not it is preceded by a check, so handling the failure is
+    // the only thing that actually helps.
+    const readIfPresent = (filePath: string): string | null => {
+      try {
+        return fs.readFileSync(filePath, "utf8");
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
+        throw err;
+      }
+    };
+
     const stripUseClient = (filePath: string) => {
-      if (!fs.existsSync(filePath)) return;
-      const original = fs.readFileSync(filePath, "utf8");
+      const original = readIfPresent(filePath);
+      if (original === null) return;
       const stripped = original.replace(/^["']use client["'];?\s*\n?/, "");
       if (stripped !== original) {
         fs.writeFileSync(filePath, stripped, "utf8");
@@ -137,8 +151,8 @@ export default defineConfig({
     };
 
     const injectUseClient = (filePath: string) => {
-      if (!fs.existsSync(filePath)) return;
-      const original = fs.readFileSync(filePath, "utf8");
+      const original = readIfPresent(filePath);
+      if (original === null) return;
       // Idempotent: don't double-prepend if a previous build (or the
       // banner that did survive on this entry by accident) already left
       // the directive in place.

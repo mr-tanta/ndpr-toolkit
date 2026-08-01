@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useCrossBorderTransfer } from '../../hooks/useCrossBorderTransfer';
 import { memoryAdapter } from '../../adapters/memory';

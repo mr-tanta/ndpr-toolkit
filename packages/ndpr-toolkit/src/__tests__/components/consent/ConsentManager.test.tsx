@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ConsentManager } from '../../../components/consent/ConsentManager';
-import { ConsentOption, ConsentSettings } from '../../../types/consent';
+import { ConsentOption } from '../../../types/consent';
 
 describe('ConsentManager (NDPA Privacy Settings)', () => {
   const mockOnSave = jest.fn();

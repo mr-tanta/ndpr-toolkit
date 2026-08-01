@@ -50,7 +50,7 @@ describe('DSRRequestForm (NDPA Part VI - Data Subject Rights)', () => {
     const originalConsoleError = console.error;
     console.error = jest.fn();
     
-    const { container } = renderComponent();
+    renderComponent();
     
     // Submit without filling required fields
     fireEvent.click(screen.getByRole('button', { name: /submit/i }));

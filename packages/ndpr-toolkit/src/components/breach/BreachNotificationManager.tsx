@@ -131,7 +131,8 @@ export const BreachNotificationManager: React.FC<BreachNotificationManagerProps>
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('discoveredAt');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  // No UI toggles direction, so the setter is intentionally not bound.
+  const [sortDirection] = useState<'asc' | 'desc'>('desc');
   
   // Update filtered breaches when filters change
   useEffect(() => {

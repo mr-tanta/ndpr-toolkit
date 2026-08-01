@@ -2,7 +2,7 @@ import {
   formatDSRRequestStructured,
   validateDsrSubmissionStructured,
 } from '../../utils/dsr';
-import { DSRRequest, DSRType, DSRStatus } from '../../types/dsr';
+import { DSRRequest } from '../../types/dsr';
 
 // ── validateDsrSubmissionStructured (4.1.0 — structured-result family) ──────
 

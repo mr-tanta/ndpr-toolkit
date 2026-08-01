@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useDefaultPrivacyPolicy } from '../../hooks/useDefaultPrivacyPolicy';
 import { createBusinessPolicyTemplate } from '../../utils/policy-templates';

@@ -5,7 +5,6 @@ import CheckboxGroup from '../shared/CheckboxGroup';
 import FormField from '../shared/FormField';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Select } from '@/components/ui/Select';
-import { cn } from '@/lib/utils';
 
 interface DataCollectionStepProps {
   formData: {

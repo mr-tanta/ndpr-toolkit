@@ -4,13 +4,11 @@ import React from 'react';
 import {
   Container,
   SiteButton,
-  SiteCard,
   SiteBadge,
   Section,
   SiteCodeBlock,
   GradientText,
   FeatureCard,
-  Grid,
   CTASection,
 } from '@/components/site/ui';
 import { SiteHeader } from '@/components/site/SiteHeader';

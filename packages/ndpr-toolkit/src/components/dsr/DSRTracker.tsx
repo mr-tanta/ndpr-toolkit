@@ -101,7 +101,9 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
   title,
   description,
   className = "",
-  buttonClassName = "",
+  // buttonClassName is accepted by DSRTrackerProps but not currently applied to
+  // any button in this component. Left out of the destructure rather than bound
+  // and ignored; callers are unaffected because the prop stays on the type.
   showSummaryStats = true,
   showTypeBreakdown = true,
   showStatusBreakdown = true,
@@ -288,33 +290,11 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
     );
   };
   
-  // Render status badge
-  const renderStatusBadge = (status: DSRStatus) => {
-    const colorClasses = {
-      pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      inProgress: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      rejected: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-      awaitingVerification: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-    };
-
-    return (
-      <span className={resolveClass(`px-2 py-1 rounded text-xs font-medium ${colorClasses[status]}`, classNames?.statusBadge, unstyled)}>
-        {status === 'inProgress' ? 'In Progress' :
-         status === 'awaitingVerification' ? 'Awaiting Verification' :
-         status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
-    );
-  };
-  
   // Render the summary statistics
   const renderSummaryStats = () => {
     const totalRequests = filteredRequests.length;
     const pendingRequests = filteredRequests.filter(request => 
       request.status !== 'completed' && request.status !== 'rejected'
-    ).length;
-    const completedRequests = filteredRequests.filter(request => 
-      request.status === 'completed' || request.status === 'rejected'
     ).length;
     const averageResponseTime = calculateAverageResponseTime();
     const complianceRate = calculateComplianceRate();
