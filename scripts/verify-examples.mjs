@@ -15,10 +15,9 @@
  * Usage: node scripts/verify-examples.mjs [--build] [filter]
  */
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdtempSync, rmSync, existsSync, readFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, rmSync, existsSync, readFileSync, globSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, relative } from 'node:path';
-import { globSync } from 'node:fs';
+import { join } from 'node:path';
 
 const args = process.argv.slice(2);
 const doBuild = args.includes('--build');
