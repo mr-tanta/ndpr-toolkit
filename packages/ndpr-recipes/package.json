@@ -80,7 +80,7 @@
     "@prisma/client": "6.19.3",
     "@tantainnovative/ndpr-toolkit": "workspace:6.0.0",
     "@types/express": "5.0.6",
-    "@types/node": "22.20.1",
+    "@types/node": "26.1.2",
     "@types/react": "19.2.17",
     "drizzle-orm": "0.45.2",
     "express": "5.2.1",

@@ -50,6 +50,15 @@ updates:
       prefix: "chore(deps)"
       include: "scope"
     groups:
+      # @commitlint/cli and @commitlint/config-conventional must move together.
+      # config-conventional 21.2.0 pulls
+      # conventional-changelog-conventionalcommits@10, whose exports map the
+      # older @commitlint/resolve-extends bundled with cli 21.0.2 cannot resolve
+      # — the commit-msg hook dies with ERR_PACKAGE_PATH_NOT_EXPORTED. Nothing in
+      # CI catches that, because commitlint only runs in the git hook.
+      commitlint:
+        patterns:
+          - "@commitlint/*"
       dev-tooling:
         patterns:
           - "@types/*"
