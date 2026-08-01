@@ -18,6 +18,8 @@ Compliance-impacting examples:
 
 ## [6.0.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.4...v6.0.0) (2026-07-19)
 
+Hardens production boundaries: compliance duties stay applicable until complete correlated evidence establishes otherwise, and backend tenant/actor authority moves from request input to server configuration and verified sessions. Nothing was renamed or removed, so most builds keep compiling — but output changes for unchanged input, so re-run audits. Full upgrade path in [`/docs/guides/migrating-5-7-to-6-0`](https://ndprtoolkit.com.ng/docs/guides/migrating-5-7-to-6-0).
+
 ### ⚠ BREAKING CHANGES
 
 * **breach:** `highRisk` and `notificationRequired` are force-on-only options (`true`). A duty may resolve to false only from complete risk evidence correlated to the same breach; missing, malformed, mismatched, or impossible evidence now fails closed.
