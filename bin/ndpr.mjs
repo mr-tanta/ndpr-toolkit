@@ -86,8 +86,20 @@ async function main() {
 
   if (args.flags.init) {
     const out = resolve(process.cwd(), 'ndpr.audit.json');
-    if (existsSync(out)) { process.stderr.write(`Refusing to overwrite existing ${out}\n`); return 1; }
-    writeFileSync(out, JSON.stringify(STARTER_CONFIG, null, 2) + '\n');
+    // Write with 'wx' rather than checking existsSync first and writing
+    // second. That check-then-write pattern is a TOCTOU race: a file created
+    // in the window between the two calls is silently overwritten, which
+    // defeats the very guard below. 'wx' makes the refusal atomic — the open
+    // fails with EEXIST and nothing is written.
+    try {
+      writeFileSync(out, JSON.stringify(STARTER_CONFIG, null, 2) + '\n', { flag: 'wx' });
+    } catch (err) {
+      if (err?.code === 'EEXIST') {
+        process.stderr.write(`Refusing to overwrite existing ${out}\n`);
+        return 1;
+      }
+      throw err;
+    }
     process.stdout.write(`Wrote starter config to ${out}\n`);
     return 0;
   }
