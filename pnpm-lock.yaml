@@ -147,7 +147,7 @@ importers:
         specifier: ^16.2.12
         version: 16.2.12(@babel/core@7.29.7)(@opentelemetry/api@1.9.1)(@types/node@25.9.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       postcss:
-        specifier: ^8.5.25
+        specifier: '>=8.5.18'
         version: 8.5.25
       posthog-js:
         specifier: ^1.407.2
