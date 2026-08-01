@@ -24,7 +24,19 @@ updates:
         patterns:
           - "github/codeql-action*"
 
-  # npm ecosystem — root package.json + all workspace example apps.
+  # npm ecosystem — the root package.json and the pnpm workspace projects
+  # (packages/create-ndpr, packages/create-ndpr-unscoped, packages/ndpr-recipes)
+  # that resolve through the root lockfile.
+  #
+  # NOTE: examples/** is deliberately NOT covered. Those apps are outside the
+  # pnpm workspace (see pnpm-workspace.yaml#packages), have no lockfile, and are
+  # not reachable from directory "/" — so they receive no version-update PRs and
+  # never appear in `pnpm audit`. Dependabot *alerts* still scan them, which is
+  # the only reason the astro advisories in examples/ssr/astro surfaced at all.
+  # Adding "directories" entries for them would fix that, but all 14 example
+  # manifests pin @tantainnovative/ndpr-toolkit independently, so it needs a
+  # covering group first or it opens a PR per app.
+  #
   # Grouped to avoid PR storms; security updates always open their own PR.
   - package-ecosystem: "npm"
     directory: "/"
