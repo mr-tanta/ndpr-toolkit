@@ -404,7 +404,7 @@
     "lucide-react": "1.27.0",
     "next": "^16.2.12",
     "postcss": "^8.5.25",
-    "posthog-js": "^1.407.2",
+    "posthog-js": "^1.409.5",
     "posthog-node": "^5.46.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
