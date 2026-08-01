@@ -1,3 +1,9 @@
+// This page is interactive: the demo form cancels its own submit with an
+// onSubmit handler. Event handlers can't be passed from a Server Component to a
+// client element, so prerendering /checkout failed with "Event handlers cannot
+// be passed to Client Component props" until this directive was added.
+"use client";
+
 import Link from "next/link";
 
 const pageStyle: React.CSSProperties = {

@@ -33,6 +33,7 @@
     "build": "next build && node scripts/post-build.js",
     "build:lib": "tsup && cp packages/ndpr-toolkit/src/styles.d.ts dist/styles.d.ts && node scripts/rollup-dts.mjs",
     "verify:tarball": "node scripts/verify-tarball.mjs",
+    "verify:examples": "node scripts/verify-examples.mjs",
     "verify:create-ndpr": "node scripts/verify-create-ndpr.mjs",
     "verify:create-ndpr:codeql": "node scripts/verify-create-ndpr.mjs --codeql",
     "prepublishOnly": "pnpm build:lib",

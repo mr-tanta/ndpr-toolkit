@@ -8,7 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
-    "@tantainnovative/ndpr-toolkit": "^5.1.1",
+    "@tantainnovative/ndpr-toolkit": "^6.0.0",
+    "docx": "^9.5.1",
+    "jspdf": "^4.2.1",
     "next": "^15.5.18",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
