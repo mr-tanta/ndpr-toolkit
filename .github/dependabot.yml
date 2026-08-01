@@ -59,6 +59,14 @@ updates:
       commitlint:
         patterns:
           - "@commitlint/*"
+      # storybook core, frameworks, and addons must move together — they are all
+      # exact-pinned to the same version and Storybook refuses to run a core at
+      # one version against an addon or framework at another. #134 bumped only
+      # `storybook` and would have left the three @storybook/* packages behind.
+      storybook:
+        patterns:
+          - "storybook"
+          - "@storybook/*"
       dev-tooling:
         patterns:
           - "@types/*"
