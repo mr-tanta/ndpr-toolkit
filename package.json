@@ -402,7 +402,7 @@
     "jest-environment-jsdom": "^30.4.1",
     "jspdf": "^4.2.1",
     "lint-staged": "^17.2.0",
-    "lucide-react": "1.27.0",
+    "lucide-react": "1.28.0",
     "next": "^16.2.12",
     "postcss": "^8.5.25",
     "posthog-js": "^1.409.5",
