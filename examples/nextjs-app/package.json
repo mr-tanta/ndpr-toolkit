@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@tantainnovative/ndpr-toolkit": "^6.0.0",
-    "next": "^15.5.18",
+    "next": "^16.2.12",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -20,6 +20,6 @@
     "typescript": "^5.7.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=20.9.0"
   }
 }
