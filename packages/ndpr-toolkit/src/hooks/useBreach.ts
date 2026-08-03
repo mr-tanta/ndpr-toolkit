@@ -51,8 +51,14 @@ function breachReducer(state: BreachCompositeState, action: BreachAction): Breac
 export interface UseBreachOptions {
   /**
    * Available breach categories
+   *
+   * @deprecated Not read by this hook, and now optional — it was previously
+   * required, so every caller had to build an array the hook then ignored.
+   * Category lists belong to whatever UI renders the picker; pass them straight
+   * to that component instead. Kept on the type so existing call sites still
+   * compile; it will be removed in the next major.
    */
-  categories: BreachCategory[];
+  categories?: BreachCategory[];
 
   /**
    * Initial breach reports

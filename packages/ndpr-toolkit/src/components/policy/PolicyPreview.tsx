@@ -32,11 +32,23 @@ export interface PolicyPreviewProps {
   
   /**
    * The policy sections
+   *
+   * @deprecated Not read. This component renders from `content` alone and
+   * derives its table of contents by scanning that markdown for `##` and `###`
+   * headings, so passing sections has never changed the output. Kept on the type
+   * so existing call sites still compile; it will be removed in the next major.
    */
   sections?: PolicySection[];
   
   /**
    * The policy variables
+   *
+   * @deprecated Not read. `content` is expected to arrive with variables already
+   * substituted — `exportHTML`, `generatePolicyText`, and
+   * `usePrivacyPolicy().getPolicyText()` all do that — so this component has
+   * nothing left to substitute. Use `findUnfilledTokens` on the content if you
+   * need to detect tokens that escaped substitution. Kept on the type so
+   * existing call sites still compile; it will be removed in the next major.
    */
   variables?: PolicyVariable[];
   
