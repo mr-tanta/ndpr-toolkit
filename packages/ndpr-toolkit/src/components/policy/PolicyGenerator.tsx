@@ -115,9 +115,7 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
   className = "",
   buttonClassName = "",
   generateButtonText,
-  // showPreview is accepted by PolicyGeneratorProps but not currently applied by
-  // this component. Left out of the destructure rather than bound and ignored;
-  // callers are unaffected because the prop stays on the type.
+  showPreview = true,
   allowEditing = true,
   classNames,
   unstyled = false
@@ -219,6 +217,16 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
     setGeneratedPolicy(policyContent);
     setEditedPolicy(policyContent);
     setIsGenerated(true);
+
+    // With showPreview disabled there is no preview step to advance to, so the
+    // policy is handed straight to onGenerate. `policyContent` is passed rather
+    // than reading generatedPolicy/editedPolicy, because those setState calls
+    // have not landed yet in this tick and would submit stale content.
+    if (!showPreview) {
+      onGenerate({ sections, variables, content: policyContent });
+      return;
+    }
+
     setActiveStep('preview');
   };
   
@@ -512,13 +520,15 @@ export const PolicyGenerator: React.FC<PolicyGeneratorProps> = ({
             <span className="hidden sm:inline-flex sm:ml-2">Variables</span>
             <span className="sr-only">{activeStep === 'variables' ? ' (current step)' : ''}</span>
           </li>
-          <li className={`flex items-center ${activeStep === 'preview' ? 'ndpr-text-primary' : 'ndpr-card__subtitle'}`}>
-            <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'preview' ? 'ndpr-alert ndpr-alert--info' : 'ndpr-panel'} rounded-full shrink-0`} aria-current={activeStep === 'preview' ? 'step' : undefined}>
-              3
-            </span>
-            <span className="hidden sm:inline-flex sm:ml-2">Preview</span>
-            <span className="sr-only">{activeStep === 'preview' ? ' (current step)' : ''}</span>
-          </li>
+          {showPreview && (
+            <li className={`flex items-center ${activeStep === 'preview' ? 'ndpr-text-primary' : 'ndpr-card__subtitle'}`}>
+              <span className={`flex items-center justify-center w-8 h-8 ${activeStep === 'preview' ? 'ndpr-alert ndpr-alert--info' : 'ndpr-panel'} rounded-full shrink-0`} aria-current={activeStep === 'preview' ? 'step' : undefined}>
+                3
+              </span>
+              <span className="hidden sm:inline-flex sm:ml-2">Preview</span>
+              <span className="sr-only">{activeStep === 'preview' ? ' (current step)' : ''}</span>
+            </li>
+          )}
         </ol>
       </nav>
       

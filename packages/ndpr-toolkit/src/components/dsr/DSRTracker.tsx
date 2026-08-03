@@ -45,6 +45,12 @@ export interface DSRTrackerProps {
   
   /**
    * Custom CSS class for the buttons
+   *
+   * @deprecated This component renders no buttons — its only control is the
+   * timeframe `<select>` — so this prop has never had any effect. Use
+   * `classNames` to target specific elements, or `unstyled` to drop the default
+   * Tailwind classes entirely. Kept on the type so existing call sites still
+   * compile; it will be removed in the next major.
    */
   buttonClassName?: string;
   

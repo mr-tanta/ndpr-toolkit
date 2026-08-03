@@ -129,3 +129,33 @@ describe('useBreach with adapter', () => {
     expect('isLoading' in result.current).toBe(true);
   });
 });
+
+
+describe('useBreach — categories is optional', () => {
+  // `categories` was a *required* option that the hook never read, so every
+  // caller had to construct an array only for it to be ignored. It is now
+  // optional and deprecated. Existing call sites that still pass it keep
+  // compiling — the tests above are exactly that case.
+  it('works with categories omitted entirely', async () => {
+    const adapter = memoryAdapter<any>();
+    const { result } = renderHook(() => useBreach({ adapter }));
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(result.current.reports).toEqual([]);
+    expect(result.current.assessments).toEqual([]);
+    expect(result.current.notifications).toEqual([]);
+  });
+
+  it('still reports a breach with categories omitted', async () => {
+    const adapter = memoryAdapter<any>();
+    const { result } = renderHook(() => useBreach({ adapter }));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    act(() => {
+      result.current.reportBreach(baseReportData as any);
+    });
+
+    await waitFor(() => expect(result.current.reports).toHaveLength(1));
+  });
+});
