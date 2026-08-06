@@ -15,7 +15,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATES_DIR = join(__dirname, '..', 'templates');
 const CWD = process.cwd();
 // Keep this exact pin synchronized with the repository root package version.
-const TOOLKIT_VERSION = '6.0.0';
+const TOOLKIT_VERSION = '6.1.0';
 const FORCE = process.argv.slice(2).includes('--force');
 
 const c = {
