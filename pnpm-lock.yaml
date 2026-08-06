@@ -205,7 +205,7 @@ importers:
         specifier: 6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
       '@tantainnovative/ndpr-toolkit':
-        specifier: workspace:6.0.0
+        specifier: workspace:6.1.0
         version: link:../..
       '@types/express':
         specifier: 5.0.6

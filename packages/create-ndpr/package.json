@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/create-ndpr",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "CLI scaffolder for Nigeria NDPA 2023 / NDPC GAID 2025 compliance with @tantainnovative/ndpr-toolkit",
   "license": "MIT",
   "author": {

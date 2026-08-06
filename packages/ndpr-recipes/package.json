@@ -1,6 +1,6 @@
 {
   "name": "@tantainnovative/ndpr-recipes",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": false,
   "description": "Backend recipes for @tantainnovative/ndpr-toolkit — Prisma schemas, API routes, and ORM adapters for Nigeria NDPA 2023 / NDPC GAID 2025 compliance",
   "license": "MIT",
@@ -43,7 +43,7 @@
   "peerDependencies": {
     "@paralleldrive/cuid2": ">=3.3.0 <4.0.0",
     "@prisma/client": ">=6.19.3 <7.0.0",
-    "@tantainnovative/ndpr-toolkit": "6.0.0",
+    "@tantainnovative/ndpr-toolkit": ">=6.1.0 <7.0.0",
     "drizzle-orm": ">=0.45.2 <1.0.0",
     "express": ">=5.2.1 <6.0.0",
     "next": ">=16.2.11 <17.0.0",
@@ -78,7 +78,7 @@
   "devDependencies": {
     "@paralleldrive/cuid2": "3.3.0",
     "@prisma/client": "6.19.3",
-    "@tantainnovative/ndpr-toolkit": "workspace:6.0.0",
+    "@tantainnovative/ndpr-toolkit": "workspace:6.1.0",
     "@types/express": "5.0.6",
     "@types/node": "26.1.2",
     "@types/react": "19.2.17",

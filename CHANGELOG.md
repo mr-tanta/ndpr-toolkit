@@ -2,19 +2,48 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## Changelog taxonomy
+## [6.1.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v6.0.0...v6.1.0) (2026-08-06)
 
-- **Features**: additive public APIs, components, hooks, routes, adapters, CLI behavior, or documented capabilities.
-- **Bug Fixes**: corrections to shipped behavior, validation, packaging, security hardening, or regressions.
-- **Documentation**: docs, examples, release guidance, legal citation wording, or site content that does not change package behavior.
-- **Compliance Rule Changes**: changes to NDPA/NDPC/GAID assumptions, default thresholds, filing deadlines, citation mappings, scoring semantics, or compliance-sensitive validator behavior. These entries should name the affected source and module, and should say whether users need to re-run audits, update config, refresh evidence, or seek legal review.
+A security and correctness release. Two vulnerabilities in the published package are fixed, one prop that was documented but inert now works, and four more are marked deprecated. Nothing is removed and no signature loses a parameter, so upgrading is a version bump — but read **Behavior Changes** below if you pass `showPreview`.
 
-Compliance-impacting examples:
+Released alongside `@tantainnovative/ndpr-recipes@0.4.0` and `@tantainnovative/create-ndpr@0.5.1`. The unscoped `create-ndpr@1.0.0` alias is unchanged and still delegates to the latest scoped CLI.
 
-- `Documentation`: clarify a citation block or add a stronger "not legal advice" notice.
-- `Bug Fixes`: correct a false positive in `assessBreachNotification`.
-- `Features`: add a new optional GAID check behind explicit config.
-- `Compliance Rule Changes`: update DCPMI thresholds, CAR deadlines, breach notification content assumptions, or compliance score weights because NDPC guidance changed.
+### Security
+
+* **policy export:** consumer-supplied `customCSS` could escape the `<style>` block in `exportHTML`. `<style>` is a raw-text element, so the parser ends it at the first `</style` followed by whitespace, `/`, or `>` — the previous filter matched only the literal `</style>`, letting `</style >`, `</style/>`, and `</style\n>` through as live markup. Deleting the token is also unsound because one pass can reassemble it from fragments (`</st</styleyle`). Every `<` is now escaped as the CSS escape `\3C`; `>` is untouched so child combinators still work.
+* **policy templates:** four polynomial-ReDoS sites in the `{{var}}` matchers (`findUnfilledTokens`, both `generatePolicyText` branches, and `substituteVariables`). A run of `{` was consumed in full before the closing `}}` failed, once per starting offset, so a malformed template could stall an export. The token class now excludes `{`, which fails at the first character instead.
+* **cli:** `ndpr audit --init` checked `existsSync` then wrote as a separate operation, so a file created in between was silently overwritten — defeating the "Refusing to overwrite existing" guard it exists to provide. The write now uses `wx`, making the refusal atomic.
+
+### Behavior Changes
+
+* **policy:** `PolicyGenerator`'s `showPreview` prop is now respected. It was documented with `@default true` but never read, so `showPreview={false}` still showed the preview step. Passing `false` now generates and calls `onGenerate` directly, and the step indicator drops its third entry. Required-variable validation still runs first. If you currently pass `showPreview={false}` and depend on the preview appearing anyway, remove the prop.
+* **breach:** `useBreach({ categories })` is now optional. It was required but never read, so every caller had to construct an array purely to have it ignored. Existing call sites that still pass it keep working.
+
+### Deprecations
+
+None are removed in 6.1.0; each carries a `@deprecated` note explaining what to use instead, and all are slated for removal in the next major.
+
+* `DSRTracker.buttonClassName` — the component renders no buttons, only the timeframe `<select>`. Use `classNames` or `unstyled`.
+* `PolicyPreview.sections` and `PolicyPreview.variables` — the component renders from `content` and derives its table of contents from that markdown. Use `findUnfilledTokens` if you need to detect tokens that escaped substitution.
+* `useBreach({ categories })` — pass category lists straight to whatever renders the picker.
+
+### Packages
+
+* **recipes:** the `@tantainnovative/ndpr-toolkit` peer moves from the exact `6.0.0` to `>=6.1.0 <7.0.0`. The exact pin forced a recipes republish for every toolkit patch; the range still records what it was verified against.
+* **create-ndpr:** generated scaffolds now pin `@tantainnovative/ndpr-toolkit@6.1.0`.
+
+### Bug Fixes
+
+* **cli:** close the TOCTOU race in `ndpr audit --init` ([06d23ca](https://github.com/mr-tanta/ndpr-toolkit/commit/06d23ca55a4534f7428becf5737505821b95680d))
+* **deps:** clear all 16 advisories and unblock the dependabot backlog ([e479250](https://github.com/mr-tanta/ndpr-toolkit/commit/e479250c2761f8d64fbcc0fd15c5b99dc71a7b88)), closes [#100](https://github.com/mr-tanta/ndpr-toolkit/issues/100), references [#94](https://github.com/mr-tanta/ndpr-toolkit/issues/94) [#89](https://github.com/mr-tanta/ndpr-toolkit/issues/89) [#92](https://github.com/mr-tanta/ndpr-toolkit/issues/92) [#93](https://github.com/mr-tanta/ndpr-toolkit/issues/93) [#94](https://github.com/mr-tanta/ndpr-toolkit/issues/94) [#95](https://github.com/mr-tanta/ndpr-toolkit/issues/95) [#96](https://github.com/mr-tanta/ndpr-toolkit/issues/96) [#97](https://github.com/mr-tanta/ndpr-toolkit/issues/97) [#98](https://github.com/mr-tanta/ndpr-toolkit/issues/98) [#99](https://github.com/mr-tanta/ndpr-toolkit/issues/99) [#100](https://github.com/mr-tanta/ndpr-toolkit/issues/100)
+* **deps:** record the override specifier for postcss in the lockfile ([be379f3](https://github.com/mr-tanta/ndpr-toolkit/commit/be379f3c9f89e3dd5444bcd370477559af29bd1a))
+* **examples:** clear the four astro advisories in the SSR example ([ac987ad](https://github.com/mr-tanta/ndpr-toolkit/commit/ac987ad5fc90529436eba3ce2205a2989447cc1a))
+* **policy:** make showPreview work, and mark the other dead props deprecated ([b440f64](https://github.com/mr-tanta/ndpr-toolkit/commit/b440f6492f68dcb51fe229e6ac073828e09624e4)), references [#130](https://github.com/mr-tanta/ndpr-toolkit/issues/130)
+* **security:** resolve every open CodeQL alert outside dist ([ee380d1](https://github.com/mr-tanta/ndpr-toolkit/commit/ee380d15edc49469dbe5a0ae6dc3932ff2cbb7c0))
+
+### Documentation
+
+* add 5.7 to 6.0 migration guide ([ff4d315](https://github.com/mr-tanta/ndpr-toolkit/commit/ff4d315d4930abd96efe7b0021fbfeec869f925f))
 
 ## [6.0.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v5.7.4...v6.0.0) (2026-07-19)
 
