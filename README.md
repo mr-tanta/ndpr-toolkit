@@ -9,6 +9,24 @@
 [![CI](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
+## What this is
+
+Open-source **NDPA 2023** components and server utilities for Nigerian React / TypeScript apps.
+
+Consent, DSR, DPIA, breach (72h), RoPA, lawful basis, cross-border, and privacy policy helpers. Plus an `ndpr audit` CLI you can drop into CI.
+
+Not a GDPR cookie banner with Nigerian labels.
+
+```bash
+pnpm add @tantainnovative/ndpr-toolkit
+```
+
+**[Docs](https://ndprtoolkit.com.ng)** · **[Demos](https://ndprtoolkit.com.ng/ndpr-demos)** · **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)**
+
+If this saves you a week of wiring privacy ops into product, star the repo and open an issue when something is wrong or missing.
+
+---
+
 The toolkit ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA. **5.2–5.5 add an NDPC GAID 2025 layer**: a DCPMI designation classifier, a Compliance Audit Returns scheduler, a Section 40 / Article 33 breach-notification checker (wired live into `BreachReportForm`), and an **`ndpr audit` CLI** that gates compliance in CI.
 
 **[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[Latest Release](https://github.com/mr-tanta/ndpr-toolkit/releases/latest)**
