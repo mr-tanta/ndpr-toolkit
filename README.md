@@ -702,6 +702,7 @@ The runnable examples cover the first production handoff paths:
 |---------|----------------------|
 | [`examples/nextjs-app`](./examples/nextjs-app) | App Router consent endpoint that validates with `validateConsentStructured`, stores the current consent snapshot, and appends consent audit events. |
 | [`examples/dsr-backend-reference`](./examples/dsr-backend-reference) | DSR intake endpoint with server validation, Prisma persistence, reference IDs, 30-day target dates, and best-effort confirmation email. |
+| [`examples/express-consent`](./examples/express-consent) | Minimal Express + TypeScript consent endpoint using the React-free `validateConsentStructured` validator. |
 
 The ROPA recipes now enforce the toolkit's production completeness checks before persistence. Include controller details, lawful-basis justification, data-subject categories, recipients, retention, security measures, and `dpiaReference` when `dpiaRequired` is true.
 
