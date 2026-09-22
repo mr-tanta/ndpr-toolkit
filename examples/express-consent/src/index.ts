@@ -10,6 +10,16 @@ const port = Number(process.env.PORT) || 3000;
 app.use(express.json());
 
 app.post('/consent', (req, res) => {
+  if (
+    req.body === null ||
+    typeof req.body !== 'object' ||
+    Array.isArray(req.body)
+  ) {
+    return res.status(400).json({
+      error: 'A JSON object is required.',
+    });
+  }
+
   const { valid, errors, data } = validateConsentStructured(
     req.body as ConsentSettings,
   );
@@ -17,9 +27,7 @@ app.post('/consent', (req, res) => {
   if (!valid || !data) {
     return res.status(400).json({
       error: 'Validation failed.',
-      fields: Object.fromEntries(
-        errors.map((error) => [error.field, error.message]),
-      ),
+      errors,
     });
   }
 
