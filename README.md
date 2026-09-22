@@ -58,6 +58,8 @@ The toolkit ships **zero-config presets**, **pluggable storage adapters**, **com
 
 Two files. Full NDPA-compliant consent with no backend.
 
+![NDPRConsent quickstart — customize, save preferences, accept all](./docs/ndpr-consent-quickstart.gif)
+
 **`app/layout.tsx`**
 ```tsx
 import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
