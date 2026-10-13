@@ -853,7 +853,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "dpo",
         title: "Data Protection Officer",
-        content: `We have appointed a Data Protection Officer (DPO) who is responsible for overseeing questions in relation to this Privacy Policy. You can contact our DPO at ${formData.dpoContact}.${formData.includeNDPRCompliance ? ` This appointment is in accordance with ${formData.includeLegalReferences ? "the accountability provisions of the NDPA (Section 24)" : "the requirements of the NDPA"}.` : ""}`,
+        content: `We have appointed a Data Protection Officer (DPO) who is responsible for overseeing questions in relation to this Privacy Policy. You can contact our DPO at ${formData.dpoContact}.${formData.includeNDPRCompliance ? ` This appointment is in accordance with ${formData.includeLegalReferences ? "NDPA Section 32" : "the requirements of the NDPA"}.` : ""}`,
         required: false,
         included: true,
         order: order++,

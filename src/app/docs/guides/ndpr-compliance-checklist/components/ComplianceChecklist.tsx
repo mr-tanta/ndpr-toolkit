@@ -13,7 +13,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary mr-2 text-sm font-bold">1</span>
-            Data Governance and Accountability (NDPA Part III)
+            Data Governance and Accountability (NDPA Sections 24(3) and 32)
           </h3>
           <div className="bg-card border border-border rounded-xl p-6">
             <ul className="space-y-2">
@@ -219,7 +219,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary mr-2 text-sm font-bold">7</span>
-            Cross-Border Transfers (NDPA Section 41)
+            Cross-Border Transfers (NDPA Sections 41–43)
           </h3>
           <div className="bg-card border border-border rounded-xl p-6">
             <ul className="space-y-2">
@@ -237,7 +237,7 @@ export default function ComplianceChecklist() {
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-border mr-2 flex-shrink-0 mt-0.5 text-muted-foreground text-xs">□</span>
-                <span className="text-foreground">Obtain NDPC approval for cross-border transfers where required under NDPA Section 41</span>
+                <span className="text-foreground">Obtain NDPC approval where the transfer mechanism requires it (NDPA Section 42(5))</span>
               </li>
               <li className="flex items-start">
                 <span className="inline-flex items-center justify-center w-6 h-6 rounded border border-border mr-2 flex-shrink-0 mt-0.5 text-muted-foreground text-xs">□</span>
