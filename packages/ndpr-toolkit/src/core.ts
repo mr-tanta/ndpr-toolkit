@@ -128,6 +128,16 @@ export type {
 } from './utils/nigerian-pii';
 export { issueDecisionReceipt, decisionContestRequest, shortCodeFor } from './utils/decision-receipt';
 export type { AutomatedDecisionBasis, DecisionReceiptInput, DecisionReceipt } from './utils/decision-receipt';
+export {
+  STARTER_EXCEPTION_REGISTER, validateExceptionRow, findStatutoryExceptions,
+  resolveDsrOutcome, planRetention, addMonthsUTC,
+} from './utils/statutory-exceptions';
+export type {
+  ExceptionObligation, ExceptionReviewStatus, RetentionTrigger, CollidingRight,
+  StatutoryExceptionRow, ExceptionRowError, ExceptionQuery, RetentionDates, LegalHold,
+  DsrCollisionRequest, DsrOutcomeHold, DsrOutcomeReview, DsrProposedOutcome, DsrOutcomeDraft,
+  ResolveDsrOutcomeOptions, RetentionRecord, RetentionPolicyEntry, RetentionDecision, RetentionPlanItem,
+} from './utils/statutory-exceptions';
 
 // Compliance Audit Returns scheduling (NDPC GAID 2025)
 export { generateComplianceAuditReturn } from './utils/car';

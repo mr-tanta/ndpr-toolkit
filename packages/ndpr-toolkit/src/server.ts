@@ -317,6 +317,35 @@ export type {
 export { issueDecisionReceipt, decisionContestRequest, shortCodeFor } from './utils/decision-receipt';
 export type { AutomatedDecisionBasis, DecisionReceiptInput, DecisionReceipt } from './utils/decision-receipt';
 export {
+  STARTER_EXCEPTION_REGISTER,
+  validateExceptionRow,
+  findStatutoryExceptions,
+  resolveDsrOutcome,
+  planRetention,
+  addMonthsUTC,
+} from './utils/statutory-exceptions';
+export type {
+  ExceptionObligation,
+  ExceptionReviewStatus,
+  RetentionTrigger,
+  CollidingRight,
+  StatutoryExceptionRow,
+  ExceptionRowError,
+  ExceptionQuery,
+  RetentionDates,
+  LegalHold,
+  DsrCollisionRequest,
+  DsrOutcomeHold,
+  DsrOutcomeReview,
+  DsrProposedOutcome,
+  DsrOutcomeDraft,
+  ResolveDsrOutcomeOptions,
+  RetentionRecord,
+  RetentionPolicyEntry,
+  RetentionDecision,
+  RetentionPlanItem,
+} from './utils/statutory-exceptions';
+export {
   generateComplianceAuditReturn,
   DEFAULT_CAR_RULESET,
   DEFAULT_CAR_DEADLINE_OVERRIDES,
