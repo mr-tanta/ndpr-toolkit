@@ -739,7 +739,14 @@ function EmailCaptureForm({ report, gaidSummary, submitted, onSubmitted }: Email
       <input type="email" required placeholder="Work email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded border border-border bg-background px-3 py-2 text-sm" />
       <input type="text" placeholder="Organisation (optional)" value={orgName} onChange={(e) => setOrgName(e.target.value)} className="w-full rounded border border-border bg-background px-3 py-2 text-sm" />
       <button type="submit" disabled={!canSubmit || busy} className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50">{busy ? 'Sending…' : 'Email me my report'}</button>
-      <p className="text-[10px] text-muted-foreground leading-tight">We use this only to send the report; unsubscribe anytime. Stored per our <Link href="/privacy" className="underline">privacy policy</Link>.</p>
+      <p className="text-[10px] text-muted-foreground leading-tight">
+        {web3FormsKey
+          ? 'Submitting sends your name, email, organisation and the audit summary above to Web3Forms, a form service hosted outside Nigeria, which forwards it to us by email. '
+          : 'Submitting opens your email app with the summary pre-filled; nothing leaves your device until you press send. '}
+        We use it only to send the report; unsubscribe anytime. See{' '}
+        <Link href="/privacy#cross-border" className="underline">cross-border transfers</Link> in our{' '}
+        <Link href="/privacy" className="underline">privacy policy</Link>.
+      </p>
     </form>
   );
 }

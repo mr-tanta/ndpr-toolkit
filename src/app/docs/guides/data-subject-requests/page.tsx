@@ -511,8 +511,9 @@ function RequestTrackingPage() {
           <div className="bg-card border border-border rounded-xl p-6">
             <h3 className="font-bold text-lg mb-2">Timely Responses</h3>
             <p className="text-muted-foreground text-sm">
-              The NDPA 2023 requires organizations to respond to data subject requests within 30 days.
-              Implement processes and systems that enable you to meet this deadline.
+              The NDPA 2023 requires organizations to respond to data subject requests without unreasonable
+              delay (Section 34(1)); it sets no fixed number of days. Adopt a documented target (the toolkit
+              defaults to 30 days) and implement processes and systems that meet it.
             </p>
           </div>
 

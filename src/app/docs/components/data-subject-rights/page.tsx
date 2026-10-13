@@ -47,7 +47,7 @@ export default function DataSubjectRightsDocs() {
           <p className="text-muted-foreground text-sm leading-relaxed">
             Under the NDPA 2023, data subjects have several rights, including the right to access their personal data,
             right to rectification, right to erasure, right to restrict processing, right to data portability, and
-            right to object to processing. Organizations must respond to these requests within 30 days.
+            right to object to processing. Organizations must respond without unreasonable delay (Section 34(1)); the Act sets no fixed number of days, and the toolkit tracks a 30-day target by default.
           </p>
         </div>
       </section>
@@ -606,7 +606,7 @@ const accessRequests = getRequestsByType('access');`}</code>
             <strong className="text-foreground">Verification Process:</strong> Implement a verification process to confirm the identity of the data subject making the request.
           </li>
           <li>
-            <strong className="text-foreground">Response Timeframe:</strong> The NDPA requires organizations to respond to DSARs within 30 days. Ensure your process allows for timely responses.
+            <strong className="text-foreground">Response Timeframe:</strong> The NDPA requires a response without unreasonable delay (Section 34(1)) and sets no fixed period. Adopt a documented target (the toolkit defaults to 30 days) and make sure your process meets it.
           </li>
           <li>
             <strong className="text-foreground">Complete Responses:</strong> Provide complete information in response to access requests, including what data you hold, how it&apos;s used, who it&apos;s shared with, and its source.

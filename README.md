@@ -906,7 +906,7 @@ Each component exports its `ClassNames` TypeScript interface for autocomplete. F
 | `/lawful-basis` | Lawful basis component + hook | `react` | No |
 | `/lawful-basis/lite` | Read-only `LawfulBasisTrackerLite` — ~65% smaller than `/lawful-basis` | `react` | No |
 | `/cross-border` | Cross-border component + hook | `react` | No |
-| `/cross-border/lite` | Read-only `CrossBorderTransferManagerLite` — ~89% smaller (skips the 624-row adequacy dataset) | `react` | No |
+| `/cross-border/lite` | Read-only `CrossBorderTransferManagerLite` — ~89% smaller (skips the 57-country adequacy dataset) | `react` | No |
 | `/ropa` | ROPA component + hook | `react` | No |
 | `/ropa/lite` | Read-only `ROPAManagerLite` — ~64% smaller than `/ropa` | `react` | No |
 | `/unstyled` | All published components with `unstyled` defaulted to `true` | `react` | No |

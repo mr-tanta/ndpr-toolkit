@@ -339,7 +339,7 @@ interface CrossBorderSummary {
           For read-only transfer surfaces such as compliance dashboards and transparency pages, use{' '}
           <code>CrossBorderTransferManagerLite</code> from the new <code>/cross-border/lite</code> subpath. It
           renders the same transfer list and summary as the Full component, with no Add, Edit, or Terminate
-          affordances and — crucially — without importing the 624-row country adequacy dataset. It ships at{' '}
+          affordances and — crucially — without importing the 57-country adequacy dataset. It ships at{' '}
           <strong>5.6 KB</strong> instead of 53.3 KB (an 89% saving, minified and pre-gzip). Lite reads{' '}
           <code>transfer.adequacyStatus</code> directly from each record rather than recomputing it.
         </p>

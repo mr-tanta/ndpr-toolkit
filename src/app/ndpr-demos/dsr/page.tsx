@@ -513,7 +513,7 @@ export default function DSRDemoPage() {
         <section ref={formRef}>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Submit a Request</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl">
-            Fill out the form below to exercise your data subject rights. All requests are tracked against a 30-day compliance deadline.
+            Fill out the form below to exercise your data subject rights. All requests are tracked against a 30-day response target.
           </p>
 
           {formSubmitted ? (
@@ -1066,7 +1066,7 @@ export default function DSRDemoPage() {
                           {isOverdue && (
                             <div className="bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 rounded-lg p-3 text-sm text-red-700 dark:text-red-300">
                               <p className="font-semibold">Compliance Deadline Exceeded</p>
-                              <p className="mt-1">This request is {Math.abs(days)} day{Math.abs(days) !== 1 ? 's' : ''} past the NDPA 30-day statutory deadline. Immediate action required.</p>
+                              <p className="mt-1">This request is {Math.abs(days)} day{Math.abs(days) !== 1 ? 's' : ''} past the 30-day response target. Section 34 requires a response without unreasonable delay; act now.</p>
                             </div>
                           )}
                           {!isDone && !isOverdue && days <= 5 && (
@@ -1116,7 +1116,7 @@ export default function DSRDemoPage() {
               </div>
               <div className="space-y-1">
                 <p className="font-medium text-gray-700 dark:text-gray-300">Compliance Timeline</p>
-                <p className="text-gray-500 dark:text-gray-400">Track the full lifecycle with a 30-day compliance meter per NDPA requirements.</p>
+                <p className="text-gray-500 dark:text-gray-400">Track the full lifecycle with a 30-day response-target meter (the NDPA itself requires a response without unreasonable delay).</p>
               </div>
             </div>
             <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">

@@ -55,8 +55,11 @@ export interface RequestType {
   ndpaSection?: string;
 
   /**
-   * Estimated time to fulfill this type of request (in days)
-   * NDPA requires response within 30 days
+   * Estimated time to fulfill this type of request (in days).
+   * NDPA 2023 Section 34(1) requires a response "without constraint or
+   * unreasonable delay" and sets no fixed period; neither does NDPC GAID 2025.
+   * The toolkit's 30-day default is an implementation target, not a statutory
+   * deadline. Set it to your organisation's documented response policy.
    */
   estimatedCompletionTime: number;
 
@@ -106,8 +109,10 @@ export interface DSRRequest {
   verifiedAt?: number;
 
   /**
-   * Due date for responding to the request (timestamp)
-   * NDPA requires response within 30 days of receipt
+   * Target date for responding to the request (timestamp).
+   * Derived from the request type's estimatedCompletionTime (30 days by
+   * default). The NDPA sets no fixed period (Section 34(1): "without
+   * constraint or unreasonable delay"), so treat this as your own target.
    */
   dueDate?: number;
 
@@ -160,8 +165,10 @@ export interface DSRRequest {
   }>;
 
   /**
-   * Whether an extension was requested for this DSR
-   * NDPA allows a one-time extension of 30 days with justification
+   * Whether an extension of the response target was recorded for this DSR.
+   * Neither the NDPA 2023 nor NDPC GAID 2025 provides a statutory extension
+   * mechanism for data subject requests. Record one only under your own
+   * documented policy, and tell the data subject why the response is delayed.
    */
   extensionRequested?: boolean;
 
