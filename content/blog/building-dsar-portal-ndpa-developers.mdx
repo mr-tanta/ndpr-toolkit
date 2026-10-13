@@ -14,23 +14,23 @@ This guide walks through the architecture, the legal requirements, and a working
 
 ## The Eight Data Subject Rights
 
-Sections 29 through 36 of the NDPA define the rights your portal must support:
+Section 27 and Part VI (Sections 34 through 38) of the NDPA define the rights your portal must support:
 
-1. **Right to be informed (Section 29)** — Data subjects must be told what data you collect, why, how long you keep it, and who you share it with. This right is typically fulfilled through your privacy notice, but your portal should link to it and surface relevant information contextually.
+1. **Right to be informed (Section 27)** — Data subjects must be told what data you collect, why, how long you keep it, and who you share it with. This right is typically fulfilled through your privacy notice, but your portal should link to it and surface relevant information contextually.
 
-2. **Right of access (Section 30)** — Users can request a copy of all personal data you hold on them. Your portal must be able to pull data from every system where it exists — your primary database, analytics platforms, CRM, email service providers.
+2. **Right of access (Section 34(1)(a)–(b))** — Users can request a copy of all personal data you hold on them. Your portal must be able to pull data from every system where it exists — your primary database, analytics platforms, CRM, email service providers.
 
-3. **Right to rectification (Section 31)** — If personal data is inaccurate or incomplete, the data subject can request correction. Your portal needs a mechanism for the user to specify what is wrong and what the correct data should be.
+3. **Right to rectification (Section 34(1)(c))** — If personal data is inaccurate or incomplete, the data subject can request correction. Your portal needs a mechanism for the user to specify what is wrong and what the correct data should be.
 
-4. **Right to erasure (Section 32)** — The right to have personal data deleted. This is the most technically complex right to implement properly, and we will address it in detail below.
+4. **Right to erasure (Section 34(1)(d))** — The right to have personal data deleted. This is the most technically complex right to implement properly, and we will address it in detail below.
 
-5. **Right to restrict processing (Section 33)** — The data subject can request that you stop processing their data while a dispute is resolved, without deleting it. Your system needs a "frozen" state for user records.
+5. **Right to restrict processing (Section 34(1)(e))** — The data subject can request that you stop processing their data while a dispute is resolved, without deleting it. Your system needs a "frozen" state for user records.
 
-6. **Right to data portability (Section 34)** — Users can request their data in a structured, commonly used, machine-readable format. JSON and CSV are the standard choices.
+6. **Right to data portability (Section 38)** — Users can request their data in a structured, commonly used, machine-readable format. JSON and CSV are the standard choices.
 
-7. **Right to object (Section 35)** — Data subjects can object to processing based on legitimate interests or public interest. If they object, you must stop processing unless you can demonstrate compelling legitimate grounds.
+7. **Right to object (Section 36)** — Data subjects can object to processing based on legitimate interests or public interest. If they object, you must stop processing unless you can demonstrate compelling legitimate grounds.
 
-8. **Automated decision-making rights (Section 36)** — If you make decisions based solely on automated processing that produce legal or similarly significant effects, the data subject has the right to human intervention, to express their point of view, and to contest the decision.
+8. **Automated decision-making rights (Section 37)** — If you make decisions based solely on automated processing that produce legal or similarly significant effects, the data subject has the right to human intervention, to express their point of view, and to contest the decision.
 
 ## Response Timeline
 
@@ -73,7 +73,7 @@ const requestTypes = [
     id: 'access',
     name: 'Access My Data',
     description: 'Request a copy of all personal data we hold about you',
-    ndpaSection: 'Section 30',
+    ndpaSection: 'Section 34(1)(a)–(b)',
     estimatedCompletionTime: 30,
     requiresAdditionalInfo: false,
   },
@@ -81,7 +81,7 @@ const requestTypes = [
     id: 'erasure',
     name: 'Delete My Data',
     description: 'Request deletion of your personal data from our systems',
-    ndpaSection: 'Section 32',
+    ndpaSection: 'Section 34(1)(d)',
     estimatedCompletionTime: 30,
     requiresAdditionalInfo: true,
     additionalFields: [
@@ -98,7 +98,7 @@ const requestTypes = [
     id: 'portability',
     name: 'Export My Data',
     description: 'Receive your data in a machine-readable format (JSON/CSV)',
-    ndpaSection: 'Section 34',
+    ndpaSection: 'Section 38',
     estimatedCompletionTime: 30,
     requiresAdditionalInfo: true,
     additionalFields: [
@@ -161,7 +161,7 @@ if (!isValid) {
 
 ## Data Portability: Exporting User Data
 
-For portability requests (Section 34), you need to aggregate data from every system that holds the user's personal data and export it in a structured format. JSON is the most developer-friendly; CSV works better for non-technical users.
+For portability requests (Section 38), you need to aggregate data from every system that holds the user's personal data and export it in a structured format. JSON is the most developer-friendly; CSV works better for non-technical users.
 
 ```typescript
 async function generateDataExport(userId: string, format: 'json' | 'csv') {

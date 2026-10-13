@@ -116,7 +116,7 @@ const demos = [
     description:
       'Maintain Records of Processing Activities with categorization, filtering, and export capabilities.',
     href: '/ndpr-demos/ropa',
-    badge: 'NDPA S.29',
+    badge: 'NDPA S.24(3) / GAID Sch. 1',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />

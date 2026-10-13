@@ -26,7 +26,7 @@ export type LegalCitationBlock = {
 const ndpa2023: LegalReference = {
   label: 'Nigeria Data Protection Act, 2023',
   href: 'https://ndpc.gov.ng/wp-content/uploads/2024/03/Nigeria_Data_Protection_Act_2023.pdf',
-  detail: 'Primary statutory source for NDPA controller, processor, rights, security, DPIA, breach, ROPA, and transfer duties.',
+  detail: 'Primary statutory source for NDPA controller, processor, rights, security, DPIA, breach, accountability, and transfer duties.',
 };
 
 const gaid2025: LegalReference = {
@@ -102,7 +102,10 @@ export const legalCitationBlocks: Record<CitationModuleId, LegalCitationBlock> =
   },
   ropa: {
     title: 'ROPA citations',
-    references: [{ ...ndpa2023, detail: 'NDPA S.29: records of processing activities and accountability documentation.' }],
+    references: [
+      { ...ndpa2023, detail: 'NDPA S.24(3): the accountability duty that a record of processing activities evidences. The Act has no standalone RoPA section; S.29 covers controller and processor obligations.' },
+      { ...gaid2025, detail: 'GAID 2025 Art. 13, Art. 52, and Sch. 1: definition and required content of the record of processing activities, and the DPO report that forms part of it.' },
+    ],
     automates: ['Processing record capture, categorisation, filtering, summary, and CSV export support.'],
     doesNotReplace: ['Organisation-wide data mapping, audit evidence review, or validation that every process is represented.'],
   },

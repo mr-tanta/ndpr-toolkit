@@ -334,9 +334,9 @@ function evaluateCrossBorder(input: ComplianceInput['crossBorder']): CheckDefini
 function evaluateROPA(input: ComplianceInput['ropa'], ruleset: ComplianceRuleset, asOf: Date): CheckDefinition[] {
   const months = ruleset.timelines.ropaReviewMonths;
   return [
-    { key: 'maintained', label: 'Record of Processing Activities maintained', priority: 'critical', effort: 'high', recommendation: 'Create and maintain a comprehensive Record of Processing Activities.', ndpaSection: 'Section 29', pass: input.maintained },
-    { key: 'includesAllProcessing', label: 'ROPA includes all processing activities', priority: 'high', effort: 'medium', recommendation: 'Ensure the ROPA captures every processing activity across departments and systems.', ndpaSection: 'Section 29', pass: input.includesAllProcessing },
-    { key: 'ropaUpToDate', label: `ROPA reviewed within ${months} months`, priority: 'medium', effort: 'low', recommendation: `Review the ROPA within the pinned ${months}-month review interval. Future or invalid review dates do not satisfy this check.`, ndpaSection: 'Section 29', pass: monthsDiff(input.lastReviewed, asOf) <= months },
+    { key: 'maintained', label: 'Record of Processing Activities maintained', priority: 'critical', effort: 'high', recommendation: 'Create and maintain a comprehensive Record of Processing Activities.', ndpaSection: 'Section 24(3); GAID 2025 Art. 13, Art. 52, Sch. 1', pass: input.maintained },
+    { key: 'includesAllProcessing', label: 'ROPA includes all processing activities', priority: 'high', effort: 'medium', recommendation: 'Ensure the ROPA captures every processing activity across departments and systems.', ndpaSection: 'Section 24(3); GAID 2025 Art. 13, Art. 52, Sch. 1', pass: input.includesAllProcessing },
+    { key: 'ropaUpToDate', label: `ROPA reviewed within ${months} months`, priority: 'medium', effort: 'low', recommendation: `Review the ROPA within the pinned ${months}-month review interval. Future or invalid review dates do not satisfy this check.`, ndpaSection: 'Section 24(3); GAID 2025 Art. 13, Art. 52, Sch. 1', pass: monthsDiff(input.lastReviewed, asOf) <= months },
   ];
 }
 
@@ -348,7 +348,7 @@ const MODULE_CONFIGS: ModuleConfig[] = [
   { name: 'dpia', ndpaSections: ['Section 28'], evaluate: (i) => evaluateDPIA(i.dpia) },
   { name: 'lawfulBasis', ndpaSections: ['Section 25(1)'], evaluate: (i) => evaluateLawfulBasis(i.lawfulBasis) },
   { name: 'crossBorder', ndpaSections: ['Section 41', 'Section 42', 'Section 43'], evaluate: (i) => evaluateCrossBorder(i.crossBorder) },
-  { name: 'ropa', ndpaSections: ['Section 29'], evaluate: (i, r, a) => evaluateROPA(i.ropa, r, a) },
+  { name: 'ropa', ndpaSections: ['Section 24(3)', 'GAID 2025 Art. 13', 'GAID 2025 Art. 52', 'GAID 2025 Sch. 1'], evaluate: (i, r, a) => evaluateROPA(i.ropa, r, a) },
 ];
 
 function toRating(score: number): ComplianceRating {
@@ -428,7 +428,7 @@ export function getComplianceScore(
     { section: 'Section 26', title: 'Consent' },
     { section: 'Section 27', title: 'Privacy notice requirements' },
     { section: 'Section 28', title: 'Data Protection Impact Assessment' },
-    { section: 'Section 29', title: 'Records of processing activities' },
+    { section: 'Section 24(3); GAID 2025 Art. 13, Art. 52, Sch. 1', title: 'Accountability and records of processing activities' },
     { section: 'Sections 34–38', title: 'Data subject rights' },
     { section: 'Section 40', title: 'Data breach notification' },
     { section: 'Sections 41–43', title: 'Cross-border transfers' },

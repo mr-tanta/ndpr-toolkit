@@ -104,7 +104,7 @@ const SECTIONS: SectionConfig[] = [
     ],
   },
   {
-    id: 'ropa', title: 'Record of Processing Activities', ndpa: 'NDPA Section 29',
+    id: 'ropa', title: 'Record of Processing Activities', ndpa: 'NDPA Section 24(3); GAID 2025 Art. 13, Art. 52, Sch. 1',
     questions: [
       { key: 'maintained', label: 'We maintain a Record of Processing Activities (RoPA).' },
       { key: 'includesAllProcessing', label: 'The RoPA covers every processing activity across the organisation.' },

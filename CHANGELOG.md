@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## Unreleased
+
+### Documentation
+
+* **citations:** the RoPA module no longer cites NDPA Section 29. Section 29 is headed "Obligations of the data controller and data processor" (controller and processor arrangements, including the written-agreement duty in s.29(2)); the Act has no section that requires a record of processing activities. The RoPA citation everywhere — the compliance score (`ropa` module `ndpaSections`, its three checks, and the `regulatoryReferences` row), README, `docs/ARCHITECTURE.md`, the docs site, the ROPA demo, the StackBlitz example, and the `create-ndpr` README — now reads NDPA s.24(3) (accountability) with NDPC GAID 2025 Art. 13, Art. 52, and Schedule 1. The `ropa` module key, weight, and checks are unchanged, so scores do not move; only the reference string in audit reports and `ComplianceReport.regulatoryReferences` differs. `/docs/guides/legal-basis-and-citations` and `/docs/guides/legal-sources-governance` carry the same sources.
+* **citations:** privacy-notice and data-subject-rights references that still used the pre-3.10.4 numbering (Section 29 for privacy notices and the right to be informed, Sections 29–36 for the rights) in the compliance checklist guide, the DSR demo, and four blog posts now cite Section 27 and Part VI, Sections 34–38, matching the library's `DSRType` mapping.
+
 ## [6.1.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v6.0.0...v6.1.0) (2026-08-06)
 
 A security and correctness release. Two vulnerabilities in the published package are fixed, one prop that was documented but inert now works, and four more are marked deprecated. Nothing is removed and no signature loses a parameter, so upgrading is a version bump — but read **Behavior Changes** below if you pass `showPreview`.

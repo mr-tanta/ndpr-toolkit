@@ -231,7 +231,7 @@ const componentGuides = [
     title: 'ROPA',
     description: 'Records of Processing Activities with categorization, filtering, and export.',
     href: '/docs/components/ropa',
-    badge: 'S.29',
+    badge: 'S.24(3) / GAID Sch. 1',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
