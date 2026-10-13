@@ -79,7 +79,7 @@ export default function LiteVsFullGuide() {
         <h2 className="text-2xl font-bold text-foreground mt-12 mb-4">Bundle size comparison</h2>
         <p className="mb-4 text-foreground">
           The heavier the Full component, the bigger the win from Lite. The cross-border manager is the standout
-          — almost the entire Full bundle is the 624-row country adequacy dataset, which Lite does not import.
+          — almost the entire Full bundle is the 57-country adequacy dataset, which Lite does not import.
         </p>
         <div className="overflow-x-auto mb-4">
           <table className="w-full border-collapse text-sm">
