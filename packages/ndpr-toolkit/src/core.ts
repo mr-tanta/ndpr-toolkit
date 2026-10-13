@@ -146,6 +146,11 @@ export type {
   SchemaAnnotation, SchemaField, SchemaModel, SchemaLintSeverity,
   SchemaLintFinding, SchemaLintResult, SchemaRopaDraft,
 } from './utils/schema-ropa';
+export { composeGrievancePacket, validateGrievanceInput, draftSection46Complaint, toSmsSegments } from './utils/grievance';
+export type {
+  SnagCategory, GrievanceRole, GrievanceSubject, GrievanceController, GrievanceInput,
+  GrievanceRequestItem, GrievancePacket, GrievanceValidationError, ComplaintDraftOptions,
+} from './utils/grievance';
 
 // Compliance Audit Returns scheduling (NDPC GAID 2025)
 export { generateComplianceAuditReturn } from './utils/car';

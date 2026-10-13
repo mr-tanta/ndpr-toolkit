@@ -364,6 +364,23 @@ export type {
   SchemaRopaDraft,
 } from './utils/schema-ropa';
 export {
+  composeGrievancePacket,
+  validateGrievanceInput,
+  draftSection46Complaint,
+  toSmsSegments,
+} from './utils/grievance';
+export type {
+  SnagCategory,
+  GrievanceRole,
+  GrievanceSubject,
+  GrievanceController,
+  GrievanceInput,
+  GrievanceRequestItem,
+  GrievancePacket,
+  GrievanceValidationError,
+  ComplaintDraftOptions,
+} from './utils/grievance';
+export {
   generateComplianceAuditReturn,
   DEFAULT_CAR_RULESET,
   DEFAULT_CAR_DEADLINE_OVERRIDES,
