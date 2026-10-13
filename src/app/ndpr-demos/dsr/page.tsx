@@ -50,7 +50,7 @@ const RIGHTS: RightDefinition[] = [
   {
     id: 'erasure',
     name: 'Right to Erasure',
-    section: 'Section 34(1)(d) and 34(2)',
+    section: 'Section 34(1)(d), Section 34(2)',
     icon: '\u{1F5D1}\u{FE0F}',
     description: 'Request deletion of personal data when no longer necessary.',
   },
@@ -260,7 +260,7 @@ function createSampleRequests(): DSRRequest[] {
       updatedAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
       dueDate: Date.now() + 23 * 24 * 60 * 60 * 1000,
       subject: { name: 'Grace Adeyemi', email: 'grace@example.com', phone: '08011223344' },
-      description: 'I request human review of the automated decision regarding my loan application, per NDPA Section 37.',
+      description: 'I request human review of the automated decision regarding my loan application, per NDPA Section 36.',
     },
     {
       id: generateId(),

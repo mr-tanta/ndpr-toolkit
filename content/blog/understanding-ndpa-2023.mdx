@@ -25,8 +25,8 @@ The NDPA is Nigeria's comprehensive data protection law. It establishes the Nige
 | Regulator | NITDA | NDPC (independent body) |
 | Lawful Bases | Consent-focused | 6 defined bases (Section 25) |
 | Breach Notification | 72 hours to NITDA | 72 hours to NDPC (Section 40) |
-| Cross-Border | NITDA approval | Adequacy framework (Section 43) |
-| Data Subject Rights | 5 basic rights | 8 expanded rights (Part VI, Sections 34-38) |
+| Cross-Border | NITDA approval | Adequacy framework (Section 42) |
+| Data Subject Rights | 5 basic rights | 8 expanded rights (Sections 34-38) |
 | Penalties | Up to 2% of revenue | Up to 2% of revenue or N10M |
 | DPO Requirement | Encouraged | Mandatory for certain controllers |
 | DPIA | Recommended | Required for high-risk processing |
@@ -112,7 +112,7 @@ import { BreachNotificationForm } from '@tantainnovative/ndpr-toolkit/breach';
 
 ## Cross-Border Transfer Requirements
 
-Section 43 restricts the transfer of personal data outside Nigeria unless the receiving country provides an adequate level of data protection, or appropriate safeguards are in place. This affects any application that uses cloud infrastructure outside Nigeria or shares data with international partners.
+Part VIII (Sections 41-43) restricts the transfer of personal data outside Nigeria. Section 41 permits a transfer where the recipient is subject to adequate protection, for example through contractual clauses or binding corporate rules; Section 42 sets out how adequacy is assessed; and Section 43 lists the derogations, such as informed consent, that apply when adequate protection is absent. This affects any application that uses cloud infrastructure outside Nigeria or shares data with international partners.
 
 The toolkit's `CrossBorderTransfer` module walks you through the adequacy assessment:
 

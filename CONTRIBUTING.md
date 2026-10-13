@@ -7,7 +7,7 @@ For interpersonal conduct, see [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md). For
 ## Tooling
 
 - **Node**: `>=18` per `package.json#engines`; use Node 20 or 22 for parity with CI.
-- **Package manager**: `pnpm 10`. `corepack enable && corepack prepare pnpm@10 --activate` if you don't have it.
+- **Package manager**: `pnpm 10`, pinned to `pnpm@10.34.1` in `package.json#packageManager` (CI installs that exact version from the pin). `corepack enable && corepack prepare pnpm@10 --activate` if you don't have it; inside the repo Corepack then resolves `pnpm` to the pinned version.
 - **Editor**: anything that speaks TypeScript. The repo's strict mode catches most issues at edit time.
 
 ## Setup
@@ -21,7 +21,7 @@ pnpm install
 ## Repo layout (the load-bearing bits)
 
 ```
-/                                — docs site root (Next.js 15 App Router) + publishable package
+/                                — docs site root (Next.js 16 App Router) + publishable package
 ├── README.md                    — what ships to npm
 ├── CHANGELOG.md                 — release history
 ├── package.json                 — the published manifest (root!)
@@ -38,7 +38,7 @@ pnpm install
 │       │   ├── presets/         — zero-config preset components
 │       │   ├── utils/           — pure validators, generators, scoring
 │       │   ├── types/           — shared TS interfaces
-│       │   ├── locales/         — i18n locale files (en, yo, ig, ha, pcm)
+│       │   ├── locales/         — i18n locale files (en, yo, ig, ha, pcm, ar, fr)
 │       │   ├── styles/          — CSS (BEM + CSS custom props)
 │       │   └── __tests__/       — Jest + RTL test suites
 │       └── package.json         — INNER manifest, marked `"private": true`, NOT published

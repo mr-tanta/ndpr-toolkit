@@ -16,8 +16,8 @@ The original toolkit was built around the Nigeria Data Protection Regulation (ND
 
 - **NITDA** was replaced by the **NDPC** (Nigeria Data Protection Commission) as the primary regulator
 - New data subject rights were added (right to information, right against automated decision-making)
-- Cross-border transfer requirements became more structured (Part VI, Sections 41-45)
-- DPIA became mandatory for high-risk processing (Sections 38-39)
+- Cross-border transfer requirements became more structured (Part VIII, Sections 41-43)
+- DPIA became mandatory for high-risk processing (Section 28)
 - Lawful basis requirements were codified into six distinct categories (Section 25)
 
 Patching v1 was not feasible. v2 is a clean rebuild.
@@ -256,7 +256,7 @@ addActivity({
 });
 ```
 
-### Cross-Border Transfer Assessment (NDPA Sections 41-45)
+### Cross-Border Transfer Assessment (NDPA Part VIII, Sections 41-43)
 
 Evaluate adequacy decisions, standard contractual clauses, binding corporate rules, and derogations for international data transfers.
 
@@ -268,7 +268,7 @@ const { transfers, addTransfer, getSummary } = useCrossBorderTransfer({
 });
 ```
 
-### Record of Processing Activities -- ROPA (NDPA Section 28(2))
+### Record of Processing Activities -- ROPA (NDPA Section 24(3); GAID 2025 Art. 13)
 
 Maintain comprehensive records of all processing activities for audit readiness and NDPC accountability.
 
@@ -343,6 +343,6 @@ If TypeScript reports errors for the old `nitda*` field names, the types have be
 | UI dependencies | Bundled as direct deps | Optional peer dependencies |
 | Styling control | None | `classNames`, `unstyled`, `NDPRProvider` |
 | New modules | N/A | Lawful Basis Tracker, Cross-Border Transfer, ROPA |
-| NDPA section alignment | NDPR 2019 | NDPA 2023 (Sections 25-45) |
+| NDPA section alignment | NDPR 2019 | NDPA 2023 (Sections 24-43) |
 
 If you run into issues during migration, check the [full documentation](https://ndprtoolkit.com.ng) or [open an issue on GitHub](https://github.com/mr-tanta/ndpr-toolkit/issues).

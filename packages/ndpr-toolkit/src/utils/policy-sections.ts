@@ -278,7 +278,8 @@ function buildDataSubjectRights(
       `8. Right to Data Portability — You may request to receive your personal data in a ` +
       `structured, commonly used, and machine-readable format (NDPA Section 38).\n\n` +
       `To exercise any of these rights, please contact us at ${email}. We will respond to ` +
-      `your request within 30 days (extendable in complex cases per NDPC GAID 2025). If you ` +
+      `your request without unreasonable delay (NDPA Section 34(1)) and in any event within ` +
+      `30 days. If you ` +
       `are unsatisfied with our response, you have the right to lodge a complaint with the ` +
       `Nigeria Data Protection Commission (NDPC) under NDPA Section 46(1).`,
     order,
