@@ -74,7 +74,7 @@ const result = calculateBreachSeverity(breachReport, riskAssessment);
 // result.timeframeHours — 72 hours
 ```
 
-## 4. [Data Protection Impact Assessment](/ndpr-demos/dpia) (NDPA Section 38)
+## 4. [Data Protection Impact Assessment](/ndpr-demos/dpia) (NDPA Section 28)
 
 A DPIA is required when processing is likely to result in **high risk** to data subjects. This includes:
 
@@ -84,23 +84,24 @@ A DPIA is required when processing is likely to result in **high risk** to data 
 - Processing children's data
 - Cross-border transfers to inadequate jurisdictions
 
-If the DPIA indicates high residual risk, you must consult the NDPC **before** processing (Section 39).
+If the DPIA indicates high residual risk, you must consult the NDPC **before** processing (Section 28(2)).
 
-## 5. [Cross-Border Transfers](/ndpr-demos/cross-border) (NDPA Sections 41-45)
+## 5. [Cross-Border Transfers](/ndpr-demos/cross-border) (NDPA Part VIII, Sections 41-43)
 
 Transferring personal data outside Nigeria requires one of these mechanisms:
 
-- Adequacy decision by the NDPC (Section 41)
-- Standard contractual clauses approved by the NDPC (Section 42)
-- Binding corporate rules (Section 43)
-- Specific NDPC authorization (Section 44)
-- Derogations: explicit consent, contract performance, legal claims, vital interests (Section 45)
+- Adequate protection in the destination country, region or sector (Section 42)
+- Contractual clauses or binding corporate rules that afford adequate protection (Section 41(1)(a))
+- A code of conduct, certification or similar instrument approved by the NDPC (Section 42(5))
+- Derogations: consent after being informed of the risks, contract performance, public interest, legal claims, vital interests (Section 43(1))
 
 ```typescript
 import { isNDPCApprovalRequired } from '@tantainnovative/ndpr-toolkit/core';
 
-// Standard clauses, BCRs, and NDPC authorization require approval
-isNDPCApprovalRequired('standard_clauses'); // true
+// BCRs and NDPC-approved instruments go through the NDPC (Section 42(5))
+isNDPCApprovalRequired('binding_corporate_rules'); // true
+// Contractual clauses need no pre-approval; self-assess adequacy (Section 42(1)-(2))
+isNDPCApprovalRequired('standard_clauses'); // false
 isNDPCApprovalRequired('explicit_consent'); // false
 ```
 

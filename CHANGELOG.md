@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## Unreleased
+
+### Documentation
+
+* **blog:** NDPA citations in ten posts under `content/blog/` now match the mapping the library uses. DPIA is Section 28, and prior consultation with the NDPC is Section 28(2), not Sections 38 and 39. Data subject rights are Part VI, Sections 34 to 38, not "Sections 29-36" or "34-39", and the DSAR portal example now labels access, erasure and portability as Section 34(1)(a)–(b), Section 34(1)(d) and 34(2), and Section 38. Cross-border transfers are Part VIII, Sections 41 to 43: contractual clauses and binding corporate rules are Section 41(1)(a), adequacy is Section 42, NDPC-approved instruments are Section 42(5), and derogations are Section 43, replacing the "Sections 41-45" scheme and the "Section 43" adequacy label. RoPA citations in two posts now use Section 24(3) and GAID 2025 instead of Sections 28(2) and 30. Withdrawal of consent in the cookie-consent post is Section 35, not Section 36 (the right to object).
+* **blog:** the developer checklist's `isNDPCApprovalRequired` sample said standard contractual clauses return `true`; the function returns `false` for them and `true` for binding corporate rules. The React and Next.js guide no longer says the Act requires a DSR response within 30 days; Section 34(1) sets no fixed period and 30 days is the toolkit's default target.
+
 ## [6.1.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v6.0.0...v6.1.0) (2026-08-06)
 
 A security and correctness release. Two vulnerabilities in the published package are fixed, one prop that was documented but inert now works, and four more are marked deprecated. Nothing is removed and no signature loses a parameter, so upgrading is a version bump — but read **Behavior Changes** below if you pass `showPreview`.
