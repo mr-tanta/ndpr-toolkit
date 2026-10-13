@@ -148,7 +148,7 @@ const { settings } = useConsent({ options, adapter });
 
 ## 2. Data Subject Rights (DSR)
 
-**NDPA requirement**: Sections 34-39 grant eight rights — access, rectification, erasure, restriction, portability, objection, and rights related to automated decision-making. You must respond within 30 days.
+**NDPA requirement**: Part VI, Sections 34-38 grant eight rights — access, rectification, erasure, restriction, withdrawal of consent, objection, rights related to automated decision-making, and portability. The Act requires a response without unreasonable delay (Section 34(1)) and sets no fixed period; the toolkit defaults to a 30-day internal target.
 
 ### Building a DSR Portal
 
@@ -353,7 +353,7 @@ const gaps = assessComplianceGaps();
 
 ## 7. Cross-Border Transfers
 
-**NDPA requirement**: Sections 43-44 restrict transfers of personal data outside Nigeria. You need either an adequacy decision for the destination country, appropriate safeguards (SCCs, BCRs), or NDPC approval.
+**NDPA requirement**: Part VIII, Sections 41-43 restrict transfers of personal data outside Nigeria. You need adequate protection in the destination (Section 42), safeguards such as SCCs or BCRs that afford adequate protection (Section 41(1)(a)), an NDPC-approved instrument (Section 42(5)), or one of the Section 43 derogations.
 
 If you use AWS, Vercel, Firebase, Stripe, or any cloud service with servers outside Nigeria, you are performing cross-border transfers right now.
 
@@ -377,7 +377,7 @@ const risk = assessTransferRisk('transfer-id');
 
 ## 8. Record of Processing Activities (ROPA)
 
-**NDPA requirement**: Section 30 requires organisations to maintain a detailed register of all processing activities. This is not a one-time exercise — the ROPA must be kept up to date and available for NDPC inspection.
+**NDPA requirement**: The Act has no standalone RoPA section. The duty rests on the Section 24(3) accountability principle, and NDPC GAID 2025 (Article 13, Article 52, Schedule 1) requires organisations to maintain a detailed register of all processing activities. This is not a one-time exercise — the ROPA must be kept up to date and available for NDPC inspection.
 
 ```tsx
 import { useROPA } from '@tantainnovative/ndpr-toolkit/hooks';
