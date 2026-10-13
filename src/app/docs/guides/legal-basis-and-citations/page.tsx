@@ -41,7 +41,7 @@ const moduleLinks = [
   },
   {
     title: 'ROPA',
-    reference: 'NDPA S.24(3) / GAID 2025 Art. 13, Art. 52, Sch. 1',
+    reference: 'NDPA S.24(3); GAID 2025 Art. 13, Art. 52, Sch. 1',
     href: '/docs/components/ropa',
   },
   {

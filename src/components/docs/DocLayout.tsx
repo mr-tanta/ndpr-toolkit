@@ -100,6 +100,7 @@ const navigation: NavItem[] = [
       { title: 'DCPMI Registration & Audit Returns', href: '/docs/guides/dcpmi-registration', isNew: true },
       { title: 'Breach Notification Completeness', href: '/docs/guides/breach-notification-completeness', isNew: true },
       { title: 'Compliance Audit CLI', href: '/docs/guides/audit-cli', isNew: true },
+      { title: 'Evidence Tools', href: '/docs/guides/evidence-tools', isNew: true },
       { title: 'Backend Integration', href: '/docs/guides/backend-integration' },
       { title: 'Internationalization', href: '/docs/guides/internationalization' },
       { title: 'CLI Scaffolder', href: '/docs/guides/cli-scaffolder' },

@@ -469,7 +469,7 @@ also reject invalid status and severity values before persistence. Supply the in
 | Table | Description | NDPA reference |
 |---|---|---|
 | `ndpr_consent_records` | Immutable consent audit trail. `revokedAt` marks withdrawal — rows are never deleted. | §25–26 |
-| `ndpr_dsr_requests` | Data subject rights requests. Tracks type, status, and 30-day response deadline. | Part VI §34–38 |
+| `ndpr_dsr_requests` | Data subject rights requests. Tracks type, status, and the 30-day response target (the Act requires a response without unreasonable delay). | Part VI §34–38 |
 | `ndpr_breach_reports` | Breach incident records with 72-hour NDPC notification tracking. | §40 |
 | `ndpr_processing_records` | Record of Processing Activities (ROPA). | Accountability principle |
 | `ndpr_audit_log` | Append-only compliance event log. | §44 |

@@ -111,7 +111,7 @@ export default function PrivacyPolicyPage() {
           </ul>
         </Section>
 
-        <Section id="cross-border" title="5. Cross-border transfers (NDPA Part VI)">
+        <Section id="cross-border" title="5. Cross-border transfers (NDPA Sections 41–43)">
           <p>
             Some of our processors (e.g. PostHog and Web3Forms) operate outside Nigeria, including in the
             United States. Where personal data is transferred abroad, we rely on the transfer conditions

@@ -35,7 +35,7 @@ const moduleMappings = [
   ['Data subject rights', 'NDPA Part VI, S.34-S.38', 'Access, correction, erasure, portability, objection, and response workflow support.'],
   ['Privacy policy generator', 'NDPA S.27', 'Transparent privacy notices covering controller identity, purposes, rights, sharing, retention, and safeguards.'],
   ['DPIA questionnaire', 'NDPA S.28', 'Risk assessment workflow for high-risk processing and mitigation tracking.'],
-  ['ROPA', 'NDPA S.24(3) / GAID 2025 Art. 13, Art. 52, Sch. 1', 'Records of processing activities for purposes, categories, recipients, transfers, and retention.'],
+  ['ROPA', 'NDPA S.24(3); GAID 2025 Art. 13, Art. 52, Sch. 1','Records of processing activities for purposes, categories, recipients, transfers, and retention.'],
   ['Breach notification', 'NDPA S.40 / GAID 2025 Art. 33', '72-hour NDPC readiness, content completeness, and high-risk data-subject notification checks.'],
   ['Cross-border transfers', 'NDPA S.41-S.43', 'Adequacy, safeguards, transfer basis, and approval-oriented evidence gathering.'],
   ['DCPMI and CAR utilities', 'GAID 2025 / registration guidance', 'Major importance classification, fee baseline, and Compliance Audit Return schedule support.'],

@@ -4,8 +4,8 @@
 // (compliance score + GAID 2025 DCPMI / CAR / breach checks) and exits
 // non-zero when the audit fails — drop it into CI as a compliance gate.
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { resolve, join, relative } from 'node:path';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -48,8 +48,40 @@ const HELP = `ndpr ${pkg.version} — NDPA 2023 compliance CLI
 
 Usage:
   ndpr audit [options]      Run a compliance audit and exit non-zero on failure
+  ndpr dcpmi [options]      Compare your declared DCPMI tier with the tier
+                            reached if third-party data subjects are counted
   ndpr --help               Show this help
   ndpr --version            Print the version
+
+Options for "dcpmi" (advisory only; never writes to your audit config):
+  --direct <n>              Direct data subjects in the six-month window
+  --relations <list>        Comma-separated kind:perSubject[:coverage], e.g.
+                            guarantor:2:0.6,uploaded_contact:150:0.3
+                            kinds: next_of_kin, guarantor, referee, dependant,
+                            beneficiary, emergency_contact, uploaded_contact, other
+  --overlap <0-1>           Share of derived records that duplicate others
+  --revenue <naira>         Annual gross revenue, to show the s.48(4) ceiling
+  --json                    Output the full result as JSON
+
+  ndpr scan [paths...]      Find Nigerian personal identifiers (phone, NIN/BVN-
+                            shaped numbers, NUBAN, cards, CAC, plates, email)
+                            in files. Values are masked in the output.
+  --fail-on <level>         Exit 1 when a match at or above low|medium|high is
+                            found (default: high)
+  --min-confidence <level>  Hide matches below this level (default: medium)
+  --types <list>            Comma-separated subset of: phone_ng, national_id,
+                            nuban, payment_card, cac_number, vehicle_plate, email
+  --include-example-domains Also report emails at reserved documentation
+                            domains (example.com, *.test, *.example, *.invalid)
+  --json                    Output matches as JSON
+
+  ndpr schema lint [file]   Fail on personal-looking Prisma fields without an
+                            /// @ndpr annotation, and on annotations missing
+                            category, purpose, basis or retain
+                            (default file: prisma/schema.prisma)
+  ndpr schema ropa [file]   Print draft RoPA entries generated from annotations
+                            (asserted drafts; a person must review them)
+  --json                    Output as JSON
 
 Options for "audit":
   --config <path>           Path to the audit config JSON
@@ -61,6 +93,188 @@ Options for "audit":
 
 Config shape: { minScore?, compliance, dcpmi?, car?, breaches? }
 See https://ndprtoolkit.com.ng/docs/guides/audit-cli`;
+
+function parseNumberFlag(args, name, { min = 0, max = Infinity } = {}) {
+  const raw = args.flags[name];
+  if (raw === undefined) return undefined;
+  const value = typeof raw === 'string' && raw.trim() !== '' ? Number(raw) : NaN;
+  if (!Number.isFinite(value) || value < min || value > max) {
+    throw new UsageError(`--${name} requires a number between ${min} and ${max}.`);
+  }
+  return value;
+}
+
+class UsageError extends Error {}
+
+const ngnFormat = (n) => `₦${Math.round(n).toLocaleString('en-NG')}`;
+
+async function runDcpmi(args) {
+  const { estimateDerivedDataSubjects, estimateStatutoryCeiling } = await import('@tantainnovative/ndpr-toolkit/server');
+  const direct = parseNumberFlag(args, 'direct');
+  if (direct === undefined) throw new UsageError('ndpr dcpmi requires --direct <n>.');
+  const relationsRaw = typeof args.flags.relations === 'string' ? args.flags.relations : '';
+  const relationships = relationsRaw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((spec) => {
+      const [kind, per, coverage] = spec.split(':');
+      const entry = { kind, perDirectSubject: Number(per) };
+      if (coverage !== undefined) entry.coverage = Number(coverage);
+      return entry;
+    });
+  const overlapShare = parseNumberFlag(args, 'overlap', { max: 1 });
+  const revenue = parseNumberFlag(args, 'revenue');
+
+  let result;
+  try {
+    result = estimateDerivedDataSubjects({ directSubjects: direct, relationships, overlapShare });
+  } catch (err) {
+    throw new UsageError(err.message);
+  }
+  const ceiling = revenue === undefined
+    ? undefined
+    : estimateStatutoryCeiling({ annualGrossRevenueNGN: revenue, majorImportance: result.tiers.declared.isDCPMI });
+
+  if (args.flags.json) {
+    process.stdout.write(JSON.stringify({ ...result, ceiling }, null, 2) + '\n');
+    return 0;
+  }
+  const lines = [
+    'Derived data-subject estimate (advisory)',
+    '',
+    `Direct subjects:            ${direct.toLocaleString('en-NG')}  -> tier ${result.tiers.declared.tier}`,
+    `Third-party subjects:       ${result.derived.estimated.toLocaleString('en-NG')} (range ${result.derived.low.toLocaleString('en-NG')}-${result.derived.high.toLocaleString('en-NG')})`,
+    `Direct plus third-party:    ${result.directPlusDerived.estimated.toLocaleString('en-NG')}  -> tier ${result.tiers.withDerived.tier}`,
+    '',
+    ...result.relationships.map((r) => `  ${r.label.padEnd(26)}${r.estimated.toLocaleString('en-NG')}`),
+    '',
+    ...result.notes.map((n) => `- ${n}`),
+  ];
+  if (ceiling) {
+    lines.push('', `Statutory ceiling (${ceiling.citation}): ${ngnFormat(ceiling.ceilingNGN)} (${ceiling.basis} basis)`, ceiling.notice);
+  }
+  lines.push('', result.advisoryNotice);
+  process.stdout.write(lines.join('\n') + '\n');
+  return 0;
+}
+
+const LEVELS = ['low', 'medium', 'high'];
+const PII_TYPES = ['phone_ng', 'national_id', 'nuban', 'payment_card', 'cac_number', 'vehicle_plate', 'email'];
+// RFC 2606 / RFC 6761 reserved names: documentation addresses, not real people.
+const RESERVED_EMAIL_DOMAIN = /@(?:[^@\s]+\.)?(?:example\.(?:com|org|net)|[^@\s]*\.(?:test|example|invalid|localhost))$/i;
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.next', 'out', 'coverage', 'build', '.turbo']);
+const MAX_FILE_BYTES = 1024 * 1024;
+
+function collectFiles(target, out) {
+  let stat;
+  try { stat = statSync(target); } catch { return; }
+  if (stat.isDirectory()) {
+    for (const entry of readdirSync(target)) {
+      if (SKIP_DIRS.has(entry)) continue;
+      collectFiles(join(target, entry), out);
+    }
+  } else if (stat.isFile() && stat.size <= MAX_FILE_BYTES) {
+    out.push(target);
+  }
+}
+
+function levelFlag(args, name, fallback) {
+  const value = args.flags[name] ?? fallback;
+  if (!LEVELS.includes(value)) throw new UsageError(`--${name} must be one of ${LEVELS.join(', ')}.`);
+  return value;
+}
+
+async function runScan(args) {
+  const { detectNigerianPII, maskValue } = await import('@tantainnovative/ndpr-toolkit/server');
+  const failOn = levelFlag(args, 'fail-on', 'high');
+  const minConfidence = levelFlag(args, 'min-confidence', 'medium');
+  const types = typeof args.flags.types === 'string'
+    ? args.flags.types.split(',').map((s) => s.trim()).filter(Boolean)
+    : undefined;
+  const unknownType = types?.find((t) => !PII_TYPES.includes(t));
+  if (unknownType) throw new UsageError(`Unknown --types entry "${unknownType}". Use: ${PII_TYPES.join(', ')}.`);
+  const includeExamples = args.flags['include-example-domains'] === true;
+  const targets = args._.slice(1);
+  const files = [];
+  for (const t of targets.length ? targets : ['.']) collectFiles(resolve(process.cwd(), t), files);
+
+  const findings = [];
+  for (const file of files) {
+    const buf = readFileSync(file);
+    if (buf.includes(0)) continue; // binary
+    const text = buf.toString('utf8');
+    for (const m of detectNigerianPII(text, { minConfidence, types })) {
+      if (m.type === 'email' && !includeExamples && RESERVED_EMAIL_DOMAIN.test(m.value)) continue;
+      const line = text.slice(0, m.start).split('\n').length;
+      findings.push({
+        file: relative(process.cwd(), file),
+        line,
+        type: m.type,
+        confidence: m.confidence,
+        masked: maskValue(m.value.replace(/\s/g, ''), 2),
+        reason: m.reason,
+      });
+    }
+  }
+
+  const failing = findings.filter((f) => LEVELS.indexOf(f.confidence) >= LEVELS.indexOf(failOn));
+  if (args.flags.json) {
+    process.stdout.write(JSON.stringify({ scannedFiles: files.length, findings }, null, 2) + '\n');
+  } else {
+    for (const f of findings) {
+      process.stdout.write(`${f.file}:${f.line}  ${f.type.padEnd(13)} ${f.confidence.padEnd(6)} ${f.masked}  (${f.reason})\n`);
+    }
+    process.stdout.write(`\nScanned ${files.length} file(s): ${findings.length} finding(s), ${failing.length} at or above "${failOn}".\n`);
+  }
+  return failing.length > 0 ? 1 : 0;
+}
+
+async function runSchema(args) {
+  const { parsePrismaSchema, lintSchemaForPersonalData, generateRopaFromSchema } = await import('@tantainnovative/ndpr-toolkit/server');
+  const sub = args._[1];
+  if (sub !== 'lint' && sub !== 'ropa') throw new UsageError('Usage: ndpr schema lint|ropa [path/to/schema.prisma]');
+  const file = resolve(process.cwd(), args._[2] ?? 'prisma/schema.prisma');
+  if (!existsSync(file)) throw new UsageError(`Schema not found: ${file}`);
+  const models = parsePrismaSchema(readFileSync(file, 'utf8'));
+  const shown = relative(process.cwd(), file);
+
+  if (sub === 'ropa') {
+    const drafts = generateRopaFromSchema(models);
+    if (args.flags.json) {
+      process.stdout.write(JSON.stringify(drafts, null, 2) + '\n');
+    } else {
+      for (const d of drafts) {
+        process.stdout.write(`${d.name}\n  basis: ${d.lawfulBasis}  retain: ${d.retentionPeriod}\n  data: ${[...d.dataCategories, ...d.sensitiveDataCategories].join(', ')}\n  processors: ${d.processors.join(', ') || 'none declared'}\n  fields: ${d.sourceFields.join(', ')}\n\n`);
+      }
+      process.stdout.write(`${drafts.length} draft record(s) from ${shown}. These are asserted by annotations; review before relying on them.\n`);
+    }
+    return 0;
+  }
+
+  const result = lintSchemaForPersonalData(models);
+  if (args.flags.json) {
+    process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+  } else {
+    for (const f of result.findings) {
+      process.stdout.write(`${shown}:${f.line}  ${f.severity.padEnd(7)} ${f.code}  ${f.message}\n`);
+    }
+    const c = result.coverage;
+    process.stdout.write(`\n${c.annotated}/${c.personalFieldsDetected} personal-looking field(s) annotated, ${c.markedNotPersonal} marked not personal. ${result.errors} error(s), ${result.warnings} warning(s).\n`);
+  }
+  return result.errors > 0 ? 1 : 0;
+}
+
+const withUsage = (fn) => (args) => fn(args).catch((err) => {
+  if (err instanceof UsageError) { process.stderr.write(`${err.message}\n`); return 2; }
+  throw err;
+});
+
+const EXTRA_COMMANDS = {
+  dcpmi: withUsage(runDcpmi),
+  scan: withUsage(runScan),
+  schema: withUsage(runSchema),
+};
 
 function findConfig(explicit) {
   if (explicit) return resolve(process.cwd(), explicit);
@@ -78,6 +292,9 @@ async function main() {
 
   if (args.flags.version) { process.stdout.write(`${pkg.version}\n`); return 0; }
   if (args.flags.help || command === 'help') { process.stdout.write(`${HELP}\n`); return 0; }
+
+  const extra = EXTRA_COMMANDS[command];
+  if (extra) return extra(args);
 
   if (command !== 'audit') {
     process.stderr.write(`Unknown command: ${command}\n\n${HELP}\n`);

@@ -7,7 +7,7 @@ export default function AdminDSRManagementRecipe() {
   return (
     <DocLayout
       title="Admin DSR Management"
-      description="DPO/staff-side workflow for handling subject requests: queue, identity verification, response within 30 days, audit trail."
+      description="DPO/staff-side workflow for handling subject requests: queue, identity verification, response-target tracking, audit trail."
     >
       <div className="flex flex-wrap gap-2 mb-6">
         <a
@@ -28,7 +28,7 @@ export default function AdminDSRManagementRecipe() {
         </a>
       </div>
       <p className="mb-6 text-base text-muted-foreground">
-        The public DSR portal is half the story. The other half is the DPO / staff workflow: triage the queue, verify identity, generate the response, hit Section 34&apos;s 30-day deadline (extendable to 60 if complex, per GAID 2025), and keep an audit trail NDPC can ask for. This recipe wires those pieces.
+        The public DSR portal is half the story. The other half is the DPO / staff workflow: triage the queue, verify identity, generate the response, respond without unreasonable delay (Section 34 sets no fixed period; the toolkit tracks a 30-day target by default), and keep an audit trail NDPC can ask for. This recipe wires those pieces.
       </p>
 
       <h2 className="text-2xl font-bold mt-10 mb-4">DPO dashboard</h2>
@@ -78,22 +78,22 @@ import { verifyDSRSession } from '@/server/dsr-verify'; // your custom auth chec
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   await verifyDSRSession(req); // ensure caller is the DPO / authorised staff
 
-  // Mark verified — Section 34 30-day clock keeps running from submission
+  // Mark verified — the response target keeps running from submission (Section 34: without unreasonable delay)
   await db.dsrRequest.update({
     where: { id: params.id },
     data: {
       status: 'inProgress',
       verifiedAt: new Date(),
-      // dueDate stays at original (createdAt + 30 days)
+      // dueDate stays at original (createdAt + the 30-day default target)
     },
   });
 
   return NextResponse.json({ ok: true });
 }`}</code></pre>
 
-      <h2 className="text-2xl font-bold mt-10 mb-4">30-day deadline tracking</h2>
+      <h2 className="text-2xl font-bold mt-10 mb-4">Response-target tracking</h2>
       <p className="mb-4">
-        The <code>useDSR</code> hook exposes <code>getRequestsByStatus</code> — combine with a custom sort to surface requests close to the 30-day deadline:
+        The <code>useDSR</code> hook exposes <code>getRequestsByStatus</code> — combine with a custom sort to surface requests close to their response target (30 days by default):
       </p>
       <pre className="bg-card border border-border rounded-lg p-4 overflow-x-auto"><code className="text-sm">{`'use client';
 import { useDSR } from '@tantainnovative/ndpr-toolkit/hooks';
@@ -115,7 +115,7 @@ export function OverdueAlert({ requestTypes }: { requestTypes: any[] }) {
   if (overdue.length === 0 && closeToDeadline.length === 0) return null;
   return (
     <aside className="rounded border border-red-200 bg-red-50 p-3 text-sm">
-      {overdue.length > 0 && <p><strong>{overdue.length} DSRs are past the 30-day deadline.</strong> Section 34 violation risk.</p>}
+      {overdue.length > 0 && <p><strong>{overdue.length} DSRs are past their response target.</strong> Section 34 requires a response without unreasonable delay.</p>}
       {closeToDeadline.length > 0 && <p>{closeToDeadline.length} DSRs due in the next 5 days.</p>}
     </aside>
   );
