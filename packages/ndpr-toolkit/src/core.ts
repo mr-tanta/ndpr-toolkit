@@ -121,6 +121,13 @@ export type {
 } from './utils/dcpmi-derived';
 export { estimateStatutoryCeiling, DEFAULT_PENALTY_CEILING_RULESET, PENALTY_CEILING_NOTICE } from './utils/penalty-ceiling';
 export type { PenaltyCeilingRuleset, PenaltyCeilingInput, PenaltyCeiling } from './utils/penalty-ceiling';
+export { detectNigerianPII, redactNigerianPII, validateNuban, luhnValid, maskValue } from './utils/nigerian-pii';
+export type {
+  NigerianPIIType, PIIConfidence, NigerianPIIMatch,
+  DetectNigerianPIIOptions, RedactNigerianPIIOptions, RedactionResult,
+} from './utils/nigerian-pii';
+export { issueDecisionReceipt, decisionContestRequest, shortCodeFor } from './utils/decision-receipt';
+export type { AutomatedDecisionBasis, DecisionReceiptInput, DecisionReceipt } from './utils/decision-receipt';
 
 // Compliance Audit Returns scheduling (NDPC GAID 2025)
 export { generateComplianceAuditReturn } from './utils/car';

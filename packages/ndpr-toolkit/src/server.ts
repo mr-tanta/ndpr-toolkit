@@ -300,6 +300,23 @@ export {
 } from './utils/penalty-ceiling';
 export type { PenaltyCeilingRuleset, PenaltyCeilingInput, PenaltyCeiling } from './utils/penalty-ceiling';
 export {
+  detectNigerianPII,
+  redactNigerianPII,
+  validateNuban,
+  luhnValid,
+  maskValue,
+} from './utils/nigerian-pii';
+export type {
+  NigerianPIIType,
+  PIIConfidence,
+  NigerianPIIMatch,
+  DetectNigerianPIIOptions,
+  RedactNigerianPIIOptions,
+  RedactionResult,
+} from './utils/nigerian-pii';
+export { issueDecisionReceipt, decisionContestRequest, shortCodeFor } from './utils/decision-receipt';
+export type { AutomatedDecisionBasis, DecisionReceiptInput, DecisionReceipt } from './utils/decision-receipt';
+export {
   generateComplianceAuditReturn,
   DEFAULT_CAR_RULESET,
   DEFAULT_CAR_DEADLINE_OVERRIDES,

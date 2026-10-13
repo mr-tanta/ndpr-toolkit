@@ -4,8 +4,8 @@
 // (compliance score + GAID 2025 DCPMI / CAR / breach checks) and exits
 // non-zero when the audit fails — drop it into CI as a compliance gate.
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { resolve, join, relative } from 'node:path';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -62,6 +62,18 @@ Options for "dcpmi" (advisory only; never writes to your audit config):
   --overlap <0-1>           Share of derived records that duplicate others
   --revenue <naira>         Annual gross revenue, to show the s.48(4) ceiling
   --json                    Output the full result as JSON
+
+  ndpr scan [paths...]      Find Nigerian personal identifiers (phone, NIN/BVN-
+                            shaped numbers, NUBAN, cards, CAC, plates, email)
+                            in files. Values are masked in the output.
+  --fail-on <level>         Exit 1 when a match at or above low|medium|high is
+                            found (default: high)
+  --min-confidence <level>  Hide matches below this level (default: medium)
+  --types <list>            Comma-separated subset of: phone_ng, national_id,
+                            nuban, payment_card, cac_number, vehicle_plate, email
+  --include-example-domains Also report emails at reserved documentation
+                            domains (example.com, *.test, *.example, *.invalid)
+  --json                    Output matches as JSON
 
 Options for "audit":
   --config <path>           Path to the audit config JSON
@@ -139,11 +151,85 @@ async function runDcpmi(args) {
   return 0;
 }
 
+const LEVELS = ['low', 'medium', 'high'];
+const PII_TYPES = ['phone_ng', 'national_id', 'nuban', 'payment_card', 'cac_number', 'vehicle_plate', 'email'];
+// RFC 2606 / RFC 6761 reserved names: documentation addresses, not real people.
+const RESERVED_EMAIL_DOMAIN = /@(?:[^@\s]+\.)?(?:example\.(?:com|org|net)|[^@\s]*\.(?:test|example|invalid|localhost))$/i;
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.next', 'out', 'coverage', 'build', '.turbo']);
+const MAX_FILE_BYTES = 1024 * 1024;
+
+function collectFiles(target, out) {
+  let stat;
+  try { stat = statSync(target); } catch { return; }
+  if (stat.isDirectory()) {
+    for (const entry of readdirSync(target)) {
+      if (SKIP_DIRS.has(entry)) continue;
+      collectFiles(join(target, entry), out);
+    }
+  } else if (stat.isFile() && stat.size <= MAX_FILE_BYTES) {
+    out.push(target);
+  }
+}
+
+function levelFlag(args, name, fallback) {
+  const value = args.flags[name] ?? fallback;
+  if (!LEVELS.includes(value)) throw new UsageError(`--${name} must be one of ${LEVELS.join(', ')}.`);
+  return value;
+}
+
+async function runScan(args) {
+  const { detectNigerianPII, maskValue } = await import('@tantainnovative/ndpr-toolkit/server');
+  const failOn = levelFlag(args, 'fail-on', 'high');
+  const minConfidence = levelFlag(args, 'min-confidence', 'medium');
+  const types = typeof args.flags.types === 'string'
+    ? args.flags.types.split(',').map((s) => s.trim()).filter(Boolean)
+    : undefined;
+  const unknownType = types?.find((t) => !PII_TYPES.includes(t));
+  if (unknownType) throw new UsageError(`Unknown --types entry "${unknownType}". Use: ${PII_TYPES.join(', ')}.`);
+  const includeExamples = args.flags['include-example-domains'] === true;
+  const targets = args._.slice(1);
+  const files = [];
+  for (const t of targets.length ? targets : ['.']) collectFiles(resolve(process.cwd(), t), files);
+
+  const findings = [];
+  for (const file of files) {
+    const buf = readFileSync(file);
+    if (buf.includes(0)) continue; // binary
+    const text = buf.toString('utf8');
+    for (const m of detectNigerianPII(text, { minConfidence, types })) {
+      if (m.type === 'email' && !includeExamples && RESERVED_EMAIL_DOMAIN.test(m.value)) continue;
+      const line = text.slice(0, m.start).split('\n').length;
+      findings.push({
+        file: relative(process.cwd(), file),
+        line,
+        type: m.type,
+        confidence: m.confidence,
+        masked: maskValue(m.value.replace(/\s/g, ''), 2),
+        reason: m.reason,
+      });
+    }
+  }
+
+  const failing = findings.filter((f) => LEVELS.indexOf(f.confidence) >= LEVELS.indexOf(failOn));
+  if (args.flags.json) {
+    process.stdout.write(JSON.stringify({ scannedFiles: files.length, findings }, null, 2) + '\n');
+  } else {
+    for (const f of findings) {
+      process.stdout.write(`${f.file}:${f.line}  ${f.type.padEnd(13)} ${f.confidence.padEnd(6)} ${f.masked}  (${f.reason})\n`);
+    }
+    process.stdout.write(`\nScanned ${files.length} file(s): ${findings.length} finding(s), ${failing.length} at or above "${failOn}".\n`);
+  }
+  return failing.length > 0 ? 1 : 0;
+}
+
+const withUsage = (fn) => (args) => fn(args).catch((err) => {
+  if (err instanceof UsageError) { process.stderr.write(`${err.message}\n`); return 2; }
+  throw err;
+});
+
 const EXTRA_COMMANDS = {
-  dcpmi: (args) => runDcpmi(args).catch((err) => {
-    if (err instanceof UsageError) { process.stderr.write(`${err.message}\n`); return 2; }
-    throw err;
-  }),
+  dcpmi: withUsage(runDcpmi),
+  scan: withUsage(runScan),
 };
 
 function findConfig(explicit) {
