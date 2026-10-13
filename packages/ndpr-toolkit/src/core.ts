@@ -138,6 +138,14 @@ export type {
   DsrCollisionRequest, DsrOutcomeHold, DsrOutcomeReview, DsrProposedOutcome, DsrOutcomeDraft,
   ResolveDsrOutcomeOptions, RetentionRecord, RetentionPolicyEntry, RetentionDecision, RetentionPlanItem,
 } from './utils/statutory-exceptions';
+export {
+  NIGERIAN_PII_LEXICON, tokenizeFieldName, suggestCategory, parsePrismaSchema,
+  effectiveAnnotation, lintSchemaForPersonalData, generateRopaFromSchema,
+} from './utils/schema-ropa';
+export type {
+  SchemaAnnotation, SchemaField, SchemaModel, SchemaLintSeverity,
+  SchemaLintFinding, SchemaLintResult, SchemaRopaDraft,
+} from './utils/schema-ropa';
 
 // Compliance Audit Returns scheduling (NDPC GAID 2025)
 export { generateComplianceAuditReturn } from './utils/car';

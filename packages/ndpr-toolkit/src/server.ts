@@ -346,6 +346,24 @@ export type {
   RetentionPlanItem,
 } from './utils/statutory-exceptions';
 export {
+  NIGERIAN_PII_LEXICON,
+  tokenizeFieldName,
+  suggestCategory,
+  parsePrismaSchema,
+  effectiveAnnotation,
+  lintSchemaForPersonalData,
+  generateRopaFromSchema,
+} from './utils/schema-ropa';
+export type {
+  SchemaAnnotation,
+  SchemaField,
+  SchemaModel,
+  SchemaLintSeverity,
+  SchemaLintFinding,
+  SchemaLintResult,
+  SchemaRopaDraft,
+} from './utils/schema-ropa';
+export {
   generateComplianceAuditReturn,
   DEFAULT_CAR_RULESET,
   DEFAULT_CAR_DEADLINE_OVERRIDES,

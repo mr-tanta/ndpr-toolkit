@@ -75,6 +75,14 @@ Options for "dcpmi" (advisory only; never writes to your audit config):
                             domains (example.com, *.test, *.example, *.invalid)
   --json                    Output matches as JSON
 
+  ndpr schema lint [file]   Fail on personal-looking Prisma fields without an
+                            /// @ndpr annotation, and on annotations missing
+                            category, purpose, basis or retain
+                            (default file: prisma/schema.prisma)
+  ndpr schema ropa [file]   Print draft RoPA entries generated from annotations
+                            (asserted drafts; a person must review them)
+  --json                    Output as JSON
+
 Options for "audit":
   --config <path>           Path to the audit config JSON
                             (default: ./ndpr.audit.json or ./ndpr.config.json)
@@ -222,6 +230,41 @@ async function runScan(args) {
   return failing.length > 0 ? 1 : 0;
 }
 
+async function runSchema(args) {
+  const { parsePrismaSchema, lintSchemaForPersonalData, generateRopaFromSchema } = await import('@tantainnovative/ndpr-toolkit/server');
+  const sub = args._[1];
+  if (sub !== 'lint' && sub !== 'ropa') throw new UsageError('Usage: ndpr schema lint|ropa [path/to/schema.prisma]');
+  const file = resolve(process.cwd(), args._[2] ?? 'prisma/schema.prisma');
+  if (!existsSync(file)) throw new UsageError(`Schema not found: ${file}`);
+  const models = parsePrismaSchema(readFileSync(file, 'utf8'));
+  const shown = relative(process.cwd(), file);
+
+  if (sub === 'ropa') {
+    const drafts = generateRopaFromSchema(models);
+    if (args.flags.json) {
+      process.stdout.write(JSON.stringify(drafts, null, 2) + '\n');
+    } else {
+      for (const d of drafts) {
+        process.stdout.write(`${d.name}\n  basis: ${d.lawfulBasis}  retain: ${d.retentionPeriod}\n  data: ${[...d.dataCategories, ...d.sensitiveDataCategories].join(', ')}\n  processors: ${d.processors.join(', ') || 'none declared'}\n  fields: ${d.sourceFields.join(', ')}\n\n`);
+      }
+      process.stdout.write(`${drafts.length} draft record(s) from ${shown}. These are asserted by annotations; review before relying on them.\n`);
+    }
+    return 0;
+  }
+
+  const result = lintSchemaForPersonalData(models);
+  if (args.flags.json) {
+    process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+  } else {
+    for (const f of result.findings) {
+      process.stdout.write(`${shown}:${f.line}  ${f.severity.padEnd(7)} ${f.code}  ${f.message}\n`);
+    }
+    const c = result.coverage;
+    process.stdout.write(`\n${c.annotated}/${c.personalFieldsDetected} personal-looking field(s) annotated, ${c.markedNotPersonal} marked not personal. ${result.errors} error(s), ${result.warnings} warning(s).\n`);
+  }
+  return result.errors > 0 ? 1 : 0;
+}
+
 const withUsage = (fn) => (args) => fn(args).catch((err) => {
   if (err instanceof UsageError) { process.stderr.write(`${err.message}\n`); return 2; }
   throw err;
@@ -230,6 +273,7 @@ const withUsage = (fn) => (args) => fn(args).catch((err) => {
 const EXTRA_COMMANDS = {
   dcpmi: withUsage(runDcpmi),
   scan: withUsage(runScan),
+  schema: withUsage(runSchema),
 };
 
 function findConfig(explicit) {
