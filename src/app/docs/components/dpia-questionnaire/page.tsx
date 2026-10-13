@@ -679,7 +679,7 @@ completeDPIA(newDPIA.id, {
             <strong className="text-foreground">Risk Scoring:</strong> Implement a risk scoring system to help identify high-risk areas that need additional mitigation measures.
           </li>
           <li>
-            <strong className="text-foreground">Documentation:</strong> Ensure the DPIA results are documented and stored for compliance purposes. The NDPA requires organizations to maintain records of processing activities.
+            <strong className="text-foreground">Documentation:</strong> Ensure the DPIA results are documented and stored for compliance purposes. The NDPA accountability duty (s.24(3)) requires controllers to demonstrate compliance, and a stored DPIA is part of that evidence. The record of processing activities is a separate document, required by NDPC GAID 2025 Art. 13 rather than by the Act itself.
           </li>
           <li>
             <strong className="text-foreground">Regular Reviews:</strong> DPIAs should be reviewed periodically, especially when there are changes to the processing activities.

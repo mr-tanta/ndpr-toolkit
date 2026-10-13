@@ -26,7 +26,7 @@ export type LegalCitationBlock = {
 const ndpa2023: LegalReference = {
   label: 'Nigeria Data Protection Act, 2023',
   href: 'https://ndpc.gov.ng/wp-content/uploads/2024/03/Nigeria_Data_Protection_Act_2023.pdf',
-  detail: 'Primary statutory source for NDPA controller, processor, rights, security, DPIA, breach, ROPA, and transfer duties.',
+  detail: 'Primary statutory source for NDPA controller, processor, rights, security, DPIA, breach, accountability, and transfer duties.',
 };
 
 const gaid2025: LegalReference = {
