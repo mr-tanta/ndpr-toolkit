@@ -18,6 +18,8 @@ Start the development server:
 pnpm dev
 ```
 
+With npm, use `npm install` and `npm run dev`.
+
 The server runs at:
 
 ```text
@@ -52,7 +54,8 @@ errors.
 }
 ```
 
-Example with `curl`:
+Example with `curl` (the timestamp is filled in at run time; a fixed past
+timestamp eventually fails validation with `consent_stale`):
 
 ```bash
 curl -X POST http://localhost:3000/consent \
@@ -63,7 +66,7 @@ curl -X POST http://localhost:3000/consent \
       "analytics": false,
       "marketing": false
     },
-    "timestamp": 1780000000000,
+    "timestamp": '"$(date +%s)000"',
     "version": "1.0.0",
     "method": "banner",
     "hasInteracted": true
@@ -110,7 +113,7 @@ curl -X POST http://localhost:3000/consent \
   -H "Content-Type: application/json" \
   -d '{
     "consents": {},
-    "timestamp": 1780000000000,
+    "timestamp": '"$(date +%s)000"',
     "version": "",
     "method": "banner",
     "hasInteracted": true
@@ -143,5 +146,6 @@ The endpoint returns `400` with structured validation errors:
 - TypeScript integration
 - Server-side consent validation
 - `validateConsentStructured` from the `/server` entry
-- Structured validation errors
+- Structured validation errors, including a JSON response for malformed
+  or oversized bodies (16 KB limit)
 - Returning validated consent data from an API endpoint
