@@ -54,10 +54,11 @@ export default function ROPADocs() {
           under the Nigeria Data Protection Act 2023 (NDPA).
         </p>
         <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA 2023 &mdash; Record Keeping Obligations</h4>
+          <h4 className="text-blue-800 dark:text-blue-200 font-medium mb-2">NDPA 2023 and GAID 2025 &mdash; Record Keeping Obligations</h4>
           <p className="text-blue-700 dark:text-blue-300 text-sm mb-0">
-            The NDPA 2023 requires data controllers and processors to maintain records of processing activities
-            under their responsibility. These records must include the purposes of processing, categories of data
+            The NDPA 2023 accountability duty (s.24(3)) requires controllers and processors to demonstrate compliance,
+            and the NDPC GAID 2025 (Art. 13, Art. 52 and Schedule 1) makes a record of processing activities the
+            evidence of that duty. These records must include the purposes of processing, categories of data
             subjects and personal data, recipients, cross-border transfers, retention periods, and a description of
             technical and organisational security measures.
           </p>
