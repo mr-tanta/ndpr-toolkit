@@ -50,7 +50,7 @@ const RIGHTS: RightDefinition[] = [
   {
     id: 'erasure',
     name: 'Right to Erasure',
-    section: 'Section 34(1)(d)',
+    section: 'Section 34(1)(d), Section 34(2)',
     icon: '\u{1F5D1}\u{FE0F}',
     description: 'Request deletion of personal data when no longer necessary.',
   },

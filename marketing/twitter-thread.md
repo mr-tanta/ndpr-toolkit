@@ -116,7 +116,7 @@ The NDPA Toolkit handles all 8 compliance areas:
 - Privacy policy generator (Section 27)
 - Lawful basis tracker (Section 25)
 - Cross-border transfer manager (Sections 41–43)
-- Record of Processing Activities (NDPA s.24(3); GAID 2025 Art. 13, 52, Sch. 1)
+- Record of Processing Activities (Section 24(3); GAID 2025 Art. 13)
 
 On top of the modules, it now ships the GAID 2025 layer: a DCPMI registration-tier classifier, a Compliance Audit Returns scheduler, and a breach-notification completeness checker — plus an `ndpr audit` CLI that gates compliance in CI and exits non-zero when you regress.
 
