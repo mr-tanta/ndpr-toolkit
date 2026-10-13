@@ -127,6 +127,11 @@ const RATING_HEX: Record<Rating, string> = {
   excellent: '#10b981', good: '#3b82f6', 'needs-work': '#f97316', critical: '#ef4444',
 };
 
+/** Score band for each overall rating; mirrors the `toRating` thresholds in compliance-score.ts. */
+const RATING_BAND: Record<Rating, string> = {
+  excellent: '90–100', good: '70–89', 'needs-work': '40–69', critical: '0–39',
+};
+
 function ratingColor(rating: Rating): string {
   switch (rating) {
     case 'excellent': return 'text-emerald-500';
@@ -671,22 +676,23 @@ Thanks!`;
   return `mailto:hello@ndprtoolkit.com.ng?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-function buildWeb3FormsPayload(input: { accessKey: string; name: string; email: string; orgName: string; report: ComplianceReport; gaidSummary: string }): Record<string, string> {
-  const { accessKey, name, email, orgName, report, gaidSummary } = input;
-  const moduleLines = Object.entries(report.modules).map(([k, m]) => `- ${MODULE_LABELS[k] ?? k}: ${Math.round(m.score)}/100 (${moduleRating(m.score)})`).join('\n');
-  const topRecs = report.recommendations.slice(0, 10).map((r, i) => `${i + 1}. [${r.priority.toUpperCase()}] ${r.label} — ${r.ndpaSection}\n   ${r.recommendation}`).join('\n\n');
+/**
+ * Web3Forms is a form processor hosted outside Nigeria (an NDPA Sections 41–43
+ * transfer), so the payload carries only what the reply needs. Per-module
+ * scores, recommendations and the GAID summary stay in the browser; the
+ * mailto fallback pre-fills them in the visitor's own email app instead.
+ */
+function buildWeb3FormsPayload(input: { accessKey: string; name: string; email: string; orgName: string; report: ComplianceReport }): Record<string, string> {
+  const { accessKey, name, email, orgName, report } = input;
+  const band = RATING_BAND[report.rating];
   return {
     access_key: accessKey,
-    subject: `NDPA audit score: ${report.score}/100 (${report.rating}) — ${orgName || name || 'audit request'}`,
+    subject: `NDPA audit report request: ${report.rating} (${band}) — ${orgName || name || 'audit request'}`,
     from_name: name,
     email,
     organisation: orgName || 'n/a',
-    score: String(report.score),
+    score_band: band,
     rating: report.rating,
-    gaid_2025: gaidSummary,
-    generated_at: report.generatedAt,
-    per_module: moduleLines,
-    top_recommendations: topRecs || 'No gaps detected.',
   };
 }
 
@@ -709,7 +715,7 @@ function EmailCaptureForm({ report, gaidSummary, submitted, onSubmitted }: Email
         const res = await fetch('https://api.web3forms.com/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(buildWeb3FormsPayload({ accessKey: web3FormsKey, name, email, orgName, report, gaidSummary })),
+          body: JSON.stringify(buildWeb3FormsPayload({ accessKey: web3FormsKey, name, email, orgName, report })),
         });
         if (res.ok) { setSubmitMethod('web3forms'); setBusy(false); onSubmitted(); return; }
       } catch { /* fall through to mailto */ } finally { setBusy(false); }
@@ -741,7 +747,7 @@ function EmailCaptureForm({ report, gaidSummary, submitted, onSubmitted }: Email
       <button type="submit" disabled={!canSubmit || busy} className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50">{busy ? 'Sending…' : 'Email me my report'}</button>
       <p className="text-[10px] text-muted-foreground leading-tight">
         {web3FormsKey
-          ? 'Submitting sends your name, email, organisation and the audit summary above to Web3Forms, a form service hosted outside Nigeria, which forwards it to us by email. '
+          ? 'Submitting sends your name, email, organisation, score band and rating to Web3Forms, a form service hosted outside Nigeria, which forwards them to us by email. Your answers and recommendations stay in this browser. '
           : 'Submitting opens your email app with the summary pre-filled; nothing leaves your device until you press send. '}
         We use it only to send the report; unsubscribe anytime. See{' '}
         <Link href="/privacy#cross-border" className="underline">cross-border transfers</Link> in our{' '}

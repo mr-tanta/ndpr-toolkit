@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { SiteFooter } from '@/components/site/SiteFooter';
 
-const LAST_UPDATED = '28 May 2026';
+const LAST_UPDATED = '13 October 2026';
 const PRIVACY_EMAIL = 'privacy@tantainnovative.com';
 
 export const metadata: Metadata = {
@@ -62,11 +62,13 @@ export default function PrivacyPolicyPage() {
           <p>We only collect personal data in two situations:</p>
           <ul className="list-disc pl-6 space-y-2">
             <li>
-              <strong>NDPA audit requests.</strong> When you use the audit tool and ask us to email your
-              report, we collect your <strong>name</strong>, <strong>email address</strong>,
-              <strong> organisation name</strong> (optional), and the <strong>self-assessment answers
-              and score</strong> you submit. We use these to deliver your report and respond to your
-              request.
+              <strong>NDPA audit report requests.</strong> When you use the audit tool and ask us to
+              email your report, we collect your <strong>name</strong>, <strong>email address</strong>,
+              <strong> organisation name</strong> (optional), and your <strong>overall score band and
+              rating</strong>. We use these to deliver your report and respond to your request. If the
+              form falls back to your own email app, the pre-filled draft also contains your per-module
+              scores and top recommendations; you can edit that draft, and nothing leaves your device
+              until you press send.
             </li>
             <li>
               <strong>Usage analytics.</strong> We use PostHog to collect anonymised/pseudonymised usage
@@ -75,8 +77,8 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
           <p>
-            The compliance audit itself is computed in your browser; your individual answers are sent to
-            us only if you choose to email yourself the report.
+            The compliance audit itself is computed in your browser. Your individual answers are never
+            sent to us; only the details listed above are, and only if you ask for the report.
           </p>
         </Section>
 
@@ -100,7 +102,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <ul className="list-disc pl-6 space-y-2">
             <li>
-              <strong>Web3Forms</strong> — receives audit-form submissions and delivers them to us by email.
+              <strong>Web3Forms</strong> — a form service hosted outside Nigeria; receives audit report requests (name, email, organisation, score band and rating) and delivers them to us by email.
             </li>
             <li>
               <strong>PostHog</strong> — product analytics.
@@ -117,6 +119,17 @@ export default function PrivacyPolicyPage() {
             United States. Where personal data is transferred abroad, we rely on the transfer conditions
             permitted under the NDPA &mdash; such as the processor&rsquo;s own data-protection commitments and
             contractual safeguards &mdash; and limit transfers to what is necessary to run the Site.
+          </p>
+          <p>
+            <strong>Audit report requests.</strong> Submitting the &ldquo;Email me my report&rdquo; form on
+            the{' '}
+            <Link href="/score" className="text-foreground underline">
+              audit page
+            </Link>{' '}
+            transmits your name, email address, organisation name, overall score band and rating to
+            Web3Forms&rsquo; servers outside Nigeria so they can be emailed to us. The form says so before
+            you submit, and nothing else from the audit is sent. If you would rather not use that service,
+            email us directly at hello@ndprtoolkit.com.ng.
           </p>
         </Section>
 
