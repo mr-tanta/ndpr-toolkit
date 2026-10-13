@@ -102,7 +102,7 @@ export const legalCitationBlocks: Record<CitationModuleId, LegalCitationBlock> =
   },
   ropa: {
     title: 'ROPA citations',
-    references: [{ ...ndpa2023, detail: 'NDPA S.29: records of processing activities and accountability documentation.' }],
+    references: [{ ...ndpa2023, detail: 'NDPA S.24(3) accountability duty; the RoPA itself is defined and required by NDPC GAID 2025 Art. 13, Art. 52 and Schedule 1. The Act has no standalone RoPA section.' }],
     automates: ['Processing record capture, categorisation, filtering, summary, and CSV export support.'],
     doesNotReplace: ['Organisation-wide data mapping, audit evidence review, or validation that every process is represented.'],
   },

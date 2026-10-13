@@ -65,7 +65,7 @@ Generated routes intentionally fail closed until you connect `resolveVerifiedNDP
 | `lawful-basis` | §25 | Yes |
 | `cross-border` | §41–43 | Yes |
 | `policy` | §27 | Audit config only |
-| `ropa` | §29 | Audit config only |
+| `ropa` | §24(3), GAID Art. 13 | Audit config only |
 
 ## After generation
 

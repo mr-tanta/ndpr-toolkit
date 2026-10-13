@@ -407,7 +407,7 @@ policy          12%       Section 27
 dpia            12%       Section 28
 lawfulBasis     10%       Section 25(1)
 crossBorder      8%       Section 41, Section 42, Section 43
-ropa             8%       Section 29
+ropa             8%       Section 24(3); GAID 2025 Art. 13, Art. 52, Sch. 1
                 -----
 Total           100%
 ```

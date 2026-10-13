@@ -744,7 +744,7 @@ Each module ships a minimal Next.js scaffold you can fork in StackBlitz or CodeS
 | Policy | §27 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/policy) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/policy) |
 | Lawful Basis | §25 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/lawful-basis) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/lawful-basis) |
 | Cross-Border | §41–43 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/cross-border) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/cross-border) |
-| RoPA | §29 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/ropa) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/ropa) |
+| RoPA | §24(3), GAID Art. 13 | [![Open](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/stackblitz/ropa) | [![Open](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/stackblitz/ropa) |
 
 Or open the [all-in-one example](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app) that demos every module in a single app.
 
@@ -814,7 +814,7 @@ Override individual strings via `mergeLocale(base, partial)`. Component prop ove
 | Privacy Policy | `/policy` | Section 27 | `PolicyGenerator`, `PolicyPreview`, `PolicyExporter` |
 | Lawful Basis | `/lawful-basis` | Section 25 | `LawfulBasisTracker`, `useLawfulBasis` |
 | Cross-Border Transfers | `/cross-border` | Part VIII §41–43 | `CrossBorderTransferManager`, `useCrossBorderTransfer` |
-| ROPA | `/ropa` | Section 29 | `ROPAManager`, `useROPA`, `exportROPAToCSV` |
+| ROPA | `/ropa` | Section 24(3) accountability; GAID 2025 Art. 13 | `ROPAManager`, `useROPA`, `exportROPAToCSV` |
 
 ---
 

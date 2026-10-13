@@ -306,7 +306,7 @@ console.log(report.recommendations); // array of prioritised Recommendation obje
               <tr className="bg-muted/30">
                 <td className="border border-border px-4 py-2 text-foreground">ROPA</td>
                 <td className="border border-border px-4 py-2 text-foreground">8%</td>
-                <td className="border border-border px-4 py-2 text-foreground">Section 29</td>
+                <td className="border border-border px-4 py-2 text-foreground">Section 24(3); GAID 2025 Art. 13</td>
               </tr>
             </tbody>
           </table>

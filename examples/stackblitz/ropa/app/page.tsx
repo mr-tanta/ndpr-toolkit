@@ -9,8 +9,9 @@ export default function ROPADemoPage() {
         NDPR Record of Processing Activities (ROPA)
       </h1>
       <p style={{ color: "#475569", lineHeight: 1.6, marginBottom: "1rem" }}>
-        Build the ROPA every controller and processor must maintain under NDPA
-        2023 Section 29 (purposes, categories of data subjects and data,
+        Build the ROPA every controller and processor must maintain under NDPC
+        GAID 2025 Article 13 and the NDPA 2023 Section 24(3) accountability
+        duty (purposes, categories of data subjects and data,
         recipients, retention periods, security measures). State is held
         in-memory for this demo.
       </p>
