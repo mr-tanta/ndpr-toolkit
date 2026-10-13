@@ -658,6 +658,30 @@ The same logic is exposed programmatically — `runNdprAudit(input, options?)` a
 
 ---
 
+## Evidence Tools
+
+Pure functions from `/server` that turn self-attested answers into derived, cited, reviewable records. Outputs that affect a person are drafts a named reviewer must approve; nothing here files with the NDPC, contacts a data subject, or deletes data.
+
+| Tool | What it does | CLI |
+|---|---|---|
+| `estimateDerivedDataSubjects` | Counts guarantors, next of kin, dependants and uploaded contacts, and shows the declared DCPMI tier beside the tier reached if they counted. Never blends the two. | `ndpr dcpmi` |
+| `estimateStatutoryCeiling` | NDPA Section 48(4) maximum from a pinnable ruleset, labelled as a ceiling, not a forecast. | `ndpr dcpmi --revenue` |
+| `detectNigerianPII` / `redactNigerianPII` / `validateNuban` | Nigerian phones, NIN/BVN-shaped numbers (low confidence by design), NUBAN with the CBN check digit, cards, CAC numbers, plates, emails. | `ndpr scan` |
+| `issueDecisionReceipt` | A Section 37 receipt with a short code a person can quote to request human review. You state the legal basis; the toolkit never defaults it. | — |
+| `resolveDsrOutcome` / `planRetention` | Typed outcomes for rights that collide with other statutes, citing register rows. Only reviewed rows can hold data; the starter rows ship unverified. | — |
+| `lintSchemaForPersonalData` / `generateRopaFromSchema` | `/// @ndpr` annotations in Prisma schemas: lint unannotated personal fields, generate asserted RoPA drafts. Never infers a lawful basis or retention period. | `ndpr schema lint\|ropa` |
+| `composeGrievancePacket` | A data subject's notice to a controller (GAID 2025 Art. 40 / Schedule 9) with requests attached, for email, WhatsApp and SMS. | — |
+
+```bash
+npx ndpr dcpmi --direct 900 --relations guarantor:2:0.6,uploaded_contact:150:0.3
+npx ndpr scan src --fail-on high
+npx ndpr schema lint prisma/schema.prisma
+```
+
+Try the calculator at [/how-many-data-subjects](https://ndprtoolkit.com.ng/how-many-data-subjects) and the grievance writer at [/report-am](https://ndprtoolkit.com.ng/report-am). Both run in the browser and send nothing. Full guide: [Evidence Tools](https://ndprtoolkit.com.ng/docs/guides/evidence-tools).
+
+---
+
 ## Backend Integration
 
 ### CLI scaffolder
