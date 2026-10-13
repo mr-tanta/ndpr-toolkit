@@ -1,6 +1,6 @@
 ---
 title: "Building a Data Subject Rights Portal: NDPA-Compliant DSAR Handling for Developers"
-description: "A developer guide to building a DSAR portal that handles all 8 data subject rights under NDPA Sections 29-36, with code examples using the NDPA Toolkit."
+description: "A developer guide to building a DSAR portal that handles all 8 data subject rights under NDPA Part VI, Sections 34-38, with code examples using the NDPA Toolkit."
 date: "2026-03-29"
 author: "Abraham Esandayinze Tanta"
 tags: ["ndpa", "dsr", "dsar", "developers", "tutorial"]
@@ -73,7 +73,7 @@ const requestTypes = [
     id: 'access',
     name: 'Access My Data',
     description: 'Request a copy of all personal data we hold about you',
-    ndpaSection: 'Section 30',
+    ndpaSection: 'Section 34(1)(a)–(b)',
     estimatedCompletionTime: 30,
     requiresAdditionalInfo: false,
   },
@@ -81,7 +81,7 @@ const requestTypes = [
     id: 'erasure',
     name: 'Delete My Data',
     description: 'Request deletion of your personal data from our systems',
-    ndpaSection: 'Section 32',
+    ndpaSection: 'Section 34(1)(d), Section 34(2)',
     estimatedCompletionTime: 30,
     requiresAdditionalInfo: true,
     additionalFields: [
@@ -98,7 +98,7 @@ const requestTypes = [
     id: 'portability',
     name: 'Export My Data',
     description: 'Receive your data in a machine-readable format (JSON/CSV)',
-    ndpaSection: 'Section 34',
+    ndpaSection: 'Section 38',
     estimatedCompletionTime: 30,
     requiresAdditionalInfo: true,
     additionalFields: [
@@ -161,7 +161,7 @@ if (!isValid) {
 
 ## Data Portability: Exporting User Data
 
-For portability requests (Section 34), you need to aggregate data from every system that holds the user's personal data and export it in a structured format. JSON is the most developer-friendly; CSV works better for non-technical users.
+For portability requests (Section 38), you need to aggregate data from every system that holds the user's personal data and export it in a structured format. JSON is the most developer-friendly; CSV works better for non-technical users.
 
 ```typescript
 async function generateDataExport(userId: string, format: 'json' | 'csv') {

@@ -1,6 +1,6 @@
 ---
 title: "Cross-Border Data Transfers Under NDPA: Guide for Nigerian Startups Using Cloud Services"
-description: "If your Nigerian startup uses AWS, Vercel, Firebase, or Stripe, you are likely performing cross-border data transfers. Here is how to comply with NDPA Sections 41-45."
+description: "If your Nigerian startup uses AWS, Vercel, Firebase, or Stripe, you are likely performing cross-border data transfers. Here is how to comply with NDPA Part VIII, Sections 41-43."
 date: "2026-04-03"
 author: "Abraham Esandayinze Tanta"
 tags: ["ndpa", "cross-border", "cloud", "startups", "compliance"]
@@ -18,15 +18,15 @@ Under the NDPA, a cross-border transfer occurs whenever personal data of a Niger
 
 Your Vercel origin server runs outside Nigeria. Firebase stores user credentials on Google infrastructure with no African data center. Stripe routes payment data through US servers. Each of these is a cross-border transfer under the NDPA.
 
-## The Three Legal Mechanisms (Sections 41-45)
+## The Three Legal Mechanisms (Part VIII, Sections 41-43)
 
 The NDPA provides three categories of legal mechanisms for transferring personal data outside Nigeria.
 
-**Adequacy Decisions (Section 41).** The NDPC may determine that a country or territory provides an adequate level of data protection. If your cloud provider's data center is in an "adequate" jurisdiction, transfers are permitted without additional safeguards. As of early 2026, the NDPC has not published a formal adequacy list, which means most startups cannot rely on this mechanism yet.
+**Adequacy Decisions (Section 42).** The NDPC may determine that a country or territory provides an adequate level of data protection. If your cloud provider's data center is in an "adequate" jurisdiction, transfers are permitted without additional safeguards. As of early 2026, the NDPC has not published a formal adequacy list, which means most startups cannot rely on this mechanism yet.
 
-**Standard Contractual Clauses and Binding Corporate Rules (Sections 42-44).** You can transfer data to a non-adequate jurisdiction by putting approved contractual clauses in place with the data recipient. Standard Contractual Clauses (SCCs) are template contracts approved by the NDPC that impose data protection obligations on the foreign recipient. Binding Corporate Rules (BCRs) serve a similar purpose for intra-group transfers. Both require NDPC approval.
+**Standard Contractual Clauses and Binding Corporate Rules (Section 41(1)(a)).** You can transfer data to a non-adequate jurisdiction by putting approved contractual clauses in place with the data recipient. Standard Contractual Clauses (SCCs) are template contracts approved by the NDPC that impose data protection obligations on the foreign recipient. Binding Corporate Rules (BCRs) serve a similar purpose for intra-group transfers. Both require NDPC approval.
 
-**Derogations (Section 45).** In the absence of an adequacy decision or approved contractual clauses, transfers can proceed under specific derogations: explicit consent from the data subject (after being informed of the risks), necessity for contract performance, protection of vital interests, or establishment of legal claims. These derogations are meant to be exceptions, not your primary compliance strategy.
+**Derogations (Section 43).** In the absence of an adequacy decision or approved contractual clauses, transfers can proceed under specific derogations: explicit consent from the data subject (after being informed of the risks), necessity for contract performance, protection of vital interests, or establishment of legal claims. These derogations are meant to be exceptions, not your primary compliance strategy.
 
 ## Mapping Cloud Providers to Transfer Obligations
 
@@ -56,7 +56,7 @@ The US has sectoral privacy laws but no comprehensive federal data protection la
 Most major cloud providers publish Data Processing Addendums (DPAs) that include Standard Contractual Clauses. However, the NDPA requires SCCs to be approved by the NDPC specifically. Until the NDPC publishes its own approved SCCs, the safest approach is to:
 
 1. Execute your cloud provider's DPA (usually available in the provider's console or legal page)
-2. Add a Nigeria-specific addendum referencing NDPA Sections 42-44
+2. Add a Nigeria-specific addendum referencing NDPA Part VIII, Sections 41-43
 3. Document the safeguards in your cross-border transfer register
 4. Monitor for NDPC guidance on approved SCCs
 
