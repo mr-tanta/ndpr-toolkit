@@ -632,7 +632,7 @@ function buildGaidSummary(profile: ProfileState): string {
   return lines.join(' ');
 }
 
-/* ── Email capture ──────────────────────────────────────────────────────── */
+/* ── Email capture ────────────────────────────────────────────────────────── */
 
 interface EmailCaptureProps {
   report: ComplianceReport;
