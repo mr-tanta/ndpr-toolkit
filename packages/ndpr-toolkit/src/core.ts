@@ -114,6 +114,13 @@ export type {
   DCPMITier, DCPMIInput, DCPMIThresholds, DCPMIFees,
   DCPMIClassificationOptions, DCPMIClassification,
 } from './utils/dcpmi';
+export { estimateDerivedDataSubjects, DERIVED_SUBJECTS_ADVISORY } from './utils/dcpmi-derived';
+export type {
+  DerivedRelationshipKind, DerivedRelationshipInput, DerivedDataSubjectsInput,
+  DerivedRelationshipEstimate, DerivedDataSubjectsEstimate,
+} from './utils/dcpmi-derived';
+export { estimateStatutoryCeiling, DEFAULT_PENALTY_CEILING_RULESET, PENALTY_CEILING_NOTICE } from './utils/penalty-ceiling';
+export type { PenaltyCeilingRuleset, PenaltyCeilingInput, PenaltyCeiling } from './utils/penalty-ceiling';
 
 // Compliance Audit Returns scheduling (NDPC GAID 2025)
 export { generateComplianceAuditReturn } from './utils/car';

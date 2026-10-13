@@ -38,6 +38,10 @@ export interface DCPMIClassificationOptions {
 export interface DCPMIClassification {
   tier: DCPMITier;
   isDCPMI: boolean;
+  /**
+   * DCPMI registration fee for the tier under this ruleset. This is not the
+   * Compliance Audit Return filing fee, which the NDPC sets separately.
+   */
   annualFeeNGN: number;
   registration: {
     required: boolean;
