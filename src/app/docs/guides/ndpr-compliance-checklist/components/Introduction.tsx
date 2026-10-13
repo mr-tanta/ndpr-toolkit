@@ -12,8 +12,8 @@ export default function Introduction() {
       </p>
       <p className="mb-4">
         Compliance with the NDPA 2023 is not just a legal obligation but also a business imperative. Organizations that fail to
-        comply with the NDPA may face significant penalties, including fines of up to 2% of annual gross revenue or
-        ₦10 million, whichever is greater. Beyond the financial penalties, non-compliance can lead to reputational damage,
+        comply with the NDPA may face significant penalties, including fines of up to the higher of 2% of annual gross revenue or ₦10 million for data controllers
+        and processors of major importance, and the higher of 2% or ₦2 million for others (NDPA Section 48(4)). Beyond the financial penalties, non-compliance can lead to reputational damage,
         loss of customer trust, and business disruption.
       </p>
       <div className="bg-primary/10 p-4 rounded-xl border border-border">

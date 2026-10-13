@@ -9,17 +9,19 @@ image: "/blog/ndpa-penalties.png"
 
 # NDPA Penalties: What Nigerian Businesses Need to Know in 2026
 
-If you run a business in Nigeria that collects customer data — names, email addresses, phone numbers, payment details, delivery addresses — the Nigeria Data Protection Act (NDPA) 2023 applies to you. And the penalties for getting it wrong are not theoretical. The Nigeria Data Protection Commission (NDPC) has the legal authority to impose fines of up to 2% of your annual gross revenue or 10 million Naira, whichever is greater.
+If you run a business in Nigeria that collects customer data — names, email addresses, phone numbers, payment details, delivery addresses — the Nigeria Data Protection Act (NDPA) 2023 applies to you. And the penalties for getting it wrong are not theoretical. The Nigeria Data Protection Commission (NDPC) has the legal authority to impose fines of up to 2% of your annual gross revenue or a fixed amount, whichever is greater. The fixed amount is 10 million Naira for data controllers and processors of major importance and 2 million Naira for everyone else.
 
 This is not a developer problem or an IT problem. This is a business risk that every Nigerian business owner needs to understand.
 
 ## How the NDPA Penalty Structure Works
 
-The NDPA establishes a tiered penalty framework based on the size and nature of the data controller:
+Section 48(4) of the NDPA sets two penalty tiers. Which one applies depends on whether you are a data controller or processor of major importance:
 
-**For large data controllers** (businesses processing data of more than a specified threshold of data subjects, or with annual gross revenue above a certain level), the maximum penalty is 2% of annual gross revenue or 10 million Naira, whichever is greater.
+**For data controllers and processors of major importance** (organisations the NDPC designates by the volume and sensitivity of the data they process; under GAID 2025 these are the UHL, EHL and OHL registration tiers), the maximum penalty is the higher of 10 million Naira or 2% of annual gross revenue in the preceding financial year.
 
-**For smaller data controllers**, penalties are proportionate but still significant. A fine of even a few hundred thousand Naira can be devastating for a small business operating on thin margins.
+**For all other data controllers and processors**, the maximum penalty is the higher of 2 million Naira or 2% of annual gross revenue in the preceding financial year. The 2% limb applies to both tiers, so a smaller business with high turnover still faces a revenue-based ceiling.
+
+These are ceilings, not tariffs. The Commission weighs the nature, gravity and duration of the infringement and any mitigation when it sets a fine. The toolkit's `estimateStatutoryCeiling` computes the ceiling for either tier from your revenue.
 
 Beyond financial penalties, the NDPC can issue enforcement notices requiring you to stop processing data entirely. For a business that depends on customer data for daily operations — which today is nearly every business — a processing ban can be more damaging than the fine itself.
 

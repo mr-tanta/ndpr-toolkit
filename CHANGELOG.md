@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## Unreleased
+
+### Documentation
+
+* **blog:** four posts gave only the higher Section 48(4) fine tier, the higher of N10 million or 2% of annual gross revenue. `understanding-ndpa-2023`, `ndpa-vs-gdpr-key-differences` and `ndpa-penalties-what-businesses-need-to-know` now also give the tier for organisations that are not of major importance: the higher of N2 million or 2%. The penalties post also drops its claim that fines for smaller controllers are "a few hundred thousand Naira". The CAR filing guide and the registration guide keep the N10 million figure, because organisations that file a CAR are of major importance, and now name the tier. The docs-site compliance checklist introduction gives both tiers. The figures match `estimateStatutoryCeiling`.
+
 ## [6.2.0](https://github.com/mr-tanta/ndpr-toolkit/compare/v6.1.0...v6.2.0) (2026-10-13)
 
 An evidence-tools release. Six new utilities help an organisation produce the records the NDPA and GAID 2025 expect, and a sweep of citation fixes brings the package, docs site and blog in line with the Act's section numbering. Everything new is additive. Existing exports, props and scoring are unchanged.
