@@ -34,9 +34,9 @@ export const hausaLocale: Required<{
     privacyNotice: 'Za a yi amfani da bayanan da ka bayar a cikin wannan fom ne kawai don sarrafa buƙatar mai bayanan ka.',
     successMessage: 'An ƙaddamar da buƙatar ka cikin nasara.',
     dashboardTitle: 'Dandalin Buƙatun Masu Bayanan',
-    dashboardDescription: 'Bibiyar da sarrafa buƙatun masu bayanan bisa ga buƙatun Bangare na IV na NDPA.',
+    dashboardDescription: 'Bibiyar da sarrafa buƙatun masu bayanan bisa ga buƙatun Bangare na VI na NDPA.',
     trackerTitle: 'Mai Bin Diddigin Buƙatun DSR',
-    trackerDescription: 'Bin diddigin matsayi da ci gaban buƙatun masu bayanan kamar yadda Bangare na IV na NDPA ya buƙata.',
+    trackerDescription: 'Bin diddigin matsayi da ci gaban buƙatun masu bayanan kamar yadda Bangare na VI na NDPA ya buƙata.',
   },
   breach: {
     title: 'Bayar da Rahoton Karya Bayanan',

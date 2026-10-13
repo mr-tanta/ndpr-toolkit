@@ -34,9 +34,9 @@ export const frenchLocale: Required<{
     privacyNotice: 'Les informations que vous fournissez dans ce formulaire seront utilisées uniquement aux fins du traitement de votre demande de personne concernée.',
     successMessage: 'Votre demande a été soumise avec succès.',
     dashboardTitle: 'Tableau de bord des demandes des personnes concernées',
-    dashboardDescription: 'Suivez et gérez les demandes des personnes concernées en conformité avec les exigences de la Partie IV de la NDPA.',
+    dashboardDescription: 'Suivez et gérez les demandes des personnes concernées en conformité avec les exigences de la Partie VI de la NDPA.',
     trackerTitle: 'Suivi des demandes DSR',
-    trackerDescription: 'Suivez l\'état et l\'avancement des demandes des personnes concernées comme l\'exige la Partie IV de la NDPA.',
+    trackerDescription: 'Suivez l\'état et l\'avancement des demandes des personnes concernées comme l\'exige la Partie VI de la NDPA.',
   },
   breach: {
     title: 'Signaler une violation de données',

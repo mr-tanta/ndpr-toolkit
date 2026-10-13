@@ -34,9 +34,9 @@ export const yorubaLocale: Required<{
     privacyNotice: 'Àwọn ìròyìn tí o bá pèsè nínú fọ́ọ̀mù yìí ni a ó lò fún ète ṣíṣe àbójútó ìbéèrè oní-dátà rẹ nìkan.',
     successMessage: 'A ti fi ìbéèrè rẹ sílẹ̀ dáradára.',
     dashboardTitle: 'Pápá Iṣẹ́ Ìbéèrè Oní-dátà',
-    dashboardDescription: 'Tọpa àti ṣàkóso àwọn ìbéèrè oní-dátà gẹ́gẹ́ bí ìbéèrè NDPA Apá Kẹrin.',
+    dashboardDescription: 'Tọpa àti ṣàkóso àwọn ìbéèrè oní-dátà gẹ́gẹ́ bí ìbéèrè NDPA Apá Kẹfà.',
     trackerTitle: 'Olùtọpa Ìbéèrè DSR',
-    trackerDescription: 'Tọpa ipò àti ìlọsíwájú àwọn ìbéèrè oní-dátà gẹ́gẹ́ bí NDPA Apá Kẹrin béèrè.',
+    trackerDescription: 'Tọpa ipò àti ìlọsíwájú àwọn ìbéèrè oní-dátà gẹ́gẹ́ bí NDPA Apá Kẹfà béèrè.',
   },
   breach: {
     title: 'Ṣe Ìròyìn Ìrúfin Dátà',

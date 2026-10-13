@@ -34,9 +34,9 @@ export const pidginLocale: Required<{
     privacyNotice: 'The information wey you give for this form, na only for processing your data subject request we go use am.',
     successMessage: 'We don receive your request successfully.',
     dashboardTitle: 'Data Subject Request Dashboard',
-    dashboardDescription: 'Track and manage data subject requests as NDPA Part IV talk am.',
+    dashboardDescription: 'Track and manage data subject requests as NDPA Part VI talk am.',
     trackerTitle: 'DSR Request Tracker',
-    trackerDescription: 'Track the status and progress of data subject requests as NDPA Part IV talk am.',
+    trackerDescription: 'Track the status and progress of data subject requests as NDPA Part VI talk am.',
   },
   breach: {
     title: 'Report Data Breach',

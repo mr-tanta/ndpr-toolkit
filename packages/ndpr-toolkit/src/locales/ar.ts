@@ -34,9 +34,9 @@ export const arabicLocale: Required<{
     privacyNotice: 'سيتم استخدام المعلومات التي تقدمها في هذا النموذج فقط لغرض معالجة طلب صاحب البيانات الخاص بك.',
     successMessage: 'تم إرسال طلبك بنجاح.',
     dashboardTitle: 'لوحة طلبات أصحاب البيانات',
-    dashboardDescription: 'تتبع وإدارة طلبات أصحاب البيانات بما يتوافق مع متطلبات الجزء الرابع من NDPA.',
+    dashboardDescription: 'تتبع وإدارة طلبات أصحاب البيانات بما يتوافق مع متطلبات الجزء السادس من NDPA.',
     trackerTitle: 'متتبع طلبات DSR',
-    trackerDescription: 'تتبع حالة وتقدم طلبات أصحاب البيانات كما يقتضي الجزء الرابع من NDPA.',
+    trackerDescription: 'تتبع حالة وتقدم طلبات أصحاب البيانات كما يقتضي الجزء السادس من NDPA.',
   },
   breach: {
     title: 'الإبلاغ عن خرق البيانات',

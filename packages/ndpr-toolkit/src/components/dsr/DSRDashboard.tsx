@@ -44,7 +44,7 @@ export interface DSRDashboardProps {
   
   /**
    * Description text displayed on the dashboard
-   * @default "Track and manage data subject requests in compliance with NDPA Part IV requirements."
+   * @default "Track and manage data subject requests in compliance with NDPA Part VI requirements."
    */
   description?: string;
   
@@ -94,7 +94,7 @@ export interface DSRDashboardProps {
 }
 
 /**
- * Data Subject Request dashboard component. Supports compliance with NDPA Part IV,
+ * Data Subject Request dashboard component. Supports compliance with NDPA Part VI,
  * providing tools to track, manage, and respond to data subject requests within required timeframes.
  */
 export const DSRDashboard: React.FC<DSRDashboardProps> = ({
@@ -118,7 +118,7 @@ export const DSRDashboard: React.FC<DSRDashboardProps> = ({
   const resolvedTitle = title ?? locale.dsr.dashboardTitle ?? 'Data Subject Request Dashboard';
   const resolvedDescription =
     description ?? locale.dsr.dashboardDescription ??
-    'Track and manage data subject requests in compliance with NDPA Part IV requirements.';
+    'Track and manage data subject requests in compliance with NDPA Part VI requirements.';
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [filteredRequests, setFilteredRequests] = useState<DSRRequest[]>(requests);
   const [statusFilter, setStatusFilter] = useState<string>('all');

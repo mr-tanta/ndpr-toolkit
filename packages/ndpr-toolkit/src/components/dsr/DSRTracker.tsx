@@ -34,7 +34,7 @@ export interface DSRTrackerProps {
   
   /**
    * Description text displayed on the tracker
-   * @default "Track the status and progress of data subject requests as required by NDPA Part IV."
+   * @default "Track the status and progress of data subject requests as required by NDPA Part VI."
    */
   description?: string;
   
@@ -97,7 +97,7 @@ export interface DSRTrackerProps {
 }
 
 /**
- * DSR tracking and analytics component. Supports compliance with NDPA Part IV,
+ * DSR tracking and analytics component. Supports compliance with NDPA Part VI,
  * providing summary statistics, deadline tracking, and compliance metrics for data subject requests.
  */
 export const DSRTracker: React.FC<DSRTrackerProps> = ({
@@ -122,7 +122,7 @@ export const DSRTracker: React.FC<DSRTrackerProps> = ({
   const resolvedTitle = title ?? locale.dsr.trackerTitle ?? 'DSR Request Tracker';
   const resolvedDescription =
     description ?? locale.dsr.trackerDescription ??
-    'Track the status and progress of data subject requests as required by NDPA Part IV.';
+    'Track the status and progress of data subject requests as required by NDPA Part VI.';
   const [selectedTimeframe, setSelectedTimeframe] = useState<'7days' | '30days' | '90days' | 'all'>('30days');
   const [filteredRequests, setFilteredRequests] = useState<DSRRequest[]>(requests);
   const [overdueRequests, setOverdueRequests] = useState<DSRRequest[]>([]);

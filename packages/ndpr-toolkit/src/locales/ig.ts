@@ -34,9 +34,9 @@ export const igboLocale: Required<{
     privacyNotice: 'A ga-eji ozi ị nyere na fọọmụ a naanị maka ebumnuche nke ilekọta arịrịọ onye nwe data gị.',
     successMessage: 'Etinyela arịrịọ gị nke ọma.',
     dashboardTitle: 'Dashboard Arịrịọ Onye Nwe Data',
-    dashboardDescription: 'Soro ma jikwaa arịrịọ ndị nwe data dịka NDPA Nkebi IV si chọọ.',
+    dashboardDescription: 'Soro ma jikwaa arịrịọ ndị nwe data dịka NDPA Nkebi VI si chọọ.',
     trackerTitle: 'Onye Na-eso Arịrịọ DSR',
-    trackerDescription: 'Soro ọkwa na ọganihu arịrịọ ndị nwe data dịka NDPA Nkebi IV si chọọ.',
+    trackerDescription: 'Soro ọkwa na ọganihu arịrịọ ndị nwe data dịka NDPA Nkebi VI si chọọ.',
   },
   breach: {
     title: 'Kọọ Mwapụ Data',
