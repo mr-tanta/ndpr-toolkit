@@ -29,7 +29,7 @@ const RIGHTS: RightDefinition[] = [
   {
     id: 'information',
     name: 'Right to be Informed',
-    section: 'Section 29',
+    section: 'Section 27',
     icon: '\u{1F4CB}',
     description: 'Know what personal data is collected and how it is processed.',
   },

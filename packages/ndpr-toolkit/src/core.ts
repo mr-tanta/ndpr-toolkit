@@ -114,6 +114,43 @@ export type {
   DCPMITier, DCPMIInput, DCPMIThresholds, DCPMIFees,
   DCPMIClassificationOptions, DCPMIClassification,
 } from './utils/dcpmi';
+export { estimateDerivedDataSubjects, DERIVED_SUBJECTS_ADVISORY } from './utils/dcpmi-derived';
+export type {
+  DerivedRelationshipKind, DerivedRelationshipInput, DerivedDataSubjectsInput,
+  DerivedRelationshipEstimate, DerivedDataSubjectsEstimate,
+} from './utils/dcpmi-derived';
+export { estimateStatutoryCeiling, DEFAULT_PENALTY_CEILING_RULESET, PENALTY_CEILING_NOTICE } from './utils/penalty-ceiling';
+export type { PenaltyCeilingRuleset, PenaltyCeilingInput, PenaltyCeiling } from './utils/penalty-ceiling';
+export { detectNigerianPII, redactNigerianPII, validateNuban, luhnValid, maskValue } from './utils/nigerian-pii';
+export type {
+  NigerianPIIType, PIIConfidence, NigerianPIIMatch,
+  DetectNigerianPIIOptions, RedactNigerianPIIOptions, RedactionResult,
+} from './utils/nigerian-pii';
+export { issueDecisionReceipt, decisionContestRequest, shortCodeFor } from './utils/decision-receipt';
+export type { AutomatedDecisionBasis, DecisionReceiptInput, DecisionReceipt } from './utils/decision-receipt';
+export {
+  STARTER_EXCEPTION_REGISTER, validateExceptionRow, findStatutoryExceptions,
+  resolveDsrOutcome, planRetention, addMonthsUTC,
+} from './utils/statutory-exceptions';
+export type {
+  ExceptionObligation, ExceptionReviewStatus, RetentionTrigger, CollidingRight,
+  StatutoryExceptionRow, ExceptionRowError, ExceptionQuery, RetentionDates, LegalHold,
+  DsrCollisionRequest, DsrOutcomeHold, DsrOutcomeReview, DsrProposedOutcome, DsrOutcomeDraft,
+  ResolveDsrOutcomeOptions, RetentionRecord, RetentionPolicyEntry, RetentionDecision, RetentionPlanItem,
+} from './utils/statutory-exceptions';
+export {
+  NIGERIAN_PII_LEXICON, tokenizeFieldName, suggestCategory, parsePrismaSchema,
+  effectiveAnnotation, lintSchemaForPersonalData, generateRopaFromSchema,
+} from './utils/schema-ropa';
+export type {
+  SchemaAnnotation, SchemaField, SchemaModel, SchemaLintSeverity,
+  SchemaLintFinding, SchemaLintResult, SchemaRopaDraft,
+} from './utils/schema-ropa';
+export { composeGrievancePacket, validateGrievanceInput, draftSection46Complaint, toSmsSegments } from './utils/grievance';
+export type {
+  SnagCategory, GrievanceRole, GrievanceSubject, GrievanceController, GrievanceInput,
+  GrievanceRequestItem, GrievancePacket, GrievanceValidationError, ComplaintDraftOptions,
+} from './utils/grievance';
 
 // Compliance Audit Returns scheduling (NDPC GAID 2025)
 export { generateComplianceAuditReturn } from './utils/car';

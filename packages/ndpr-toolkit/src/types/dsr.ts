@@ -155,6 +155,19 @@ export interface DSRRequest {
   /** Reason for rejection (if status is 'rejected') */
   rejectionReason?: string;
 
+  /**
+   * Typed outcome, usually produced by `resolveDsrOutcome` and then approved by
+   * a person. Set `reviewedBy` and `communicatedAt` only when a named reviewer
+   * has approved and sent the response; never set them automatically.
+   */
+  outcome?: {
+    proposed: 'fulfil' | 'partially_fulfil' | 'refuse_statutory' | 'needs_human_review';
+    /** Register rows cited for any part kept back. */
+    grounds?: Array<{ rowId: string; citation: string }>;
+    reviewedBy?: string;
+    communicatedAt?: number;
+  };
+
   /** Files attached to the request */
   attachments?: Array<{
     id: string;

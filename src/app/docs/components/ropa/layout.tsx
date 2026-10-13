@@ -3,13 +3,13 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'ROPA Component Docs | NDPA Toolkit',
   description:
-    'Maintain Records of Processing Activities per NDPA 2023 Section 29. Component API, props reference, and export functionality for NDPC audits.',
+    'Maintain Records of Processing Activities per the NDPA 2023 accountability duty (Section 24(3)) and NDPC GAID 2025 Article 13. Component API, props reference, and export functionality for NDPC audits.',
   keywords:
-    'ROPA component Nigeria, Record of Processing Activities API, NDPA Section 29, NDPC audit records, data processing register toolkit',
+    'ROPA component Nigeria, Record of Processing Activities API, NDPA accountability, GAID 2025 RoPA, NDPC audit records, data processing register toolkit',
   openGraph: {
     title: 'ROPA Component Docs | NDPA Toolkit',
     description:
-      'Maintain Records of Processing Activities per NDPA 2023 Section 29. Component API, props reference, and export functionality for NDPC audits.',
+      'Maintain Records of Processing Activities per the NDPA 2023 accountability duty (Section 24(3)) and NDPC GAID 2025 Article 13. Component API, props reference, and export functionality for NDPC audits.',
     url: 'https://ndprtoolkit.com.ng/docs/components/ropa',
     siteName: 'NDPA Toolkit',
     images: [
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'ROPA Component Docs | NDPA Toolkit',
     description:
-      'Maintain Records of Processing Activities per NDPA 2023 Section 29. Component API, props reference, and export functionality for NDPC audits.',
+      'Maintain Records of Processing Activities per the NDPA 2023 accountability duty (Section 24(3)) and NDPC GAID 2025 Article 13. Component API, props reference, and export functionality for NDPC audits.',
     images: ['/screenshots/hero.png'],
   },
 };
