@@ -77,6 +77,18 @@ describe('detectNigerianPII', () => {
     expect(found.map((m) => text.slice(m.start, m.end))).toEqual(['a@b.ng', '08031234567']);
   });
 
+  it('stays linear on adversarial input', () => {
+    const inputs = ['a'.repeat(40000), `a@${'a'.repeat(40000)}`, `a@${'a.'.repeat(20000)}`, '1'.repeat(40000), `ABC${'-'.repeat(40000)}`];
+    const started = Date.now();
+    for (const s of inputs) detectNigerianPII(s);
+    expect(Date.now() - started).toBeLessThan(500);
+  });
+
+  it('finds emails anchored on @ without swallowing neighbours', () => {
+    const text = 'write to ada@example.ng, or bola.o@mail.co.uk. Not a@b or x@y.';
+    expect(detectNigerianPII(text, { types: ['email'] }).map((m) => m.value)).toEqual(['ada@example.ng', 'bola.o@mail.co.uk']);
+  });
+
   it('handles empty and non-string input', () => {
     expect(detectNigerianPII('')).toEqual([]);
     // @ts-expect-error runtime guard

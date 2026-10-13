@@ -93,16 +93,45 @@ const CONTEXT = {
 
 interface PatternSpec {
   type: NigerianPIIType;
-  regex: RegExp;
+  /** Either a global regex, or a linear-time finder for shapes regexes match polynomially. */
+  regex?: RegExp;
+  find?: (text: string) => Array<{ value: string; index: number }>;
   classify: (match: string, context: string) => { confidence: PIIConfidence; reason: string } | null;
 }
 
 const digitsOnly = (s: string) => s.replace(/\D/g, '');
 
+const isLocalChar = (c: string) => /[A-Za-z0-9._%+-]/.test(c);
+const isDomainChar = (c: string) => /[A-Za-z0-9.-]/.test(c);
+
+/**
+ * Finds emails by anchoring on each "@" and expanding outward, so the work is
+ * linear in the text length. A global email regex rescans long runs of
+ * local-part characters from every offset (polynomial on adversarial input).
+ */
+function findEmails(text: string): Array<{ value: string; index: number }> {
+  const found: Array<{ value: string; index: number }> = [];
+  let floor = 0; // never expand left past the end of the previous match
+  for (let at = text.indexOf('@'); at !== -1; at = text.indexOf('@', at + 1)) {
+    let start = at;
+    while (start > floor && isLocalChar(text[start - 1])) start -= 1;
+    let end = at + 1;
+    while (end < text.length && isDomainChar(text[end])) end += 1;
+    // Trim trailing dots/hyphens, then require a dotted domain ending in 2+ letters.
+    while (end > at + 1 && (text[end - 1] === '.' || text[end - 1] === '-')) end -= 1;
+    const domain = text.slice(at + 1, end);
+    const dot = domain.lastIndexOf('.');
+    if (start === at || dot <= 0 || !/^[A-Za-z]{2,}$/.test(domain.slice(dot + 1))) continue;
+    found.push({ value: text.slice(start, end), index: start });
+    floor = end;
+  }
+  return found;
+}
+
 const PATTERNS: PatternSpec[] = [
   {
     type: 'email',
-    regex: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,
+    find: findEmails,
     classify: () => ({ confidence: 'high', reason: 'email address syntax' }),
   },
   {
@@ -178,9 +207,12 @@ export function detectNigerianPII(text: string, options: DetectNigerianPIIOption
 
   for (const spec of PATTERNS) {
     if (!types.has(spec.type)) continue;
-    for (const m of text.matchAll(spec.regex)) {
-      const raw = m[0];
-      const start = m.index ?? 0;
+    const candidates = spec.find
+      ? spec.find(text)
+      : Array.from(text.matchAll(spec.regex!), (m) => ({ value: m[0], index: m.index ?? 0 }));
+    for (const m of candidates) {
+      const raw = m.value;
+      const start = m.index;
       const end = start + raw.length;
       if (overlaps(start, end)) continue;
       const context = text.slice(Math.max(0, start - window), Math.min(text.length, end + window));

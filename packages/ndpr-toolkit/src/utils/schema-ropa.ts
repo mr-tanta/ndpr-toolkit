@@ -171,6 +171,38 @@ export function suggestCategory(fieldName: string): { category: string; sensitiv
   return undefined;
 }
 
+/**
+ * Linear-time `key=value` / `key="quoted value"` tokenizer. Hand-written
+ * rather than a global regex so adversarial input (long runs of `_` or `=`)
+ * cannot cause polynomial backtracking.
+ */
+function parseKeyValuePairs(body: string): Array<[string, string]> {
+  const pairs: Array<[string, string]> = [];
+  const isSpace = (c: string) => c === ' ' || c === '\t' || c === '\n' || c === '\r';
+  let i = 0;
+  while (i < body.length) {
+    while (i < body.length && isSpace(body[i])) i += 1;
+    const keyStart = i;
+    while (i < body.length && !isSpace(body[i]) && body[i] !== '=') i += 1;
+    const key = body.slice(keyStart, i);
+    if (body[i] !== '=') continue; // bare word without a value: skip it
+    i += 1;
+    let value: string;
+    if (body[i] === '"') {
+      const close = body.indexOf('"', i + 1);
+      const end = close === -1 ? body.length : close;
+      value = body.slice(i + 1, end);
+      i = end + 1;
+    } else {
+      const valueStart = i;
+      while (i < body.length && !isSpace(body[i])) i += 1;
+      value = body.slice(valueStart, i);
+    }
+    if (/^[a-z_]+$/.test(key) && value.length > 0) pairs.push([key, value]);
+  }
+  return pairs;
+}
+
 function parseAnnotation(text: string): SchemaAnnotation | undefined {
   const idx = text.indexOf('@ndpr');
   if (idx === -1) return undefined;
@@ -181,9 +213,8 @@ function parseAnnotation(text: string): SchemaAnnotation | undefined {
     return out;
   }
   const unknown: Record<string, string> = {};
-  for (const m of body.matchAll(/([a-z_]+)=(?:"([^"]*)"|(\S+))/g)) {
-    const key = m[1];
-    const value = (m[2] ?? m[3]).trim();
+  for (const [key, rawValue] of parseKeyValuePairs(body)) {
+    const value = rawValue.trim();
     switch (key) {
       case 'category': out.category = value; break;
       case 'purpose': out.purpose = value; break;

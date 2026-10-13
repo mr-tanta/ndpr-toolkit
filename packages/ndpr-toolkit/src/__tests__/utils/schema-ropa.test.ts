@@ -102,6 +102,20 @@ describe('lintSchemaForPersonalData', () => {
   });
 });
 
+describe('annotation parsing robustness', () => {
+  it('reads quoted values and ignores bare words', () => {
+    const [model] = parsePrismaSchema('model A {\n  /// @ndpr category=contact.email purpose="customer support" stray basis=contract\n  email String\n}\n');
+    expect(model.fields[0].annotation).toMatchObject({ category: 'contact.email', purpose: 'customer support', basis: 'contract' });
+  });
+
+  it('parses adversarial underscore and equals runs in linear time', () => {
+    const evil = `model A {\n  /// @ndpr ${'_'.repeat(50000)}x ${'='.repeat(50000)}\n  name String\n}\n`;
+    const started = Date.now();
+    parsePrismaSchema(evil);
+    expect(Date.now() - started).toBeLessThan(500);
+  });
+});
+
 describe('generateRopaFromSchema', () => {
   it('groups valid annotated fields into asserted drafts and skips invalid ones', () => {
     const drafts = generateRopaFromSchema(parsePrismaSchema(SCHEMA));

@@ -100,7 +100,15 @@ const CATEGORY_TEXT: Record<SnagCategory, string> = {
 const CATEGORIES = Object.keys(CATEGORY_TEXT) as SnagCategory[];
 const ROLES: GrievanceRole[] = ['borrower', 'harvested_contact', 'customer', 'other'];
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Linear-time email shape check: one @, a non-empty local part, a dotted domain, no spaces. */
+function looksLikeEmail(value: string): boolean {
+  if (value.length > 254 || /\s/.test(value)) return false;
+  const at = value.indexOf('@');
+  if (at < 1 || at !== value.lastIndexOf('@')) return false;
+  const domain = value.slice(at + 1);
+  const dot = domain.lastIndexOf('.');
+  return dot > 0 && dot < domain.length - 1;
+}
 const ID_LIKE = /(?<!\d)\d{10,11}(?!\d)/;
 
 function addDays(iso: string, days: number): string {
@@ -119,7 +127,7 @@ export function validateGrievanceInput(input: GrievanceInput): GrievanceValidati
   const hasEmail = text(input?.subject?.email);
   const hasPhone = text(input?.subject?.phone);
   if (!hasEmail && !hasPhone) add('subject', 'reply_channel_required', 'Give an email address or phone number the company can reply to.');
-  if (hasEmail && !EMAIL.test(input.subject.email!.trim())) add('subject.email', 'email_invalid_format', 'Email address format is invalid.');
+  if (hasEmail && !looksLikeEmail(input.subject.email!.trim())) add('subject.email', 'email_invalid_format', 'Email address format is invalid.');
   if (!text(input?.controller?.name)) add('controller.name', 'controller_required', 'Name the company or app.');
   if (!Array.isArray(input?.categories) || input.categories.length === 0) {
     add('categories', 'categories_required', 'Choose at least one thing that happened.');

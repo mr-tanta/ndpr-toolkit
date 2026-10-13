@@ -25,6 +25,17 @@ describe('validateGrievanceInput', () => {
     expect(codes).toEqual(expect.arrayContaining(['reply_channel_required', 'controller_required', 'categories_required']));
   });
 
+  it('checks email shape and stays fast on adversarial input', () => {
+    const code = (email: string) => validateGrievanceInput({ ...contact, subject: { name: 'Ada', email } }).map((e) => e.code);
+    expect(code('ada@example.ng')).toEqual([]);
+    for (const bad of ['ada', 'ada@', '@x.ng', 'a@b', 'a@b.', 'a@@b.ng', 'a b@c.ng']) {
+      expect(code(bad)).toContain('email_invalid_format');
+    }
+    const started = Date.now();
+    code(`!@!.${'!.'.repeat(50000)}`);
+    expect(Date.now() - started).toBeLessThan(500);
+  });
+
   it('requires confirmed authority when an organisation serves the notice', () => {
     const codes = validateGrievanceInput({ ...contact, servedBy: { organisation: 'Rights NGO', authorityConfirmed: false } }).map((e) => e.code);
     expect(codes).toContain('authority_unconfirmed');
