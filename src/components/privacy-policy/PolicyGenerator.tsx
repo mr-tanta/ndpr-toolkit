@@ -666,7 +666,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "automated-decision-making",
         title: "Automated Decision-Making and Profiling",
-        content: `We use automated decision-making processes, including profiling, in the following circumstances:\n\n${formData.automatedDecisionDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 36" : "the NDPA"}, you have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning you or similarly significantly affects you. You can exercise this right by contacting us at ${formData.organizationContact}.` : "You have the right not to be subject to a decision based solely on automated processing. You can exercise this right by contacting us."}`,
+        content: `We use automated decision-making processes, including profiling, in the following circumstances:\n\n${formData.automatedDecisionDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 37" : "the NDPA"}, you have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning you or similarly significantly affects you. You can exercise this right by contacting us at ${formData.organizationContact}.` : "You have the right not to be subject to a decision based solely on automated processing. You can exercise this right by contacting us."}`,
         required: false,
         included: true,
         order: order++,
