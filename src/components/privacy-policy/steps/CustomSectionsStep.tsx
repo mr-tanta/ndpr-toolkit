@@ -154,7 +154,7 @@ We do not use student information for targeted advertising purposes or sell stud
 
 2. **Data Protection Impact Assessments**: We conduct DPIAs for high-risk processing activities as required by NDPA Section 28.
 
-3. **Registration and Compliance Audit**: We maintain our registration with the Nigeria Data Protection Commission (NDPC) and conduct annual compliance audits as required by NDPA Section 46.
+3. **Registration and Compliance Audit**: We maintain our registration with the Nigeria Data Protection Commission (NDPC) and file annual Compliance Audit Returns as required by the NDPC General Application and Implementation Directive (GAID) 2025, Articles 7 and 10.
 
 4. **Data Subject Access Request Procedure**: We have implemented a clear procedure for handling data subject access requests in accordance with NDPA Section 34.
 
@@ -162,7 +162,7 @@ We do not use student information for targeted advertising purposes or sell stud
 
 6. **Training and Awareness**: We provide regular training to our staff on data protection principles and practices.
 
-7. **Data Processing Agreements**: We enter into written agreements with all data processors as required by NDPA Section 37.
+7. **Data Processing Agreements**: We enter into written agreements with all data processors as required by NDPA Section 29.
 
 For more information about our NDPA compliance program, please contact our Data Protection Officer.`,
       categories: ["All"],

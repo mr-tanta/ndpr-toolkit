@@ -40,7 +40,7 @@ const RECIPES = [
     href: '/docs/recipes/admin-dsr-management',
     title: 'Admin DSR Management',
     intro:
-      'DPO/staff-side workflow for handling subject requests: queue, identity verification, response within 30 days, audit trail, NDPC complaint route handling.',
+      'DPO/staff-side workflow for handling subject requests: queue, identity verification, response-target tracking, audit trail, NDPC complaint route handling.',
     template: 'saas',
     sections: ['Section 34', 'Section 46'],
   },
