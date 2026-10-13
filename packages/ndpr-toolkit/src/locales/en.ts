@@ -34,9 +34,9 @@ export const defaultLocale: Required<{
     privacyNotice: 'The information you provide in this form will be used solely for the purpose of processing your data subject request.',
     successMessage: 'Your request has been submitted successfully.',
     dashboardTitle: 'Data Subject Request Dashboard',
-    dashboardDescription: 'Track and manage data subject requests in compliance with NDPA Part IV requirements.',
+    dashboardDescription: 'Track and manage data subject requests in compliance with NDPA Part VI requirements.',
     trackerTitle: 'DSR Request Tracker',
-    trackerDescription: 'Track the status and progress of data subject requests as required by NDPA Part IV.',
+    trackerDescription: 'Track the status and progress of data subject requests as required by NDPA Part VI.',
   },
   breach: {
     title: 'Report a Data Breach',

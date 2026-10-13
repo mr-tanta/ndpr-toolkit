@@ -34,7 +34,7 @@ describe('DSRDashboard — locale wiring (B14 fix)', () => {
       screen.getByRole('heading', { name: /Data Subject Request Dashboard/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Track and manage data subject requests in compliance with NDPA Part IV/i),
+      screen.getByText(/Track and manage data subject requests in compliance with NDPA Part VI/i),
     ).toBeInTheDocument();
   });
 

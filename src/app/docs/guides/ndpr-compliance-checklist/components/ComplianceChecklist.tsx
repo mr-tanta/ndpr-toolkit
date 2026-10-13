@@ -153,7 +153,7 @@ export default function ComplianceChecklist() {
         <div>
           <h3 className="text-xl font-bold mb-3 flex items-center">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary mr-2 text-sm font-bold">5</span>
-            Data Security (NDPA Section 37)
+            Data Security (NDPA Section 39)
           </h3>
           <div className="bg-card border border-border rounded-xl p-6">
             <ul className="space-y-2">

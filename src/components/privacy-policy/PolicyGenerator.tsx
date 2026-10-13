@@ -700,7 +700,7 @@ export default function PolicyGenerator({
         thirdPartyContent += `\n\nWe share your personal data with these third parties for the following purposes:\n${formData.thirdPartyPurposes.map((purpose) => `- ${purpose}`).join("\n")}`;
       }
 
-      thirdPartyContent += `\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 37 (Data processor agreements)" : "the NDPA"}, we require all third parties to respect the security of your personal data and to treat it in accordance with the law. We do not allow our third-party service providers to use your personal data for their own purposes and only permit them to process your personal data for specified purposes and in accordance with our instructions.` : "We require all third parties to respect the security of your personal data and to treat it in accordance with applicable law."}`;
+      thirdPartyContent += `\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 29 (Obligations of the data controller and data processor)" : "the NDPA"}, we require all third parties to respect the security of your personal data and to treat it in accordance with the law. We do not allow our third-party service providers to use your personal data for their own purposes and only permit them to process your personal data for specified purposes and in accordance with our instructions.` : "We require all third parties to respect the security of your personal data and to treat it in accordance with applicable law."}`;
 
       sections.push({
         id: "third-party-sharing",
@@ -748,7 +748,7 @@ export default function PolicyGenerator({
         transferContent += `\n\nWhenever we transfer your personal data out of Nigeria, we ensure a similar degree of protection is afforded to it by implementing the following safeguards:\n${formData.transferSafeguards.map((safeguard) => `- ${safeguard}`).join("\n")}`;
       }
 
-      transferContent += `\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Sections 41\u201345" : "the NDPA"}, we ensure that any international transfer of personal data is done in accordance with the provisions of the Act and that adequate protection is guaranteed for the rights of data subjects.` : "We ensure that any international transfer of personal data is done with adequate protection for the rights of data subjects."}`;
+      transferContent += `\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Part VIII, Sections 41\u201343" : "the NDPA"}, we ensure that any international transfer of personal data is done in accordance with the provisions of the Act and that adequate protection is guaranteed for the rights of data subjects.` : "We ensure that any international transfer of personal data is done with adequate protection for the rights of data subjects."}`;
 
       sections.push({
         id: "international-transfers",
@@ -765,7 +765,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "childrens-data",
         title: "Children's Privacy",
-        content: `Our services may be used by individuals under the age of 18. ${formData.childrenDataDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 28" : "the NDPA"}, we implement specific measures to protect the privacy of children, including obtaining parental consent where required by law.` : "We implement specific measures to protect the privacy of children, including obtaining parental consent where required by law."}`,
+        content: `Our services may be used by individuals under the age of 18. ${formData.childrenDataDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 31" : "the NDPA"}, we implement specific measures to protect the privacy of children, including obtaining parental consent where required by law.` : "We implement specific measures to protect the privacy of children, including obtaining parental consent where required by law."}`,
         required: false,
         included: true,
         order: order++,
@@ -777,7 +777,7 @@ export default function PolicyGenerator({
       sections.push({
         id: "special-categories",
         title: "Special Categories of Personal Data",
-        content: `We may process special categories of personal data, which includes information about your race, ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, health data, sex life, or sexual orientation.\n\n${formData.specialCategoriesDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 27" : "the NDPA"}, we only process special categories of personal data when one of the specific legal bases for such processing is met, such as explicit consent or when processing is necessary for specific purposes outlined in the Act.` : "We only process special categories of personal data when one of the specific legal bases for such processing is met, such as explicit consent."}`,
+        content: `We may process special categories of personal data, which includes information about your race, ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, health data, sex life, or sexual orientation.\n\n${formData.specialCategoriesDetails}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 30" : "the NDPA"}, we only process special categories of personal data when one of the specific legal bases for such processing is met, such as explicit consent or when processing is necessary for specific purposes outlined in the Act.` : "We only process special categories of personal data when one of the specific legal bases for such processing is met, such as explicit consent."}`,
         required: false,
         included: true,
         order: order++,
@@ -786,7 +786,7 @@ export default function PolicyGenerator({
 
     // Add security measures section
     if (formData.securityMeasures.length > 0) {
-      let securityContent = `We have implemented appropriate security measures to prevent your personal data from being accidentally lost, used, or accessed in an unauthorized way, altered, or disclosed. These measures include:\n\n${formData.securityMeasures.map((measure) => `- ${measure}`).join("\n")}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 37" : "the NDPA"}, we implement appropriate technical and organizational measures to ensure a level of security appropriate to the risk.` : "We regularly review and update our security measures to ensure the ongoing confidentiality, integrity, and availability of your personal data."}`;
+      let securityContent = `We have implemented appropriate security measures to prevent your personal data from being accidentally lost, used, or accessed in an unauthorized way, altered, or disclosed. These measures include:\n\n${formData.securityMeasures.map((measure) => `- ${measure}`).join("\n")}\n\n${formData.includeNDPRCompliance ? `In accordance with ${formData.includeLegalReferences ? "NDPA Section 39" : "the NDPA"}, we implement appropriate technical and organizational measures to ensure a level of security appropriate to the risk.` : "We regularly review and update our security measures to ensure the ongoing confidentiality, integrity, and availability of your personal data."}`;
 
       if (formData.dataBreachProcedures) {
         securityContent += `\n\nData Breach Procedures: ${formData.dataBreachProcedures}`;
