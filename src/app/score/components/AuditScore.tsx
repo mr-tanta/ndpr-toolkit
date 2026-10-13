@@ -11,10 +11,10 @@ import {
   type RecommendationPriority,
 } from '@tantainnovative/ndpr-toolkit/server';
 
-/* ──────────────────────────────────────────────────────────────────────────────────
+/* ──────────────────────────────────────────────────────────────────────────
  * Default state — flags start false ("haven't done it"); policy/RoPA dates
  * start EMPTY so an untouched audit is honestly scored as stale.
- * ────────────────────────────────────────────────────────────────────────────────── */
+ * ────────────────────────────────────────────────────────────────────────── */
 
 const DEFAULT_INPUT: ComplianceInput = {
   consent: { hasConsentMechanism: false, hasPurposeSpecification: false, hasWithdrawalMechanism: false, hasMinorProtection: false, consentRecordsRetained: false },
@@ -119,7 +119,7 @@ const MODULE_LABELS: Record<string, string> = {
 
 const TOTAL_QUESTIONS = SECTIONS.reduce((n, s) => n + s.questions.length, 0);
 
-/* ── Rating helpers ───────────────────────────────────────────────────────────── */
+/* ── Rating helpers ───────────────────────────────────────────────────────── */
 
 type Rating = ComplianceReport['rating'];
 
@@ -166,7 +166,7 @@ function priorityColor(p: RecommendationPriority): string {
 
 const ngn = (n: number) => `₦${n.toLocaleString('en-NG')}`;
 
-/* ── Circular score gauge ─────────────────────────────────────────────────────── */
+/* ── Circular score gauge ─────────────────────────────────────────────────── */
 
 function ScoreGauge({ score, rating, size = 160 }: { score: number; rating: Rating; size?: number }) {
   const r = 52;
@@ -233,9 +233,9 @@ function GaidCard({ profile }: { profile: ProfileState }) {
   );
 }
 
-/* ──────────────────────────────────────────────────────────────────────────────────
+/* ──────────────────────────────────────────────────────────────────────────
  * Main component — launch card + cinematic full-screen audit
- * ────────────────────────────────────────────────────────────────────────────────── */
+ * ────────────────────────────────────────────────────────────────────────── */
 
 export function AuditScore() {
   const [input, setInput] = useState<ComplianceInput>(DEFAULT_INPUT);
@@ -379,7 +379,7 @@ export function AuditScore() {
         </div>
       </div>
 
-      {/* ── Full-screen cinematic overlay ───────────────────────────────── */}
+      {/* ── Full-screen cinematic overlay ─────────────────────────────────── */}
       {started && (
         <div
           role="dialog"
@@ -422,7 +422,7 @@ export function AuditScore() {
             <main className={`flex-1 flex justify-center px-4 sm:px-6 ${isResults ? 'items-start py-8' : 'items-center py-10'}`}>
               <div key={isResults ? 'results' : `step-${step}`} className="w-full max-w-2xl animate-fade-in-up">
                 {isResults ? (
-                  /* ── Results ────────────────────────────────────────────── */
+                  /* ── Results ──────────────────────────────────────────── */
                   <div>
                     <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 mb-6 flex flex-col items-center text-center">
                       <div
@@ -519,7 +519,7 @@ export function AuditScore() {
                     </div>
                   </div>
                 ) : step === 0 ? (
-                  /* ── Profile step ───────────────────────────────────────────── */
+                  /* ── Profile step ─────────────────────────────────────── */
                   <div>
                     <p className="text-xs uppercase tracking-wider text-primary mb-2">NDPC GAID 2025 — registration &amp; audit returns</p>
                     <h2 className="text-2xl sm:text-3xl font-bold text-foreground">About your organisation</h2>
@@ -548,7 +548,7 @@ export function AuditScore() {
                     </div>
                   </div>
                 ) : section ? (
-                  /* ── Module step ────────────────────────────────────────── */
+                  /* ── Module step ──────────────────────────────────────── */
                   <div>
                     <p className="text-xs uppercase tracking-wider text-primary mb-2">{section.ndpa}</p>
                     <h2 className="text-2xl sm:text-3xl font-bold text-foreground">{section.title}</h2>
@@ -632,7 +632,7 @@ function buildGaidSummary(profile: ProfileState): string {
   return lines.join(' ');
 }
 
-/* ── Email capture ────────────────────────────────────────────────────────────── */
+/* ── Email capture ───────────────────────────────────────────────────────────── */
 
 interface EmailCaptureProps {
   report: ComplianceReport;
