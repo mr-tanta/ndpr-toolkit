@@ -1,6 +1,6 @@
 # NDPR Toolkit Architecture
 
-> Internal architecture reference for `@tantainnovative/ndpr-toolkit` v5.x.
+> Internal architecture reference for `@tantainnovative/ndpr-toolkit` v6.x.
 > Covers the module system, entry points, key patterns, and build pipeline.
 
 ---
@@ -87,8 +87,12 @@ below it, never upward.
 
 ## 3. Entry Points
 
-The package exposes **22 entry points** via the `exports` field in `package.json`.
-Each resolves to CJS (`.js`), ESM (`.mjs`), and declaration (`.d.ts`) files.
+The package exposes **23 subpaths** via the `exports` field in `package.json`:
+22 JavaScript entry points, each resolving to CJS (`.js`), ESM (`.mjs`), and
+declaration (`.d.ts` / `.d.mts`) files, plus `./styles`, which resolves to
+`dist/styles.css` (with a one-line `styles.d.ts` stub so the import
+type-checks). The 22 JavaScript entries are exactly the `entry` map in
+`tsup.config.ts`.
 
 ```
 @tantainnovative/ndpr-toolkit
@@ -347,6 +351,9 @@ NDPRLocale
   +-- breach?     (title, description, submitReport, ...)
   +-- dpia?       (title, next, previous, complete, progress)
   +-- policy?     (title, generate, preview, export, ...)
+  +-- lawfulBasis? (title, description)
+  +-- crossBorder? (title, description)
+  +-- ropa?       (title, description)
   +-- compliance? (score, excellent, good, needsWork, critical, ...)
   +-- common?     (loading, error, save, cancel, delete, edit, ...)
 ```
@@ -357,15 +364,24 @@ ensures that any missing key falls back to the English default from
 
 ### Adding a new language
 
-1. Create a new file, e.g. `src/locales/fr.ts`, exporting a partial
+Seven locales ship in the package under `src/locales/` (`en`, `yo`, `ig`,
+`ha`, `pcm`, `ar`, `fr`). Each is re-exported by name from
+`src/locales/index.ts` (`defaultLocale`, `yorubaLocale`, ... `frenchLocale`)
+and from the `/core` and `/server` entries. To add one to the package: copy
+`en.ts` to `<ISO 639-1 code>.ts`, translate in place, and add the re-export
+to `src/locales/index.ts`, `core.ts`, and `server.ts`.
+
+Consumers can also supply their own locale without changing the package:
+
+1. Create a file in your app, e.g. `locales/de.ts`, exporting a partial
    `NDPRLocale` with translated strings.
-2. Consumers pass it to `NDPRProvider`:
+2. Pass it to `NDPRProvider`:
 
 ```tsx
 import { NDPRProvider } from '@tantainnovative/ndpr-toolkit';
-import frLocale from './locales/fr';
+import deLocale from './locales/de';
 
-<NDPRProvider locale={frLocale}>
+<NDPRProvider locale={deLocale}>
   {children}
 </NDPRProvider>
 ```
@@ -474,25 +490,38 @@ wraps this in a React hook with memoisation.
 ## 8. Build Pipeline
 
 The toolkit uses [tsup](https://tsup.egoist.dev/) (esbuild-based) for
-bundling, with a separate `tsc` step for declaration files.
+bundling and for the per-entry declaration files (`dts: true`), followed by
+a declaration roll-up step. There is no separate `tsc` step.
 
 ### Build command
 
 ```bash
-pnpm build        # runs: tsup && pnpm build:types
+pnpm build:lib    # runs: tsup && cp packages/ndpr-toolkit/src/styles.d.ts dist/styles.d.ts && node scripts/rollup-dts.mjs
 ```
+
+Three steps, in order:
+
+1. `tsup` bundles the 22 entry points and emits their declaration files.
+2. `styles.d.ts` is copied into `dist/` so the `./styles` export type-checks.
+3. `scripts/rollup-dts.mjs` rolls each entry's declarations into one
+   self-contained file (see "Declaration files" below).
+
+`pnpm build` is the docs site (`next build`), not the library.
+`prepublishOnly` runs `pnpm build:lib`.
 
 ### tsup configuration (root tsup.config.ts)
 
 ```
-Entry points:  14 files (index, core, hooks, consent, dsr, dpia, breach,
-               policy, lawful-basis, cross-border, ropa, adapters, presets,
-               unstyled)
+Entry points:  22 (index, core, server, hooks, headless, consent, dsr, dpia,
+               breach, policy, lawful-basis, lawful-basis-lite, cross-border,
+               cross-border-lite, ropa, ropa-lite, adapters, presets,
+               presets-consent, presets-dsr, presets-policy, unstyled)
 
 Output formats: CJS (.js) + ESM (.mjs)
+Declarations:   Enabled (dts: true -- .d.ts + .d.mts per entry)
 Target:         ES2015
 Splitting:      Enabled (shared chunks across entry points)
-Sourcemaps:     Enabled
+Sourcemaps:     Off by default (NDPR_SOURCEMAPS=1 enables them)
 Tree-shaking:   Enabled
 Minification:   Enabled
 Clean:          Enabled (wipes dist/ before build)
@@ -508,32 +537,63 @@ react, react-dom, jspdf, docx, @radix-ui/react-label,
 lucide-react, class-variance-authority, clsx, tailwind-merge
 ```
 
-### "use client" banner
+### "use client" directive
 
-Every output JS file is prefixed with `"use client"` via esbuild's banner
-option. This ensures compatibility with React Server Components in Next.js
-App Router -- all toolkit components are explicitly marked as client
-components.
+Not every output file carries the directive. `tsup.config.ts` splits the
+entries into two lists:
 
-```ts
-esbuildOptions(options) {
-  options.banner = { js: '"use client"' };
-}
-```
+- `RSC_SAFE_ENTRIES` (`core`, `server`) must never carry `"use client"`, so
+  they can be imported from React Server Components, edge functions, and
+  plain Node.
+- `CLIENT_ENTRIES` (`index`, `hooks`, `headless`, the domain entries and
+  their `-lite` variants, `presets` and the per-preset entries, `unstyled`)
+  must carry `"use client"`, so consumers can import components and hooks
+  from a Server Component file without writing their own client wrapper.
+
+`adapters` is in neither list (pure TypeScript, no React), so `onSuccess`
+leaves it as the bundler emitted it.
+
+The mechanism is two-stage. `esbuildOptions.banner` still sets
+`"use client"` as the default for every chunk, but that banner does not
+survive minification, so the directive that ships is written by the
+`onSuccess` hook after the build:
+
+1. For each RSC-safe entry, strip a leading `"use client"` from
+   `dist/<entry>.js` and `dist/<entry>.mjs` if one survived.
+2. For each client entry, prepend `"use client";` to `dist/<entry>.js` and
+   `dist/<entry>.mjs` unless it is already there.
+
+`packages/ndpr-toolkit/src/__tests__/server-rsc-safety.test.ts` enforces the
+RSC-safe side against the built `dist/`: for `/core` and `/server` it walks
+the local import graph of both module formats and asserts no `"use client"`,
+no `react` / `react-dom` import, and no `NDPRProvider` reference, then loads
+each artifact under Node's `react-server` condition.
 
 ### Declaration files
 
-tsup's built-in `dts: true` generates `.d.ts` files for each entry point.
-The package-level `tsup.config.ts` handles this. The inner
-`packages/ndpr-toolkit/tsup.config.ts` sets `dts: false` and relies on a
-separate `tsc -p tsconfig.lib.json` step instead (`pnpm build:types`).
+tsup's built-in `dts: true` emits one `.d.ts` (CJS) and one `.d.mts` (ESM)
+per entry, plus hash-suffixed `chunk-*.d.mts` files for shared internal
+types. `scripts/rollup-dts.mjs` then runs `@microsoft/api-extractor` over
+each of the 22 entries, replaces the entry's `.d.ts` with a single
+self-contained rolled-up file, copies it over the matching `.d.mts`, and
+deletes every declaration file that is not one of the 22 entries or
+`styles`. The chunk hashes rotate per release, which broke IDE
+"go to definition" links; the sweep uses an explicit allowlist rather than a
+hash-pattern match because the pattern approach also matched legitimate
+hyphenated names such as `lawful-basis-lite.d.ts`.
+
+The root `tsup.config.ts` is the only library build config. The inner
+`packages/ndpr-toolkit/package.json` still lists `build` / `build:types`
+scripts, but it is private, references a `tsconfig.lib.json` that does not
+exist, and is not on the publish path.
 
 ### CSS handling
 
 The `onSuccess` hook copies `packages/ndpr-toolkit/src/styles/styles.css` to
 `dist/styles.css`, falling back to the legacy `animations.css` only if the
 current stylesheet is missing. This file is exposed via the `./styles` export
-in `package.json`.
+in `package.json`; `build:lib` copies the matching `styles.d.ts` stub
+alongside it.
 
 ### Output structure
 
@@ -541,22 +601,32 @@ in `package.json`.
 dist/
   +-- index.js          (CJS)
   +-- index.mjs         (ESM)
-  +-- index.d.ts        (types)
-  +-- core.js / .mjs / .d.ts
-  +-- hooks-entry.js / .mjs / .d.ts
-  +-- consent.js / .mjs / .d.ts
-  +-- dsr.js / .mjs / .d.ts
-  +-- dpia.js / .mjs / .d.ts
-  +-- breach.js / .mjs / .d.ts
-  +-- policy.js / .mjs / .d.ts
-  +-- lawful-basis-entry.js / .mjs / .d.ts
-  +-- cross-border-entry.js / .mjs / .d.ts
-  +-- ropa-entry.js / .mjs / .d.ts
-  +-- adapters.js / .mjs / .d.ts
-  +-- presets.js / .mjs / .d.ts
-  +-- unstyled.js / .mjs / .d.ts
+  +-- index.d.ts        (types, CJS)
+  +-- index.d.mts       (types, ESM -- same rolled-up content)
+  +-- core.js / .mjs / .d.ts / .d.mts
+  +-- server.js / .mjs / .d.ts / .d.mts
+  +-- hooks.js / .mjs / .d.ts / .d.mts
+  +-- headless.js / .mjs / .d.ts / .d.mts
+  +-- consent.js / .mjs / .d.ts / .d.mts
+  +-- dsr.js / .mjs / .d.ts / .d.mts
+  +-- dpia.js / .mjs / .d.ts / .d.mts
+  +-- breach.js / .mjs / .d.ts / .d.mts
+  +-- policy.js / .mjs / .d.ts / .d.mts
+  +-- lawful-basis.js / .mjs / .d.ts / .d.mts
+  +-- lawful-basis-lite.js / .mjs / .d.ts / .d.mts
+  +-- cross-border.js / .mjs / .d.ts / .d.mts
+  +-- cross-border-lite.js / .mjs / .d.ts / .d.mts
+  +-- ropa.js / .mjs / .d.ts / .d.mts
+  +-- ropa-lite.js / .mjs / .d.ts / .d.mts
+  +-- adapters.js / .mjs / .d.ts / .d.mts
+  +-- presets.js / .mjs / .d.ts / .d.mts
+  +-- presets-consent.js / .mjs / .d.ts / .d.mts
+  +-- presets-dsr.js / .mjs / .d.ts / .d.mts
+  +-- presets-policy.js / .mjs / .d.ts / .d.mts
+  +-- unstyled.js / .mjs / .d.ts / .d.mts
   +-- styles.css
-  +-- chunk-*.mjs       (shared code via splitting)
+  +-- styles.d.ts
+  +-- chunk-*.js / chunk-*.mjs   (shared code via splitting)
 ```
 
 ### Package resolution

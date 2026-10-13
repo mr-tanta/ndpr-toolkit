@@ -8,11 +8,11 @@ priority — please report responsibly.
 
 | Version  | Supported          |
 |----------|--------------------|
-| 5.x (latest minor) | ✅ Active           |
-| < 5.0    | ❌ End of life      |
+| 6.x (latest minor) | ✅ Active           |
+| < 6.0    | ❌ End of life      |
 
-Security fixes land on the latest 5.x minor only — upgrade to the newest
-release to stay covered. Older majors (4.x and earlier) no longer receive
+Security fixes land on the latest 6.x minor only — upgrade to the newest
+release to stay covered. Older majors (5.x and earlier) no longer receive
 fixes.
 
 ## Reporting a vulnerability
