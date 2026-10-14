@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { version as toolkitVersion } from "./package.json";
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -16,6 +17,11 @@ const nextConfig: NextConfig = {
   },
   distDir: '.next',
   poweredByHeader: false,
+  // Inline only the version string for client components, so they do not
+  // import package.json and ship the whole file in the bundle.
+  env: {
+    NEXT_PUBLIC_TOOLKIT_VERSION: toolkitVersion,
+  },
 
   // Only use static export, basePath and assetPrefix in production
   ...(isDevelopment
