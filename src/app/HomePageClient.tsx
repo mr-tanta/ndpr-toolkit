@@ -143,6 +143,48 @@ const { tier, annualFeeNGN } = classifyDCPMI({ dataSubjectsInSixMonths: 6200 });
 const car = generateComplianceAuditReturn({ commencementDate: '2025-01-15' });
 // → car.schedule.nextFilingDeadline, car.status.daysUntilNextDeadline`;
 
+const EVIDENCE_CLI_CODE = `# How many people's data do you really hold?
+npx ndpr dcpmi --direct 1200 \\
+  --relations guarantor:2:0.6,uploaded_contact:150:0.3
+
+# Direct subjects:            1,200  -> tier EHL
+# Third-party subjects:       55,440
+# Direct plus third-party:    56,640  -> tier UHL
+# - Counting third-party subjects moves the estimate from EHL to UHL.
+#   Raise this with your DPO and counsel before filing.
+
+# Fail CI on Nigerian identifiers in fixtures and logs (masked)
+npx ndpr scan src test --fail-on high
+# src/seed.ts:1  phone_ng     high    *********67
+# src/seed.ts:1  national_id  medium  *********89
+
+# Draft your RoPA from annotated Prisma models
+npx ndpr schema lint && npx ndpr schema ropa`;
+
+const EVIDENCE_LIB_CODE = `import {
+  redactNigerianPII,
+  issueDecisionReceipt,
+} from '@tantainnovative/ndpr-toolkit/server';
+
+// Strip Nigerian identifiers before text reaches logs or an LLM
+redactNigerianPII('Call me on 08031234567 about the loan').text;
+// → 'Call me on [REDACTED:phone_ng] about the loan'
+
+// Section 37: give every automated decision a receipt the person can contest
+const receipt = issueDecisionReceipt({
+  systemId: 'credit-model-v4',
+  decisionType: 'loan_application',
+  outcome: 'declined',
+  basis: 'contract',
+  subjectRef: 'cust_8f3a',             // never a NIN, BVN or phone number
+  decidedAt: Date.now(),
+  contestChannel: 'https://example.ng/review',
+  organisation: 'Example Lending Ltd',
+});
+receipt.notice.sms;
+// → 'Example Lending Ltd: an automated decision was made about you.
+//    To ask for human review, quote 1CZKXKH1 at https://example.ng/review'`;
+
 const PRESETS_CODE = `// One import — fully styled, NDPA-ready
 import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
 
@@ -268,6 +310,15 @@ const FEATURES = [
     href: '/ndpr-demos/ropa',
     iconPath: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 3.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4',
   },
+];
+
+const EVIDENCE_TOOLS: { title: string; body: string; href?: string }[] = [
+  { title: 'Derived data-subject estimate', body: 'Count guarantors, next of kin and uploaded contacts alongside direct customers, and see whether they move your DCPMI tier.', href: '/how-many-data-subjects' },
+  { title: 'Nigerian PII scanner', body: 'Find phone numbers, NIN- and BVN-shaped numbers, NUBANs, cards, CAC numbers and plates in code, fixtures and logs. Values are masked.' },
+  { title: 'Section 37 decision receipts', body: 'A short code and plain-language notice for every automated decision, so the person can ask for human review.' },
+  { title: 'Erasure vs. retention', body: 'A statutory exceptions register and draft outcomes when an erasure request collides with a retention duty. Every outcome needs sign-off.' },
+  { title: 'Schema-as-RoPA', body: 'Annotate Prisma models with /// @ndpr, lint for unannotated personal fields, and draft RoPA entries from the schema.' },
+  { title: 'Grievance packets', body: 'Compose a GAID 2025 Schedule 9 grievance notice for email, WhatsApp and SMS, and a Section 46 complaint if it goes unanswered.', href: '/report-am' },
 ];
 
 function FeatureIcon({ path }: { path: string }) {
@@ -535,7 +586,7 @@ export function HomePageClient({ version }: { version: string }) {
           <Container>
             <Grid cols={4} gap="md">
               <StatCard value="8" label="Compliance Modules" />
-              <StatCard value="1,296" label="Passing Tests" />
+              <StatCard value="1,500+" label="Passing Tests" />
               <StatCard value="0" label="Runtime Dependencies" />
               <StatCard value="18–19" label="React Versions" />
             </Grid>
@@ -573,7 +624,7 @@ export function HomePageClient({ version }: { version: string }) {
         <Section
           badge="Modules"
           title="Everything Compliance Needs"
-          subtitle="Eight purpose-built modules covering every requirement of the Nigeria Data Protection Act 2023."
+          subtitle="Eight purpose-built modules, each mapped to the sections of the Nigeria Data Protection Act 2023 it supports."
         >
           <Container>
             {/* Bento grid: 2 featured cards on top, 3+3 below */}
@@ -664,7 +715,7 @@ export function HomePageClient({ version }: { version: string }) {
                 <ArchLayer number={2} name="Components" description="Composable, styled building blocks you control." color="rgba(37,99,235,0.7)" />
                 <ArchLayer number={3} name="Hooks" description="Logic-only hooks — bring your own UI." color="rgba(37,99,235,0.5)" />
                 <ArchLayer number={4} name="Core" description="Pure TypeScript utilities, framework agnostic." color="rgba(37,99,235,0.3)" />
-                <ArchLayer number={5} name="Adapters" description="Swap storage backends: localStorage, Postgres, Redis." color="rgba(37,99,235,0.15)" />
+                <ArchLayer number={5} name="Adapters" description="Swap storage: localStorage, cookies, your API, or Prisma and Drizzle via ndpr-recipes." color="rgba(37,99,235,0.15)" />
               </div>
 
               {/* Code tab switcher */}
@@ -746,10 +797,10 @@ export function HomePageClient({ version }: { version: string }) {
                 <SiteCodeBlock code={SCORE_CODE} language="ts" title="compliance-check.ts" />
                 <div style={{ marginTop: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                   {[
-                    '73/100 overall score with letter grade',
+                    '73/100 overall score with a rating',
                     'Per-module pass/fail breakdown',
                     'Actionable gap recommendations',
-                    'Grades from A to F scale',
+                    'Ratings: excellent, good, needs work, critical',
                   ].map((point) => (
                     <div key={point} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                       <div style={{
@@ -842,7 +893,74 @@ export function HomePageClient({ version }: { version: string }) {
           </Container>
         </Section>
 
-        {/* ── 6c. USED BY ──────────────────────────────────────────────────── */}
+        {/* ── 6c. EVIDENCE TOOLS (v6.2) ────────────────────────────────────── */}
+        <Section
+          badge="New in v6.2"
+          title="Evidence, Not Just Checkboxes"
+          subtitle="Tools that produce the records the NDPA and GAID 2025 expect: who you really hold data on, where Nigerian identifiers leak, and a paper trail for automated decisions and complaints."
+        >
+          <Container>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(360px, 100%), 1fr))',
+              gap: 'var(--space-8)',
+              alignItems: 'center',
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+                {EVIDENCE_TOOLS.map(({ title, body, href }) => (
+                  <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
+                    <div style={{
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      borderRadius: '50%',
+                      background: 'var(--accent-light)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                    }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>
+                        {href ? <a href={href} style={{ color: 'inherit' }}>{title}</a> : title}
+                      </div>
+                      <div style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>{body}</div>
+                    </div>
+                  </div>
+                ))}
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', margin: 0 }}>
+                  Outputs are drafts. Have your DPO or counsel review them before they reach a data subject or the NDPC.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
+                  <SiteButton variant="secondary" size="md" href="/docs/guides/evidence-tools">
+                    Read the evidence tools guide
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '4px' }}>
+                      <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </SiteButton>
+                  <SiteButton variant="ghost" size="md" href="/how-many-data-subjects">
+                    Try the data-subject calculator
+                  </SiteButton>
+                </div>
+              </div>
+
+              <div>
+                <SiteTabs
+                  items={[
+                    { label: 'CLI', content: <SiteCodeBlock code={EVIDENCE_CLI_CODE} language="bash" title="ci.sh" /> },
+                    { label: 'Library', content: <SiteCodeBlock code={EVIDENCE_LIB_CODE} language="ts" title="evidence.ts" /> },
+                  ]}
+                />
+              </div>
+            </div>
+          </Container>
+        </Section>
+
+        {/* ── 6d. USED BY ──────────────────────────────────────────────────── */}
         <UsedBySection />
 
         {/* ── 7. CTA ───────────────────────────────────────────────────────── */}

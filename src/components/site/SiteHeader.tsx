@@ -5,6 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
+// Major version only. next.config.ts inlines it from package.json at build time.
+const MAJOR_VERSION_TAG = `v${(process.env.NEXT_PUBLIC_TOOLKIT_VERSION ?? '').split('.')[0]}`;
+
 const navLinks = [
   { label: 'Audit', href: '/score' },
   { label: 'Docs', href: '/docs' },
@@ -45,7 +48,7 @@ export function SiteHeader() {
               className="ndpr-logo-mark"
             />
             <span className="ndpr-logo-text">NDPA Toolkit</span>
-            <span className="ndpr-version-tag">v5</span>
+            <span className="ndpr-version-tag">{MAJOR_VERSION_TAG}</span>
           </Link>
 
           {/* Center nav — desktop only */}
