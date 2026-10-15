@@ -75,7 +75,7 @@ Import only what you need. Your bundle stays small.
 5/ Why this matters:
 
 Multichoice Nigeria: ₦766M fine (cross-border transfers)
-NDPC fines: up to 2% of annual gross revenue or ₦10M
+Fine cap: higher of 2% of revenue or ₦10M (₦2M if not of major importance)
 GAID 2025: annual audit returns + 72-hour breach notification
 
 This is not theoretical. The NDPC is actively enforcing.
