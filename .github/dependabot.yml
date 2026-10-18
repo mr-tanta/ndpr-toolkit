@@ -49,6 +49,16 @@ updates:
     commit-message:
       prefix: "chore(deps)"
       include: "scope"
+    ignore:
+      # Prisma 7 is a migration, not a bump (#120, #121). It rejects the
+      # datasource `url` in the schema ndpr-recipes publishes, and the
+      # create-ndpr templates call `new PrismaClient()` without the driver
+      # adapter v7 requires. Minor and patch updates on 6.x still arrive.
+      # Remove these entries as part of the planned Prisma 7 migration.
+      - dependency-name: "prisma"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@prisma/client"
+        update-types: ["version-update:semver-major"]
     groups:
       # @commitlint/cli and @commitlint/config-conventional must move together.
       # config-conventional 21.2.0 pulls
