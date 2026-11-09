@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [commit
 
 ## Unreleased
 
+### Tests
+
+* **audit:** the perfect-posture audit pins `asOf` to 2026-06-01. The fixture review dates are 2026-05-01, and the RoPA review window is 6 months, so a live clock past early November 2026 scored that posture 97 instead of 100.
+
 ### Documentation
 
 * **site:** the landing page gains a "New in v6.2" evidence-tools section, with CLI and library samples taken from real output, and links to the evidence tools guide, `/how-many-data-subjects` and `/report-am`. Stale claims are corrected: the test count (1,296 to 1,500+), the score section's "letter grade" and "A to F" wording (the score uses the ratings excellent, good, needs-work and critical), the Postgres and Redis adapters (the package ships localStorage, cookie, session, memory and API adapters, and Prisma and Drizzle come from `ndpr-recipes`), and the claim that eight modules cover "every requirement" of the Act. The site header's hard-coded `v5` tag is now read from `package.json` at build time, and the page metadata and JSON-LD list the new tools.
