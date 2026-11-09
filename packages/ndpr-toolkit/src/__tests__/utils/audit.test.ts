@@ -62,7 +62,13 @@ function completeAuditBreach(): BreachReport {
 
 describe('runNdprAudit', () => {
   it('passes for a complete compliance posture', () => {
-    const result = runNdprAudit({ compliance: perfectCompliance() });
+    // Fixture review dates are 2026-05-01. RoPA review is 6 months, so a live
+    // clock past 2026-11-01 drops this posture to 97. 2026-06-01 stays inside
+    // both review windows and keeps the expected score at 100.
+    const result = runNdprAudit(
+      { compliance: perfectCompliance() },
+      { complianceOptions: { asOf: '2026-06-01' } },
+    );
     expect(result.passed).toBe(true);
     expect(result.score).toBe(100);
     expect(result.summary.fail).toBe(0);
