@@ -4,10 +4,9 @@
 
 [![npm version](https://img.shields.io/npm/v/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
 [![npm downloads](https://img.shields.io/npm/dm/@tantainnovative/ndpr-toolkit.svg)](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5%2B-3178C6.svg)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/license/mit)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6.svg)](https://www.typescriptlang.org/)
 [![CI](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mr-tanta/ndpr-toolkit/actions/workflows/ci.yml)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@tantainnovative/ndpr-toolkit)](https://bundlephobia.com/package/@tantainnovative/ndpr-toolkit)
 
 ## What this is
 
@@ -27,20 +26,20 @@ If this saves you a week of wiring privacy ops into product, star the repo and o
 
 ---
 
-The toolkit ships **zero-config presets**, **pluggable storage adapters**, **compound components**, **structured-error validators**, a **compliance score engine**, and **seven shipped locales** (en, yo, ig, ha, pcm, ar, fr) — eight production-ready modules covering consent, data subject rights, DPIA, breach notification, privacy policies, lawful basis, cross-border transfers, and ROPA. **5.2–5.5 add an NDPC GAID 2025 layer**: a DCPMI designation classifier, a Compliance Audit Returns scheduler, a Section 40 / Article 33 breach-notification checker (wired live into `BreachReportForm`), and an **`ndpr audit` CLI** that gates compliance in CI.
-
 **[Documentation](https://ndprtoolkit.com.ng)** | **[Live Demos](https://ndprtoolkit.com.ng/ndpr-demos)** | **[npm](https://www.npmjs.com/package/@tantainnovative/ndpr-toolkit)** | **[Blog](https://ndprtoolkit.com.ng/blog)** | **[Latest Release](https://github.com/mr-tanta/ndpr-toolkit/releases/latest)**
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/mr-tanta/ndpr-toolkit/tree/main/examples/nextjs-app)
 [![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/mr-tanta/ndpr-toolkit/main/examples/nextjs-app)
 
-> **What's new in 6.0.0:** A production-boundary hardening release. Tenant, subject, actor, and role authority are server-controlled; recipe business/audit writes are atomic; consent replay uses canonical safe-integer client timestamps; breach duties fail closed unless complete correlated evidence establishes otherwise; and CAR configuration/provenance is strictly validated. Fresh scaffolds from `@tantainnovative/create-ndpr@0.5.0` cover all 15 framework/layout/ORM combinations. The unscoped `create-ndpr@1.0.0` alias remains unchanged and delegates to the latest scoped CLI. Backend users upgrading to `@tantainnovative/ndpr-recipes@0.3.0` from `0.1.x` or `0.2.0` must use the reviewed [`migrations/0.3.0` guide](./packages/ndpr-recipes/migrations/0.3.0/README.md) rather than a blind schema push. Full upgrade path: [5.7 → 6.0 migration guide](https://ndprtoolkit.com.ng/docs/guides/migrating-5-7-to-6-0).
->
-> **What's new in 5.5:** The **`ndpr audit` CLI** scores a compliance config against the toolkit engine (compliance score + GAID 2025 DCPMI / CAR / breach checks) and exits non-zero on failure — a drop-in CI gate. The same logic is exported as `runNdprAudit` / `formatNdprAuditReport` from `/server`. See the [audit CLI guide](https://ndprtoolkit.com.ng/docs/guides/audit-cli).
->
-> **NDPC GAID 2025 utilities (5.2–5.4):** `classifyDCPMI` (DCPMI designation tier + fee estimate), `generateComplianceAuditReturn` (CAR initial-audit + annual filing schedule), and `assessBreachNotification` (Section 40 / Article 33 notification completeness) — each pure, React-free, and exposed as a hook. `BreachReportForm` now renders a live NDPC-notification readiness panel as it's filled in.
->
-> **Earlier highlights:** Structured-result validators are the only shape — `{ field, code, message }[]` with stable codes; uniform `onAdd` / `onUpdate` / `onArchive` callbacks; `NDPRDPIA.onResult(result)` (5.0). Arabic + French locales with RTL-correct CSS (4.1.0). React 17 dropped; `^18 || ^19` (4.0.0). Full history in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
+## Current release: 6.2.0
+
+`6.2.0` matches `package.json` and the published npm package. It adds evidence tools on top of the 6.0 production boundary: derived DCPMI counts, the Section 48(4) fine ceiling, Nigerian PII scanning, Section 37 decision receipts, DSR outcomes where a right collides with a retention duty, RoPA drafts from `/// @ndpr` Prisma annotations, and GAID 2025 Article 40 grievance packets. Records that affect a person are drafts. A named reviewer approves them before they go to a data subject or the NDPC. See [Evidence Tools](#evidence-tools).
+
+The companion packages in this repo are `@tantainnovative/create-ndpr@0.5.2` and `@tantainnovative/ndpr-recipes@0.4.1`. The unscoped `create-ndpr@1.0.0` alias is unchanged and still delegates to the latest scoped CLI.
+
+Upgrading from 5.x: read the [5.7 to 6.0 migration guide](https://ndprtoolkit.com.ng/docs/guides/migrating-5-7-to-6-0). 6.0 made tenant, subject, actor, and role authority server-controlled, made recipe writes atomic, and made breach duties fail closed unless complete correlated evidence says otherwise. If a database was created with `@tantainnovative/ndpr-recipes` `0.1.x` or `0.2.0`, apply the reviewed [`migrations/0.3.0` guide](./packages/ndpr-recipes/migrations/0.3.0/README.md) before installing `0.4.1`. Do not push the new schema over those tables.
+
+`classifyDCPMI`, `generateComplianceAuditReturn`, `assessBreachNotification`, and the `ndpr audit` CLI have shipped since 5.2 through 5.5. Older notes are in the [CHANGELOG](https://github.com/mr-tanta/ndpr-toolkit/blob/main/CHANGELOG.md).
 
 > **Legal source transparency:** See [Legal Basis & Citations](https://ndprtoolkit.com.ng/docs/guides/legal-basis-and-citations) for NDPA 2023 module references, NDPC GAID 2025 DCPMI/CAR utility references, and audit CLI boundaries, plus the linked governance policy for regulatory changes.
 >
@@ -77,28 +76,43 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-That's it — `NDPRConsent` defaults to `localStorageAdapter`, so consent persists across page loads with zero backend code.
+With no `adapter`, the banner writes consent to `localStorage` under `ndpr_consent` and reads it back on the next visit. The banner owns that read and write.
 
-**Want server-side persistence?** Pass any `StorageAdapter`:
+`NDPRConsent`'s `adapter` prop only receives the save. Passing one turns that `localStorage` off, and the preset does not call `adapter.load()`, so a cookie or API adapter on `NDPRConsent` will not restore a previous choice.
+
+For a server-readable cookie, read it in the layout, pass `show` into `ConsentBanner`, and save with `cookieAdapter`. The cookie name in the worked example is `ndpr-consent` (the banner's built-in key, `ndpr_consent`, is a different store). `expires` defaults to 180 days.
 
 ```tsx
-import { NDPRConsent } from '@tantainnovative/ndpr-toolkit/presets';
-import { cookieAdapter, apiAdapter, composeAdapters, localStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+'use client';
 
-// Server-readable cookie (best for SSR consent gating)
-<NDPRConsent adapter={cookieAdapter('ndpr_consent', { expires: 180 })} />
+import { useMemo } from 'react';
+import { ConsentBanner } from '@tantainnovative/ndpr-toolkit/consent';
+import { cookieAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
+import type { ConsentOption, ConsentSettings } from '@tantainnovative/ndpr-toolkit';
 
-// Or POST to your own backend
-<NDPRConsent adapter={apiAdapter('/api/consent')} />
+const options: ConsentOption[] = [
+  { id: 'essential', label: 'Essential', description: 'Required for the site to function', required: true, purpose: 'Site operation' },
+  { id: 'analytics', label: 'Analytics', description: 'Anonymous usage measurement', required: false, purpose: 'Product analytics' },
+];
 
-// Or both — fan-out writes
-<NDPRConsent adapter={composeAdapters(
-  apiAdapter('/api/consent'),
-  localStorageAdapter('ndpr_consent'),
-)} />
+export function ConsentRoot({ show }: { show: boolean }) {
+  const adapter = useMemo(
+    () => cookieAdapter<ConsentSettings>('ndpr-consent', { expires: 180 }),
+    [],
+  );
+
+  return (
+    <ConsentBanner
+      options={options}
+      manageStorage={false}
+      show={show}
+      onSave={(settings) => { void adapter.save(settings); }}
+    />
+  );
+}
 ```
 
-The full SSR pattern (cookie read server-side → banner hydrates already-resolved, no flash) is in the [Server-Side Storage guide](https://ndprtoolkit.com.ng/docs/guides/server-side-storage).
+The layout that parses the cookie and the other frameworks are in the [Server-Side Storage guide](https://ndprtoolkit.com.ng/docs/guides/server-side-storage).
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/mr-tanta/ndpr-toolkit/main/public/screenshots/consent-demo.png" alt="Consent Management Demo — interactive consent banner with state inspector" width="800" />
@@ -158,6 +172,12 @@ Install UI peer dependencies (only needed if you use the higher-level Radix-base
 ```bash
 # pnpm
 pnpm add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
+
+# npm
+npm install @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
+
+# yarn
+yarn add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
 
 # Bun
 bun add @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-label @radix-ui/react-slot lucide-react tailwind-merge clsx class-variance-authority
@@ -220,10 +240,12 @@ bun dev
 
 Vite is client-only by default — no extra wiring needed. The toolkit's preset components ship with the `"use client"` directive already injected.
 
-### Bun + Next.js 15 (App Router)
+### Bun + Next.js 16 (App Router)
+
+`next` in this repo is `^16.2.12`. `--yes` skips the prompts. `--typescript`, `--app`, `--tailwind`, and `--use-bun` are the current `create-next-app` flags.
 
 ```bash
-bun create next-app@latest my-ndpr-app --typescript --app --tailwind
+bun create next-app@latest my-ndpr-app --typescript --app --tailwind --use-bun --yes
 cd my-ndpr-app
 bun add @tantainnovative/ndpr-toolkit
 ```
@@ -375,43 +397,33 @@ Every stateful component accepts an `adapter` prop. Built-in adapters ship out o
 
 ```ts
 import {
-  localStorageAdapter,    // default for browsers
+  localStorageAdapter,    // browser localStorage
   sessionStorageAdapter,  // cleared on tab close
   cookieAdapter,          // server-readable cookies
   apiAdapter,             // HTTP endpoint (any backend)
-  memoryAdapter,          // in-process, good for SSR / tests
+  memoryAdapter,          // in-process, good for tests
   composeAdapters,        // fan-out writes to multiple stores
 } from '@tantainnovative/ndpr-toolkit/adapters';
+import type { ConsentSettings } from '@tantainnovative/ndpr-toolkit';
+
+const consentStore = composeAdapters(
+  apiAdapter<ConsentSettings>('/api/consent', {
+    headers: { Authorization: `Bearer ${token}` },
+  }),
+  localStorageAdapter<ConsentSettings>('ndpr_consent'),
+);
+
+await consentStore.save(settings);
+const current = await consentStore.load();
 ```
 
-**localStorage (default browser behaviour):**
-```tsx
-<NDPRConsent adapter={localStorageAdapter('ndpr_consent')} />
+`NDPRLawfulBasis`, `NDPRCrossBorder`, and `NDPRROPA` load and save through an `adapter` prop. `NDPRConsent` only writes to the adapter you pass, and it does not read it back. For the consent banner, omit `adapter` and let it use `localStorage`, or use the `ConsentBanner` cookie pattern in the quickstart.
+
+```ts
+const cookies = cookieAdapter('ndpr-consent', { expires: 180 });
 ```
 
-**API endpoint:**
-```tsx
-<NDPRConsent adapter={apiAdapter('/api/consent', {
-  headers: { Authorization: `Bearer ${token}` },
-})} />
-```
-
-**Write to API + keep a local cache:**
-```tsx
-import { composeAdapters, apiAdapter, localStorageAdapter } from '@tantainnovative/ndpr-toolkit/adapters';
-
-<NDPRConsent adapter={composeAdapters(
-  apiAdapter('/api/consent'),
-  localStorageAdapter('ndpr_consent'),
-)} />
-```
-
-**Cookie (server-readable, for SSR consent gating):**
-```tsx
-<NDPRConsent adapter={cookieAdapter('ndpr_consent', { expires: 180 })} />
-```
-
-`expires` defaults to **180 days** (since 3.10.5). NDPA Section 26 doesn't pin a number, but 6 months is the common practice for non-essential cookies and matches what regulators have published elsewhere — long enough to avoid daily re-prompting, short enough that consent stays meaningful.
+`expires` defaults to **180 days** (since 3.10.5). NDPA Section 26 doesn't pin a number, but 6 months is the common practice for non-essential cookies and matches what regulators have published elsewhere. Long enough to avoid daily re-prompting, short enough that consent stays meaningful.
 
 ---
 
@@ -988,7 +1000,9 @@ The **Nigeria Data Protection Act (NDPA) 2023** replaced the NDPR 2019 and estab
 
 ## TypeScript
 
-Written in TypeScript. All types are exported:
+Written in TypeScript. This repository typechecks on TypeScript 6 (`typescript` `^6.0.3` in `package.json`). The published `.d.ts` files do not require TypeScript 6. The examples pin TypeScript 5.7.
+
+All types are exported:
 
 ```typescript
 import type {
